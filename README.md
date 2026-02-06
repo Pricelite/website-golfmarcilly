@@ -1,5 +1,20 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Supabase setup
+
+1. Copy `.env.local.example` to `.env.local` and fill values.
+2. In Vercel, add the same vars in Project Settings > Environment Variables.
+3. Use the helpers in `src/lib/supabase` when you start wiring data.
+4. Optional: call `/api/health` to verify envs are present (no secrets exposed).
+
+## Environment variables (Supabase) / Vercel
+
+1. Copy `.env.local.example` to `.env.local`.
+2. Fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+3. In Vercel, add the same variables in Project Settings > Environment Variables.
+4. Verify locally: `pnpm dev` then `curl http://localhost:3000/api/health`.
+5. Validate a production build: `pnpm build`.
+
 ## Getting Started
 
 First, run the development server:
