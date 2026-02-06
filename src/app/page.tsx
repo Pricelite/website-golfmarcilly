@@ -250,16 +250,8 @@
               </p>
               <div className="mt-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span>Lundi - Vendredi</span>
-                  <span className="font-semibold">7h30 - 20h00</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Samedi</span>
-                  <span className="font-semibold">7h00 - 21h00</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Dimanche</span>
-                  <span className="font-semibold">7h00 - 19h00</span>
+                  <span>Tous les jours</span>
+                  <span className="font-semibold">8h30 - 18h00</span>
                 </div>
               </div>
               <button className="mt-6 w-full rounded-2xl border border-emerald-900/20 bg-white px-4 py-3 text-sm font-semibold text-emerald-900 transition hover:border-emerald-900/40">
