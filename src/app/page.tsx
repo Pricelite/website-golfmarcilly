@@ -21,6 +21,22 @@
                 Club & Parcours
               </p>
             </div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-900/15 bg-white/80 text-emerald-900 shadow-sm">
+              <svg
+                aria-hidden="true"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3l2.6 5.4L20 9l-4 3.9.9 5.6L12 16l-4.9 2.5.9-5.6L4 9l5.4-.6L12 3z" />
+                <path d="M7.5 20.5l-2-1.3m13 1.3l-2-1.3" />
+              </svg>
+              <span className="sr-only">Association sportive</span>
+            </div>
           </div>
           <nav className="hidden items-center gap-6 text-sm font-medium text-emerald-900/80 md:flex">
             <a className="transition hover:text-emerald-700" href="#experience">
@@ -133,33 +149,13 @@
           id="experience"
           className="mx-auto w-full max-w-6xl px-6 pb-20"
         >
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                title: "Parcours signature",
-                text: "Des lignes de jeu variees, bunkers sculptes et greens rapides dans un ecrin naturel.",
-              },
-              {
-                title: "Academie premium",
-                text: "Coaching personnalise, fittings et analyse video pour tous les niveaux.",
-              },
-              {
-                title: "Maison du club",
-                text: "Restaurant locavore, terrasse panoramique et espace lounge.",
-              },
-            ].map((card) => (
-              <div
-                key={card.title}
-                className="rounded-3xl border border-emerald-900/10 bg-white/70 p-6 shadow-lg shadow-emerald-900/10 backdrop-blur"
-              >
-                <h3 className="font-[var(--font-display)] text-xl text-emerald-950">
-                  {card.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-emerald-900/70">
-                  {card.text}
-                </p>
-              </div>
-            ))}
+          <div className="rounded-[32px] border border-emerald-900/10 bg-white/70 p-10 text-center shadow-xl shadow-emerald-900/10 backdrop-blur">
+            <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
+              Experience
+            </p>
+            <h2 className="mt-4 font-[var(--font-display)] text-4xl text-emerald-950 md:text-5xl">
+              Golf de Marcilly-Orleans
+            </h2>
           </div>
         </section>
 
@@ -276,3 +272,5 @@
     </div>
   );
 }
+
+
