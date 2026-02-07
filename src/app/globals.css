@@ -26,6 +26,38 @@ body {
   font-family: var(--font-sans);
 }
 
+.hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  background: #f6f5ee;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero--image {
+  background: #0b0b0b;
+}
+
+.hero--image::before,
+.hero--image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero--image::before {
+  background: var(--hero-image) center / cover no-repeat;
+  filter: blur(1px) brightness(1.25);
+  transform: scale(1.05);
+}
+
+.hero--image::after {
+  background: var(--hero-overlay);
+  z-index: 1;
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;
