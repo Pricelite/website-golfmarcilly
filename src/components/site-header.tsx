@@ -99,10 +99,15 @@ export default function SiteHeader() {
       className="sticky top-0 z-30 border-b border-emerald-900/10 bg-white/70 backdrop-blur"
     >
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link className="flex flex-col" href="/">
-          <span className="font-[var(--font-display)] text-lg text-emerald-950">
-            Golf de Marcilly-Orléans
-          </span>
+        <Link
+          className="flex items-center"
+          href="/"
+          aria-label="Accueil"
+        >
+          <span
+            className="h-3 w-3 rounded-full bg-emerald-900/80 shadow-sm"
+            aria-hidden="true"
+          />
         </Link>
 
         <nav className="hidden items-center gap-3 text-sm font-semibold text-emerald-900/80 lg:flex">

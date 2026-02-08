@@ -47,7 +47,7 @@ export default function Home() {
   return (
     <div className="text-emerald-950">
       <PageHero
-        title="Une experience golf unique"
+        title="Golf de Marcilly"
         subtitle="Un parcours d'exception, un club house chaleureux et une ambiance conviviale au coeur de la Sologne."
         backgroundImage="/images/club-house-marcilly.png"
         ctaLabel="Reserver un depart"
