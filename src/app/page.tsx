@@ -39,9 +39,9 @@ export default function Home() {
   return (
     <div className="text-emerald-950">
       <PageHero
-        title="Une experience golf unique"
-        subtitle="Un parcours d'exception, un club house chaleureux et une ambiance conviviale au coeur de la Sologne."
+        title="Golf de Marcilly-Orléans"
         backgroundImage="/images/club-house-marcilly.png"
+        compact
         ctaLabel="Reserver un depart"
         ctaHref={reserveUrl}
         ctaExternal
