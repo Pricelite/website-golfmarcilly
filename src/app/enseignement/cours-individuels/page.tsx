@@ -1,16 +1,22 @@
-﻿import PageHero from "@/components/page-hero";
+﻿import type { Metadata } from "next";
+
+import StandardPage from "@/components/standard-page";
+import { CONTACT_EMAIL_LINK } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Cours individuels",
+  description: "Cours particuliers et accompagnement personnalisé.",
+};
 
 export default function Page() {
   return (
-    <div className="text-emerald-950">
-      <PageHero title="" />
-
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
-        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-          <p className="text-sm text-emerald-900/80">Page en construction.</p>
-          <p className="mt-3 text-sm text-emerald-900/70"></p>
-        </section>
-      </main>
-    </div>
+    <StandardPage
+      title="Cours individuels"
+      subtitle="Un accompagnement personnalisé pour progresser."
+      eyebrow="Enseignement"
+      description="Les créneaux, tarifs et profils des enseignants seront disponibles bientôt."
+      cta={{ label: "Réserver un créneau", href: CONTACT_EMAIL_LINK }}
+      secondaryCta={{ label: "Voir l'enseignement", href: "/enseignement" }}
+    />
   );
 }

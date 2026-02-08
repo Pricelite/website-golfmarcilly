@@ -11,9 +11,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 1. Copy `.env.local.example` to `.env.local`.
 2. Fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-3. In Vercel, add the same variables in Project Settings > Environment Variables.
-4. Verify locally: `pnpm dev` then `curl http://localhost:3000/api/health`.
-5. Validate a production build: `pnpm build`.
+3. Set `NEXT_PUBLIC_SITE_URL` (ex: `https://votre-domaine.fr`) for sitemap/metadata.
+4. In Vercel, add the same variables in Project Settings > Environment Variables.
+5. Verify locally: `pnpm dev` then `curl http://localhost:3000/api/health`.
+6. Validate a production build: `pnpm build`.
 
 ## Getting Started
 

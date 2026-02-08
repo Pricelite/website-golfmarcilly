@@ -1,16 +1,22 @@
-﻿import PageHero from "@/components/page-hero";
+﻿import type { Metadata } from "next";
+
+import StandardPage from "@/components/standard-page";
+import { CONTACT_PHONE_LINK } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Restaurant",
+  description: "Découvrez le restaurant du club : cuisine de saison, terrasse et convivialité.",
+};
 
 export default function Page() {
   return (
-    <div className="text-emerald-950">
-      <PageHero title="" />
-
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
-        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-          <p className="text-sm text-emerald-900/80">Page en construction.</p>
-          <p className="mt-3 text-sm text-emerald-900/70"></p>
-        </section>
-      </main>
-    </div>
+    <StandardPage
+      title="Restaurant"
+      subtitle="Cuisine de saison et vue sur le parcours."
+      eyebrow="Restaurant"
+      description="Les menus, horaires et modalités de réservation arrivent. Notre équipe finalise la présentation des offres."
+      cta={{ label: "Réserver une table", href: CONTACT_PHONE_LINK }}
+      secondaryCta={{ label: "Voir la carte", href: "/restaurant/carte-menus" }}
+    />
   );
 }

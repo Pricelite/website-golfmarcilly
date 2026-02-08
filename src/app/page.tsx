@@ -1,6 +1,14 @@
-﻿import PageHero from "@/components/page-hero";
+﻿import type { Metadata } from "next";
 
-const reserveUrl = "https://prima.golf/marcilly/login";
+import PageHero from "@/components/page-hero";
+import { RESERVATION_URL, SITE_DESCRIPTION } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Accueil",
+  description: SITE_DESCRIPTION,
+};
+
+const reserveUrl = RESERVATION_URL;
 const todayLabel = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "full",
 }).format(new Date());
@@ -250,3 +258,4 @@ export default function Home() {
     </div>
   );
 }
+

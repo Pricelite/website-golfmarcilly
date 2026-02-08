@@ -194,7 +194,7 @@ export default function SiteHeader() {
                       }
                       aria-expanded={isOpen}
                     >
-                      {isOpen ? "âˆ’" : "+"}
+                      {isOpen ? "\u2212" : "+"}
                     </button>
                   ) : null}
                 </div>

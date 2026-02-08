@@ -1,16 +1,22 @@
-﻿import PageHero from "@/components/page-hero";
+﻿import type { Metadata } from "next";
+
+import StandardPage from "@/components/standard-page";
+import { CONTACT_EMAIL_LINK, CONTACT_PHONE_LINK } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Réservation",
+  description: "Réservez votre table au restaurant du Golf de Marcilly-Orléans.",
+};
 
 export default function Page() {
   return (
-    <div className="text-emerald-950">
-      <PageHero title="" />
-
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
-        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-          <p className="text-sm text-emerald-900/80">Page en construction.</p>
-          <p className="mt-3 text-sm text-emerald-900/70"></p>
-        </section>
-      </main>
-    </div>
+    <StandardPage
+      title="Réservation"
+      subtitle="Anticipez votre déjeuner au club house."
+      eyebrow="Restaurant"
+      description="La réservation en ligne est en préparation. En attendant, réservez par téléphone ou par email."
+      cta={{ label: "Appeler pour réserver", href: CONTACT_PHONE_LINK }}
+      secondaryCta={{ label: "Envoyer un email", href: CONTACT_EMAIL_LINK }}
+    />
   );
 }

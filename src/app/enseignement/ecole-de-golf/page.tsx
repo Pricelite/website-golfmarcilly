@@ -1,16 +1,22 @@
-﻿import PageHero from "@/components/page-hero";
+﻿import type { Metadata } from "next";
+
+import StandardPage from "@/components/standard-page";
+import { CONTACT_EMAIL_LINK } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "École de golf",
+  description: "Parcours d'apprentissage pour jeunes et débutants.",
+};
 
 export default function Page() {
   return (
-    <div className="text-emerald-950">
-      <PageHero title="" />
-
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
-        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-          <p className="text-sm text-emerald-900/80">Page en construction.</p>
-          <p className="mt-3 text-sm text-emerald-900/70"></p>
-        </section>
-      </main>
-    </div>
+    <StandardPage
+      title="École de golf"
+      subtitle="Parcours encadrés pour les jeunes et débutants."
+      eyebrow="Enseignement"
+      description="Les informations sur les groupes, horaires et niveaux sont en préparation."
+      cta={{ label: "Demander des infos", href: CONTACT_EMAIL_LINK }}
+      secondaryCta={{ label: "Voir l'enseignement", href: "/enseignement" }}
+    />
   );
 }

@@ -1,16 +1,21 @@
-﻿import PageHero from "@/components/page-hero";
+﻿import type { Metadata } from "next";
+
+import StandardPage from "@/components/standard-page";
+
+export const metadata: Metadata = {
+  title: "Vie du club",
+  description: "Actualités, événements et moments forts du club.",
+};
 
 export default function Page() {
   return (
-    <div className="text-emerald-950">
-      <PageHero title="" />
-
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
-        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-          <p className="text-sm text-emerald-900/80">Page en construction.</p>
-          <p className="mt-3 text-sm text-emerald-900/70"></p>
-        </section>
-      </main>
-    </div>
+    <StandardPage
+      title="Vie du club"
+      subtitle="Actualités, événements et moments forts."
+      eyebrow="Vie du club"
+      description="Nous préparons des rubriques dédiées aux actualités, événements et galeries."
+      cta={{ label: "Voir les actualités", href: "/vie-du-club/actualites" }}
+      secondaryCta={{ label: "Voir les événements", href: "/vie-du-club/evenements" }}
+    />
   );
 }
