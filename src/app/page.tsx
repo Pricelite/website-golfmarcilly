@@ -1,8 +1,10 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 
 import PageHero from "@/components/page-hero";
+import PrimaReadonlyPreview from "@/components/prima-readonly-preview";
 import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import { CALENDAR_EMBED_URL } from "@/lib/calendar";
+import { PRIMA_URL } from "@/lib/prima";
 import { RESERVATION_URL, SITE_DESCRIPTION } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -47,8 +49,8 @@ export default function Home() {
                 {todayLabel}
               </h2>
               <p className="mt-3 text-sm leading-6 text-emerald-900/70">
-                Parcours ouverts, practice disponible et evenement club en fin de
-                journee.
+                Tous les parcours sont accessibles a tous, et la reservation est
+                ouverte a tous.
               </p>
             </div>
             <div className="rounded-3xl border border-emerald-900/10 bg-emerald-50/70 p-6 text-sm text-emerald-900">
@@ -68,7 +70,7 @@ export default function Home() {
                         }`}
                         aria-hidden="true"
                       />
-                      {isOpen ? "Ouvert" : "Ferme"}
+                      {isOpen ? "Ouvert" : "Non accessible"}
                     </span>
                   </div>
                 );
@@ -78,25 +80,29 @@ export default function Home() {
         </section>
 
         <section id="reserver" className="mx-auto w-full max-w-6xl px-6 py-12">
-          <div className="rounded-[32px] border border-emerald-900/10 bg-emerald-950 px-8 py-10 text-emerald-50 shadow-xl shadow-emerald-900/20 md:flex md:items-center md:justify-between">
-            <div className="max-w-xl">
+          <div className="rounded-[32px] border border-emerald-900/10 bg-emerald-950 px-8 py-10 text-emerald-50 shadow-xl shadow-emerald-900/20">
+            <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.25em] text-emerald-200">
                 Reservation
               </p>
               <h2 className="mt-4 font-[var(--font-display)] text-3xl md:text-4xl">
-                Reservez votre depart en quelques clics
+                Planning de reservation
               </h2>
               <p className="mt-3 text-sm leading-6 text-emerald-100/80">
-                Choisissez votre horaire et profitez d&apos;un accueil personalise.
+                Consultez le planning et cliquez sur les parcours pour reserver.
+                Les parcours et la reservation sont accessibles a tous.
               </p>
             </div>
+
+            <PrimaReadonlyPreview title="Planning Prima Golf" />
+
             <a
-              className="mt-6 inline-flex items-center justify-center rounded-full bg-emerald-50 px-6 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white md:mt-0"
-              href={reserveUrl}
+              className="mt-6 inline-flex items-center justify-center rounded-full bg-emerald-50 px-6 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white"
+              href={PRIMA_URL}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Reserver maintenant
+              Reserver en ligne
             </a>
           </div>
         </section>
