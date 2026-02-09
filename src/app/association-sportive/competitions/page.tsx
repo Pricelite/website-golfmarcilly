@@ -1,22 +1,39 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 
-import StandardPage from "@/components/standard-page";
-import { CONTACT_EMAIL_LINK } from "@/lib/site";
+import PageHero from "@/components/page-hero";
+import PublicCalendarEmbed from "@/components/public-calendar-embed";
+import { CALENDAR_EMBED_URL } from "@/lib/calendar";
 
 export const metadata: Metadata = {
-  title: "Compétitions",
-  description: "Calendrier des compétitions et inscriptions.",
+  title: "Competitions et evenements",
+  description: "Calendrier public des competitions et evenements du club.",
 };
 
 export default function Page() {
   return (
-    <StandardPage
-      title="Compétitions"
-      subtitle="Calendrier et modalités d'inscription."
-      eyebrow="Association sportive"
-      description="Le calendrier, les règlements et les inscriptions seront publiés ici."
-      cta={{ label: "Recevoir le calendrier", href: CONTACT_EMAIL_LINK }}
-      secondaryCta={{ label: "Retour association", href: "/association-sportive" }}
-    />
+    <div className="text-emerald-950">
+      <PageHero
+        title="Competitions et evenements"
+        subtitle="Retrouvez le calendrier public du club."
+      />
+
+      <main className="mx-auto w-full max-w-6xl px-6 py-12">
+        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+          <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
+            Association sportive
+          </p>
+          <p className="mt-4 text-sm leading-6 text-emerald-900/70">
+            Consultez les prochaines dates et les temps forts prevus au club.
+          </p>
+        </section>
+
+        <div className="mt-8">
+          <PublicCalendarEmbed
+            title="Calendrier public du club"
+            src={CALENDAR_EMBED_URL}
+          />
+        </div>
+      </main>
+    </div>
   );
 }

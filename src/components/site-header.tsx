@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -48,6 +49,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: "Adhésion", href: "/association-sportive/adhesion" },
     ],
   },
+  { label: "Académie", href: "/enseignement/ecole-de-golf" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -98,19 +100,23 @@ export default function SiteHeader() {
       ref={headerRef}
       className="sticky top-0 z-30 border-b border-emerald-900/10 bg-white/70 backdrop-blur"
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-4 px-6 py-5 lg:grid-cols-[1fr_auto_1fr]">
         <Link
-          className="flex items-center"
+          className="inline-flex items-center"
           href="/"
           aria-label="Accueil"
         >
-          <span
-            className="h-3 w-3 rounded-full bg-emerald-900/80 shadow-sm"
-            aria-hidden="true"
+          <Image
+            src="/images/LogoNoir.png"
+            alt="Logo Golf de Marcilly"
+            width={255}
+            height={81}
+            className="h-[81px] w-auto"
+            priority
           />
         </Link>
 
-        <nav className="hidden items-center gap-3 text-sm font-semibold text-emerald-900/80 lg:flex">
+        <nav className="hidden items-center gap-3 text-sm font-semibold text-emerald-900/80 lg:col-start-2 lg:flex lg:justify-self-center">
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
 
@@ -145,7 +151,7 @@ export default function SiteHeader() {
         </nav>
 
         <button
-          className="inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white/80 px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white lg:hidden"
+          className="inline-flex items-center justify-center justify-self-end rounded-full border border-emerald-900/20 bg-white/80 px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white lg:col-start-3 lg:justify-self-end lg:hidden"
           type="button"
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
