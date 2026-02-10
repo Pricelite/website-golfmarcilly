@@ -1,4 +1,5 @@
-﻿import type { CSSProperties } from "react";
+import Link from "next/link";
+import type { CSSProperties } from "react";
 
 type PageHeroProps = {
   title: string;
@@ -8,6 +9,67 @@ type PageHeroProps = {
   ctaLabel?: string;
   ctaHref?: string;
   ctaExternal?: boolean;
+  secondaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+  secondaryCtaExternal?: boolean;
+  tertiaryCtaLabel?: string;
+  tertiaryCtaHref?: string;
+  tertiaryCtaExternal?: boolean;
+};
+
+function isExternalLink(href: string, external?: boolean) {
+  if (external) {
+    return true;
+  }
+
+  return (
+    href.startsWith("http://") ||
+    href.startsWith("https://") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:")
+  );
+}
+
+function HeroCtaButton({
+  label,
+  href,
+  external,
+  variant,
+}: {
+  label: string;
+  href: string;
+  external?: boolean;
+  variant: "primary" | "secondary";
+}) {
+  const className =
+    variant === "primary"
+      ? "inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:bg-emerald-800"
+      : "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50";
+
+  if (isExternalLink(href, external)) {
+    return (
+      <a
+        className={className}
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+      >
+        {label}
+      </a>
+    );
+  }
+
+  return (
+    <Link className={className} href={href}>
+      {label}
+    </Link>
+  );
+}
+
+type HeroCta = {
+  label: string;
+  href: string;
+  external?: boolean;
 };
 
 export default function PageHero({
@@ -18,6 +80,12 @@ export default function PageHero({
   ctaLabel,
   ctaHref,
   ctaExternal = false,
+  secondaryCtaLabel,
+  secondaryCtaHref,
+  secondaryCtaExternal = false,
+  tertiaryCtaLabel,
+  tertiaryCtaHref,
+  tertiaryCtaExternal = false,
 }: PageHeroProps) {
   const hasBackground = Boolean(backgroundImage);
   const style: CSSProperties | undefined = hasBackground
@@ -28,6 +96,27 @@ export default function PageHero({
           : "linear-gradient(transparent, transparent)",
       }
     : undefined;
+  const ctas: HeroCta[] = [];
+
+  if (ctaLabel && ctaHref) {
+    ctas.push({ label: ctaLabel, href: ctaHref, external: ctaExternal });
+  }
+
+  if (secondaryCtaLabel && secondaryCtaHref) {
+    ctas.push({
+      label: secondaryCtaLabel,
+      href: secondaryCtaHref,
+      external: secondaryCtaExternal,
+    });
+  }
+
+  if (tertiaryCtaLabel && tertiaryCtaHref) {
+    ctas.push({
+      label: tertiaryCtaLabel,
+      href: tertiaryCtaHref,
+      external: tertiaryCtaExternal,
+    });
+  }
 
   return (
     <section className={`hero ${hasBackground ? "hero--image" : ""}`} style={style}>
@@ -41,15 +130,18 @@ export default function PageHero({
               {subtitle}
             </p>
           ) : null}
-          {ctaLabel && ctaHref ? (
-            <a
-              className="mt-6 inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:bg-emerald-800"
-              href={ctaHref}
-              target={ctaExternal ? "_blank" : undefined}
-              rel={ctaExternal ? "noopener noreferrer" : undefined}
-            >
-              {ctaLabel}
-            </a>
+          {ctas.length > 0 ? (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {ctas.map((cta, index) => (
+                <HeroCtaButton
+                  key={`${cta.label}-${cta.href}`}
+                  label={cta.label}
+                  href={cta.href}
+                  external={cta.external}
+                  variant={index === 0 ? "primary" : "secondary"}
+                />
+              ))}
+            </div>
           ) : null}
         </div>
       </div>

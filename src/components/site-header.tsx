@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: "Actualités", href: "/vie-du-club/actualites" },
       { label: "Événements", href: "/vie-du-club/evenements" },
       { label: "Galerie", href: "/vie-du-club/galerie" },
+      { label: "Tarifs 2026", href: "/vie-du-club/tarifs" },
     ],
   },
   {
@@ -205,7 +206,7 @@ export default function SiteHeader() {
                       }
                       aria-expanded={isOpen}
                     >
-                      {isOpen ? "\u2212" : "+"}
+                      {isOpen ? "-" : "+"}
                     </button>
                   ) : null}
                 </div>

@@ -5,14 +5,15 @@ import PrimaReadonlyPreview from "@/components/prima-readonly-preview";
 import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import { CALENDAR_EMBED_URL } from "@/lib/calendar";
 import { PRIMA_URL } from "@/lib/prima";
-import { RESERVATION_URL, SITE_DESCRIPTION } from "@/lib/site";
+import { SITE_DESCRIPTION } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Accueil",
   description: SITE_DESCRIPTION,
 };
 
-const reserveUrl = RESERVATION_URL;
+const clubGolfUrl =
+  "https://leclub-golf.com/fr/green-fees/france/5-golf-de-marcilly";
 const todayLabel = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "full",
 }).format(new Date());
@@ -34,8 +35,13 @@ export default function Home() {
         title="Golf de Marcilly-Orleans"
         backgroundImage="/images/club-house-marcilly.png"
         ctaLabel="Reserver un depart"
-        ctaHref={reserveUrl}
+        ctaHref={PRIMA_URL}
         ctaExternal
+        secondaryCtaLabel="Reserver Le ClubGolf"
+        secondaryCtaHref={clubGolfUrl}
+        secondaryCtaExternal
+        tertiaryCtaLabel="Tarifs 2026"
+        tertiaryCtaHref="/tarifs"
       />
 
       <main>
