@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .codex/
+.contact-fallback/
 
 # debug
 npm-debug.log*

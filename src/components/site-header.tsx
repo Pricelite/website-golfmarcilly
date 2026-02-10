@@ -17,6 +17,7 @@ const NAV_ITEMS: NavItem[] = [
     label: "Vie du club",
     href: "/vie-du-club",
     children: [
+      { label: "Presentation", href: "/vie-du-club/presentation" },
       { label: "Actualités", href: "/vie-du-club/actualites" },
       { label: "Événements", href: "/vie-du-club/evenements" },
       { label: "Galerie", href: "/vie-du-club/galerie" },

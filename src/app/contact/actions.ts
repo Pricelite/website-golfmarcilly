@@ -1,6 +1,7 @@
 "use server";
 
-import { sendMail } from "@/lib/email/mailer";
+import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
+import { MailerError, sendMail } from "@/lib/email/mailer";
 
 export type ContactActionState = {
   ok: boolean;
@@ -81,8 +82,7 @@ export async function sendContactEmail(
   }
 
   const clubEmail = process.env.EMAIL_TO || "golf@marcilly.com";
-  const clientExcerpt =
-    message.length > 300 ? `${message.slice(0, 300)}...` : message;
+  const sendConfirmation = process.env.CONTACT_SEND_CONFIRMATION === "true";
 
   const clubText = [
     "Nouvelle demande depuis le site du Golf de Marcilly",
@@ -97,19 +97,6 @@ export async function sendContactEmail(
     message,
   ].join("\n");
 
-  const confirmationText = [
-    `Bonjour ${prenom},`,
-    "",
-    "Nous avons bien recu votre message et nous vous remercions de nous avoir contactes.",
-    "Nous reviendrons vers vous dans les plus brefs delais.",
-    "",
-    "Bien cordialement,",
-    "Le Golf de Marcilly",
-    "",
-    "Votre message :",
-    clientExcerpt,
-  ].join("\n");
-
   try {
     await sendMail({
       to: clubEmail,
@@ -118,18 +105,94 @@ export async function sendContactEmail(
       replyTo: email,
     });
 
-    await sendMail({
-      to: email,
-      subject: "Nous avons bien recu votre message",
-      text: confirmationText,
-      replyTo: clubEmail || process.env.EMAIL_FROM,
-    });
+    if (sendConfirmation) {
+      const clientExcerpt =
+        message.length > 300 ? `${message.slice(0, 300)}...` : message;
+      const confirmationText = [
+        `Bonjour ${prenom},`,
+        "",
+        "Nous avons bien recu votre message et nous vous remercions de nous avoir contactes.",
+        "Nous reviendrons vers vous dans les plus brefs delais.",
+        "",
+        "Bien cordialement,",
+        "Le Golf de Marcilly",
+        "",
+        "Votre message :",
+        clientExcerpt,
+      ].join("\n");
+
+      try {
+        await sendMail({
+          to: email,
+          subject: "Nous avons bien recu votre message",
+          text: confirmationText,
+          replyTo: clubEmail || process.env.EMAIL_FROM,
+        });
+      } catch (error) {
+        const detail =
+          error instanceof MailerError
+            ? { code: error.code, message: error.message }
+            : { code: "unknown", message: "Unknown mailer error" };
+        console.error("[contact] confirmation email failed", detail);
+      }
+    }
 
     return {
       ok: true,
       message: "Votre message a bien ete envoye.",
     };
-  } catch {
+  } catch (error) {
+    const detail =
+      error instanceof MailerError
+        ? { code: error.code, message: error.message }
+        : { code: "unknown", message: "Unknown mailer error" };
+    console.error("[contact] primary email failed", detail);
+
+    try {
+      await storeContactFallbackEntry({
+        receivedAt: new Date().toISOString(),
+        reason: detail.code,
+        nom,
+        prenom,
+        entreprise,
+        telephone,
+        email,
+        message,
+      });
+
+      console.error("[contact] message stored in local fallback queue");
+
+      return {
+        ok: true,
+        message:
+          "Votre message a bien ete enregistre. Notre equipe vous recontactera rapidement.",
+      };
+    } catch (fallbackError) {
+      const fallbackDetail =
+        fallbackError instanceof Error
+          ? { message: fallbackError.message }
+          : { message: "Unknown fallback error" };
+      console.error("[contact] fallback storage failed", fallbackDetail);
+    }
+
+    if (error instanceof MailerError) {
+      if (error.code === "auth") {
+        return {
+          ok: false,
+          message:
+            "Le service email est temporairement indisponible (authentification). Merci de nous contacter par telephone.",
+        };
+      }
+
+      if (error.code === "config") {
+        return {
+          ok: false,
+          message:
+            "Le service email n'est pas encore configure. Merci de nous contacter par telephone.",
+        };
+      }
+    }
+
     return {
       ok: false,
       message:
