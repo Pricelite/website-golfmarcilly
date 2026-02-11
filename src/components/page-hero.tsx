@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 type PageHeroProps = {
   title: string;
   subtitle?: string;
+  description?: string;
   backgroundImage?: string;
   overlay?: boolean;
   ctaLabel?: string;
@@ -75,6 +76,7 @@ type HeroCta = {
 export default function PageHero({
   title,
   subtitle,
+  description,
   backgroundImage,
   overlay = true,
   ctaLabel,
@@ -128,6 +130,11 @@ export default function PageHero({
           {subtitle ? (
             <p className="mt-4 text-base leading-7 text-emerald-900/80">
               {subtitle}
+            </p>
+          ) : null}
+          {description ? (
+            <p className="mt-3 text-sm leading-7 text-emerald-900/70">
+              {description}
             </p>
           ) : null}
           {ctas.length > 0 ? (
