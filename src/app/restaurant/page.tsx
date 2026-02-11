@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Cuisine simple et gourmande, carte du moment et menus de groupes pour réceptions, séminaires et événements.",
 };
 
-const reservationHref = "/restaurant/reservation";
+const reservationHref = "/contact";
 const quoteHref = "/contact";
 
 const secondaryButtonClass =
@@ -69,15 +69,32 @@ export default function RestaurantPage() {
               </div>
 
               <div className="space-y-6">
-                <div className="overflow-hidden rounded-3xl border border-emerald-900/10 shadow-sm">
-                  <Image
-                    src="/restaurant/chef-1.jpg"
-                    alt="Cuisine du restaurant La Bergerie"
-                    width={720}
-                    height={520}
-                    className="h-full w-full object-cover"
-                    sizes="(min-width: 1024px) 30vw, 100vw"
-                  />
+                <div>
+                  <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
+                    Équipe cuisine
+                  </p>
+                  <div className="mt-4 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {[
+                    "Chef en cuisine préparant une assiette",
+                    "Chef en dressage d'un plat",
+                    "Chef en finition d'une préparation",
+                  ].map((alt, index) => (
+                    <div
+                      key={alt}
+                      className="overflow-hidden rounded-3xl border border-emerald-900/10 shadow-sm"
+                    >
+                      <Image
+                        src="/restaurant/chef-1.jpg"
+                        alt={alt}
+                        width={520}
+                        height={640}
+                        className="h-64 w-full object-cover sm:h-72 lg:h-80"
+                        sizes="(min-width: 1280px) 18vw, (min-width: 640px) 45vw, 100vw"
+                        priority={index === 0}
+                      />
+                    </div>
+                  ))}
+                  </div>
                 </div>
                 <div className="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.3em] text-emerald-700">
@@ -91,50 +108,6 @@ export default function RestaurantPage() {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-emerald-50/60 py-16 sm:py-20" id="horaires">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="flex flex-col gap-3">
-              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                Horaires
-              </p>
-              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                Horaires du restaurant
-              </h2>
-            </div>
-
-            <div className="mt-8 overflow-hidden rounded-3xl border border-emerald-900/10 bg-white shadow-sm">
-              <table className="w-full text-left text-sm">
-                <caption className="sr-only">Horaires du restaurant</caption>
-                <thead className="bg-emerald-900/5 text-xs uppercase tracking-[0.2em] text-emerald-700">
-                  <tr>
-                    <th scope="col" className="px-6 py-4">
-                      Jours
-                    </th>
-                    <th scope="col" className="px-6 py-4 text-right">
-                      Horaires
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {restaurantData.hours.map((row) => (
-                    <tr key={row.label} className="border-t border-emerald-900/10">
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-emerald-950"
-                      >
-                        {row.label}
-                      </th>
-                      <td className="px-6 py-4 text-right font-semibold text-emerald-950">
-                        {row.hours}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
         </section>
@@ -202,16 +175,11 @@ export default function RestaurantPage() {
               {restaurantData.groupMenus.items.map((menu) => (
                 <div
                   key={menu.name}
-                  className="flex h-full flex-col rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm"
+                  className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm"
                 >
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h3 className="text-lg font-semibold text-emerald-950">
-                      {menu.name}
-                    </h3>
-                    <span className="text-sm font-semibold text-emerald-900 tabular-nums">
-                      {menu.price}
-                    </span>
-                  </div>
+                  <h3 className="text-lg font-semibold text-emerald-950">
+                    {menu.name}
+                  </h3>
 
                   {menu.sections.map((section) => (
                     <div key={`${menu.name}-${section.title}`} className="mt-5">
@@ -225,7 +193,7 @@ export default function RestaurantPage() {
                           ))}
                         </ul>
                       ) : (
-                        <div className="mt-2 space-y-2 text-sm text-emerald-900/80">
+                        <div className="mt-2 space-y-2 text-center text-sm text-emerald-900/80">
                           {section.items.map((item, index) => (
                             <div key={`${section.title}-${item}`}>
                               <p>{item}</p>
@@ -241,13 +209,126 @@ export default function RestaurantPage() {
                     </div>
                   ))}
 
-                  <div className="mt-auto pt-6">
+                  <div className="mt-auto pt-6 text-sm font-semibold text-emerald-900 tabular-nums">
+                    {menu.price}
+                  </div>
+
+                  <div className="pt-4">
                     <Link className={secondaryButtonClass} href={quoteHref}>
                       {restaurantData.groupMenus.ctaLabel}
                     </Link>
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white py-16 sm:py-20" id="seminaire">
+          <div className="mx-auto w-full max-w-6xl px-6">
+            <div className="flex flex-col gap-3">
+              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
+                {restaurantData.seminarMenu.title}
+              </p>
+              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
+                Menu Séminaire
+              </h2>
+            </div>
+
+            <div className="mt-8 rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm">
+              <div className="grid gap-6 md:grid-cols-2">
+                {restaurantData.seminarMenu.sections.map((section) => (
+                  <div
+                    key={section.title}
+                    className="rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-4"
+                  >
+                    <h3 className="text-xs uppercase tracking-[0.3em] text-emerald-700">
+                      {section.title}
+                    </h3>
+                    {section.items.length ? (
+                      <ul className="mt-2 space-y-1 text-sm text-emerald-900/80">
+                        {section.items.map((item) => (
+                          <li key={`${section.title}-${item}`}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 text-center text-sm font-semibold text-emerald-900 tabular-nums">
+                {restaurantData.seminarMenu.price}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-emerald-50/60 py-16 sm:py-20" id="cgv">
+          <div className="mx-auto w-full max-w-6xl px-6">
+            <div className="rounded-3xl border border-emerald-900/10 bg-white p-8 shadow-sm">
+              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
+                {restaurantData.cgv.title}
+              </h2>
+              <div className="mt-8 grid gap-6 md:grid-cols-3">
+                {restaurantData.cgv.sections.map((section) => (
+                  <div key={section.title}>
+                    <h3 className="text-sm font-semibold text-emerald-950">
+                      {section.title}
+                    </h3>
+                    <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-emerald-900/80">
+                      {section.items.map((item) => (
+                        <li key={`${section.title}-${item}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-8 text-sm italic text-emerald-900/70">
+                {restaurantData.cgv.closingNote}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-emerald-50/60 py-16 sm:py-20" id="horaires">
+          <div className="mx-auto w-full max-w-6xl px-6">
+            <div className="flex flex-col gap-3">
+              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
+                Horaires
+              </p>
+              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
+                Horaires du restaurant
+              </h2>
+            </div>
+
+            <div className="mt-8 overflow-hidden rounded-3xl border border-emerald-900/10 bg-white shadow-sm">
+              <table className="w-full text-left text-sm">
+                <caption className="sr-only">Horaires du restaurant</caption>
+                <thead className="bg-emerald-900/5 text-xs uppercase tracking-[0.2em] text-emerald-700">
+                  <tr>
+                    <th scope="col" className="px-6 py-4">
+                      Jours
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-right">
+                      Horaires
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {restaurantData.hours.map((row) => (
+                    <tr key={row.label} className="border-t border-emerald-900/10">
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-emerald-950"
+                      >
+                        {row.label}
+                      </th>
+                      <td className="px-6 py-4 text-right font-semibold text-emerald-950">
+                        {row.hours}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </section>

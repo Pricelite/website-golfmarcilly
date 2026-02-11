@@ -31,6 +31,16 @@ export type GroupMenu = {
   sections: GroupMenuSection[];
 };
 
+export type SeminarMenuSection = {
+  title: string;
+  items: string[];
+};
+
+export type RestaurantCgvSection = {
+  title: string;
+  items: string[];
+};
+
 export type RestaurantData = {
   title: string;
   name: string;
@@ -49,6 +59,16 @@ export type RestaurantData = {
     title: string;
     ctaLabel: string;
     items: GroupMenu[];
+  };
+  seminarMenu: {
+    title: string;
+    price: string;
+    sections: SeminarMenuSection[];
+  };
+  cgv: {
+    title: string;
+    sections: RestaurantCgvSection[];
+    closingNote: string;
   };
 };
 
@@ -235,5 +255,71 @@ export const restaurantData: RestaurantData = {
         ],
       },
     ],
+  },
+  seminarMenu: {
+    title: "Menu Séminaire",
+    price: "60€/pers",
+    sections: [
+      {
+        title: "Café d'accueil",
+        items: ["Café, thé, jus de fruits, viennoiseries"],
+      },
+      {
+        title: "Location de salle",
+        items: ["Salle de réunion", "Vidéoprojecteur", "Paperboard", "Wifi"],
+      },
+      {
+        title: "Repas (à définir selon la saison)",
+        items: [],
+      },
+      {
+        title: "Exemple : Entrée",
+        items: ["Cassolette de la mer safranée"],
+      },
+      {
+        title: "Exemple : Plat",
+        items: [
+          "Cuisse de canard confite sauce poivre, purée de panais et flan de champignons",
+        ],
+      },
+      {
+        title: "Exemple : Dessert",
+        items: ["Tarte Tatin revisitée en verrine et crémeux vanille"],
+      },
+      {
+        title: "Exemple : Boissons",
+        items: ["Café et 1/4 de vin de notre sélection"],
+      },
+    ],
+  },
+  cgv: {
+    title: "Nos Conditions Générales de Vente",
+    sections: [
+      {
+        title: "Conditions de réservations",
+        items: [
+          "Le nombre total de convives facturé pour les repas sera le nombre donné 10 jours avant la date de votre évènement.",
+          "Le choix d'un menu unique est souhaité pour une meilleure réalisation de votre prestation.",
+        ],
+      },
+      {
+        title: "Détails techniques",
+        items: [
+          "Remise des clefs le jour même.",
+          "Décoration de la salle par vos soins (murale, centre de table,...)",
+          "Nappes et serviettes blanches fournies sauf en cas de réservation de salle seule.",
+          "Tables rondes de 6/7 personnes.",
+        ],
+      },
+      {
+        title: "Informations diverses",
+        items: [
+          "Horaire maximum d'animation : 06 heures du matin.",
+          "Possibilité d'apporter votre vin pour le repas avec un droit de bouchon de 5€ par bouteille ouverte.",
+        ],
+      },
+    ],
+    closingNote:
+      "Toute l'équipe de la Bergerie est à votre service pour la réussite de votre soirée",
   },
 };

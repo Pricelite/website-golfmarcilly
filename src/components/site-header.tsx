@@ -27,11 +27,6 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Restaurant",
     href: "/restaurant",
-    children: [
-      { label: "Carte & menus", href: "/restaurant/carte-menus" },
-      { label: "Horaires", href: "/restaurant/horaires" },
-      { label: "Réservation", href: "/restaurant/reservation" },
-    ],
   },
   {
     label: "Enseignement",
