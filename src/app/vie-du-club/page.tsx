@@ -197,10 +197,23 @@ export default function Page() {
               <p className="mt-1 text-sm font-semibold text-emerald-950">
                 Benjamin, Charles, Lotfi
               </p>
-              <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="mt-4 grid grid-cols-3 gap-2">
                 {[
-                  { name: "Benjamin", src: "/images/benjamin.png" },
-                  { name: "Charles", src: "/images/charles.png" },
+                  {
+                    name: "Benjamin",
+                    src: "/images/benjamin.png",
+                    position: "50% 28%",
+                  },
+                  {
+                    name: "Charles",
+                    src: "/images/charles.png",
+                    position: "50% 30%",
+                  },
+                  {
+                    name: "Lotfi",
+                    src: "/images/chef1.png",
+                    position: "50% 26%",
+                  },
                 ].map((member) => (
                   <div key={member.name}>
                     <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
@@ -210,6 +223,7 @@ export default function Page() {
                         width={240}
                         height={240}
                         className="h-20 w-full object-cover"
+                        style={{ objectPosition: member.position }}
                       />
                     </div>
                     <p className="mt-1 text-center text-xs font-medium text-emerald-900/80">
