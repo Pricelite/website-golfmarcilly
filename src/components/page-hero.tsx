@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type PageHeroProps = {
   title: string;
@@ -16,6 +16,7 @@ type PageHeroProps = {
   tertiaryCtaLabel?: string;
   tertiaryCtaHref?: string;
   tertiaryCtaExternal?: boolean;
+  children?: ReactNode;
 };
 
 function isExternalLink(href: string, external?: boolean) {
@@ -88,6 +89,7 @@ export default function PageHero({
   tertiaryCtaLabel,
   tertiaryCtaHref,
   tertiaryCtaExternal = false,
+  children,
 }: PageHeroProps) {
   const hasBackground = Boolean(backgroundImage);
   const style: CSSProperties | undefined = hasBackground
@@ -150,6 +152,7 @@ export default function PageHero({
               ))}
             </div>
           ) : null}
+          {children ? <div className="mt-4 flex flex-wrap gap-3">{children}</div> : null}
         </div>
       </div>
     </section>

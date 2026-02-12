@@ -36,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: "Adhésion", href: "/association-sportive/adhesion" },
     ],
   },
-  { label: "Académie", href: "/enseignement/ecole-de-golf" },
+  { label: "Académie", href: "/academie" },
   { label: "Contact", href: "/contact" },
 ];
 

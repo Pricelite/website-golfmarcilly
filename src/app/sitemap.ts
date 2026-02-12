@@ -14,6 +14,7 @@ const ROUTES = [
   "/association-sportive/competitions",
   "/association-sportive/classements",
   "/association-sportive/adhesion",
+  "/academie",
   "/vie-du-club",
 ];
 
