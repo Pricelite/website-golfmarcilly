@@ -15,9 +15,6 @@ const ROUTES = [
   "/association-sportive/classements",
   "/association-sportive/adhesion",
   "/vie-du-club",
-  "/vie-du-club/actualites",
-  "/vie-du-club/evenements",
-  "/vie-du-club/galerie",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

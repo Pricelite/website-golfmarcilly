@@ -286,6 +286,8 @@ export default async function Home() {
           <PublicCalendarEmbed
             title="Competition et evenement"
             src={CALENDAR_EMBED_URL}
+            sectionBorderClassName="border-emerald-200/80"
+            frameBorderClassName="border-emerald-200/80"
           />
         </section>
       </main>

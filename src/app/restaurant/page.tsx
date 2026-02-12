@@ -25,7 +25,7 @@ export default function RestaurantPage() {
         title={restaurantData.title}
         subtitle={restaurantData.name}
         description={restaurantData.intro.paragraphs[0]}
-        backgroundImage="/restaurant/hero.jpg"
+        backgroundImage="/images/cuisine.png"
         ctaLabel="Réserver une table"
         ctaHref={reservationHref}
         secondaryCtaLabel="Carte du moment"
@@ -75,23 +75,39 @@ export default function RestaurantPage() {
                   </p>
                   <div className="mt-4 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                   {[
-                    "Chef en cuisine préparant une assiette",
-                    "Chef en dressage d'un plat",
-                    "Chef en finition d'une préparation",
-                  ].map((alt, index) => (
+                    {
+                      src: "/images/benjamin.png",
+                      alt: "Benjamin en cuisine",
+                      overlayLabel: "Benjamin Chef de cuisine",
+                    },
+                    {
+                      src: "/images/charles.png",
+                      alt: "Charles en cuisine",
+                      overlayLabel: "Charles second de cuisine",
+                    },
+                    {
+                      src: "/restaurant/chef-1.jpg",
+                      alt: "Chef en finition d'une préparation",
+                    },
+                  ].map((member, index) => (
                     <div
-                      key={alt}
-                      className="overflow-hidden rounded-3xl border border-emerald-900/10 shadow-sm"
+                      key={member.alt}
+                      className="relative overflow-hidden rounded-3xl border border-emerald-900/10 shadow-sm"
                     >
                       <Image
-                        src="/restaurant/chef-1.jpg"
-                        alt={alt}
+                        src={member.src}
+                        alt={member.alt}
                         width={520}
                         height={640}
                         className="h-64 w-full object-cover sm:h-72 lg:h-80"
                         sizes="(min-width: 1280px) 18vw, (min-width: 640px) 45vw, 100vw"
                         priority={index === 0}
                       />
+                      {member.overlayLabel ? (
+                        <div className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.08em] text-white backdrop-blur-[1px]">
+                          {member.overlayLabel}
+                        </div>
+                      ) : null}
                     </div>
                   ))}
                   </div>

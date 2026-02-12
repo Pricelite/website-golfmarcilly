@@ -13,17 +13,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Accueil", href: "/" },
-  {
-    label: "Vie du club",
-    href: "/vie-du-club",
-    children: [
-      { label: "Presentation", href: "/vie-du-club/presentation" },
-      { label: "Actualités", href: "/vie-du-club/actualites" },
-      { label: "Événements", href: "/vie-du-club/evenements" },
-      { label: "Galerie", href: "/vie-du-club/galerie" },
-      { label: "Tarifs 2026", href: "/vie-du-club/tarifs" },
-    ],
-  },
+  { label: "Présentation", href: "/vie-du-club" },
   {
     label: "Restaurant",
     href: "/restaurant",

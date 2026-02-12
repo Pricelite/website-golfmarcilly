@@ -1,7 +1,7 @@
 export default function TarifsSections() {
   return (
-    <>
-      <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+    <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+      <div>
         <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
           Initiation decouverte
         </h2>
@@ -19,9 +19,9 @@ export default function TarifsSections() {
             <p>Initiation encadree - repas - Parcours 9 trous</p>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+      <div className="mt-8 border-t border-emerald-900/10 pt-8">
         <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
           Practice
         </h2>
@@ -78,9 +78,9 @@ export default function TarifsSections() {
             </tbody>
           </table>
         </div>
-      </section>
+      </div>
 
-      <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+      <div className="mt-8 border-t border-emerald-900/10 pt-8">
         <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
           Green fees
         </h2>
@@ -159,9 +159,9 @@ export default function TarifsSections() {
           </table>
         </div>
         <p className="mt-3 text-sm text-emerald-900/70">Valable 6 mois.</p>
-      </section>
+      </div>
 
-      <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+      <div className="mt-8 border-t border-emerald-900/10 pt-8">
         <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
           Location
         </h2>
@@ -222,7 +222,7 @@ export default function TarifsSections() {
             </tbody>
           </table>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
