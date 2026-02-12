@@ -197,6 +197,27 @@ export default function Page() {
               <p className="mt-1 text-sm font-semibold text-emerald-950">
                 Benjamin, Charles, Lotfi
               </p>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {[
+                  { name: "Benjamin", src: "/images/benjamin.png" },
+                  { name: "Charles", src: "/images/charles.png" },
+                ].map((member) => (
+                  <div key={member.name}>
+                    <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
+                      <Image
+                        src={member.src}
+                        alt={member.name}
+                        width={240}
+                        height={240}
+                        className="h-20 w-full object-cover"
+                      />
+                    </div>
+                    <p className="mt-1 text-center text-xs font-medium text-emerald-900/80">
+                      {member.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
