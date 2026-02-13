@@ -16,7 +16,7 @@ export default function TarifsPage() {
             Tarifs 2026
           </h1>
           <p className="mt-3 text-sm leading-6 text-emerald-900/70">
-            Consultez les tarifs par categorie: initiation, practice, green fees
+            Consultez les tarifs par catégorie : initiation, practice, green fees
             et location.
           </p>
         </section>

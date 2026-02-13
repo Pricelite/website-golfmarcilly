@@ -1,22 +1,22 @@
-export default function TarifsSections() {
+﻿export default function TarifsSections() {
   return (
     <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
       <div>
         <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
-          Initiation decouverte
+          Initiation découverte
         </h2>
         <div className="mt-5 space-y-4 text-sm text-emerald-900/80">
           <div>
             <p className="font-semibold text-emerald-950">
-              Demi-journee decouverte - 25 €
+              Demi-journée découverte - 25 €
             </p>
-            <p>Initiation encadree - Parcours 9 trous</p>
+            <p>Initiation encadrée - Parcours 9 trous</p>
           </div>
           <div>
             <p className="font-semibold text-emerald-950">
-              Journee decouverte - 48 €
+              Journée découverte - 48 €
             </p>
-            <p>Initiation encadree - repas - Parcours 9 trous</p>
+            <p>Initiation encadrée - repas - Parcours 9 trous</p>
           </div>
         </div>
       </div>
@@ -26,7 +26,7 @@ export default function TarifsSections() {
           Practice
         </h2>
         <p className="mt-3 text-sm text-emerald-900/70">
-          Pret d&apos;un club par seau et par personne.
+          Prêt d&apos;un club par seau et par personne.
         </p>
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/80">
@@ -37,10 +37,10 @@ export default function TarifsSections() {
                   Offre
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Exterieurs
+                  Extérieurs
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Abonnes
+                  Abonnés
                 </th>
               </tr>
             </thead>
@@ -93,16 +93,16 @@ export default function TarifsSections() {
                   Offre
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Non licencie
+                  Non licencié
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Licencie
+                  Licencié
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-emerald-900/10">
-                <td className="px-2 py-2">9 trous decouverte ou footgolf</td>
+                <td className="px-2 py-2">9 trous découverte ou footgolf</td>
                 <td className="px-2 py-2">10 €</td>
                 <td className="px-2 py-2">10 €</td>
               </tr>
@@ -137,20 +137,20 @@ export default function TarifsSections() {
                 <td className="px-2 py-2">30 €</td>
               </tr>
               <tr className="border-b border-emerald-900/10">
-                <td className="px-2 py-2">18 trous apres 16h00</td>
+                <td className="px-2 py-2">18 trous après 16h00</td>
                 <td className="px-2 py-2">44 € (4T)</td>
                 <td className="px-2 py-2">39 € (3T)</td>
               </tr>
               <tr className="border-b border-emerald-900/10">
                 <td className="px-2 py-2">
-                  Carnet 10 tickets dematerialise (Pitch et Kaleka)
+                  Carnet 10 tickets dématérialisés (Pitch et Kaleka)
                 </td>
                 <td className="px-2 py-2">200 €</td>
                 <td className="px-2 py-2">200 €</td>
               </tr>
               <tr>
                 <td className="px-2 py-2">
-                  Carnet 30 tickets dematerialise (Grand Parcours)
+                  Carnet 30 tickets dématérialisés (Grand Parcours)
                 </td>
                 <td className="px-2 py-2">300 €</td>
                 <td className="px-2 py-2">300 €</td>
@@ -174,10 +174,10 @@ export default function TarifsSections() {
                   Offre
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Exterieurs
+                  Extérieurs
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Abonnes
+                  Abonnés
                 </th>
               </tr>
             </thead>
@@ -203,18 +203,18 @@ export default function TarifsSections() {
                 <td className="px-2 py-2">320 €</td>
               </tr>
               <tr className="border-b border-emerald-900/10">
-                <td className="px-2 py-2">Casier a l&apos;annee</td>
+                <td className="px-2 py-2">Casier à l&apos;année</td>
                 <td className="px-2 py-2">48 €</td>
                 <td className="px-2 py-2">48 €</td>
               </tr>
               <tr className="border-b border-emerald-900/10">
-                <td className="px-2 py-2">Local chariot a l&apos;annee (manuel)</td>
+                <td className="px-2 py-2">Local chariot à l&apos;année (manuel)</td>
                 <td className="px-2 py-2">84 €</td>
                 <td className="px-2 py-2">84 €</td>
               </tr>
               <tr>
                 <td className="px-2 py-2">
-                  Local chariot a l&apos;annee (electrique)
+                  Local chariot à l&apos;année (électrique)
                 </td>
                 <td className="px-2 py-2">96 €</td>
                 <td className="px-2 py-2">96 €</td>

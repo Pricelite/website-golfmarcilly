@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+import { toProtectedImageSrc } from "@/lib/protected-image";
 
 type PageHeroProps = {
   title: string;
@@ -92,9 +93,12 @@ export default function PageHero({
   children,
 }: PageHeroProps) {
   const hasBackground = Boolean(backgroundImage);
+  const protectedBackgroundImage = backgroundImage
+    ? toProtectedImageSrc(backgroundImage)
+    : undefined;
   const style: CSSProperties | undefined = hasBackground
     ? {
-        ["--hero-image" as string]: `url('${backgroundImage}')`,
+        ["--hero-image" as string]: `url('${protectedBackgroundImage}')`,
         ["--hero-overlay" as string]: overlay
           ? "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.25) 100%)"
           : "linear-gradient(transparent, transparent)",

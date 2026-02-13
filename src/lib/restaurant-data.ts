@@ -80,14 +80,14 @@ export const restaurantData: RestaurantData = {
       "Le restaurant La Bergerie vous propose de nombreuses possibilités pour votre réception, que ce soit à titre professionnel ou personnel.",
       "N'hésitez pas à nous contacter pour nous faire part de vos envies et nous vous retournerons un devis sur-mesure.",
     ],
-    roomRental: "Possibilité de louer la salle sans nos services de restauration : 700€",
+    roomRental: "Possibilité de louer la salle sans nos services de restauration : 700 €",
     roomRentalNote: "Vaisselle et nappage en supplément.",
   },
   services: [
     {
       title: "Au Quotidien",
       description:
-        "Du Lundi au dimanche midi le restaurant La Bergerie vous accueille avec une cuisine simple et gourmande.",
+        "Du lundi au dimanche midi, le restaurant La Bergerie vous accueille avec une cuisine simple et gourmande.",
     },
     {
       title: "Réservations pour Séminaires et Groupes",
@@ -99,8 +99,8 @@ export const restaurantData: RestaurantData = {
     },
   ],
   hours: [
-    { label: "Lundi au Vendredi", hours: "12h00 à 14h00" },
-    { label: "Samedi et Dimanche", hours: "12h00 à 15h00" },
+    { label: "Lundi au vendredi", hours: "12h00 à 14h00" },
+    { label: "Samedi et dimanche", hours: "12h00 à 15h00" },
   ],
   carte: {
     title: "La Carte du Moment",
@@ -220,7 +220,7 @@ export const restaurantData: RestaurantData = {
         ],
       },
       {
-        name: "Menu Elégance",
+        name: "Menu Élégance",
         price: "35 €",
         sections: [
           {
@@ -258,7 +258,7 @@ export const restaurantData: RestaurantData = {
   },
   seminarMenu: {
     title: "Menu Séminaire",
-    price: "60€/pers",
+    price: "60 €/pers.",
     sections: [
       {
         title: "Café d'accueil",
@@ -296,16 +296,16 @@ export const restaurantData: RestaurantData = {
     title: "Nos Conditions Générales de Vente",
     sections: [
       {
-        title: "Conditions de réservations",
+        title: "Conditions de réservation",
         items: [
-          "Le nombre total de convives facturé pour les repas sera le nombre donné 10 jours avant la date de votre évènement.",
+          "Le nombre total de convives facturé pour les repas sera le nombre donné 10 jours avant la date de votre événement.",
           "Le choix d'un menu unique est souhaité pour une meilleure réalisation de votre prestation.",
         ],
       },
       {
         title: "Détails techniques",
         items: [
-          "Remise des clefs le jour même.",
+          "Remise des clés le jour même.",
           "Décoration de la salle par vos soins (murale, centre de table,...)",
           "Nappes et serviettes blanches fournies sauf en cas de réservation de salle seule.",
           "Tables rondes de 6/7 personnes.",
@@ -315,7 +315,7 @@ export const restaurantData: RestaurantData = {
         title: "Informations diverses",
         items: [
           "Horaire maximum d'animation : 06 heures du matin.",
-          "Possibilité d'apporter votre vin pour le repas avec un droit de bouchon de 5€ par bouteille ouverte.",
+          "Possibilité d'apporter votre vin pour le repas avec un droit de bouchon de 5 € par bouteille ouverte.",
         ],
       },
     ],

@@ -5,7 +5,7 @@ import ContactForm from "@/app/contact/contact-form";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contactez le Golf de Marcilly via le formulaire, par telephone ou par email.",
+    "Contactez le Golf de Marcilly via le formulaire, par téléphone ou par e-mail.",
 };
 
 export default function Page() {
@@ -17,7 +17,7 @@ export default function Page() {
             Envoyer un message
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/70">
-            Vous pouvez egalement nous joindre par telephone ou par email.
+            Vous pouvez également nous joindre par téléphone ou par e-mail.
           </p>
 
           <ContactForm />

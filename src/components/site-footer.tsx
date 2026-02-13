@@ -10,7 +10,7 @@ export default function SiteFooter() {
             Contact
           </p>
           <h2 className="mt-3 font-[var(--font-display)] text-2xl text-emerald-950">
-            {"Golf de Marcilly-Orl\u00e9ans"}
+            Golf de Marcilly-Orléans
           </h2>
           <div className="mt-4 space-y-2 text-sm text-emerald-900/70">
             <p>829 domaine de la Plaine, 45240 Marcilly-en-Villette</p>

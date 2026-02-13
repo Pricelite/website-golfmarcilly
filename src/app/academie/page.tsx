@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import PageHero from "@/components/page-hero";
+import { toProtectedImageSrc } from "@/lib/protected-image";
 
 export const metadata: Metadata = {
-  title: "Academie",
+  title: "Académie",
   description:
-    "Presentation de l academie du Golf de Marcilly et des jeunes en formation.",
+    "Présentation de l'académie du Golf de Marcilly et des jeunes en formation.",
 };
 
 const youngFrames = [
@@ -30,7 +31,7 @@ export default function Page() {
   return (
     <div className="text-emerald-950">
       <PageHero
-        title="Academie du Golf de Marcilly"
+        title="Académie du Golf de Marcilly"
         backgroundImage="/images/acadomia.png"
       >
         <a
@@ -48,24 +49,24 @@ export default function Page() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
-                Pedagogie academie
+                Pédagogie de l&apos;académie
               </p>
               <h2 className="mt-4 font-[var(--font-display)] text-3xl text-emerald-950">
-                Suivi personnalise et progression mesuree
+                Suivi personnalisé et progression mesurée
               </h2>
               <p className="mt-4 text-sm leading-7 text-emerald-900/80">
-                Cette section est construite pour reprendre un style academique:
-                informations claires, objectifs visibles et parcours evolutif.
-                Chaque jeune peut etre presente avec sa photo, son groupe et son
+                Cette section est construite pour reprendre un style académique :
+                informations claires, objectifs visibles et parcours évolutif.
+                Chaque jeune peut être présenté avec sa photo, son groupe et son
                 objectif du moment.
               </p>
             </div>
 
             <div className="grid gap-3">
               {[
-                "Petit effectif par seance",
+                "Petit effectif par séance",
                 "Coaching par objectifs",
-                "Bilans de progression reguliers",
+                "Bilans de progression réguliers",
               ].map((item) => (
                 <div
                   key={item}
@@ -81,7 +82,7 @@ export default function Page() {
         <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
-              Jeunes de l academie
+              Jeunes de l&apos;académie
             </p>
           </div>
 
@@ -93,7 +94,7 @@ export default function Page() {
               >
                 <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/60">
                   <Image
-                    src={profile.imageSrc}
+                    src={toProtectedImageSrc(profile.imageSrc)}
                     alt={profile.slot}
                     fill
                     sizes="(max-width: 768px) 90vw, (max-width: 1280px) 44vw, 320px"

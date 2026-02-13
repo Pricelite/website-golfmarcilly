@@ -26,6 +26,15 @@ body {
   font-family: var(--font-sans);
 }
 
+body[data-image-protection="on"] img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+body[data-image-protection="on"] picture {
+  user-select: none;
+}
+
 .hero {
   min-height: clamp(380px, 56vh, 560px);
   display: flex;

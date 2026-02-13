@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toProtectedImageSrc } from "@/lib/protected-image";
 
 type NavItem = {
   label: string;
@@ -13,7 +14,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Accueil", href: "/" },
-  { label: "Présentation", href: "/vie-du-club" },
+  { label: "Pr\u00e9sentation", href: "/vie-du-club" },
   {
     label: "Restaurant",
     href: "/restaurant",
@@ -24,19 +25,19 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: "Cours individuels", href: "/enseignement/cours-individuels" },
       { label: "Stages", href: "/enseignement/stages" },
-      { label: "École de golf", href: "/enseignement/ecole-de-golf" },
+      { label: "\u00c9cole de golf", href: "/enseignement/ecole-de-golf" },
     ],
   },
   {
     label: "Association sportive",
     href: "/association-sportive",
     children: [
-      { label: "Compétitions", href: "/association-sportive/competitions" },
+      { label: "Comp\u00e9titions", href: "/association-sportive/competitions" },
       { label: "Classements", href: "/association-sportive/classements" },
-      { label: "Adhésion", href: "/association-sportive/adhesion" },
+      { label: "Adh\u00e9sion", href: "/association-sportive/adhesion" },
     ],
   },
-  { label: "Académie", href: "/academie" },
+  { label: "Acad\u00e9mie", href: "/academie" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -94,7 +95,7 @@ export default function SiteHeader() {
           aria-label="Accueil"
         >
           <Image
-            src="/images/LogoNoir.png"
+            src={toProtectedImageSrc("/images/LogoNoir.png")}
             alt="Logo Golf de Marcilly"
             width={255}
             height={81}

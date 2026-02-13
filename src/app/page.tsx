@@ -20,11 +20,11 @@ const todayLabel = new Intl.DateTimeFormat("fr-FR", {
 
 const dailyStatus = [
   { label: "Practice", status: "open" },
-  { label: "Parcours Decouverte", status: "open" },
+  { label: "Parcours Découverte", status: "open" },
   { label: "Parcours Pitch and Putt", status: "open" },
   { label: "Parcours Kaleka", status: "open" },
-  { label: "Parcours Competition Alle", status: "open" },
-  { label: "Parcours Competition Retour", status: "open" },
+  { label: "Parcours Compétition Aller", status: "open" },
+  { label: "Parcours Compétition Retour", status: "open" },
   { label: "Restaurant La Bergerie", status: "open" },
 ];
 
@@ -159,12 +159,12 @@ export default async function Home() {
   return (
     <div className="text-emerald-950">
       <PageHero
-        title="Golf de Marcilly-Orleans"
+        title="Golf de Marcilly-Orléans"
         backgroundImage="/images/club-house-marcilly.png"
-        ctaLabel="Reserver un depart"
+        ctaLabel="Réserver un départ"
         ctaHref={PRIMA_URL}
         ctaExternal
-        secondaryCtaLabel="Reserver Le ClubGolf"
+        secondaryCtaLabel="Réserver Le ClubGolf"
         secondaryCtaHref={clubGolfUrl}
         secondaryCtaExternal
         tertiaryCtaLabel="Tarifs 2026"
@@ -183,7 +183,7 @@ export default async function Home() {
               </h2>
               <div className="mt-5 rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                  Meteo du jour
+                  Météo du jour
                 </p>
                 {weather ? (
                   <div className="mt-3 grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
@@ -195,17 +195,17 @@ export default async function Home() {
                         {weather.summary}
                       </p>
                       <p className="mt-1 text-xs font-medium text-emerald-700">
-                        Mise a jour {weather.updatedAtLabel}
+                        Mise à jour {weather.updatedAtLabel}
                       </p>
                       <p className="mt-1 text-2xl font-bold text-emerald-900">
-                        {weather.temperatureC} deg C
+                        {weather.temperatureC} °C
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-emerald-900/80">
                         <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Min {weather.minC} deg C
+                          Min {weather.minC} °C
                         </span>
                         <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Max {weather.maxC} deg C
+                          Max {weather.maxC} °C
                         </span>
                         <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
                           Vent {weather.windKmh} km/h
@@ -234,7 +234,7 @@ export default async function Home() {
                           <div className="mt-1 flex items-center gap-1.5">
                             <WeatherIllustration visual={slot.visual} size="sm" />
                             <p className="text-sm font-bold text-emerald-900">
-                              {slot.temperatureC} deg
+                              {slot.temperatureC} °
                             </p>
                           </div>
                           <p className="mt-1 text-[11px] text-emerald-800/80">
@@ -250,7 +250,7 @@ export default async function Home() {
                 ) : (
                   !weather && (
                     <p className="mt-2 text-sm leading-6 text-emerald-900/70">
-                      Meteo indisponible pour le moment.
+                      Météo indisponible pour le moment.
                     </p>
                   )
                 )}
@@ -284,10 +284,11 @@ export default async function Home() {
 
         <section id="competitions" className="mx-auto w-full max-w-6xl px-6 py-12">
           <PublicCalendarEmbed
-            title="Competition et evenement"
+            title="Compétition et événement"
             src={CALENDAR_EMBED_URL}
             sectionBorderClassName="border-emerald-200/80"
             frameBorderClassName="border-emerald-200/80"
+            highlightWeekends
           />
         </section>
       </main>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,12 +6,13 @@ import PageHero from "@/components/page-hero";
 import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import TarifsSections from "@/components/tarifs-sections";
 import { CALENDAR_EMBED_URL } from "@/lib/calendar";
+import { toProtectedImageSrc } from "@/lib/protected-image";
 import { CONTACT_EMAIL_LINK } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Présentation",
   description:
-    "Presentation, actualites, evenements et tarifs du Golf de Marcilly reunis sur une seule page.",
+    "Présentation, actualités, événements et tarifs du Golf de Marcilly réunis sur une seule page.",
 };
 
 const sectionClass =
@@ -23,18 +24,18 @@ export default function Page() {
     <div className="text-emerald-950">
       <PageHero
         title="Présentation"
-        subtitle="Presentation, actualites, evenements et tarifs 2026."
+        subtitle="Présentation, actualités, événements et tarifs 2026."
       />
 
       <main className="mx-auto w-full max-w-6xl px-6 py-12">
 
         <section id="presentation" className={sectionClass}>
           <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-            Presentation du golf
+            Présentation du golf
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Le Golf de Marcilly est un domaine cree en 1986, situe au Domaine
-            de la Plaine a Marcilly-en-Villette, au sud d&apos;Orleans.
+            Le Golf de Marcilly est un domaine créé en 1986, situé au Domaine
+            de la Plaine à Marcilly-en-Villette, au sud d&apos;Orléans.
           </p>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -43,9 +44,9 @@ export default function Page() {
                 Parcours disponibles
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-emerald-900/80">
-                <li>18 trous competition (Par 72)</li>
+                <li>18 trous compétition (Par 72)</li>
                 <li>Pitch and putt 18 trous (Par 55)</li>
-                <li>Parcours decouverte / compact / Kaleka</li>
+                <li>Parcours découverte / compact / Kaleka</li>
               </ul>
             </div>
             <div className="rounded-2xl border border-emerald-900/10 bg-white p-5">
@@ -54,7 +55,7 @@ export default function Page() {
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-emerald-900/80">
                 <li>Practice (plus de 40 postes)</li>
-                <li>Zones d&apos;approche et greens d&apos;entrainement</li>
+                <li>Zones d&apos;approche et greens d&apos;entraînement</li>
                 <li>Club-house, restaurant et pro-shop</li>
               </ul>
             </div>
@@ -65,7 +66,7 @@ export default function Page() {
               Organigramme du club
             </h3>
             <p className="mt-2 text-sm text-emerald-900/75">
-              Composition de l&apos;equipe dirigeante et operationnelle.
+              Composition de l&apos;équipe dirigeante et opérationnelle.
             </p>
 
             <div className="mt-6 flex flex-col items-center">
@@ -96,9 +97,9 @@ export default function Page() {
                     James
                   </p>
                   <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-emerald-900/75">
-                    <li>Jeremy</li>
+                    <li>Jérémy</li>
                     <li>Wilfried</li>
-                    <li>Gwennael</li>
+                    <li>Gwennaël</li>
                   </ul>
                 </div>
                 <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
@@ -144,10 +145,10 @@ export default function Page() {
 
         <section id="equipe" className={sectionClass}>
           <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-            Presentation de l&apos;equipe du golf
+            Présentation de l&apos;équipe du golf
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Une equipe experimentee au service des membres, du parcours et de
+            Une équipe expérimentée au service des membres, du parcours et de
             la restauration.
           </p>
 
@@ -176,7 +177,7 @@ export default function Page() {
                   <div key={member.name}>
                     <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
                       <Image
-                        src={member.src}
+                        src={toProtectedImageSrc(member.src)}
                         alt={member.name}
                         width={240}
                         height={240}
@@ -218,7 +219,7 @@ export default function Page() {
                   <div key={member.name}>
                     <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
                       <Image
-                        src={member.src}
+                        src={toProtectedImageSrc(member.src)}
                         alt={member.name}
                         width={240}
                         height={240}
@@ -246,7 +247,7 @@ export default function Page() {
                 Espace vert
               </p>
               <p className="mt-1 text-sm font-semibold text-emerald-950">
-                James, Jeremy, Wilfried, Gwennael
+                James, Jérémy, Wilfried, Gwennaël
               </p>
             </div>
           </div>
@@ -254,10 +255,10 @@ export default function Page() {
 
         <section id="actualites" className={sectionClass}>
           <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-            Actualites
+            Actualités
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Les dernieres nouvelles du club seront publiees ici. Vous pouvez
+            Les dernières nouvelles du club seront publiées ici. Vous pouvez
             vous abonner pour recevoir les informations importantes.
           </p>
           <div className="mt-6">
@@ -272,7 +273,7 @@ export default function Page() {
 
         <section id="evenements" className={sectionClass}>
           <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-            Evenements
+            Événements
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/80">
             Consultez les prochaines dates et animations du club via le
@@ -282,6 +283,7 @@ export default function Page() {
             <PublicCalendarEmbed
               title="Calendrier public du club"
               src={CALENDAR_EMBED_URL}
+              highlightWeekends
             />
           </div>
         </section>
@@ -292,7 +294,7 @@ export default function Page() {
             Tarifs 2026
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Retrouvez ci-dessous les sections tarifaires deja en place.
+            Retrouvez ci-dessous les sections tarifaires déjà en place.
           </p>
         </section>
 
@@ -301,6 +303,7 @@ export default function Page() {
     </div>
   );
 }
+
 
 
 

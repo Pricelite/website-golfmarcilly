@@ -5,15 +5,15 @@ import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import { CALENDAR_EMBED_URL } from "@/lib/calendar";
 
 export const metadata: Metadata = {
-  title: "Competitions et evenements",
-  description: "Calendrier public des competitions et evenements du club.",
+  title: "Compétitions et événements",
+  description: "Calendrier public des compétitions et événements du club.",
 };
 
 export default function Page() {
   return (
     <div className="text-emerald-950">
       <PageHero
-        title="Competitions et evenements"
+        title="Compétitions et événements"
         subtitle="Retrouvez le calendrier public du club."
       />
 
@@ -23,7 +23,7 @@ export default function Page() {
             Association sportive
           </p>
           <p className="mt-4 text-sm leading-6 text-emerald-900/70">
-            Consultez les prochaines dates et les temps forts prevus au club.
+            Consultez les prochaines dates et les temps forts prévus au club.
           </p>
         </section>
 
@@ -31,6 +31,7 @@ export default function Page() {
           <PublicCalendarEmbed
             title="Calendrier public du club"
             src={CALENDAR_EMBED_URL}
+            highlightWeekends
           />
         </div>
       </main>

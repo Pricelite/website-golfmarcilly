@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import PageHero from "@/components/page-hero";
+import { toProtectedImageSrc } from "@/lib/protected-image";
 import { restaurantData } from "@/lib/restaurant-data";
 import { SITE_NAME } from "@/lib/site";
 
@@ -17,6 +18,24 @@ const quoteHref = "/contact";
 
 const secondaryButtonClass =
   "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50";
+
+function splitEuroPrice(price: string): {
+  amount: string;
+  hasEuro: boolean;
+  suffix: string;
+} {
+  const trimmed = price.trim();
+  const euroIndex = trimmed.indexOf("€");
+
+  if (euroIndex === -1) {
+    return { amount: trimmed, hasEuro: false, suffix: "" };
+  }
+
+  const amount = trimmed.slice(0, euroIndex).trim();
+  const suffix = trimmed.slice(euroIndex + 1).trim();
+
+  return { amount, hasEuro: true, suffix };
+}
 
 export default function RestaurantPage() {
   return (
@@ -95,7 +114,7 @@ export default function RestaurantPage() {
                       className="relative overflow-hidden rounded-3xl border border-emerald-900/10 shadow-sm"
                     >
                       <Image
-                        src={member.src}
+                        src={toProtectedImageSrc(member.src)}
                         alt={member.alt}
                         width={520}
                         height={640}
@@ -149,21 +168,39 @@ export default function RestaurantPage() {
                     {section.title}
                   </h3>
                   <ul className="mt-4 space-y-3 text-sm text-emerald-900">
-                    {section.items.map((item) => (
-                      <li
-                        key={`${section.title}-${item.name}`}
-                        className="border-b border-emerald-900/10 pb-3 last:border-b-0"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <span className="font-medium text-emerald-950">
-                            {item.name}
-                          </span>
-                          <span className="font-semibold text-emerald-950 tabular-nums">
-                            {item.price}
-                          </span>
-                        </div>
-                      </li>
-                    ))}
+                    {section.items.map((item) => {
+                      const { amount, hasEuro, suffix } = splitEuroPrice(item.price);
+
+                      return (
+                        <li
+                          key={`${section.title}-${item.name}`}
+                          className="border-b border-emerald-900/10 pb-3 last:border-b-0"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <span className="font-medium text-emerald-950">
+                              {item.name}
+                            </span>
+                            {hasEuro ? (
+                              <span className="inline-flex items-baseline whitespace-nowrap font-semibold text-emerald-950">
+                                <span className="w-14 text-right tabular-nums">
+                                  {amount}
+                                </span>
+                                <span className="ml-1 w-3 text-left">€</span>
+                                {suffix ? (
+                                  <span className="ml-1 text-xs font-medium text-emerald-900/75">
+                                    {suffix}
+                                  </span>
+                                ) : null}
+                              </span>
+                            ) : (
+                              <span className="font-semibold text-emerald-950 tabular-nums">
+                                {item.price}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                   {section.note ? (
                     <p className="mt-4 text-xs text-emerald-900/70">

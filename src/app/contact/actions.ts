@@ -38,7 +38,7 @@ export async function sendContactEmail(
   if (website.length > 0) {
     return {
       ok: true,
-      message: "Merci, votre message a bien ete recu.",
+      message: "Merci, votre message a bien été reçu.",
     };
   }
 
@@ -49,28 +49,28 @@ export async function sendContactEmail(
   }
 
   if (!prenom) {
-    fieldErrors.prenom = "Le prenom est obligatoire.";
+    fieldErrors.prenom = "Le prénom est obligatoire.";
   }
 
   if (!email) {
-    fieldErrors.email = "L'adresse mail est obligatoire.";
+    fieldErrors.email = "L'adresse e-mail est obligatoire.";
   } else if (!isValidEmail(email)) {
-    fieldErrors.email = "L'adresse mail est invalide.";
+    fieldErrors.email = "L'adresse e-mail est invalide.";
   }
 
   if (!message) {
     fieldErrors.message = "Le message est obligatoire.";
   } else if (message.length > 2000) {
-    fieldErrors.message = "Le message ne doit pas depasser 2000 caracteres.";
+    fieldErrors.message = "Le message ne doit pas dépasser 2000 caractères.";
   }
 
   if (telephone.length > 30) {
-    fieldErrors.telephone = "Le telephone ne doit pas depasser 30 caracteres.";
+    fieldErrors.telephone = "Le téléphone ne doit pas dépasser 30 caractères.";
   }
 
   if (entreprise.length > 120) {
     fieldErrors.entreprise =
-      "L'entreprise ne doit pas depasser 120 caracteres.";
+      "L'entreprise ne doit pas dépasser 120 caractères.";
   }
 
   if (Object.keys(fieldErrors).length > 0) {
@@ -88,9 +88,9 @@ export async function sendContactEmail(
     "Nouvelle demande depuis le site du Golf de Marcilly",
     "",
     `Nom: ${nom}`,
-    `Prenom: ${prenom}`,
+    `Prénom: ${prenom}`,
     `Entreprise: ${entreprise || "-"}`,
-    `Telephone: ${telephone || "-"}`,
+    `Téléphone: ${telephone || "-"}`,
     `Email: ${email}`,
     "",
     "Message:",
@@ -111,8 +111,8 @@ export async function sendContactEmail(
       const confirmationText = [
         `Bonjour ${prenom},`,
         "",
-        "Nous avons bien recu votre message et nous vous remercions de nous avoir contactes.",
-        "Nous reviendrons vers vous dans les plus brefs delais.",
+        "Nous avons bien reçu votre message et nous vous remercions de nous avoir contactés.",
+        "Nous reviendrons vers vous dans les plus brefs délais.",
         "",
         "Bien cordialement,",
         "Le Golf de Marcilly",
@@ -124,7 +124,7 @@ export async function sendContactEmail(
       try {
         await sendMail({
           to: email,
-          subject: "Nous avons bien recu votre message",
+          subject: "Nous avons bien reçu votre message",
           text: confirmationText,
           replyTo: clubEmail || process.env.EMAIL_FROM,
         });
@@ -139,7 +139,7 @@ export async function sendContactEmail(
 
     return {
       ok: true,
-      message: "Votre message a bien ete envoye.",
+      message: "Votre message a bien été envoyé.",
     };
   } catch (error) {
     const detail =
@@ -165,7 +165,7 @@ export async function sendContactEmail(
       return {
         ok: true,
         message:
-          "Votre message a bien ete enregistre. Notre equipe vous recontactera rapidement.",
+          "Votre message a bien été enregistré. Notre équipe vous recontactera rapidement.",
       };
     } catch (fallbackError) {
       const fallbackDetail =
@@ -180,7 +180,7 @@ export async function sendContactEmail(
         return {
           ok: false,
           message:
-            "Le service email est temporairement indisponible (authentification). Merci de nous contacter par telephone.",
+            "Le service e-mail est temporairement indisponible (authentification). Merci de nous contacter par téléphone.",
         };
       }
 
@@ -188,7 +188,7 @@ export async function sendContactEmail(
         return {
           ok: false,
           message:
-            "Le service email n'est pas encore configure. Merci de nous contacter par telephone.",
+            "Le service e-mail n'est pas encore configuré. Merci de nous contacter par téléphone.",
         };
       }
     }
@@ -196,7 +196,7 @@ export async function sendContactEmail(
     return {
       ok: false,
       message:
-        "Une erreur est survenue pendant l'envoi. Merci de reessayer dans quelques instants.",
+        "Une erreur est survenue pendant l'envoi. Merci de réessayer dans quelques instants.",
     };
   }
 }

@@ -8,6 +8,8 @@ import {
   SITE_NAME,
   getMetadataBase,
 } from "@/lib/site";
+import { toProtectedImageSrc } from "@/lib/protected-image";
+import ImageProtection from "@/components/image-protection";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/club-house-marcilly.png",
+        url: toProtectedImageSrc("/images/club-house-marcilly.png"),
         width: 1200,
         height: 630,
         alt: SITE_NAME,
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/images/club-house-marcilly.png"],
+    images: [toProtectedImageSrc("/images/club-house-marcilly.png")],
   },
   alternates: {
     canonical: "/",
@@ -69,6 +71,7 @@ export default function RootLayout({
       <body
         className={`${bodyFont.variable} ${displayFont.variable} antialiased`}
       >
+        <ImageProtection />
         <SiteHeader />
         {children}
         <SiteFooter />
