@@ -22,11 +22,6 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Enseignement",
     href: "/enseignement",
-    children: [
-      { label: "Cours individuels", href: "/enseignement/cours-individuels" },
-      { label: "Stages", href: "/enseignement/stages" },
-      { label: "\u00c9cole de golf", href: "/enseignement/ecole-de-golf" },
-    ],
   },
   {
     label: "Association sportive",

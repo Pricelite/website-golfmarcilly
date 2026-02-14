@@ -98,7 +98,7 @@ export default function Page() {
                     alt={profile.slot}
                     fill
                     sizes="(max-width: 768px) 90vw, (max-width: 1280px) 44vw, 320px"
-                    className="object-contain p-1"
+                    className="object-cover object-center"
                   />
                 </div>
                 <h3 className="mt-4 text-base font-semibold text-emerald-950">

@@ -18,6 +18,119 @@ export const metadata: Metadata = {
 const sectionClass =
   "scroll-mt-28 mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur";
 
+type TeamPhoto = {
+  name: string;
+  src: string;
+  position?: string;
+  href?: string;
+};
+
+const directionPhotos: TeamPhoto[] = [
+  { name: "Michel", src: "/images/michel.png", position: "50% 30%" },
+  { name: "Damien", src: "/images/damien.png", position: "50% 32%" },
+];
+
+const directeurAdjointPhotos: TeamPhoto[] = [
+  { name: "Anthony", src: "/images/anthony.png", position: "50% 32%" },
+];
+
+const accueilPhotos: TeamPhoto[] = [
+  { name: "Nathalie", src: "/images/nathalie.png", position: "50% 30%" },
+  { name: "Titouan", src: "/images/titouan.png", position: "50% 32%" },
+  { name: "Camille", src: "/images/camille.png", position: "50% 30%" },
+];
+
+const cuisinePhotos: TeamPhoto[] = [
+  { name: "Benjamin", src: "/images/benjamin.png", position: "50% 28%" },
+  { name: "Charles", src: "/images/charles.png", position: "50% 30%" },
+  { name: "Lotfi", src: "/images/chef1.png", position: "50% 26%" },
+];
+
+const sallePhotos: TeamPhoto[] = [
+  { name: "Olivier", src: "/images/olivier.png", position: "50% 30%" },
+  { name: "Maxance", src: "/images/maxance.png", position: "50% 30%" },
+  { name: "Marine", src: "/images/marine.png", position: "50% 30%" },
+];
+
+const enseignantPhotos: TeamPhoto[] = [
+  { name: "Roman", src: "/roman.png", position: "50% 30%" },
+  {
+    name: "Adrien",
+    src: "/adrien.png",
+    position: "50% 30%",
+    href: "https://www.adrienlafuge.com/",
+  },
+  { name: "Baptiste", src: "/baptiste.png", position: "50% 30%" },
+];
+
+function TeamPhotoGrid({
+  members,
+  imageHeightClass = "h-28",
+  hierarchy = false,
+}: {
+  members: TeamPhoto[];
+  imageHeightClass?: string;
+  hierarchy?: boolean;
+}) {
+  const renderPhoto = (member: TeamPhoto) => (
+    <div key={member.name}>
+      <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
+        <Image
+          src={toProtectedImageSrc(member.src)}
+          alt={member.name}
+          width={240}
+          height={240}
+          className={`${imageHeightClass} w-full object-cover object-center`}
+          style={{ objectPosition: member.position ?? "50% 35%" }}
+        />
+      </div>
+      <p className="mt-1 text-center text-xs font-medium text-emerald-900/80">
+        {member.href ? (
+          <a
+            href={member.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Accéder au site"
+            aria-label={`${member.name} - Accéder au site`}
+            className="underline decoration-emerald-700/40 underline-offset-2 hover:text-emerald-700"
+          >
+            {member.name}
+          </a>
+        ) : (
+          member.name
+        )}
+      </p>
+    </div>
+  );
+
+  if (hierarchy && members.length > 1) {
+    const [leader, ...team] = members;
+    const teamGridClass =
+      team.length === 1
+        ? "mx-auto grid max-w-28 grid-cols-1 gap-2"
+        : team.length === 2
+          ? "mx-auto grid max-w-[14rem] grid-cols-2 gap-2"
+          : "mx-auto grid w-full max-w-[22rem] grid-cols-3 gap-3";
+
+    return (
+      <div className="mt-4">
+        <div className="mx-auto max-w-28">{renderPhoto(leader)}</div>
+        <div className="mx-auto mt-2 h-4 w-px bg-emerald-900/20" />
+        <div className={teamGridClass}>{team.map((member) => renderPhoto(member))}</div>
+      </div>
+    );
+  }
+
+  const gridClass =
+    members.length === 1
+      ? "mt-4 mx-auto grid max-w-28 grid-cols-1 gap-2"
+      : members.length === 2
+        ? "mt-4 mx-auto grid max-w-[14rem] grid-cols-2 gap-2"
+        : "mt-4 mx-auto grid w-full max-w-[22rem] grid-cols-3 gap-3";
+
+  return <div className={gridClass}>{members.map((member) => renderPhoto(member))}</div>;
+}
+
 
 export default function Page() {
   return (
@@ -61,12 +174,16 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-6">
+          <div
+            id="equipe"
+            className="mt-8 rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-6"
+          >
             <h3 className="font-[var(--font-display)] text-xl text-emerald-950">
-              Organigramme du club
+              Organigramme et équipe du club
             </h3>
             <p className="mt-2 text-sm text-emerald-900/75">
-              Composition de l&apos;équipe dirigeante et opérationnelle.
+              Composition de l&apos;équipe dirigeante et opérationnelle, avec
+              les responsables et leurs équipes.
             </p>
 
             <div className="mt-6 flex flex-col items-center">
@@ -74,23 +191,19 @@ export default function Page() {
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
                   Direction
                 </p>
-                <p className="mt-1 text-sm font-semibold text-emerald-950">
-                  Michel et Damien
-                </p>
+                <TeamPhotoGrid members={directionPhotos} />
               </div>
               <div className="h-6 w-px bg-emerald-900/20" />
               <div className="w-full max-w-md rounded-2xl border border-emerald-900/15 bg-white p-4 text-center">
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
                   Directeur adjoint
                 </p>
-                <p className="mt-1 text-sm font-semibold text-emerald-950">
-                  Anthony
-                </p>
+                <TeamPhotoGrid members={directeurAdjointPhotos} />
               </div>
               <div className="h-6 w-px bg-emerald-900/20" />
-              <div className="grid w-full gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div className="mx-auto grid w-full max-w-5xl gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+                  <p className="text-center text-xs uppercase tracking-[0.2em] text-emerald-700">
                     Responsable espace vert
                   </p>
                   <p className="mt-1 text-sm font-semibold text-emerald-950">
@@ -103,152 +216,30 @@ export default function Page() {
                   </ul>
                 </div>
                 <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+                  <p className="text-center text-xs uppercase tracking-[0.2em] text-emerald-700">
                     Responsable de salle
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-emerald-950">
-                    Olivier
-                  </p>
-                  <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-emerald-900/75">
-                    <li>Maxance</li>
-                    <li>Marine</li>
-                  </ul>
+                  <TeamPhotoGrid members={sallePhotos} hierarchy />
                 </div>
                 <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+                  <p className="text-center text-xs uppercase tracking-[0.2em] text-emerald-700">
                     Responsable cuisine
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-emerald-950">
-                    Benjamin
-                  </p>
-                  <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-emerald-900/75">
-                    <li>Charles</li>
-                    <li>Lotfi</li>
-                  </ul>
+                  <TeamPhotoGrid members={cuisinePhotos} hierarchy />
                 </div>
                 <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+                  <p className="text-center text-xs uppercase tracking-[0.2em] text-emerald-700">
                     Responsable accueil
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-emerald-950">
-                    Nathalie
-                  </p>
-                  <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-emerald-900/75">
-                    <li>Titouan</li>
-                    <li>Camille</li>
-                  </ul>
+                  <TeamPhotoGrid members={accueilPhotos} hierarchy />
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="equipe" className={sectionClass}>
-          <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-            Présentation de l&apos;équipe du golf
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Une équipe expérimentée au service des membres, du parcours et de
-            la restauration.
-          </p>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                Direction
-              </p>
-              <p className="mt-1 text-sm font-semibold text-emerald-950">
-                Michel, Damien, Anthony
-              </p>
-            </div>
-            <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                Accueil
-              </p>
-              <p className="mt-1 text-sm font-semibold text-emerald-950">
-                Nathalie, Titouan, Camille
-              </p>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {[
-                  { name: "Nathalie", src: "/images/nathalie.png" },
-                  { name: "Titouan", src: "/images/titouan.png" },
-                  { name: "Camille", src: "/images/camille.png" },
-                ].map((member) => (
-                  <div key={member.name}>
-                    <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
-                      <Image
-                        src={toProtectedImageSrc(member.src)}
-                        alt={member.name}
-                        width={240}
-                        height={240}
-                        className="h-20 w-full object-cover"
-                      />
-                    </div>
-                    <p className="mt-1 text-center text-xs font-medium text-emerald-900/80">
-                      {member.name}
-                    </p>
-                  </div>
-                ))}
+              <div className="mx-auto mt-4 w-full max-w-xl rounded-2xl border border-emerald-900/10 bg-white p-3">
+                <p className="text-center text-xs uppercase tracking-[0.2em] text-emerald-700">
+                  Enseignants indépendants
+                </p>
+                <TeamPhotoGrid members={enseignantPhotos} imageHeightClass="h-36" />
               </div>
-            </div>
-            <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                Cuisine
-              </p>
-              <p className="mt-1 text-sm font-semibold text-emerald-950">
-                Benjamin, Charles, Lotfi
-              </p>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {[
-                  {
-                    name: "Benjamin",
-                    src: "/images/benjamin.png",
-                    position: "50% 28%",
-                  },
-                  {
-                    name: "Charles",
-                    src: "/images/charles.png",
-                    position: "50% 30%",
-                  },
-                  {
-                    name: "Lotfi",
-                    src: "/images/chef1.png",
-                    position: "50% 26%",
-                  },
-                ].map((member) => (
-                  <div key={member.name}>
-                    <div className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/50">
-                      <Image
-                        src={toProtectedImageSrc(member.src)}
-                        alt={member.name}
-                        width={240}
-                        height={240}
-                        className="h-20 w-full object-cover"
-                        style={{ objectPosition: member.position }}
-                      />
-                    </div>
-                    <p className="mt-1 text-center text-xs font-medium text-emerald-900/80">
-                      {member.name}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                Salle
-              </p>
-              <p className="mt-1 text-sm font-semibold text-emerald-950">
-                Olivier, Maxance, Marine
-              </p>
-            </div>
-            <div className="rounded-2xl border border-emerald-900/10 bg-white p-4 md:col-span-2 xl:col-span-1">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                Espace vert
-              </p>
-              <p className="mt-1 text-sm font-semibold text-emerald-950">
-                James, Jérémy, Wilfried, Gwennaël
-              </p>
             </div>
           </div>
         </section>
