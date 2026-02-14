@@ -10,6 +10,7 @@ import {
 } from "@/lib/site";
 import { toProtectedImageSrc } from "@/lib/protected-image";
 import ImageProtection from "@/components/image-protection";
+import AnnouncementMarquee from "@/components/announcement-marquee";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 
@@ -73,6 +74,7 @@ export default function RootLayout({
       >
         <ImageProtection />
         <SiteHeader />
+        <AnnouncementMarquee />
         {children}
         <SiteFooter />
       </body>

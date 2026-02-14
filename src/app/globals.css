@@ -87,3 +87,28 @@ body[data-image-protection="on"] picture {
     transform: translateY(-10px);
   }
 }
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100vw);
+  }
+}
+
+.announcement-marquee__track {
+  animation: marquee-scroll 12s linear infinite;
+  will-change: transform;
+}
+
+.announcement-marquee:hover .announcement-marquee__track,
+.announcement-marquee:focus-within .announcement-marquee__track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announcement-marquee__track {
+    animation: none;
+  }
+}

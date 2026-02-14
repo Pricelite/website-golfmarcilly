@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import Image from "next/image";
 
 import PageHero from "@/components/page-hero";
 import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import { CALENDAR_EMBED_URL } from "@/lib/calendar";
 import { PRIMA_URL } from "@/lib/prima";
 import { SITE_DESCRIPTION } from "@/lib/site";
+import { toProtectedImageSrc } from "@/lib/protected-image";
 import { getTodayWeather, type TodayWeather } from "@/lib/weather";
 
 export const metadata: Metadata = {
@@ -27,6 +29,12 @@ const dailyStatus = [
   { label: "Parcours Compétition Retour", status: "open" },
   { label: "Restaurant La Bergerie", status: "open" },
 ];
+
+const HOME_NEWS_ASSETS = [
+  { title: "Actualité 1", src: "/images/gp 2026 - 2.png" },
+  { title: "Actualité 2", src: "/images/gp 2026 - 2.png" },
+  { title: "Actualité 3", src: "/images/gp 2026 - 2.png" },
+] as const;
 
 function WeatherIllustration({
   visual,
@@ -234,7 +242,7 @@ export default async function Home() {
                           <div className="mt-1 flex items-center gap-1.5">
                             <WeatherIllustration visual={slot.visual} size="sm" />
                             <p className="text-sm font-bold text-emerald-900">
-                              {slot.temperatureC} °
+                              {slot.temperatureC} Â°
                             </p>
                           </div>
                           <p className="mt-1 text-[11px] text-emerald-800/80">
@@ -284,14 +292,49 @@ export default async function Home() {
 
         <section id="competitions" className="mx-auto w-full max-w-6xl px-6 py-12">
           <PublicCalendarEmbed
-            title="Compétition et événement"
+            title="Compétition"
             src={CALENDAR_EMBED_URL}
             sectionBorderClassName="border-emerald-200/80"
             frameBorderClassName="border-emerald-200/80"
-            highlightWeekends
+            frameAspectClassName="aspect-[16/6.5]"
           />
+        </section>
+
+        <section id="actualites" className="mx-auto w-full max-w-6xl px-6 pb-12">
+          <div className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
+            <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
+              Actualités
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-emerald-900/80">
+              Les dernières nouvelles du club seront publiées ici. Vous pouvez
+              vous abonner pour recevoir les informations importantes.
+            </p>
+            <article className="mt-6 rounded-2xl border border-emerald-900/10 bg-white p-4">
+              <div className="mt-3 grid gap-3 md:grid-cols-3">
+                {HOME_NEWS_ASSETS.map((asset, index) => (
+                  <div
+                    key={`${asset.src}-${index}`}
+                    className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/20"
+                  >
+                    <p className="px-3 pt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
+                      {asset.title}
+                    </p>
+                    <Image
+                      src={toProtectedImageSrc(asset.src)}
+                      alt={`Actualité ${index + 1}`}
+                      width={1200}
+                      height={1697}
+                      className="mx-auto h-auto w-full"
+                    />
+                  </div>
+                ))}
+              </div>
+            </article>
+          </div>
         </section>
       </main>
     </div>
   );
 }
+
+

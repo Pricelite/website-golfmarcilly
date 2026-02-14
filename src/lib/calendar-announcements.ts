@@ -1,0 +1,494 @@
+﻿import { CALENDAR_EMBED_URL } from "./calendar";
+
+const PARIS_TIMEZONE = "Europe/Paris";
+
+type RRule = {
+  freq?: "DAILY" | "WEEKLY" | "MONTHLY";
+  interval: number;
+  byDay: string[];
+  untilDateKey?: string;
+  count?: number;
+};
+
+export type PlanningEvent = {
+  id: string;
+  title: string;
+  date: string; // YYYY-MM-DD (local date)
+  time?: string; // HH:mm
+  url?: string;
+  location?: string;
+};
+
+function pad2(value: number): string {
+  return value.toString().padStart(2, "0");
+}
+
+function dateKeyToNumber(dateKey: string): number {
+  return Number.parseInt(dateKey.replaceAll("-", ""), 10);
+}
+
+function dateKeyToUtcDate(dateKey: string): Date {
+  const [year, month, day] = dateKey
+    .split("-")
+    .map((value) => Number.parseInt(value, 10));
+
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+function addDays(dateKey: string, days: number): string {
+  const base = dateKeyToUtcDate(dateKey);
+  base.setUTCDate(base.getUTCDate() + days);
+
+  return `${base.getUTCFullYear()}-${pad2(base.getUTCMonth() + 1)}-${pad2(base.getUTCDate())}`;
+}
+
+function diffDays(startDateKey: string, endDateKey: string): number {
+  const start = dateKeyToUtcDate(startDateKey);
+  const end = dateKeyToUtcDate(endDateKey);
+  return Math.round((end.getTime() - start.getTime()) / 86_400_000);
+}
+
+function diffMonths(startDateKey: string, endDateKey: string): number {
+  const [startYear, startMonth] = startDateKey
+    .split("-")
+    .map((value) => Number.parseInt(value, 10));
+  const [endYear, endMonth] = endDateKey
+    .split("-")
+    .map((value) => Number.parseInt(value, 10));
+
+  return (endYear - startYear) * 12 + (endMonth - startMonth);
+}
+
+function maxDateKey(a: string, b: string): string {
+  return dateKeyToNumber(a) >= dateKeyToNumber(b) ? a : b;
+}
+
+export function getDateKeyInTimeZone(
+  date: Date,
+  timeZone: string = PARIS_TIMEZONE
+): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .formatToParts(date)
+    .reduce<Record<string, string>>((acc, part) => {
+      if (part.type !== "literal") {
+        acc[part.type] = part.value;
+      }
+      return acc;
+    }, {});
+
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+export function getDaysUntil(dateKey: string, todayKey: string): number {
+  return diffDays(todayKey, dateKey);
+}
+
+export function selectUpcomingPlanningEvents(
+  events: readonly PlanningEvent[],
+  options?: {
+    today?: Date;
+    daysAhead?: number;
+    limit?: number;
+    timeZone?: string;
+  }
+): PlanningEvent[] {
+  const timeZone = options?.timeZone ?? PARIS_TIMEZONE;
+  const todayKey = getDateKeyInTimeZone(options?.today ?? new Date(), timeZone);
+  const daysAhead = options?.daysAhead ?? 7;
+  const limit = options?.limit ?? 3;
+  const start = dateKeyToNumber(todayKey);
+  const end = dateKeyToNumber(addDays(todayKey, daysAhead));
+
+  return [...events]
+    .filter((event) => {
+      const value = dateKeyToNumber(event.date);
+      return value >= start && value <= end;
+    })
+    .sort((a, b) => {
+      const dateDiff = dateKeyToNumber(a.date) - dateKeyToNumber(b.date);
+      if (dateDiff !== 0) {
+        return dateDiff;
+      }
+
+      const aTime = a.time ?? "99:99";
+      const bTime = b.time ?? "99:99";
+      return aTime.localeCompare(bTime);
+    })
+    .slice(0, limit);
+}
+
+function getCalendarIdsFromEmbedUrl(embedUrl: string): string[] {
+  try {
+    const url = new URL(embedUrl);
+    const all = url.searchParams
+      .getAll("src")
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0);
+
+    return [...new Set(all)];
+  } catch {
+    return [];
+  }
+}
+
+function unescapeIcsText(value: string): string {
+  return value
+    .replaceAll("\\n", " ")
+    .replaceAll("\\,", ",")
+    .replaceAll("\\;", ";")
+    .replaceAll("\\\\", "\\")
+    .trim();
+}
+
+function parseDateOnly(value: string): string | null {
+  if (!/^\d{8}$/.test(value)) {
+    return null;
+  }
+
+  const year = value.slice(0, 4);
+  const month = value.slice(4, 6);
+  const day = value.slice(6, 8);
+  return `${year}-${month}-${day}`;
+}
+
+function toParisDateAndTime(utcValue: string): { date: string; time: string } | null {
+  const match = utcValue.match(
+    /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  const [, y, m, d, hh, mm, ss] = match;
+  const date = new Date(`${y}-${m}-${d}T${hh}:${mm}:${ss}Z`);
+  const dateKey = getDateKeyInTimeZone(date, PARIS_TIMEZONE);
+  const time = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: PARIS_TIMEZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+
+  return { date: dateKey, time };
+}
+
+function parseLocalDateTime(value: string): { date: string; time: string } | null {
+  const match = value.match(/^(\d{8})T(\d{2})(\d{2})/);
+  if (!match) {
+    return null;
+  }
+
+  const date = parseDateOnly(match[1]);
+  if (!date) {
+    return null;
+  }
+
+  return { date, time: `${match[2]}:${match[3]}` };
+}
+
+function parseDtStart(line: string): { date: string; time?: string } | null {
+  const separatorIndex = line.indexOf(":");
+  if (separatorIndex < 0) {
+    return null;
+  }
+
+  const value = line.slice(separatorIndex + 1).trim();
+
+  if (line.includes("VALUE=DATE")) {
+    const date = parseDateOnly(value);
+    return date ? { date } : null;
+  }
+
+  if (value.endsWith("Z")) {
+    const utc = toParisDateAndTime(value);
+    return utc ?? null;
+  }
+
+  const local = parseLocalDateTime(value);
+  return local ?? null;
+}
+
+function unfoldIcsLines(ics: string): string[] {
+  return ics
+    .replace(/\r\n[ \t]/g, "")
+    .split(/\r?\n/)
+    .filter((line) => line.length > 0);
+}
+
+function dayCodeFromDateKey(dateKey: string): string {
+  const date = dateKeyToUtcDate(dateKey);
+  const day = date.getUTCDay();
+  const codes = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+  return codes[day];
+}
+
+function parseRRule(rruleLine: string): RRule {
+  const raw = rruleLine.startsWith("RRULE:")
+    ? rruleLine.slice("RRULE:".length)
+    : rruleLine;
+
+  const values = raw.split(";").reduce<Record<string, string>>((acc, part) => {
+    const [key, value] = part.split("=");
+    if (key && value) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+
+  const freqRaw = values.FREQ;
+  const freq =
+    freqRaw === "DAILY" || freqRaw === "WEEKLY" || freqRaw === "MONTHLY"
+      ? freqRaw
+      : undefined;
+
+  const interval = Number.parseInt(values.INTERVAL ?? "1", 10);
+  const untilMatch = values.UNTIL?.match(/^(\d{8})/);
+  const untilDateKey = untilMatch ? parseDateOnly(untilMatch[1]) ?? undefined : undefined;
+  const count = values.COUNT ? Number.parseInt(values.COUNT, 10) : undefined;
+  const byDay = values.BYDAY ? values.BYDAY.split(",").filter(Boolean) : [];
+
+  return {
+    freq,
+    interval: Number.isFinite(interval) && interval > 0 ? interval : 1,
+    byDay,
+    untilDateKey,
+    count: Number.isFinite(count ?? Number.NaN) ? count : undefined,
+  };
+}
+
+function matchesRRuleOnDay(
+  dayKey: string,
+  startDateKey: string,
+  rule: RRule
+): boolean {
+  const days = diffDays(startDateKey, dayKey);
+  if (days < 0) {
+    return false;
+  }
+
+  const baseDayCode = dayCodeFromDateKey(startDateKey);
+  const allowedDays = rule.byDay.length > 0 ? rule.byDay : [baseDayCode];
+
+  if (rule.freq === "DAILY") {
+    return days % rule.interval === 0;
+  }
+
+  if (rule.freq === "WEEKLY") {
+    const weekIndex = Math.floor(days / 7);
+    if (weekIndex % rule.interval !== 0) {
+      return false;
+    }
+
+    return allowedDays.includes(dayCodeFromDateKey(dayKey));
+  }
+
+  if (rule.freq === "MONTHLY") {
+    const months = diffMonths(startDateKey, dayKey);
+    if (months < 0 || months % rule.interval !== 0) {
+      return false;
+    }
+
+    const startDay = startDateKey.split("-")[2];
+    const day = dayKey.split("-")[2];
+    return day === startDay;
+  }
+
+  return false;
+}
+
+function expandRecurringEvent(
+  baseEvent: PlanningEvent,
+  rruleLine: string,
+  windowStartKey: string,
+  windowEndKey: string
+): PlanningEvent[] {
+  const rule = parseRRule(rruleLine);
+
+  if (!rule.freq) {
+    return [baseEvent];
+  }
+
+  let cursor = baseEvent.date;
+  const result: PlanningEvent[] = [];
+  let occurrenceCount = 0;
+
+  const safeStart = maxDateKey(baseEvent.date, windowStartKey);
+  if (dateKeyToNumber(safeStart) > dateKeyToNumber(windowEndKey)) {
+    return [];
+  }
+
+  while (dateKeyToNumber(cursor) <= dateKeyToNumber(windowEndKey)) {
+    if (rule.untilDateKey && dateKeyToNumber(cursor) > dateKeyToNumber(rule.untilDateKey)) {
+      break;
+    }
+
+    if (matchesRRuleOnDay(cursor, baseEvent.date, rule)) {
+      occurrenceCount += 1;
+
+      if (rule.count && occurrenceCount > rule.count) {
+        break;
+      }
+
+      if (dateKeyToNumber(cursor) >= dateKeyToNumber(windowStartKey)) {
+        result.push({
+          ...baseEvent,
+          id: `${baseEvent.id}-${cursor}`,
+          date: cursor,
+        });
+      }
+    }
+
+    cursor = addDays(cursor, 1);
+  }
+
+  return result;
+}
+
+function parseIcsEvents(
+  ics: string,
+  options?: { windowStartKey?: string; windowEndKey?: string }
+): PlanningEvent[] {
+  const lines = unfoldIcsLines(ics);
+  const events: PlanningEvent[] = [];
+  let block: string[] = [];
+  let insideEvent = false;
+
+  const defaultStart = getDateKeyInTimeZone(new Date(), PARIS_TIMEZONE);
+  const windowStartKey = options?.windowStartKey ?? defaultStart;
+  const windowEndKey = options?.windowEndKey ?? addDays(windowStartKey, 31);
+
+  for (const line of lines) {
+    if (line === "BEGIN:VEVENT") {
+      insideEvent = true;
+      block = [];
+      continue;
+    }
+
+    if (line === "END:VEVENT") {
+      insideEvent = false;
+
+      const uid = block.find((entry) => entry.startsWith("UID:"))?.slice(4).trim();
+      const summary = block
+        .find((entry) => entry.startsWith("SUMMARY:"))
+        ?.slice("SUMMARY:".length)
+        .trim();
+      const dtStart = block.find((entry) => entry.startsWith("DTSTART"));
+      const rrule = block.find((entry) => entry.startsWith("RRULE:"));
+      const url = block
+        .find((entry) => entry.startsWith("URL:"))
+        ?.slice("URL:".length)
+        .trim();
+      const location = block
+        .find((entry) => entry.startsWith("LOCATION:"))
+        ?.slice("LOCATION:".length)
+        .trim();
+
+      if (!summary || !dtStart) {
+        continue;
+      }
+
+      const parsedDate = parseDtStart(dtStart);
+      if (!parsedDate) {
+        continue;
+      }
+
+      const baseEvent: PlanningEvent = {
+        id: uid || `${summary}-${parsedDate.date}`,
+        title: unescapeIcsText(summary),
+        date: parsedDate.date,
+        time: parsedDate.time,
+        url: url ? unescapeIcsText(url) : undefined,
+        location: location ? unescapeIcsText(location) : undefined,
+      };
+
+      if (rrule) {
+        events.push(
+          ...expandRecurringEvent(baseEvent, rrule, windowStartKey, windowEndKey)
+        );
+      } else {
+        events.push(baseEvent);
+      }
+
+      block = [];
+      continue;
+    }
+
+    if (insideEvent) {
+      block.push(line);
+    }
+  }
+
+  const deduped = new Map<string, PlanningEvent>();
+  for (const event of events) {
+    const key = `${event.id}-${event.date}-${event.time ?? ""}`;
+    deduped.set(key, event);
+  }
+
+  return [...deduped.values()];
+}
+
+export async function fetchPlanningEventsFromExistingCalendar(
+  options?: { daysAhead?: number }
+): Promise<PlanningEvent[]> {
+  const calendarIds = getCalendarIdsFromEmbedUrl(CALENDAR_EMBED_URL);
+  if (calendarIds.length === 0) {
+    return [];
+  }
+
+  const todayKey = getDateKeyInTimeZone(new Date(), PARIS_TIMEZONE);
+  const windowEndKey = addDays(todayKey, Math.max(options?.daysAhead ?? 31, 31));
+
+  const allCalendars = await Promise.all(
+    calendarIds.map(async (calendarId) => {
+      const icsUrl = `https://calendar.google.com/calendar/ical/${encodeURIComponent(
+        calendarId
+      )}/public/basic.ics`;
+
+      try {
+        const response = await fetch(icsUrl, {
+          next: { revalidate: 900 },
+          headers: { accept: "text/calendar" },
+        });
+
+        if (!response.ok) {
+          return [] as PlanningEvent[];
+        }
+
+        const ics = await response.text();
+        return parseIcsEvents(ics, {
+          windowStartKey: todayKey,
+          windowEndKey,
+        });
+      } catch {
+        return [] as PlanningEvent[];
+      }
+    })
+  );
+
+  const merged = allCalendars.flat();
+  const deduped = new Map<string, PlanningEvent>();
+  for (const event of merged) {
+    const key = `${event.title}-${event.date}-${event.time ?? ""}-${event.location ?? ""}`;
+    deduped.set(key, event);
+  }
+
+  return [...deduped.values()];
+}
+
+export async function getUpcomingPlanningAnnouncements(
+  options?: { limit?: number; daysAhead?: number }
+): Promise<PlanningEvent[]> {
+  const daysAhead = options?.daysAhead ?? 7;
+  const events = await fetchPlanningEventsFromExistingCalendar({ daysAhead });
+
+  return selectUpcomingPlanningEvents(events, {
+    limit: options?.limit ?? 3,
+    daysAhead,
+  });
+}

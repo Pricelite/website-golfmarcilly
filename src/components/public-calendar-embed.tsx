@@ -1,8 +1,9 @@
-type PublicCalendarEmbedProps = {
+﻿type PublicCalendarEmbedProps = {
   title: string;
   src: string;
   sectionBorderClassName?: string;
   frameBorderClassName?: string;
+  frameAspectClassName?: string;
   highlightWeekends?: boolean;
 };
 
@@ -11,6 +12,7 @@ export default function PublicCalendarEmbed({
   src,
   sectionBorderClassName = "border-emerald-900/10",
   frameBorderClassName = "border-emerald-900/10",
+  frameAspectClassName = "aspect-[16/10]",
   highlightWeekends = false,
 }: PublicCalendarEmbedProps) {
   return (
@@ -21,12 +23,12 @@ export default function PublicCalendarEmbed({
         {title}
       </p>
       <div
-        className={`relative mt-4 aspect-[16/10] overflow-hidden rounded-2xl border bg-white ${frameBorderClassName}`}
+        className={`relative mt-4 overflow-hidden rounded-2xl border bg-white ${frameAspectClassName} ${frameBorderClassName}`}
       >
         {highlightWeekends ? (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[28.5714%] bg-blue-700/60 mix-blend-color"
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[28.5714%] bg-blue-600/55 mix-blend-multiply"
           />
         ) : null}
         <iframe
