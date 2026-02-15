@@ -12,6 +12,8 @@ type NavItem = {
   children?: { label: string; href: string }[];
 };
 
+type ThemeMode = "light" | "dark";
+
 const NAV_ITEMS: NavItem[] = [
   { label: "Accueil", href: "/" },
   { label: "Pr\u00e9sentation", href: "/vie-du-club" },
@@ -44,10 +46,17 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
+function applyTheme(mode: ThemeMode) {
+  const root = document.documentElement;
+  root.setAttribute("data-theme", mode);
+  root.style.colorScheme = mode;
+}
+
 export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -77,11 +86,24 @@ export default function SiteHeader() {
     };
   }, []);
 
+  useEffect(() => {
+    applyTheme("light");
+  }, []);
+
+  function handleToggleTheme() {
+    setIsDarkMode((current) => {
+      const next = !current;
+      const nextMode: ThemeMode = next ? "dark" : "light";
+      applyTheme(nextMode);
+      return next;
+    });
+  }
+
 
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-30 border-b border-emerald-900/10 bg-white/70 backdrop-blur"
+      className="site-header border-b border-emerald-900/10 bg-white/70 backdrop-blur"
     >
       <div className="mx-auto grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-4 px-6 py-5 lg:grid-cols-[1fr_auto_1fr]">
         <Link
@@ -94,7 +116,7 @@ export default function SiteHeader() {
             alt="Logo Golf de Marcilly"
             width={255}
             height={81}
-            className="h-[81px] w-auto"
+            className="site-header__logo h-[81px] w-auto"
             priority
           />
         </Link>
@@ -116,7 +138,7 @@ export default function SiteHeader() {
                   {item.label}
                 </Link>
                 {item.children?.length ? (
-                  <div className="pointer-events-none absolute left-0 top-full z-20 mt-2 w-52 translate-y-2 rounded-2xl border border-emerald-900/10 bg-white/95 p-2 text-sm text-emerald-900 shadow-lg opacity-0 transition group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <div className="site-header__dropdown pointer-events-none absolute left-0 top-full z-20 mt-2 w-52 translate-y-2 rounded-2xl border border-emerald-900/10 bg-white/95 p-2 text-sm text-emerald-900 shadow-lg opacity-0 transition group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     {item.children.map((child) => (
                       <Link
                         key={child.label}
@@ -133,32 +155,76 @@ export default function SiteHeader() {
           })}
         </nav>
 
-        <button
-          className="inline-flex items-center justify-center justify-self-end rounded-full border border-emerald-900/20 bg-white/80 px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white lg:col-start-3 lg:justify-self-end lg:hidden"
-          type="button"
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-menu"
-          onClick={() =>
-            setMobileOpen((value) => {
-              const next = !value;
+        <div className="flex items-center justify-self-end gap-2 lg:col-start-3 lg:justify-self-end">
+          <button
+            className="theme-switch inline-flex items-center"
+            type="button"
+            onClick={handleToggleTheme}
+            aria-pressed={isDarkMode}
+            aria-label="Basculer entre le mode jour et le mode nuit"
+            title="Basculer jour/nuit"
+          >
+            <span className="sr-only">Basculer entre le mode jour et le mode nuit</span>
+            <span className="theme-switch__icon theme-switch__icon--sun" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+                <path
+                  d="M12 2.5v2.4M12 19.1v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span className="theme-switch__icon theme-switch__icon--moon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 1 0 10.5 10.5Z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <span className="theme-switch__thumb" aria-hidden="true" />
+          </button>
 
-              if (!next) {
-                setOpenMenu(null);
-              }
+          <button
+            className="inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white/80 px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white lg:hidden"
+            type="button"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            onClick={() =>
+              setMobileOpen((value) => {
+                const next = !value;
 
-              return next;
-            })
-          }
-        >
-          {mobileOpen ? "Fermer" : "Menu"}
-        </button>
+                if (!next) {
+                  setOpenMenu(null);
+                }
+
+                return next;
+              })
+            }
+          >
+            {mobileOpen ? "Fermer" : "Menu"}
+          </button>
+        </div>
       </div>
 
       <div
         id="mobile-menu"
         className={`lg:hidden ${
           mobileOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden border-t border-emerald-900/10 bg-white/95 px-6 pb-5 pt-3 text-emerald-900 transition-all duration-300`}
+        } site-header__mobile-menu overflow-hidden border-t border-emerald-900/10 bg-white/95 px-6 pb-5 pt-3 text-emerald-900 transition-all duration-300`}
       >
         <div className="flex flex-col gap-3 text-sm font-semibold">
           {NAV_ITEMS.map((item) => {
@@ -166,7 +232,10 @@ export default function SiteHeader() {
             const isOpen = openMenu === item.label;
 
             return (
-              <div key={item.label} className="rounded-2xl border border-emerald-900/10 bg-white">
+              <div
+                key={item.label}
+                className="site-header__mobile-card rounded-2xl border border-emerald-900/10 bg-white"
+              >
                 <div className="flex items-center justify-between px-4 py-3">
                   <Link
                     className={`text-sm font-semibold ${

@@ -31,7 +31,7 @@ const dailyStatus = [
 ];
 
 const HOME_NEWS_ASSETS = [
-  { title: "Actualité 1", src: "/images/gp 2026 - 2.png" },
+  { title: "Actualité 1", src: "/images/Dec Jeunes 2026.png" },
   { title: "Actualité 2", src: "/images/gp 2026 - 2.png" },
   { title: "Actualité 3", src: "/images/gp 2026 - 2.png" },
 ] as const;
@@ -319,13 +319,15 @@ export default async function Home() {
                     <p className="px-3 pt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
                       {asset.title}
                     </p>
-                    <Image
-                      src={toProtectedImageSrc(asset.src)}
-                      alt={`Actualité ${index + 1}`}
-                      width={1200}
-                      height={1697}
-                      className="mx-auto h-auto w-full"
-                    />
+                    <div className="relative mt-3 aspect-[3/4] w-full overflow-hidden bg-white/80">
+                      <Image
+                        src={toProtectedImageSrc(asset.src)}
+                        alt={`Actualité ${index + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-contain"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

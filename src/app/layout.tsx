@@ -73,8 +73,10 @@ export default function RootLayout({
         className={`${bodyFont.variable} ${displayFont.variable} antialiased`}
       >
         <ImageProtection />
-        <SiteHeader />
-        <AnnouncementMarquee />
+        <div className="sticky top-0 z-30">
+          <SiteHeader />
+          <AnnouncementMarquee />
+        </div>
         {children}
         <SiteFooter />
       </body>

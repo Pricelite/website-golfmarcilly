@@ -1,4 +1,8 @@
-﻿type PublicCalendarEmbedProps = {
+﻿"use client";
+
+import { useEffect, useState } from "react";
+
+type PublicCalendarEmbedProps = {
   title: string;
   src: string;
   sectionBorderClassName?: string;
@@ -6,6 +10,27 @@
   frameAspectClassName?: string;
   highlightWeekends?: boolean;
 };
+
+function getIframeRefreshIntervalMs(): number {
+  const raw = process.env.NEXT_PUBLIC_CALENDAR_IFRAME_REFRESH_SECONDS;
+  const parsed = raw ? Number.parseInt(raw, 10) : Number.NaN;
+  const seconds = Number.isFinite(parsed) && parsed > 0 ? parsed : 300;
+
+  return seconds * 1000;
+}
+
+const IFRAME_REFRESH_INTERVAL_MS = getIframeRefreshIntervalMs();
+
+function withRefreshToken(src: string, token: string): string {
+  try {
+    const url = new URL(src);
+    url.searchParams.set("_r", token);
+    return url.toString();
+  } catch {
+    const hasQuery = src.includes("?");
+    return `${src}${hasQuery ? "&" : "?"}_r=${encodeURIComponent(token)}`;
+  }
+}
 
 export default function PublicCalendarEmbed({
   title,
@@ -15,6 +40,20 @@ export default function PublicCalendarEmbed({
   frameAspectClassName = "aspect-[16/10]",
   highlightWeekends = false,
 }: PublicCalendarEmbedProps) {
+  const [refreshToken, setRefreshToken] = useState<string>(() => Date.now().toString());
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setRefreshToken(Date.now().toString());
+    }, IFRAME_REFRESH_INTERVAL_MS);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const iframeSrc = withRefreshToken(src, refreshToken);
+
   return (
     <section
       className={`rounded-[32px] border bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur ${sectionBorderClassName}`}
@@ -32,7 +71,7 @@ export default function PublicCalendarEmbed({
           />
         ) : null}
         <iframe
-          src={src}
+          src={iframeSrc}
           title={title}
           className="relative z-0 h-full w-full border-0"
           loading="lazy"

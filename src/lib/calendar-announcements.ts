@@ -1,5 +1,8 @@
-﻿import { CALENDAR_EMBED_URL } from "./calendar";
-
+import {
+  CALENDAR_DATA_REFRESH_SECONDS,
+  CALENDAR_EMBED_URL,
+  getCalendarIcsUrlsFromEnv,
+} from "./calendar";
 const PARIS_TIMEZONE = "Europe/Paris";
 
 type RRule = {
@@ -17,6 +20,7 @@ export type PlanningEvent = {
   time?: string; // HH:mm
   url?: string;
   location?: string;
+  calendarColor?: string;
 };
 
 function pad2(value: number): string {
@@ -100,11 +104,11 @@ export function selectUpcomingPlanningEvents(
   const timeZone = options?.timeZone ?? PARIS_TIMEZONE;
   const todayKey = getDateKeyInTimeZone(options?.today ?? new Date(), timeZone);
   const daysAhead = options?.daysAhead ?? 7;
-  const limit = options?.limit ?? 3;
+  const limit = options?.limit;
   const start = dateKeyToNumber(todayKey);
   const end = dateKeyToNumber(addDays(todayKey, daysAhead));
 
-  return [...events]
+  const selected = [...events]
     .filter((event) => {
       const value = dateKeyToNumber(event.date);
       return value >= start && value <= end;
@@ -118,22 +122,121 @@ export function selectUpcomingPlanningEvents(
       const aTime = a.time ?? "99:99";
       const bTime = b.time ?? "99:99";
       return aTime.localeCompare(bTime);
-    })
-    .slice(0, limit);
+    });
+
+  if (typeof limit === "number") {
+    return selected.slice(0, Math.max(0, limit));
+  }
+
+  return selected;
 }
 
-function getCalendarIdsFromEmbedUrl(embedUrl: string): string[] {
+type CalendarSource = {
+  id: string;
+  color?: string;
+};
+
+type CalendarFeedSource = {
+  icsUrl: string;
+  color?: string;
+};
+
+function normalizeCalendarColor(value: string | undefined): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) {
+    return undefined;
+  }
+
+  if (trimmed.startsWith("#")) {
+    return trimmed;
+  }
+
+  if (/^[0-9a-f]{6}$/.test(trimmed)) {
+    return `#${trimmed}`;
+  }
+
+  return trimmed;
+}
+
+function parseHexColor(value: string): [number, number, number] | null {
+  const match = value.match(/^#?([0-9a-f]{6})$/i);
+  if (!match) {
+    return null;
+  }
+
+  const hex = match[1];
+  return [
+    Number.parseInt(hex.slice(0, 2), 16),
+    Number.parseInt(hex.slice(2, 4), 16),
+    Number.parseInt(hex.slice(4, 6), 16),
+  ];
+}
+
+function isGreenOrBlueColor(color: string | undefined): boolean {
+  const normalized = normalizeCalendarColor(color);
+  if (!normalized) {
+    return false;
+  }
+
+  if (normalized.includes("green") || normalized.includes("blue")) {
+    return true;
+  }
+
+  const rgb = parseHexColor(normalized);
+  if (!rgb) {
+    return false;
+  }
+
+  const [r, g, b] = rgb;
+  const spread = Math.max(r, g, b) - Math.min(r, g, b);
+  if (spread < 16) {
+    return false;
+  }
+
+  return (g >= r && g >= b) || (b >= r && b >= g);
+}
+
+function getCalendarSourcesFromEmbedUrl(embedUrl: string): CalendarSource[] {
   try {
     const url = new URL(embedUrl);
-    const all = url.searchParams
+    const sources = url.searchParams
       .getAll("src")
       .map((value) => value.trim())
       .filter((value) => value.length > 0);
+    const colors = url.searchParams.getAll("color").map(normalizeCalendarColor);
 
-    return [...new Set(all)];
+    const mapped = sources.map((id, index) => ({
+      id,
+      color: colors[index],
+    }));
+
+    return mapped.filter(
+      (source, index, all) =>
+        all.findIndex(
+          (entry) => entry.id === source.id && entry.color === source.color
+        ) === index
+    );
   } catch {
     return [];
   }
+}
+
+function getCalendarFeedSources(): CalendarFeedSource[] {
+  const configuredIcsUrls = getCalendarIcsUrlsFromEnv();
+  if (configuredIcsUrls.length > 0) {
+    return configuredIcsUrls.map((icsUrl) => ({ icsUrl }));
+  }
+
+  return getCalendarSourcesFromEmbedUrl(CALENDAR_EMBED_URL).map(({ id, color }) => ({
+    icsUrl: `https://calendar.google.com/calendar/ical/${encodeURIComponent(
+      id
+    )}/public/basic.ics`,
+    color,
+  }));
 }
 
 function unescapeIcsText(value: string): string {
@@ -219,6 +322,28 @@ function unfoldIcsLines(ics: string): string[] {
     .replace(/\r\n[ \t]/g, "")
     .split(/\r?\n/)
     .filter((line) => line.length > 0);
+}
+
+function getIcsPropertyRawValue(
+  lines: readonly string[],
+  propertyName: string
+): string | undefined {
+  const prefix = `${propertyName.toUpperCase()}`;
+  const line = lines.find((entry) => {
+    const upper = entry.toUpperCase();
+    return upper.startsWith(`${prefix}:`) || upper.startsWith(`${prefix};`);
+  });
+
+  if (!line) {
+    return undefined;
+  }
+
+  const separatorIndex = line.indexOf(":");
+  if (separatorIndex < 0) {
+    return undefined;
+  }
+
+  return line.slice(separatorIndex + 1).trim();
 }
 
 function dayCodeFromDateKey(dateKey: string): string {
@@ -373,21 +498,13 @@ function parseIcsEvents(
     if (line === "END:VEVENT") {
       insideEvent = false;
 
-      const uid = block.find((entry) => entry.startsWith("UID:"))?.slice(4).trim();
-      const summary = block
-        .find((entry) => entry.startsWith("SUMMARY:"))
-        ?.slice("SUMMARY:".length)
-        .trim();
+      const uid = getIcsPropertyRawValue(block, "UID");
+      const summary = getIcsPropertyRawValue(block, "SUMMARY");
       const dtStart = block.find((entry) => entry.startsWith("DTSTART"));
-      const rrule = block.find((entry) => entry.startsWith("RRULE:"));
-      const url = block
-        .find((entry) => entry.startsWith("URL:"))
-        ?.slice("URL:".length)
-        .trim();
-      const location = block
-        .find((entry) => entry.startsWith("LOCATION:"))
-        ?.slice("LOCATION:".length)
-        .trim();
+      const rrule = getIcsPropertyRawValue(block, "RRULE");
+      const url = getIcsPropertyRawValue(block, "URL");
+      const location = getIcsPropertyRawValue(block, "LOCATION");
+      const eventColor = getIcsPropertyRawValue(block, "COLOR");
 
       if (!summary || !dtStart) {
         continue;
@@ -405,11 +522,19 @@ function parseIcsEvents(
         time: parsedDate.time,
         url: url ? unescapeIcsText(url) : undefined,
         location: location ? unescapeIcsText(location) : undefined,
+        calendarColor: normalizeCalendarColor(
+          eventColor ? unescapeIcsText(eventColor) : undefined
+        ),
       };
 
       if (rrule) {
         events.push(
-          ...expandRecurringEvent(baseEvent, rrule, windowStartKey, windowEndKey)
+          ...expandRecurringEvent(
+            baseEvent,
+            `RRULE:${rrule}`,
+            windowStartKey,
+            windowEndKey
+          )
         );
       } else {
         events.push(baseEvent);
@@ -436,8 +561,8 @@ function parseIcsEvents(
 export async function fetchPlanningEventsFromExistingCalendar(
   options?: { daysAhead?: number }
 ): Promise<PlanningEvent[]> {
-  const calendarIds = getCalendarIdsFromEmbedUrl(CALENDAR_EMBED_URL);
-  if (calendarIds.length === 0) {
+  const calendarFeeds = getCalendarFeedSources();
+  if (calendarFeeds.length === 0) {
     return [];
   }
 
@@ -445,14 +570,10 @@ export async function fetchPlanningEventsFromExistingCalendar(
   const windowEndKey = addDays(todayKey, Math.max(options?.daysAhead ?? 31, 31));
 
   const allCalendars = await Promise.all(
-    calendarIds.map(async (calendarId) => {
-      const icsUrl = `https://calendar.google.com/calendar/ical/${encodeURIComponent(
-        calendarId
-      )}/public/basic.ics`;
-
+    calendarFeeds.map(async ({ icsUrl, color }) => {
       try {
         const response = await fetch(icsUrl, {
-          next: { revalidate: 900 },
+          next: { revalidate: CALENDAR_DATA_REFRESH_SECONDS },
           headers: { accept: "text/calendar" },
         });
 
@@ -464,7 +585,10 @@ export async function fetchPlanningEventsFromExistingCalendar(
         return parseIcsEvents(ics, {
           windowStartKey: todayKey,
           windowEndKey,
-        });
+        }).map((event) => ({
+          ...event,
+          calendarColor: event.calendarColor ?? color,
+        }));
       } catch {
         return [] as PlanningEvent[];
       }
@@ -472,8 +596,14 @@ export async function fetchPlanningEventsFromExistingCalendar(
   );
 
   const merged = allCalendars.flat();
+  const highlightedEvents = merged.filter((event) =>
+    isGreenOrBlueColor(event.calendarColor)
+  );
+  const eventsToAnnounce =
+    highlightedEvents.length > 0 ? highlightedEvents : merged;
+
   const deduped = new Map<string, PlanningEvent>();
-  for (const event of merged) {
+  for (const event of eventsToAnnounce) {
     const key = `${event.title}-${event.date}-${event.time ?? ""}-${event.location ?? ""}`;
     deduped.set(key, event);
   }
@@ -488,7 +618,8 @@ export async function getUpcomingPlanningAnnouncements(
   const events = await fetchPlanningEventsFromExistingCalendar({ daysAhead });
 
   return selectUpcomingPlanningEvents(events, {
-    limit: options?.limit ?? 3,
+    limit: options?.limit,
     daysAhead,
   });
 }
+
