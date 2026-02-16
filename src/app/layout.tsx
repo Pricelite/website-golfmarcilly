@@ -67,10 +67,17 @@ export default function RootLayout({
         className={`${bodyFont.variable} ${displayFont.variable} antialiased`}
       >
         <ImageProtection />
+        <a
+          href="#content-start"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[120] focus:rounded-full focus:bg-emerald-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-emerald-50"
+        >
+          Aller au contenu principal
+        </a>
         <div className="sticky top-0 z-30">
           <SiteHeader />
           <AnnouncementMarquee />
         </div>
+        <div id="content-start" tabIndex={-1} />
         {children}
         <SiteFooter />
       </body>

@@ -68,19 +68,11 @@ function getPreferredThemeMode(): ThemeMode {
     : "light";
 }
 
-function getInitialDarkMode(): boolean {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return getPreferredThemeMode() === "dark";
-}
-
 export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(getInitialDarkMode);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -107,6 +99,19 @@ export default function SiteHeader() {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const preferredMode = getPreferredThemeMode();
+    applyTheme(preferredMode);
+
+    const rafId = window.requestAnimationFrame(() => {
+      setIsDarkMode(preferredMode === "dark");
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -150,7 +155,10 @@ export default function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-3 text-sm font-semibold text-emerald-900/80 lg:col-start-2 lg:flex lg:justify-self-center">
+        <nav
+          aria-label="Navigation principale"
+          className="hidden items-center gap-3 text-sm font-semibold text-emerald-900/80 lg:col-start-2 lg:flex lg:justify-self-center"
+        >
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
 
@@ -232,6 +240,7 @@ export default function SiteHeader() {
             type="button"
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
+            aria-label={mobileOpen ? "Fermer le menu principal" : "Ouvrir le menu principal"}
             onClick={() =>
               setMobileOpen((value) => {
                 const next = !value;
@@ -285,6 +294,7 @@ export default function SiteHeader() {
                         )
                       }
                       aria-expanded={isOpen}
+                      aria-label={`${isOpen ? "Replier" : "Déplier"} le sous-menu ${item.label}`}
                     >
                       {isOpen ? "-" : "+"}
                     </button>

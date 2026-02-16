@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { mapPlanningEventsToAnnouncementItems } from "@/lib/calendar-announcement-items";
 import { getUpcomingPlanningAnnouncements } from "@/lib/calendar-announcements";
 
-function parsePositiveInt(value: string | null, fallback: number): number {
+function parsePositiveInt(
+  value: string | null,
+  fallback: number,
+  max: number
+): number {
   if (!value) {
     return fallback;
   }
@@ -12,15 +16,20 @@ function parsePositiveInt(value: string | null, fallback: number): number {
     return fallback;
   }
 
-  return parsed;
+  return Math.min(parsed, max);
 }
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const daysAhead = parsePositiveInt(
     request.nextUrl.searchParams.get("daysAhead"),
-    7
+    7,
+    30
   );
-  const limit = parsePositiveInt(request.nextUrl.searchParams.get("limit"), 20);
+  const limit = parsePositiveInt(
+    request.nextUrl.searchParams.get("limit"),
+    20,
+    50
+  );
 
   const events = await getUpcomingPlanningAnnouncements({ daysAhead, limit });
   const announcements = mapPlanningEventsToAnnouncementItems(events);
