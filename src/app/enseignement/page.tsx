@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { toProtectedImageSrc } from "@/lib/protected-image";
-import { CONTACT_EMAIL_LINK } from "@/lib/site";
+const SCHOOL_INFO_CONTACT_LINK = "/contact?template=ecole-golf-info";
 
 export const metadata: Metadata = {
   title: "École de Golf",
@@ -42,14 +42,14 @@ const courses = [
   {
     title: "Cours enfant débutant",
     level: "Âge minimum : 6 ans",
-    price: "95 € / mois",
-    schedule: "Mercredi et samedi • 1h15 par séance",
+    price: "15 € / mois",
+    schedule: "Mercredi : 11h-12h ou Samedi : 14h-15h",
   },
   {
     title: "Cours enfant perfectionnement",
     level: "Accès selon niveau et validation enseignant",
-    price: "120 € / mois",
-    schedule: "Mercredi • 1h30 par séance",
+    price: "35 € / mois",
+    schedule: "Mercredi : 11h-12h ou Samedi : 14h-15h",
   },
 ] as const;
 
@@ -73,10 +73,10 @@ export default function Page() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href={CONTACT_EMAIL_LINK}
+                href={SCHOOL_INFO_CONTACT_LINK}
                 className="inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
               >
-                Je réserve
+                Je me renseigne
               </Link>
               <a
                 href="#cours"
@@ -175,10 +175,10 @@ export default function Page() {
                 </p>
                 <p className="mt-2 text-sm text-emerald-900/80">{course.schedule}</p>
                 <Link
-                  href={CONTACT_EMAIL_LINK}
+                  href={SCHOOL_INFO_CONTACT_LINK}
                   className="mt-5 inline-flex items-center justify-center rounded-full bg-emerald-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-800"
                 >
-                  Je réserve
+                  Je me renseigne
                 </Link>
               </article>
             ))}

@@ -41,7 +41,7 @@ const accueilPhotos: TeamPhoto[] = [
 const cuisinePhotos: TeamPhoto[] = [
   { name: "Benjamin", src: "/images/benjamin.png", position: "50% 28%" },
   { name: "Charles", src: "/images/charles.png", position: "50% 30%" },
-  { name: "Lotfi", src: "/images/chef1.png", position: "50% 26%" },
+  { name: "Lotfi", src: "/images/lotfi.png", position: "50% 26%" },
 ];
 
 const sallePhotos: TeamPhoto[] = [
@@ -136,6 +136,7 @@ export default function Page() {
       <PageHero
         title="Présentation"
         subtitle="Présentation, actualités, événements et tarifs 2026."
+        backgroundImage="/images/clubhouse.png"
       />
 
       <main className="mx-auto w-full max-w-6xl px-6 py-12">

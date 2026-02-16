@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 
 import PageHero from "@/components/page-hero";
@@ -242,7 +242,7 @@ export default async function Home() {
                           <div className="mt-1 flex items-center gap-1.5">
                             <WeatherIllustration visual={slot.visual} size="sm" />
                             <p className="text-sm font-bold text-emerald-900">
-                              {slot.temperatureC} Â°
+                              {slot.temperatureC} °
                             </p>
                           </div>
                           <p className="mt-1 text-[11px] text-emerald-800/80">
@@ -338,5 +338,6 @@ export default async function Home() {
     </div>
   );
 }
+
 
 

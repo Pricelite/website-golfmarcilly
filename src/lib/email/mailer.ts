@@ -4,12 +4,15 @@ import nodemailer from "nodemailer";
 
 type SendMailParams = {
   to: string;
+  toName?: string;
   subject: string;
   text: string;
+  html?: string;
   replyTo?: string;
+  replyToName?: string;
 };
 
-type MailerConfig = {
+type SmtpConfig = {
   host: string;
   port: number;
   secure: boolean;
@@ -17,6 +20,14 @@ type MailerConfig = {
   pass: string;
   from: string;
 };
+
+type BrevoConfig = {
+  apiKey: string;
+  fromEmail: string;
+  fromName?: string;
+};
+
+type MailProvider = "smtp" | "brevo";
 
 export class MailerError extends Error {
   code: "config" | "auth" | "network" | "send";
@@ -52,7 +63,7 @@ function parseSecureSetting(port: number): boolean {
   return port === 465;
 }
 
-function getMailerConfig(): MailerConfig {
+function getSmtpConfig(): SmtpConfig {
   const host = getRequiredEnv("SMTP_HOST");
   const portRaw = getRequiredEnv("SMTP_PORT");
   const user = getRequiredEnv("SMTP_USER");
@@ -67,6 +78,35 @@ function getMailerConfig(): MailerConfig {
   const secure = parseSecureSetting(port);
 
   return { host, port, secure, user, pass, from };
+}
+
+function getBrevoConfig(): BrevoConfig {
+  const apiKey = getRequiredEnv("BREVO_API_KEY");
+  const fromEmail = getRequiredEnv("EMAIL_FROM");
+  const fromName = process.env.EMAIL_FROM_NAME?.trim();
+
+  return {
+    apiKey,
+    fromEmail,
+    fromName: fromName && fromName.length > 0 ? fromName : undefined,
+  };
+}
+
+function getMailProvider(): MailProvider {
+  const raw = process.env.MAIL_PROVIDER?.trim().toLowerCase();
+  if (raw === "brevo") {
+    return "brevo";
+  }
+
+  if (raw === "smtp") {
+    return "smtp";
+  }
+
+  if (process.env.BREVO_API_KEY?.trim()) {
+    return "brevo";
+  }
+
+  return "smtp";
 }
 
 function normalizeMailerError(error: unknown): MailerError {
@@ -100,13 +140,102 @@ function normalizeMailerError(error: unknown): MailerError {
   return new MailerError("send", message);
 }
 
-export async function sendMail({
+function getSafeErrorMessage(payload: unknown): string {
+  if (!payload || typeof payload !== "object") {
+    return "Unable to send email at the moment.";
+  }
+
+  const candidate = payload as { message?: unknown; code?: unknown };
+  const message =
+    typeof candidate.message === "string" ? candidate.message : undefined;
+  const code = typeof candidate.code === "string" ? candidate.code : undefined;
+
+  if (message && code) {
+    return `${message} (${code})`;
+  }
+
+  if (message) {
+    return message;
+  }
+
+  return "Unable to send email at the moment.";
+}
+
+async function sendViaBrevo({
   to,
+  toName,
   subject,
   text,
+  html,
   replyTo,
+  replyToName,
 }: SendMailParams): Promise<void> {
-  const config = getMailerConfig();
+  const config = getBrevoConfig();
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": config.apiKey,
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      sender: {
+        email: config.fromEmail,
+        ...(config.fromName ? { name: config.fromName } : {}),
+      },
+      to: [{ email: to, ...(toName ? { name: toName } : {}) }],
+      subject,
+      textContent: text,
+      ...(html ? { htmlContent: html } : {}),
+      ...(replyTo
+        ? {
+            replyTo: {
+              email: replyTo,
+              ...(replyToName ? { name: replyToName } : {}),
+            },
+          }
+        : {}),
+    }),
+  });
+
+  if (response.ok) {
+    return;
+  }
+
+  let payload: unknown = null;
+  try {
+    payload = await response.json();
+  } catch {
+    // Ignore JSON parsing errors and keep a generic message.
+  }
+
+  const message = getSafeErrorMessage(payload);
+
+  if (response.status === 401 || response.status === 403) {
+    throw new MailerError("auth", message);
+  }
+
+  if (response.status === 400 || response.status === 422) {
+    throw new MailerError("config", message);
+  }
+
+  if (response.status === 429 || response.status >= 500) {
+    throw new MailerError("network", message);
+  }
+
+  throw new MailerError("send", message);
+}
+
+async function sendViaSmtp({
+  to,
+  toName,
+  subject,
+  text,
+  html,
+  replyTo,
+  replyToName,
+}: SendMailParams): Promise<void> {
+  const config = getSmtpConfig();
   const transporter = nodemailer.createTransport({
     host: config.host,
     port: config.port,
@@ -124,15 +253,60 @@ export async function sendMail({
     },
   });
 
+  await transporter.sendMail({
+    from: config.from,
+    to: toName ? `"${toName}" <${to}>` : to,
+    subject,
+    text,
+    ...(html ? { html } : {}),
+    ...(replyTo
+      ? {
+          replyTo: replyToName
+            ? `"${replyToName}" <${replyTo}>`
+            : replyTo,
+        }
+      : {}),
+  });
+}
+
+export async function sendMail({
+  to,
+  toName,
+  subject,
+  text,
+  html,
+  replyTo,
+  replyToName,
+}: SendMailParams): Promise<void> {
   try {
-    await transporter.sendMail({
-      from: config.from,
+    const provider = getMailProvider();
+    if (provider === "brevo") {
+      await sendViaBrevo({
+        to,
+        toName,
+        subject,
+        text,
+        html,
+        replyTo,
+        replyToName,
+      });
+      return;
+    }
+
+    await sendViaSmtp({
       to,
+      toName,
       subject,
       text,
+      html,
       replyTo,
+      replyToName,
     });
   } catch (error) {
+    if (error instanceof MailerError) {
+      throw error;
+    }
+
     throw normalizeMailerError(error);
   }
 }

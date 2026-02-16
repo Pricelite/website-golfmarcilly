@@ -40,11 +40,16 @@ export default function PublicCalendarEmbed({
   frameAspectClassName = "aspect-[16/10]",
   highlightWeekends = false,
 }: PublicCalendarEmbedProps) {
-  const [refreshToken, setRefreshToken] = useState<string>(() => Date.now().toString());
+  const [refreshToken, setRefreshToken] = useState<string>("initial");
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
+    const updateRefreshToken = () => {
       setRefreshToken(Date.now().toString());
+    };
+
+    updateRefreshToken();
+    const intervalId = window.setInterval(() => {
+      updateRefreshToken();
     }, IFRAME_REFRESH_INTERVAL_MS);
 
     return () => {
@@ -52,7 +57,8 @@ export default function PublicCalendarEmbed({
     };
   }, []);
 
-  const iframeSrc = withRefreshToken(src, refreshToken);
+  const iframeSrc =
+    refreshToken === "initial" ? src : withRefreshToken(src, refreshToken);
 
   return (
     <section

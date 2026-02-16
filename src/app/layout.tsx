@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
-import { getSupabaseEnv } from "@/lib/env";
 import {
   SITE_DESCRIPTION,
   SITE_LOCALE,
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: toProtectedImageSrc("/images/club-house-marcilly.png"),
+        url: toProtectedImageSrc("/images/clubhouse.png"),
         width: 1200,
         height: 630,
         alt: SITE_NAME,
@@ -53,14 +52,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: [toProtectedImageSrc("/images/club-house-marcilly.png")],
-  },
-  alternates: {
-    canonical: "/",
+    images: [toProtectedImageSrc("/images/clubhouse.png")],
   },
 };
-
-getSupabaseEnv();
 
 export default function RootLayout({
   children,

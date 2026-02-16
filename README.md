@@ -16,6 +16,30 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 5. Verify locally: `pnpm dev` then `curl http://localhost:3000/api/health`.
 6. Validate a production build: `pnpm build`.
 
+## Contact email (Brevo)
+
+To send contact form emails through Brevo API, configure:
+
+- `MAIL_PROVIDER=brevo`
+- `BREVO_API_KEY=...`
+- `EMAIL_FROM=sender@your-domain.tld`
+- `EMAIL_FROM_NAME=Golf de Marcilly` (optional)
+- `EMAIL_TO=golf@marcilly.com`
+- `EMAIL_TO_NAME=Golf de Marcilly` (optional)
+- `EMAIL_REPLY_TO=contact@your-domain.tld` (optional)
+- `CONTACT_SEND_CONFIRMATION=true` (optional)
+
+Note: if `MAIL_PROVIDER` is unset and `BREVO_API_KEY` is present, Brevo is selected automatically.
+
+For SMTP mode (legacy), keep `MAIL_PROVIDER=smtp` (or unset) and use:
+
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `SMTP_SECURE` (optional)
+- `EMAIL_FROM`
+
 ## Getting Started
 
 First, run the development server:

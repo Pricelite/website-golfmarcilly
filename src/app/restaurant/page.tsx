@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import PageHero from "@/components/page-hero";
+import RestaurantReservationModal from "@/components/restaurant-reservation-modal";
 import { toProtectedImageSrc } from "@/lib/protected-image";
 import { restaurantData } from "@/lib/restaurant-data";
 import { SITE_NAME } from "@/lib/site";
@@ -13,7 +14,6 @@ export const metadata: Metadata = {
     "Cuisine simple et gourmande, carte du moment et menus de groupes pour réceptions, séminaires et événements.",
 };
 
-const reservationHref = "/contact";
 const quoteHref = "/contact";
 
 const secondaryButtonClass =
@@ -45,11 +45,12 @@ export default function RestaurantPage() {
         subtitle={restaurantData.name}
         description={restaurantData.intro.paragraphs[0]}
         backgroundImage="/images/cuisine.png"
-        ctaLabel="Réserver une table"
-        ctaHref={reservationHref}
-        secondaryCtaLabel="Carte du moment"
-        secondaryCtaHref="#carte"
-      />
+      >
+        <RestaurantReservationModal triggerLabel="Réserver une table" />
+        <Link className={secondaryButtonClass} href="#carte">
+          Carte du moment
+        </Link>
+      </PageHero>
 
       <main>
         <section className="bg-white py-16 sm:py-20" id="infos">
@@ -105,8 +106,9 @@ export default function RestaurantPage() {
                       overlayLabel: "Charles second de cuisine",
                     },
                     {
-                      src: "/restaurant/chef-1.jpg",
-                      alt: "Chef en finition d'une préparation",
+                      src: "/images/lotfi.png",
+                      alt: "Lotfi en cuisine",
+                      overlayLabel: "Lotfi",
                     },
                   ].map((member, index) => (
                     <div

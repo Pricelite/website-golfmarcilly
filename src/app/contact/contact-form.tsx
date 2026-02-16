@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import type { ContactActionState } from "@/app/contact/actions";
 import { sendContactEmail } from "@/app/contact/actions";
@@ -9,6 +10,10 @@ const initialState: ContactActionState = {
   ok: false,
   message: "",
 };
+
+const SCHOOL_INFO_TEMPLATE = "ecole-golf-info";
+const SCHOOL_INFO_MESSAGE =
+  "Je souhaite des informations sur l'ecole de golf de Marcilly.";
 
 function getInputClass(hasError: boolean): string {
   return `mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-emerald-950 outline-none transition ${
@@ -32,10 +37,13 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 export default function ContactForm() {
   const [state, formAction, pending] = useActionState(sendContactEmail, initialState);
+  const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const errors = state.fieldErrors ?? {};
+  const template = searchParams.get("template");
+  const isSchoolInfoTemplate = template === SCHOOL_INFO_TEMPLATE;
 
   useEffect(() => {
     if (!state.ok || !state.message) {
@@ -92,6 +100,13 @@ export default function ContactForm() {
             className="hidden"
           />
         </div>
+
+        <input
+          type="hidden"
+          name="template"
+          value={isSchoolInfoTemplate ? SCHOOL_INFO_TEMPLATE : ""}
+          readOnly
+        />
 
         <div className="grid gap-5 md:grid-cols-2">
           <div>
@@ -160,6 +175,7 @@ export default function ContactForm() {
               id="telephone"
               name="telephone"
               type="tel"
+              required={isSchoolInfoTemplate}
               maxLength={30}
               aria-invalid={Boolean(errors.telephone)}
               aria-describedby={errors.telephone ? "telephone-error" : undefined}
@@ -186,22 +202,32 @@ export default function ContactForm() {
           <FieldError id="email-error" message={errors.email} />
         </div>
 
-        <div>
-          <label className="text-sm font-semibold text-emerald-900" htmlFor="message">
-            La demande / le message *
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            required
-            maxLength={2000}
-            rows={7}
-            aria-invalid={Boolean(errors.message)}
-            aria-describedby={errors.message ? "message-error" : undefined}
-            className={getInputClass(Boolean(errors.message))}
-          />
-          <FieldError id="message-error" message={errors.message} />
-        </div>
+        {isSchoolInfoTemplate ? (
+          <div className="rounded-xl border border-emerald-900/10 bg-emerald-50 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">
+              Demande pre-remplie
+            </p>
+            <p className="mt-1 text-sm text-emerald-900">{SCHOOL_INFO_MESSAGE}</p>
+            <input type="hidden" name="message" value={SCHOOL_INFO_MESSAGE} readOnly />
+          </div>
+        ) : (
+          <div>
+            <label className="text-sm font-semibold text-emerald-900" htmlFor="message">
+              La demande / le message *
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              maxLength={2000}
+              rows={7}
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? "message-error" : undefined}
+              className={getInputClass(Boolean(errors.message))}
+            />
+            <FieldError id="message-error" message={errors.message} />
+          </div>
+        )}
 
         <p className="text-xs leading-5 text-emerald-900/70">
           Les données de ce formulaire sont utilisées uniquement pour traiter votre

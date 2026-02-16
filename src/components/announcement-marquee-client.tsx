@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { AnnouncementItem } from "@/lib/calendar-announcement-items";
 
-const DEFAULT_FALLBACK_TEXT = "Aucune competition dans les 7 prochains jours.";
+const DEFAULT_FALLBACK_TEXT = "Aucune compétition dans les 7 prochains jours.";
 
 function getPollIntervalMs(): number {
   const raw = process.env.NEXT_PUBLIC_CALENDAR_POLL_SECONDS;
@@ -74,8 +74,8 @@ export default function AnnouncementMarqueeClient({
           target="_blank"
           rel="noopener noreferrer"
           className={`${className} hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200`}
-          aria-label={`Acceder a l'annonce: ${item.text}`}
-          title="Acceder a l'annonce"
+          aria-label={`Accéder à l'annonce: ${item.text}`}
+          title="Accéder à l'annonce"
         >
           {item.text}
         </a>
@@ -88,7 +88,7 @@ export default function AnnouncementMarqueeClient({
   return (
     <section
       className="announcement-marquee border-b border-emerald-900/15 bg-emerald-100 text-black"
-      aria-label="Competitions du calendrier"
+      aria-label="Compétitions du calendrier"
     >
       <div className="w-full px-6 py-1.5">
         <div className="announcement-marquee__viewport w-full overflow-hidden">

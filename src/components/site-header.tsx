@@ -13,6 +13,7 @@ type NavItem = {
 };
 
 type ThemeMode = "light" | "dark";
+const THEME_STORAGE_KEY = "site-theme";
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Accueil", href: "/" },
@@ -52,11 +53,34 @@ function applyTheme(mode: ThemeMode) {
   root.style.colorScheme = mode;
 }
 
+function getPreferredThemeMode(): ThemeMode {
+  try {
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "light" || stored === "dark") {
+      return stored;
+    }
+  } catch {
+    // Ignore storage access errors and fall back to system preference.
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function getInitialDarkMode(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return getPreferredThemeMode() === "dark";
+}
+
 export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(getInitialDarkMode);
   const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -87,14 +111,19 @@ export default function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    applyTheme("light");
-  }, []);
+    applyTheme(isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
 
   function handleToggleTheme() {
     setIsDarkMode((current) => {
       const next = !current;
       const nextMode: ThemeMode = next ? "dark" : "light";
       applyTheme(nextMode);
+      try {
+        window.localStorage.setItem(THEME_STORAGE_KEY, nextMode);
+      } catch {
+        // Ignore storage write errors.
+      }
       return next;
     });
   }

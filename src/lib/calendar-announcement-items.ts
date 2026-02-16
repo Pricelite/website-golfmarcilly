@@ -23,7 +23,7 @@ function formatFrenchDate(dateKey: string): string {
 
 export function mapPlanningEventsToAnnouncementItems(
   events: readonly PlanningEvent[],
-  fallbackText: string = "Aucune competition dans les 7 prochains jours."
+  fallbackText: string = "Aucune comp\u00e9tition dans les 7 prochains jours."
 ): AnnouncementItem[] {
   const todayKey = getDateKeyInTimeZone(new Date(), "Europe/Paris");
   if (events.length === 0) {
@@ -40,7 +40,7 @@ export function mapPlanningEventsToAnnouncementItems(
           : `Dans ${daysUntil} jours`;
     const timePart = event.time ? ` - ${event.time}` : "";
     const locationPart = event.location ? ` - ${event.location}` : "";
-    const text = `Competition: ${event.title} - ${formatFrenchDate(event.date)}${timePart}${locationPart} - ${relative}`;
+    const text = `Comp\u00e9tition : ${event.title} - ${formatFrenchDate(event.date)}${timePart}${locationPart} - ${relative}`;
 
     return {
       id: event.id,
