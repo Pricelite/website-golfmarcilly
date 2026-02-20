@@ -29,11 +29,6 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Association sportive",
     href: "/association-sportive",
-    children: [
-      { label: "Comp\u00e9titions", href: "/association-sportive/competitions" },
-      { label: "Classements", href: "/association-sportive/classements" },
-      { label: "Adh\u00e9sion", href: "/association-sportive/adhesion" },
-    ],
   },
   { label: "Acad\u00e9mie", href: "/academie" },
   { label: "Contact", href: "/contact" },
@@ -132,7 +127,6 @@ export default function SiteHeader() {
       return next;
     });
   }
-
 
   return (
     <header

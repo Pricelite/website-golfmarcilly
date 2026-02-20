@@ -9,9 +9,6 @@ const ROUTES = [
   "/enseignement",
   "/tarifs",
   "/association-sportive",
-  "/association-sportive/competitions",
-  "/association-sportive/classements",
-  "/association-sportive/adhesion",
   "/academie",
   "/vie-du-club",
 ] as const;

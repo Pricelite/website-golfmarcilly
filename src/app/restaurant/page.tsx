@@ -108,7 +108,7 @@ export default function RestaurantPage() {
                     {
                       src: "/images/lotfi.png",
                       alt: "Lotfi en cuisine",
-                      overlayLabel: "Lotfi",
+                      overlayLabel: "Lotfi second de cuisine",
                     },
                   ].map((member, index) => (
                     <div

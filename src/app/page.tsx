@@ -177,6 +177,7 @@ export default async function Home() {
         secondaryCtaExternal
         tertiaryCtaLabel="Tarifs 2026"
         tertiaryCtaHref="/tarifs"
+        showBackButton={false}
       />
 
       <main>
@@ -338,6 +339,7 @@ export default async function Home() {
     </div>
   );
 }
+
 
 
 

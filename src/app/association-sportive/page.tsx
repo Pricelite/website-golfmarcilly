@@ -16,7 +16,7 @@ export default function Page() {
       eyebrow="Association sportive"
       description="Nous préparons la page avec règlements, calendrier et modalités d'adhésion."
       cta={{ label: "Rejoindre l'association", href: CONTACT_EMAIL_LINK }}
-      secondaryCta={{ label: "Voir les compétitions", href: "/association-sportive/competitions" }}
+      secondaryCta={{ label: "Nous contacter", href: CONTACT_EMAIL_LINK }}
     />
   );
 }

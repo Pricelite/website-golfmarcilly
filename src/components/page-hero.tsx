@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { toProtectedImageSrc } from "@/lib/protected-image";
+import HeroBackButton from "@/components/hero-back-button";
 
 type PageHeroProps = {
   title: string;
@@ -17,6 +18,7 @@ type PageHeroProps = {
   tertiaryCtaLabel?: string;
   tertiaryCtaHref?: string;
   tertiaryCtaExternal?: boolean;
+  showBackButton?: boolean;
   children?: ReactNode;
 };
 
@@ -90,6 +92,7 @@ export default function PageHero({
   tertiaryCtaLabel,
   tertiaryCtaHref,
   tertiaryCtaExternal = false,
+  showBackButton = true,
   children,
 }: PageHeroProps) {
   const hasBackground = Boolean(backgroundImage);
@@ -130,6 +133,11 @@ export default function PageHero({
     <section className={`hero ${hasBackground ? "hero--image" : ""}`} style={style}>
       <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-14 md:py-16">
         <div className="max-w-2xl rounded-[32px] bg-white/75 p-10 shadow-2xl shadow-emerald-900/10 backdrop-blur">
+          {showBackButton ? (
+            <div className="mb-4">
+              <HeroBackButton />
+            </div>
+          ) : null}
           <h1 className="font-[var(--font-display)] text-4xl leading-tight text-emerald-950 md:text-5xl">
             {title}
           </h1>
