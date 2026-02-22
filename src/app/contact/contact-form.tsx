@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import type { ContactActionState } from "@/app/contact/actions";
@@ -13,7 +13,7 @@ const initialState: ContactActionState = {
 
 const SCHOOL_INFO_TEMPLATE = "ecole-golf-info";
 const SCHOOL_INFO_MESSAGE =
-  "Je souhaite des informations sur l'ecole de golf de Marcilly.";
+  "Je souhaite des informations sur l'école de golf de Marcilly.";
 
 function getInputClass(hasError: boolean): string {
   return `mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-emerald-950 outline-none transition ${
@@ -21,6 +21,24 @@ function getInputClass(hasError: boolean): string {
       ? "border-rose-500 focus-visible:ring-2 focus-visible:ring-rose-300"
       : "border-emerald-900/20 focus-visible:ring-2 focus-visible:ring-emerald-300"
   }`;
+}
+
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  const selector = [
+    "a[href]",
+    "button:not([disabled])",
+    "textarea:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+  ].join(",");
+
+  return Array.from(container.querySelectorAll<HTMLElement>(selector)).filter(
+    (element) =>
+      !element.hasAttribute("disabled") &&
+      element.getAttribute("aria-hidden") !== "true" &&
+      element.tabIndex !== -1
+  );
 }
 
 function FieldError({ id, message }: { id: string; message?: string }) {
@@ -39,11 +57,18 @@ export default function ContactForm() {
   const [state, formAction, pending] = useActionState(sendContactEmail, initialState);
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement | null>(null);
+  const successDialogRef = useRef<HTMLDivElement | null>(null);
+  const successCloseButtonRef = useRef<HTMLButtonElement | null>(null);
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const errors = state.fieldErrors ?? {};
   const template = searchParams.get("template");
   const isSchoolInfoTemplate = template === SCHOOL_INFO_TEMPLATE;
+
+  const closeSuccessModal = useCallback(() => {
+    setIsSuccessModalOpen(false);
+  }, []);
 
   useEffect(() => {
     if (!state.ok || !state.message) {
@@ -52,6 +77,7 @@ export default function ContactForm() {
 
     formRef.current?.reset();
     const openTimer = window.setTimeout(() => {
+      lastFocusedElementRef.current = document.activeElement as HTMLElement | null;
       setIsSuccessModalOpen(true);
       setShowValidation(false);
     }, 0);
@@ -71,20 +97,72 @@ export default function ContactForm() {
       return;
     }
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const focusTimer = window.setTimeout(() => {
+      const dialogElement = successDialogRef.current;
+      if (!dialogElement) {
+        return;
+      }
+
+      const firstFocusable =
+        successCloseButtonRef.current ?? getFocusableElements(dialogElement)[0];
+      firstFocusable?.focus();
+    }, 0);
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setIsSuccessModalOpen(false);
+        event.preventDefault();
+        closeSuccessModal();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const dialogElement = successDialogRef.current;
+      if (!dialogElement) {
+        return;
+      }
+
+      const focusables = getFocusableElements(dialogElement);
+      if (focusables.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstElement = focusables[0];
+      const lastElement = focusables[focusables.length - 1];
+      const activeElement = document.activeElement as HTMLElement | null;
+      const isInsideDialog = activeElement
+        ? dialogElement.contains(activeElement)
+        : false;
+
+      if (event.shiftKey) {
+        if (!isInsideDialog || activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+        return;
+      }
+
+      if (!isInsideDialog || activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     }
 
-    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
+      lastFocusedElementRef.current?.focus();
     };
-  }, [isSuccessModalOpen]);
+  }, [closeSuccessModal, isSuccessModalOpen]);
 
   return (
     <>
@@ -205,7 +283,7 @@ export default function ContactForm() {
         {isSchoolInfoTemplate ? (
           <div className="rounded-xl border border-emerald-900/10 bg-emerald-50 px-4 py-3">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">
-              Demande pre-remplie
+              Demande pré-remplie
             </p>
             <p className="mt-1 text-sm text-emerald-900">{SCHOOL_INFO_MESSAGE}</p>
             <input type="hidden" name="message" value={SCHOOL_INFO_MESSAGE} readOnly />
@@ -252,12 +330,20 @@ export default function ContactForm() {
       </form>
 
       {isSuccessModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-950/50 px-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
+          <button
+            type="button"
+            aria-label="Fermer la fenêtre de confirmation"
+            onClick={closeSuccessModal}
+            className="absolute inset-0 bg-emerald-950/50"
+          />
           <div
+            ref={successDialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="contact-success-title"
-            className="w-full max-w-md rounded-3xl border border-emerald-900/10 bg-white p-8 text-center shadow-2xl shadow-emerald-900/20"
+            aria-describedby="contact-success-description"
+            className="relative z-10 w-full max-w-md rounded-3xl border border-emerald-900/10 bg-white p-8 text-center shadow-2xl shadow-emerald-900/20"
           >
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
               {showValidation ? (
@@ -287,13 +373,17 @@ export default function ContactForm() {
             >
               Message envoyé
             </h3>
-            <p className="mt-3 text-sm leading-6 text-emerald-900/75">
+            <p
+              id="contact-success-description"
+              className="mt-3 text-sm leading-6 text-emerald-900/75"
+            >
               Votre e-mail est bien envoyé et sera traité dans les meilleurs délais.
             </p>
 
             <button
+              ref={successCloseButtonRef}
               type="button"
-              onClick={() => setIsSuccessModalOpen(false)}
+              onClick={closeSuccessModal}
               className="mt-6 inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-2.5 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800"
             >
               Fermer

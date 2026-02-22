@@ -268,7 +268,9 @@ export async function getTodayWeather(): Promise<TodayWeather | null> {
 
   try {
     const response = await fetch(url, {
-      cache: "no-store",
+      next: {
+        revalidate: 300,
+      },
     });
 
     if (!response.ok) {

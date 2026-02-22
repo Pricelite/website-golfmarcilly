@@ -97,7 +97,8 @@ export async function GET(
       status: 200,
       headers: {
         "Content-Type": getMimeType(sanitizedPath),
-        "Cache-Control": "private, no-store, max-age=0",
+        "Cache-Control":
+          "public, max-age=86400, stale-while-revalidate=604800",
         "X-Content-Type-Options": "nosniff",
         "X-Robots-Tag": "noimageindex, noarchive",
         "Content-Disposition": "inline",

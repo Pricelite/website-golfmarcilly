@@ -7,10 +7,14 @@ const ROUTES = [
   "/contact",
   "/restaurant",
   "/enseignement",
+  "/enseignement/cours-individuels",
+  "/enseignement/ecole-de-golf",
+  "/enseignement/stages",
   "/tarifs",
   "/association-sportive",
   "/academie",
   "/vie-du-club",
+  "/vie-du-club/tarifs",
 ] as const;
 
 function getLastModifiedDate(): Date | undefined {

@@ -27,6 +27,12 @@ const metadataBase = getMetadataBase();
 
 export const metadata: Metadata = {
   metadataBase,
+  alternates: {
+    canonical: "/",
+    languages: {
+      "fr-FR": "/",
+    },
+  },
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,

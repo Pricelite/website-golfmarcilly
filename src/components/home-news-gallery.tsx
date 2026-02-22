@@ -62,6 +62,24 @@ function waitForAnimation(animation: Animation | undefined): Promise<void> {
   );
 }
 
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  const selector = [
+    "a[href]",
+    "button:not([disabled])",
+    "textarea:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+  ].join(",");
+
+  return Array.from(container.querySelectorAll<HTMLElement>(selector)).filter(
+    (element) =>
+      !element.hasAttribute("disabled") &&
+      element.getAttribute("aria-hidden") !== "true" &&
+      element.tabIndex !== -1
+  );
+}
+
 export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
   const [selectedAsset, setSelectedAsset] = useState<HomeNewsAsset | null>(null);
   const [phase, setPhase] = useState<ModalPhase>("opening");
@@ -69,6 +87,7 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
   const [modalRatio, setModalRatio] = useState<number>(3 / 4);
 
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
 
@@ -90,15 +109,62 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
       return;
     }
 
+    const focusTimer = window.setTimeout(() => {
+      const dialogElement = dialogRef.current;
+      if (!dialogElement) {
+        return;
+      }
+
+      const firstFocusable = closeButtonRef.current ?? getFocusableElements(dialogElement)[0];
+      firstFocusable?.focus();
+    }, 0);
+
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
         setPhase("closing");
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const dialogElement = dialogRef.current;
+      if (!dialogElement) {
+        return;
+      }
+
+      const focusables = getFocusableElements(dialogElement);
+      if (focusables.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstElement = focusables[0];
+      const lastElement = focusables[focusables.length - 1];
+      const activeElement = document.activeElement as HTMLElement | null;
+      const isInsideDialog = activeElement
+        ? dialogElement.contains(activeElement)
+        : false;
+
+      if (event.shiftKey) {
+        if (!isInsideDialog || activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+        return;
+      }
+
+      if (!isInsideDialog || activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     }
 
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      window.clearTimeout(focusTimer);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [selectedAsset]);
@@ -301,6 +367,7 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
                   }}
                 >
                   <button
+                    ref={closeButtonRef}
                     type="button"
                     onClick={handleClose}
                     className="absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 bg-white/95 text-xl font-semibold text-zinc-900 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2"

@@ -3,6 +3,11 @@ import { NextResponse } from "next/server";
 import { getRestaurantReservationEnv } from "@/lib/env";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 import { generateTimeSlots } from "@/lib/restaurant/slots";
+import {
+  consumeRateLimit,
+  hasTrustedOrigin,
+  parseClientIpFromHeaders,
+} from "@/lib/security/request-guards";
 
 type ReservationRequestBody = {
   day: string;
@@ -24,6 +29,8 @@ const MAX_MESSAGE_LENGTH = 1200;
 const MAX_PARTY_SIZE = 30;
 const MIN_ADVANCE_MINUTES = 30;
 const PARIS_TIME_ZONE = "Europe/Paris";
+const RESERVATION_RATE_LIMIT_MAX_REQUESTS = 8;
+const RESERVATION_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const ALLOWED_SLOTS = new Set(generateTimeSlots("12:00", "14:30", 30));
 const CLIENT_ACK_TEXT =
   "Nous regardons la disponibilit\u00e9 et nous allons vous confirmer par mail dans les plus brefs d\u00e9lais.";
@@ -291,6 +298,34 @@ function buildClientAckEmail(payload: ReservationRequestBody) {
 }
 
 export async function POST(request: Request) {
+  const fallbackHost = new URL(request.url).host;
+  if (!hasTrustedOrigin(request.headers, { fallbackHost })) {
+    return NextResponse.json(
+      { ok: false, error: "Origine de requete non autorisee." },
+      { status: 403 }
+    );
+  }
+
+  const requesterIp = parseClientIpFromHeaders(request.headers);
+  const rateLimit = consumeRateLimit({
+    namespace: "restaurant-reservation",
+    identifier: requesterIp,
+    limit: RESERVATION_RATE_LIMIT_MAX_REQUESTS,
+    windowMs: RESERVATION_RATE_LIMIT_WINDOW_MS,
+  });
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "Trop de tentatives. Merci de reessayer plus tard." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      }
+    );
+  }
+
   let payload: unknown = null;
 
   try {

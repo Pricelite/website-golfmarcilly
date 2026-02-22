@@ -1,7 +1,14 @@
 "use server";
 
+import { headers } from "next/headers";
+
 import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
 import { MailerError, sendMail } from "@/lib/email/mailer";
+import {
+  consumeRateLimit,
+  hasTrustedOrigin,
+  parseClientIpFromHeaders,
+} from "@/lib/security/request-guards";
 
 type ContactPayload = {
   nom: string;
@@ -32,6 +39,8 @@ const PHONE_MAX_LENGTH = 30;
 const COMPANY_MAX_LENGTH = 120;
 const MESSAGE_PREVIEW_LIMIT = 300;
 const SCHOOL_INFO_TEMPLATE = "ecole-golf-info";
+const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
+const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const SCHOOL_INFO_MESSAGE =
   "Je souhaite des informations sur l'ecole de golf de Marcilly.";
 
@@ -192,6 +201,30 @@ export async function sendContactEmail(
   _prevState: ContactActionState,
   formData: FormData
 ): Promise<ContactActionState> {
+  const requestHeaders = await headers();
+  if (!hasTrustedOrigin(requestHeaders)) {
+    return {
+      ok: false,
+      message:
+        "Requete refusee. Merci de recharger la page puis de reessayer.",
+    };
+  }
+
+  const requesterIp = parseClientIpFromHeaders(requestHeaders);
+  const rateLimit = consumeRateLimit({
+    namespace: "contact-form",
+    identifier: requesterIp,
+    limit: CONTACT_RATE_LIMIT_MAX_REQUESTS,
+    windowMs: CONTACT_RATE_LIMIT_WINDOW_MS,
+  });
+
+  if (!rateLimit.allowed) {
+    return {
+      ok: false,
+      message: `Trop de tentatives. Merci de reessayer dans ${rateLimit.retryAfterSeconds}s.`,
+    };
+  }
+
   const rawTemplate = getStringValue(formData, "template");
   const template: ContactTemplate =
     rawTemplate === SCHOOL_INFO_TEMPLATE ? SCHOOL_INFO_TEMPLATE : "";
