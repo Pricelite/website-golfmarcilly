@@ -25,6 +25,7 @@
 *.pem
 .codex/
 .contact-fallback/
+.vscode/
 
 # debug
 npm-debug.log*
