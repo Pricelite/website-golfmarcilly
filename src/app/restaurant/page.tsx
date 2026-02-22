@@ -37,6 +37,81 @@ function splitEuroPrice(price: string): {
   return { amount, hasEuro: true, suffix };
 }
 
+function BergerieMenusSection() {
+  return (
+    <section className="bg-emerald-50/60 py-16 sm:py-20" id="menus-bergerie">
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <div className="flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
+            Restaurant La Bergerie
+          </p>
+          <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
+            la Bergerie — les Menus
+          </h2>
+        </div>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
+            <h3 className="text-lg font-semibold text-emerald-950">Menu Enfant</h3>
+            <p className="mt-3 text-sm font-semibold text-emerald-900 tabular-nums">12€</p>
+            <ul className="mt-4 space-y-2 text-sm text-emerald-900/80">
+              <li>Nuggets ou Steak haché ou Fish pané</li>
+              <li>Accompagnement : Frites</li>
+              <li>1 glace au choix (2 boules, Smarties ou Oréo)</li>
+              <li>1 boisson au choix : Sirop à l’eau ou Diabolo</li>
+            </ul>
+          </article>
+
+          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
+            <h3 className="text-lg font-semibold text-emerald-950">Formule Bergerie</h3>
+            <div className="mt-5">
+              <p className="text-sm font-semibold text-emerald-900 tabular-nums">15€</p>
+              <p className="mt-2 text-sm text-emerald-900/80">Entrée du jour + Plat du jour</p>
+              <p className="mt-2 text-[11px] uppercase tracking-[0.3em] text-emerald-600/80">
+                OU
+              </p>
+              <p className="mt-2 text-sm text-emerald-900/80">Plat du jour + Dessert du jour</p>
+            </div>
+            <div className="mt-5">
+              <p className="text-sm font-semibold text-emerald-900 tabular-nums">17€</p>
+              <p className="mt-2 text-sm text-emerald-900/80">
+                Entrée du jour + Plat du jour + Dessert du jour
+              </p>
+            </div>
+            <p className="mt-auto pt-6 text-sm text-emerald-900/70">
+              Disponible du lundi midi au vendredi midi.
+            </p>
+          </article>
+
+          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
+            <h3 className="text-lg font-semibold text-emerald-950">Formule Par</h3>
+            <p className="mt-3 text-sm font-semibold text-emerald-900 tabular-nums">26€</p>
+            <div className="mt-3 space-y-2 text-sm text-emerald-900/80">
+              <p>Entrée + Plat</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-600/80">OU</p>
+              <p>Plat + Dessert</p>
+            </div>
+            <p className="mt-auto pt-6 text-sm text-emerald-900/70">
+              Supplément 5€ : Sole ou Pièce du Boucher.
+            </p>
+          </article>
+
+          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
+            <h3 className="text-lg font-semibold text-emerald-950">Formule Birdie</h3>
+            <p className="mt-3 text-sm font-semibold text-emerald-900 tabular-nums">33€</p>
+            <div className="mt-3 text-sm text-emerald-900/80">
+              <p>Entrée + Plat + Dessert</p>
+            </div>
+            <p className="mt-auto pt-6 text-sm text-emerald-900/70">
+              Supplément 5€ : Sole ou Pièce du Boucher.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function RestaurantPage() {
   return (
     <div className="text-emerald-950">
@@ -149,6 +224,9 @@ export default function RestaurantPage() {
           </div>
         </section>
 
+        {/* Menus signatures affichés au-dessus de la carte du moment. */}
+        <BergerieMenusSection />
+
         <section className="bg-white py-16 sm:py-20" id="carte">
           <div className="mx-auto w-full max-w-6xl px-6">
             <div className="flex flex-col gap-3">
@@ -164,7 +242,7 @@ export default function RestaurantPage() {
               {restaurantData.carte.sections.map((section) => (
                 <div
                   key={section.title}
-                  className="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm"
+                  className="rounded-3xl border border-emerald-900/10 bg-emerald-50/60 p-6 shadow-sm"
                 >
                   <h3 className="text-lg font-semibold text-emerald-950">
                     {section.title}

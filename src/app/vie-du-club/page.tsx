@@ -2,9 +2,7 @@
 import Image from "next/image";
 
 import PageHero from "@/components/page-hero";
-import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import TarifsSections from "@/components/tarifs-sections";
-import { CALENDAR_EMBED_URL } from "@/lib/calendar";
 import { toProtectedImageSrc } from "@/lib/protected-image";
 
 export const metadata: Metadata = {
@@ -51,14 +49,24 @@ const sallePhotos: TeamPhoto[] = [
 ];
 
 const enseignantPhotos: TeamPhoto[] = [
-  { name: "Roman", src: "/roman.png", position: "50% 30%" },
+  {
+    name: "Roman",
+    src: "/roman.png",
+    position: "50% 30%",
+    href: "https://www.romanlissowski.com/",
+  },
   {
     name: "Adrien",
     src: "/adrien.png",
     position: "50% 30%",
     href: "https://www.adrienlafuge.com/",
   },
-  { name: "Baptiste", src: "/baptiste.png", position: "50% 30%" },
+  {
+    name: "Baptiste",
+    src: "/baptiste.png",
+    position: "50% 30%",
+    href: "https://baptistecourtachon.com/",
+  },
 ];
 
 function TeamPhotoGrid({
@@ -242,24 +250,6 @@ export default function Page() {
             </div>
           </div>
         </section>
-
-        <section id="evenements" className={sectionClass}>
-          <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-            Événements
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Consultez les prochaines dates et animations du club via le
-            calendrier public.
-          </p>
-          <div className="mt-8">
-            <PublicCalendarEmbed
-              title="Calendrier public du club"
-              src={CALENDAR_EMBED_URL}
-              highlightWeekends
-            />
-          </div>
-        </section>
-
 
         <section id="tarifs" className={sectionClass}>
           <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">

@@ -1,5 +1,14 @@
-﻿import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Cours individuels",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function Page() {
-  redirect("/enseignement");
+  permanentRedirect("/enseignement");
 }

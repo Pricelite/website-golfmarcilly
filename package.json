@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "next typegen && node -e \"const fs=require('fs');const path=require('path');const target=path.join('.next','types','cache-life.d.ts');const source=path.join('.next','dev','types','cache-life.d.ts');if(!fs.existsSync(target)){fs.mkdirSync(path.dirname(target),{recursive:true});if(fs.existsSync(source)){fs.copyFileSync(source,target);}else{fs.writeFileSync(target,'// generated fallback for typecheck\\n');}}\" && tsc -p tsconfig.json --noEmit --incremental false"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.93.3",
