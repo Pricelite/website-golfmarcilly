@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 
 import PageHero from "@/components/page-hero";
 import PublicCalendarEmbed from "@/components/public-calendar-embed";
+import HomeNewsGallery, { type HomeNewsAsset } from "@/components/home-news-gallery";
 import { CALENDAR_EMBED_URL } from "@/lib/calendar";
 import { PRIMA_URL } from "@/lib/prima";
 import { SITE_DESCRIPTION } from "@/lib/site";
-import { toProtectedImageSrc } from "@/lib/protected-image";
 import { getTodayWeather, type TodayWeather } from "@/lib/weather";
 
 export const metadata: Metadata = {
@@ -14,11 +13,12 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
 };
 
-const clubGolfUrl =
-  "https://leclub-golf.com/fr/green-fees/france/5-golf-de-marcilly";
 const todayLabel = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "full",
 }).format(new Date());
+const leClubGolfUrl = "https://leclub-golf.com";
+const heroHeaderGrayButtonClass =
+  "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white/80 px-5 py-2.5 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white";
 
 const dailyStatus = [
   { label: "Practice", status: "open" },
@@ -30,10 +30,25 @@ const dailyStatus = [
   { label: "Restaurant La Bergerie", status: "open" },
 ];
 
-const HOME_NEWS_ASSETS = [
-  { title: "Actualité 1", src: "/images/Dec Jeunes 2026.png" },
-  { title: "Actualité 2", src: "/images/gp 2026 - 2.png" },
-  { title: "Actualité 3", src: "/images/gp 2026 - 2.png" },
+const HOME_NEWS_ASSETS: readonly HomeNewsAsset[] = [
+  {
+    title: "Actualité 1",
+    src: "/images/Dec Jeunes 2026.png",
+    icon: "youth",
+    iconLabel: "Jeunes",
+  },
+  {
+    title: "Actualité 2",
+    src: "/images/initiation golf 2026.png",
+    icon: "initiation",
+    iconLabel: "Initiation",
+  },
+  {
+    title: "Actualité 3",
+    src: "/images/RUGBY.png",
+    icon: "rugby",
+    iconLabel: "Rugby",
+  },
 ] as const;
 
 function WeatherIllustration({
@@ -169,16 +184,28 @@ export default async function Home() {
       <PageHero
         title="Golf de Marcilly-Orléans"
         backgroundImage="/images/club-house-marcilly.png"
-        ctaLabel="Réserver un départ"
-        ctaHref={PRIMA_URL}
-        ctaExternal
-        secondaryCtaLabel="Réserver Le ClubGolf"
-        secondaryCtaHref={clubGolfUrl}
-        secondaryCtaExternal
-        tertiaryCtaLabel="Tarifs 2026"
-        tertiaryCtaHref="/tarifs"
         showBackButton={false}
-      />
+      >
+        <a
+          href={PRIMA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={heroHeaderGrayButtonClass}
+        >
+          Réserver un départ
+        </a>
+        <a
+          href={leClubGolfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={heroHeaderGrayButtonClass}
+        >
+          Le ClubGolf
+        </a>
+        <a href="/tarifs" className={heroHeaderGrayButtonClass}>
+          Tarifs 2026
+        </a>
+      </PageHero>
 
       <main>
         <section className="mx-auto w-full max-w-6xl px-6 py-12" id="info-jour">
@@ -311,27 +338,7 @@ export default async function Home() {
               vous abonner pour recevoir les informations importantes.
             </p>
             <article className="mt-6 rounded-2xl border border-emerald-900/10 bg-white p-4">
-              <div className="mt-3 grid gap-3 md:grid-cols-3">
-                {HOME_NEWS_ASSETS.map((asset, index) => (
-                  <div
-                    key={`${asset.src}-${index}`}
-                    className="overflow-hidden rounded-xl border border-emerald-900/10 bg-emerald-50/20"
-                  >
-                    <p className="px-3 pt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                      {asset.title}
-                    </p>
-                    <div className="relative mt-3 aspect-[3/4] w-full overflow-hidden bg-white/80">
-                      <Image
-                        src={toProtectedImageSrc(asset.src)}
-                        alt={`Actualité ${index + 1}`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <HomeNewsGallery assets={HOME_NEWS_ASSETS} />
             </article>
           </div>
         </section>
