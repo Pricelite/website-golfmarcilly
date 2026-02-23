@@ -74,3 +74,79 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Initiation Reservation Module (Production)
+
+### Features
+
+- Public booking page: `/initiation/reservation`
+- Slot API: `GET /api/slots`
+- Booking + SumUp checkout API: `POST /api/reservations`
+- Reservation status API: `GET /api/reservations/:id`
+- SumUp webhook API: `POST /api/sumup/webhook`
+- Payment return pages:
+  - `/payment/success`
+  - `/payment/cancel`
+- Admin dashboard protected by password: `/admin`
+
+### Supabase Migration
+
+Run the SQL migration:
+
+- File: `supabase/migrations/20260223_initiation_reservations.sql`
+- Apply it with Supabase SQL Editor or Supabase CLI migration workflow.
+
+This migration creates:
+
+- `initiation_session_slots`
+- `initiation_reservations`
+- a transactional function `create_initiation_reservation(...)` to prevent overbooking
+
+### Required Environment Variables
+
+Keep existing Supabase public vars and add:
+
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUMUP_API_KEY`
+- `SUMUP_MERCHANT_CODE`
+- `APP_BASE_URL` (example: `https://www.golfdemarcilly.fr`)
+- `ADMIN_PASSWORD`
+
+Optional:
+
+- `SUMUP_API_BASE_URL` (defaults to `https://api.sumup.com`)
+- `SUMUP_WEBHOOK_SECRET` (reserved for stricter webhook validation)
+
+### Capacity and Concurrency Rules
+
+- Booking allowed only within next 7 days (rolling window, server-side enforced).
+- Slots generated only on Friday, Saturday, Sunday.
+- Fixed slot templates:
+  - `11:00-12:00`
+  - `14:00-15:00`
+- Capacity = 15 participants per slot.
+- Pending reservations expire after 10 minutes.
+- Overbooking is prevented by database transaction function.
+
+### Payment Flow
+
+1. `POST /api/reservations` validates payload server-side.
+2. Reservation created as `PENDING` with 10-min expiration.
+3. SumUp hosted checkout is created server-side.
+4. User is redirected to SumUp checkout URL.
+5. Status is synchronized through webhook and success polling.
+
+### Local Verification Checklist
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
+Then verify:
+
+- `/tarifs` buttons redirect to `/initiation/reservation`
+- booking form calculates total correctly
+- full slots display as `Complet`
+- `/admin` login works with `ADMIN_PASSWORD`

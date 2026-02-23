@@ -1,4 +1,5 @@
-﻿export default function TarifsSections() {
+import Link from "next/link";
+export default function TarifsSections() {
   return (
     <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
       <div>
@@ -7,16 +8,30 @@
         </h2>
         <div className="mt-5 space-y-4 text-sm text-emerald-900/80">
           <div>
-            <p className="font-semibold text-emerald-950">
-              Demi-journée découverte - 25 €
+            <p className="grid grid-cols-[1fr_auto] items-baseline gap-3 font-semibold text-emerald-950">
+              <span>Demi-journée découverte</span>
+              <span className="text-right tabular-nums">25 €</span>
             </p>
             <p>Initiation encadrée - Parcours 9 trous</p>
+            <Link
+              className="mt-3 inline-flex rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+              href="/initiation/reservation?mealOption=WITHOUT_MEAL"
+            >
+              Payer en ligne
+            </Link>
           </div>
           <div>
-            <p className="font-semibold text-emerald-950">
-              Journée découverte - 48 €
+            <p className="grid grid-cols-[1fr_auto] items-baseline gap-3 font-semibold text-emerald-950">
+              <span>Journée découverte</span>
+              <span className="text-right tabular-nums">48 €</span>
             </p>
             <p>Initiation encadrée - repas - Parcours 9 trous</p>
+            <Link
+              className="mt-3 inline-flex rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+              href="/initiation/reservation?mealOption=WITH_MEAL"
+            >
+              Payer en ligne
+            </Link>
           </div>
         </div>
       </div>
@@ -29,7 +44,7 @@
           Prêt d&apos;un club par seau et par personne.
         </p>
         <div className="mt-5 overflow-x-auto">
-          <table className="min-w-full text-left text-sm text-emerald-900/80">
+          <table className="min-w-full text-left text-sm text-emerald-900/80 [&_td:nth-child(n+2)]:text-right [&_td:nth-child(n+2)]:tabular-nums [&_th:nth-child(n+2)]:text-right">
             <caption className="sr-only">Tarifs practice 2026</caption>
             <thead>
               <tr className="border-b border-emerald-900/10">
@@ -85,7 +100,7 @@
           Green fees
         </h2>
         <div className="mt-5 overflow-x-auto">
-          <table className="min-w-full text-left text-sm text-emerald-900/80">
+          <table className="min-w-full text-left text-sm text-emerald-900/80 [&_td:nth-child(n+2)]:text-right [&_td:nth-child(n+2)]:tabular-nums [&_th:nth-child(n+2)]:text-right">
             <caption className="sr-only">Tarifs green fees 2026</caption>
             <thead>
               <tr className="border-b border-emerald-900/10">
@@ -166,7 +181,7 @@
           Location
         </h2>
         <div className="mt-5 overflow-x-auto">
-          <table className="min-w-full text-left text-sm text-emerald-900/80">
+          <table className="min-w-full text-left text-sm text-emerald-900/80 [&_td:nth-child(n+2)]:text-right [&_td:nth-child(n+2)]:tabular-nums [&_th:nth-child(n+2)]:text-right">
             <caption className="sr-only">Tarifs location 2026</caption>
             <thead>
               <tr className="border-b border-emerald-900/10">
@@ -228,47 +243,139 @@
         <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
           Abonnements
         </h2>
-        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+	        <div className="mt-5 grid gap-4 lg:grid-cols-3">
           <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5">
-            <h3 className="text-base font-semibold text-emerald-950">
+            <h3 className="text-base font-semibold text-black">
               27 trous temps plein (7J/7)
             </h3>
+            <p className="mt-2 text-sm text-black">
+              9 trous découverte + 18 trous Pitch &amp; Putt et Kaleka 7J/7
+            </p>
             <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
-              <li>30 ans et moins - 384 €*</li>
-              <li>31-74 ans - 744 €*</li>
-              <li>75 ans et + - 492 €*</li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>30 ans et moins</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  384 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>31-74 ans</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  744 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>75 ans et +</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  492 €*
+                </span>
+              </li>
             </ul>
           </article>
 
           <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5">
-            <h3 className="text-base font-semibold text-emerald-950">
+            <h3 className="text-base font-semibold text-black">
               45 trous semainier (5J/7)
             </h3>
+            <p className="mt-2 text-sm text-black">
+              9 trous découverte + 18 trous Pitch &amp; Putt et Kaleka + 18
+              trous compétition hors week-end et jours fériés
+            </p>
             <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
-              <li>74 ans et moins - 1080 €*</li>
-              <li>Couple 74 ans et moins - 1836 €*</li>
-              <li>75 ans et plus - 816 €*</li>
-              <li>Couple 75 ans et plus - 1428 €*</li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>74 ans et moins</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  1080 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>Couple 74 ans et moins</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  1836 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>75 ans et plus</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  816 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>Couple 75 ans et plus</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  1428 €*
+                </span>
+              </li>
             </ul>
           </article>
 
           <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5">
-            <h3 className="text-base font-semibold text-emerald-950">
+            <h3 className="text-base font-semibold text-black">
               45 trous temps plein (7J/7)
             </h3>
+            <p className="mt-2 text-sm text-black">
+              9 trous découverte + 18 trous Pitch &amp; Putt et Kaleka + 18
+              trous compétition 7J/7
+            </p>
             <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
-              <li>25 ans et moins - 576 €*</li>
-              <li>26 ans - 35 ans - 948 €*</li>
-              <li>Couple 26 ans - 35 ans - 1512 €*</li>
-              <li>36 ans - 74 ans - 1344 €*</li>
-              <li>Couple 36 ans - 74 ans - 2292 €*</li>
-              <li>75 ans et plus - 936 €*</li>
-              <li>Couple 75 ans et plus - 1596 €*</li>
-              <li>Offre 2ème club - 750 €</li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>25 ans et moins</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  576 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>26 ans - 35 ans</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  948 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>Couple 26 ans - 35 ans</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  1512 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>36 ans - 74 ans</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  1344 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>Couple 36 ans - 74 ans</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  2292 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>75 ans et plus</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  936 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>Couple 75 ans et plus</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  1596 €*
+                </span>
+              </li>
+              <li className="grid grid-cols-[1fr_auto] items-baseline gap-3">
+                <span>Offre 2ème club</span>
+                <span className="text-right font-semibold text-black tabular-nums">
+                  750 €
+                </span>
+              </li>
             </ul>
-          </article>
-        </div>
-      </div>
-    </section>
+	          </article>
+	        </div>
+	        <div className="mt-4 rounded-2xl border border-emerald-900/10 bg-white p-4 text-sm text-emerald-900/80">
+	          <p>
+	            <span className="font-semibold text-black">*</span> 1 mois offert
+	            si paiement comptant.
+	          </p>
+	        </div>
+	      </div>
+	    </section>
   );
 }
