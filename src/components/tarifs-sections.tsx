@@ -223,6 +223,52 @@
           </table>
         </div>
       </div>
+
+      <div className="mt-8 border-t border-emerald-900/10 pt-8">
+        <h2 className="font-[var(--font-display)] text-2xl text-emerald-950">
+          Abonnements
+        </h2>
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5">
+            <h3 className="text-base font-semibold text-emerald-950">
+              27 trous temps plein (7J/7)
+            </h3>
+            <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
+              <li>30 ans et moins - 384 €*</li>
+              <li>31-74 ans - 744 €*</li>
+              <li>75 ans et + - 492 €*</li>
+            </ul>
+          </article>
+
+          <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5">
+            <h3 className="text-base font-semibold text-emerald-950">
+              45 trous semainier (5J/7)
+            </h3>
+            <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
+              <li>74 ans et moins - 1080 €*</li>
+              <li>Couple 74 ans et moins - 1836 €*</li>
+              <li>75 ans et plus - 816 €*</li>
+              <li>Couple 75 ans et plus - 1428 €*</li>
+            </ul>
+          </article>
+
+          <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5">
+            <h3 className="text-base font-semibold text-emerald-950">
+              45 trous temps plein (7J/7)
+            </h3>
+            <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
+              <li>25 ans et moins - 576 €*</li>
+              <li>26 ans - 35 ans - 948 €*</li>
+              <li>Couple 26 ans - 35 ans - 1512 €*</li>
+              <li>36 ans - 74 ans - 1344 €*</li>
+              <li>Couple 36 ans - 74 ans - 2292 €*</li>
+              <li>75 ans et plus - 936 €*</li>
+              <li>Couple 75 ans et plus - 1596 €*</li>
+              <li>Offre 2ème club - 750 €</li>
+            </ul>
+          </article>
+        </div>
+      </div>
     </section>
   );
 }

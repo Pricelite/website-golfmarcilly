@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { Metadata } from "next";
 
 import PageHero from "@/components/page-hero";
@@ -16,18 +16,30 @@ const pros = [
     specialty: "Enseignement & progression technique",
     imageSrc: "/roman.png",
     website: "https://www.romanlissowski.com/",
+    phoneHref: "tel:+33650363084",
+    emailHref: "mailto:romanlissowski@hotmail.fr",
+    phoneLabel: "06 50 36 30 84",
+    emailLabel: "romanlissowski@hotmail.fr",
   },
   {
     name: "Adrien",
     specialty: "Coaching personnalisé & performance",
     imageSrc: "/adrien.png",
     website: "https://www.adrienlafuge.com/",
+    phoneHref: "tel:+33633748567",
+    emailHref: "mailto:adrien.lafuge@outlook.fr",
+    phoneLabel: "06 33 74 85 67",
+    emailLabel: "adrien.lafuge@outlook.fr",
   },
   {
     name: "Baptiste",
     specialty: "Parcours & stratégie de jeu",
     imageSrc: "/baptiste.png",
     website: "https://baptistecourtachon.com/",
+    phoneHref: "tel:+33669006274",
+    emailHref: "mailto:baptiste.courtachon@gmail.com",
+    phoneLabel: "06 69 00 62 74",
+    emailLabel: "baptiste.courtachon@gmail.com",
   },
 ] as const;
 
@@ -51,6 +63,7 @@ export default function Page() {
     <div className="bg-emerald-50/20 text-emerald-950">
       <PageHero
         title="Enseignement"
+        backgroundImage="/images/practicemarcilly.png"
         description="Progressez avec un accompagnement sur-mesure, du premier swing à la performance, grâce à une pédagogie claire et bienveillante."
       />
 
