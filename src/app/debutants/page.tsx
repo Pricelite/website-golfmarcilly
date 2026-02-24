@@ -6,6 +6,51 @@ import PageHero from "@/components/page-hero";
 const pageTitle = "D\u00e9butants & non-golfeurs";
 const introText =
   "Vous n\u2019avez jamais jou\u00e9 ? Ici, tout est fait pour commencer simplement : initiation, pr\u00eat du mat\u00e9riel, et accompagnement par nos pros.";
+type BeginnerTariff = {
+  title: string;
+  price: string;
+  details: string;
+  reservationHref?: string;
+  reservationLabel?: string;
+};
+
+const beginnerTariffs: readonly BeginnerTariff[] = [
+  {
+    title: "1 seau de balles",
+    price: "4 \u20ac",
+    details: "Acc\u00e8s practice pour 1 seau.",
+  },
+  {
+    title: "2 seaux de balles",
+    price: "6 \u20ac",
+    details: "Acc\u00e8s practice pour 2 seaux.",
+  },
+  {
+    title: "Practice d\u00e9butant",
+    price: "10 \u20ac / personne",
+    details: "Acc\u00e8s illimit\u00e9 au practice.",
+  },
+  {
+    title: "Parcours d\u00e9couverte 9 trous",
+    price: "10 \u20ac",
+    details: "Parcours sp\u00e9cialement con\u00e7u pour d\u00e9butant.",
+  },
+  {
+    title: "Formule initiation 1",
+    price: "25 \u20ac",
+    details: "1 heure de cours avec un pro et parcours d\u00e9couverte 9 trous.",
+    reservationHref: "/initiation/reservation?mealOption=WITHOUT_MEAL",
+    reservationLabel: "Reservez et payer",
+  },
+  {
+    title: "Formule initiation 2",
+    price: "48 \u20ac",
+    details:
+      "1 heure de cours avec un pro, repas du midi inclus et parcours 9 trous d\u00e9couverte l\u2019apr\u00e8s-midi.",
+    reservationHref: "/initiation/reservation?mealOption=WITH_MEAL",
+    reservationLabel: "Reservez et payer",
+  },
+];
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -68,8 +113,31 @@ export default function DebutantsPage() {
           >
             {"Tarifs d\u00e9butants"}
           </h2>
-          <div className="mt-4 rounded-2xl border border-dashed border-emerald-900/25 bg-emerald-50/50 px-4 py-5 text-sm text-emerald-900/80">
-            {"Emplacement tarifs \u00e0 compl\u00e9ter."}
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {beginnerTariffs.map((tariff) => (
+              <article
+                key={tariff.title}
+                className="rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-5"
+              >
+                <h3 className="text-base font-semibold text-emerald-950">
+                  {tariff.title}
+                </h3>
+                <p className="mt-2 text-2xl font-bold text-emerald-900">
+                  {tariff.price}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-emerald-900/80">
+                  {tariff.details}
+                </p>
+                {tariff.reservationHref ? (
+                  <Link
+                    href={tariff.reservationHref}
+                    className="mt-4 inline-flex items-center justify-center rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2"
+                  >
+                    {tariff.reservationLabel ?? "Reservez et payer"}
+                  </Link>
+                ) : null}
+              </article>
+            ))}
           </div>
         </section>
 

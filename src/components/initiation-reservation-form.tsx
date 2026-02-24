@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { INITIATION_SLOT_CAPACITY } from "@/lib/initiation/constants";
 import type { InitiationMealOption, InitiationSlot } from "@/lib/initiation/types";
 
 type SlotsApiResponse = {
@@ -14,6 +15,9 @@ type CreateReservationApiResponse = {
   ok: boolean;
   error?: string;
   checkoutUrl?: string;
+  reservationId?: string;
+  calendarEventUrl?: string;
+  message?: string;
 };
 
 type FormState = {
@@ -67,6 +71,8 @@ export default function InitiationReservationForm(props: {
   const [isLoadingSlots, setIsLoadingSlots] = useState(true);
   const [slotsError, setSlotsError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [submitSuccessLink, setSubmitSuccessLink] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState<FormState>({
     fullName: "",
@@ -153,11 +159,15 @@ export default function InitiationReservationForm(props: {
   const pricePerPersonCents = getMealPriceCents(form.mealOption);
   const totalPriceCents = form.participantsCount * pricePerPersonCents;
 
-  const maxParticipants = selectedSlot ? Math.max(1, selectedSlot.remainingSeats) : 15;
+  const maxParticipants = selectedSlot
+    ? Math.max(1, selectedSlot.remainingSeats)
+    : INITIATION_SLOT_CAPACITY;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitError(null);
+    setSubmitSuccess(null);
+    setSubmitSuccessLink(null);
 
     if (!selectedSlot) {
       setSubmitError("Merci de choisir un creneau.");
@@ -191,11 +201,20 @@ export default function InitiationReservationForm(props: {
       });
 
       const data = (await response.json()) as CreateReservationApiResponse;
-      if (!response.ok || !data.ok || !data.checkoutUrl) {
+      if (!response.ok || !data.ok) {
         throw new Error(data.error || "Reservation failed.");
       }
 
-      window.location.href = data.checkoutUrl;
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+        return;
+      }
+
+      setSubmitSuccess(
+        data.message || "Reservation confirmee. Vous recevrez la confirmation sous peu."
+      );
+      setSubmitSuccessLink(data.calendarEventUrl || null);
+      setIsSubmitting(false);
     } catch (error) {
       setSubmitError(
         error instanceof Error
@@ -224,6 +243,25 @@ export default function InitiationReservationForm(props: {
           </p>
         ) : null}
 
+        {!isLoadingSlots && !slotsError && slotsByDate.length === 0 ? (
+          <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            Aucun creneau disponible pour le moment. Merci de revenir plus tard.
+          </p>
+        ) : null}
+
+        {!isLoadingSlots && !slotsError && slotsByDate.length > 0 ? (
+          selectedSlot ? (
+            <p className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+              Creneau selectionne : {formatDateLabel(selectedSlot.date)} - {selectedSlot.startTime} a{" "}
+              {selectedSlot.endTime}
+            </p>
+          ) : (
+            <p className="mt-4 text-sm text-emerald-900/70">
+              {"Cliquez sur \"Reserver ce creneau\" pour passer a l'etape suivante."}
+            </p>
+          )
+        ) : null}
+
         <div className="mt-5 space-y-5">
           {slotsByDate.map(([date, dateSlots]) => (
             <div key={date} className="space-y-3">
@@ -236,25 +274,13 @@ export default function InitiationReservationForm(props: {
                   const isFull = slot.remainingSeats <= 0;
 
                   return (
-                    <button
+                    <article
                       key={slot.id}
-                      type="button"
-                      disabled={isFull}
-                      onClick={() => {
-                        setForm((current) => ({
-                          ...current,
-                          selectedSlotId: slot.id,
-                          participantsCount: Math.min(
-                            current.participantsCount,
-                            Math.max(1, slot.remainingSeats)
-                          ),
-                        }));
-                      }}
-                      className={`rounded-2xl border px-4 py-3 text-left transition ${
+                      className={`rounded-2xl border px-4 py-3 transition ${
                         isSelected
                           ? "border-emerald-700 bg-emerald-50 shadow-sm"
                           : "border-emerald-900/15 bg-white hover:border-emerald-700/50"
-                      } ${isFull ? "cursor-not-allowed opacity-60 hover:border-emerald-900/15" : ""}`}
+                      } ${isFull ? "opacity-70 hover:border-emerald-900/15" : ""}`}
                     >
                       <p className="text-sm font-semibold text-emerald-950">
                         {slot.startTime} - {slot.endTime}
@@ -262,12 +288,36 @@ export default function InitiationReservationForm(props: {
                       <p className="mt-1 text-xs text-emerald-900/75">
                         Places restantes: {slot.remainingSeats}/{slot.capacity}
                       </p>
-                      {isFull ? (
-                        <span className="mt-2 inline-block rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
-                          Complet
-                        </span>
-                      ) : null}
-                    </button>
+                      <div className="mt-3">
+                        <button
+                          type="button"
+                          disabled={isFull}
+                          onClick={() => {
+                            setForm((current) => ({
+                              ...current,
+                              selectedSlotId: slot.id,
+                              participantsCount: Math.min(
+                                current.participantsCount,
+                                Math.max(1, slot.remainingSeats)
+                              ),
+                            }));
+                          }}
+                          className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                            isFull
+                              ? "cursor-not-allowed bg-slate-100 text-slate-600"
+                              : isSelected
+                                ? "bg-emerald-900 text-emerald-50"
+                                : "bg-white text-emerald-900 ring-1 ring-emerald-900/20 hover:bg-emerald-50"
+                          }`}
+                        >
+                          {isFull
+                            ? "Complet"
+                            : isSelected
+                              ? "Creneau selectionne"
+                              : "Reserver ce creneau"}
+                        </button>
+                      </div>
+                    </article>
                   );
                 })}
               </div>
@@ -399,12 +449,31 @@ export default function InitiationReservationForm(props: {
             </p>
           ) : null}
 
+          {submitSuccess ? (
+            <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+              {submitSuccess}
+              {submitSuccessLink ? (
+                <>
+                  {" "}
+                  <a
+                    href={submitSuccessLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold underline"
+                  >
+                    Voir l\u2019\u00e9v\u00e9nement
+                  </a>
+                </>
+              ) : null}
+            </p>
+          ) : null}
+
           <button
             type="submit"
             disabled={isSubmitting}
             className="inline-flex rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubmitting ? "Redirection vers le paiement..." : "Valider et payer"}
+            {isSubmitting ? "Traitement en cours..." : "Valider la reservation"}
           </button>
         </form>
       </section>

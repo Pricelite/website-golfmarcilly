@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { INITIATION_PENDING_TTL_MINUTES } from "@/lib/initiation/constants";
+import { createGoogleCalendarReservation, hasGoogleCalendarEnv } from "@/lib/initiation/google-calendar";
 import {
   createPendingReservation,
   setReservationCheckoutId,
@@ -89,6 +90,59 @@ export async function POST(request: Request) {
 
   const expiresAt = getPendingExpirationIso();
 
+  if (hasGoogleCalendarEnv()) {
+    try {
+      const event = await createGoogleCalendarReservation({
+        date: parsed.data.date,
+        startTime: parsed.data.startTime,
+        endTime: parsed.data.endTime,
+        fullName: parsed.data.fullName,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        participantsCount: parsed.data.participantsCount,
+        mealOption: parsed.data.mealOption,
+      });
+
+      return NextResponse.json(
+        {
+          ok: true,
+          reservationId: event.eventId,
+          calendarEventUrl: event.htmlLink,
+          message:
+            "Reservation confirmee dans l'agenda initiation. Le paiement SumUp sera integre ensuite.",
+        },
+        { status: 201 }
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "unknown error";
+      const missingEnvMatch =
+        typeof message === "string"
+          ? /Missing required env var:\s*([A-Z0-9_,\s]+)/.exec(message)
+          : null;
+      if (message.includes("CAPACITY_EXCEEDED")) {
+        return NextResponse.json(
+          { ok: false, error: "Not enough seats remaining on this slot." },
+          { status: 409 }
+        );
+      }
+      if (missingEnvMatch) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `Server configuration is incomplete. Missing env var: ${missingEnvMatch[1].trim()}.`,
+          },
+          { status: 503 }
+        );
+      }
+
+      console.error("[api/reservations][google] failed", { message });
+      return NextResponse.json(
+        { ok: false, error: "Failed to create reservation in Google Calendar." },
+        { status: 500 }
+      );
+    }
+  }
+
   try {
     const reservation = await createPendingReservation({
       date: parsed.data.date,
@@ -150,10 +204,25 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown error";
+    const missingEnvMatch =
+      typeof message === "string"
+        ? /Missing required env var:\s*([A-Z0-9_]+)/.exec(message)
+        : null;
+
     if (message.includes("CAPACITY_EXCEEDED")) {
       return NextResponse.json(
         { ok: false, error: "Not enough seats remaining on this slot." },
         { status: 409 }
+      );
+    }
+
+    if (missingEnvMatch) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Server configuration is incomplete. Missing env var: ${missingEnvMatch[1]}.`,
+        },
+        { status: 503 }
       );
     }
 
@@ -180,4 +249,3 @@ export function PATCH() {
 export function DELETE() {
   return methodNotAllowed();
 }
-

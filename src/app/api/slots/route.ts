@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { ensureAndListSlotAvailability, markExpiredPendingReservations } from "@/lib/initiation/db";
-import { buildAllowedWeekendSlots } from "@/lib/initiation/time";
+import {
+  getGoogleCalendarSlotAvailability,
+  getMissingGoogleCalendarEnv,
+  hasGoogleCalendarEnv,
+} from "@/lib/initiation/google-calendar";
 
 function methodNotAllowed() {
   return NextResponse.json(
@@ -12,9 +15,17 @@ function methodNotAllowed() {
 
 export async function GET() {
   try {
-    await markExpiredPendingReservations();
-    const slots = buildAllowedWeekendSlots();
-    const availability = await ensureAndListSlotAvailability({ slots });
+    if (!hasGoogleCalendarEnv()) {
+      const missingEnv = getMissingGoogleCalendarEnv();
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Server configuration is incomplete. Missing env var: ${missingEnv.join(", ")}.`,
+        },
+        { status: 503 }
+      );
+    }
+    const availability = await getGoogleCalendarSlotAvailability();
 
     return NextResponse.json(
       {
@@ -25,12 +36,19 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    console.error("[api/slots] failed", {
-      message: error instanceof Error ? error.message : "unknown error",
-    });
+    const message = error instanceof Error ? error.message : "unknown error";
+    const missingEnvMatch =
+      typeof message === "string"
+        ? /Missing required env var:\s*([A-Z0-9_,\s]+)/.exec(message)
+        : null;
+    const publicError = missingEnvMatch
+      ? `Server configuration is incomplete. Missing env var: ${missingEnvMatch[1]}.`
+      : "Unable to list slots.";
+
+    console.error("[api/slots] failed", { message });
     return NextResponse.json(
-      { ok: false, error: "Unable to list slots." },
-      { status: 500 }
+      { ok: false, error: publicError },
+      { status: missingEnvMatch ? 503 : 500 }
     );
   }
 }
@@ -50,4 +68,3 @@ export function PATCH() {
 export function DELETE() {
   return methodNotAllowed();
 }
-

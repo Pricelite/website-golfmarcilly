@@ -25,29 +25,29 @@ const heroHeaderPrimaryButtonClass =
 
 const dailyStatus = [
   { label: "Practice", status: "open" },
-  { label: "Parcours Découverte", status: "open" },
+  { label: "Parcours D\u00e9couverte", status: "open" },
   { label: "Parcours Pitch and Putt", status: "open" },
   { label: "Parcours Kaleka", status: "open" },
-  { label: "Parcours Compétition Aller", status: "open" },
-  { label: "Parcours Compétition Retour", status: "open" },
+  { label: "Parcours Comp\u00e9tition Aller", status: "open" },
+  { label: "Parcours Comp\u00e9tition Retour", status: "open" },
   { label: "Restaurant La Bergerie", status: "open" },
 ];
 
 const HOME_NEWS_ASSETS: readonly HomeNewsAsset[] = [
   {
-    title: "Actualité 1",
+    title: "Actualit\u00e9 1",
     src: "/images/Dec Jeunes 2026.png",
     icon: "youth",
     iconLabel: "Jeunes",
   },
   {
-    title: "Actualité 2",
+    title: "Actualit\u00e9 2",
     src: "/images/initiation golf 2026.png",
     icon: "initiation",
     iconLabel: "Initiation",
   },
   {
-    title: "Actualité 3",
+    title: "Actualit\u00e9 3",
     src: "/images/RUGBY.png",
     icon: "rugby",
     iconLabel: "Rugby",
@@ -185,7 +185,7 @@ export default async function Home() {
   return (
     <div className="text-emerald-950">
       <PageHero
-        title="Golf de Marcilly-Orléans"
+        title={"Golf de Marcilly-Orl\u00e9ans"}
         backgroundImage="/images/club-house-marcilly.png"
         showBackButton={false}
       >
@@ -195,7 +195,7 @@ export default async function Home() {
           rel="noopener noreferrer"
           className={heroHeaderGrayButtonClass}
         >
-          Réserver un départ
+          {"R\u00e9server un d\u00e9part"}
         </a>
         <a
           href={leClubGolfUrl}
@@ -227,7 +227,7 @@ export default async function Home() {
               </h2>
               <div className="mt-5 rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                  Météo du jour
+                  {"M\u00e9t\u00e9o du jour"}
                 </p>
                 {weather ? (
                   <div className="mt-3 grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
@@ -239,17 +239,17 @@ export default async function Home() {
                         {weather.summary}
                       </p>
                       <p className="mt-1 text-xs font-medium text-emerald-700">
-                        Mise à jour {weather.updatedAtLabel}
+                        {"Mise \u00e0 jour"} {weather.updatedAtLabel}
                       </p>
                       <p className="mt-1 text-2xl font-bold text-emerald-900">
-                        {weather.temperatureC} °C
+                        {weather.temperatureC} {"\u00b0C"}
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-emerald-900/80">
                         <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Min {weather.minC} °C
+                          Min {weather.minC} {"\u00b0C"}
                         </span>
                         <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Max {weather.maxC} °C
+                          Max {weather.maxC} {"\u00b0C"}
                         </span>
                         <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
                           Vent {weather.windKmh} km/h
@@ -278,7 +278,7 @@ export default async function Home() {
                           <div className="mt-1 flex items-center gap-1.5">
                             <WeatherIllustration visual={slot.visual} size="sm" />
                             <p className="text-sm font-bold text-emerald-900">
-                              {slot.temperatureC} °
+                              {slot.temperatureC} {"\u00b0"}
                             </p>
                           </div>
                           <p className="mt-1 text-[11px] text-emerald-800/80">
@@ -294,7 +294,7 @@ export default async function Home() {
                 ) : (
                   !weather && (
                     <p className="mt-2 text-sm leading-6 text-emerald-900/70">
-                      Météo indisponible pour le moment.
+                      {"M\u00e9t\u00e9o indisponible pour le moment."}
                     </p>
                   )
                 )}
@@ -328,7 +328,7 @@ export default async function Home() {
 
         <section id="competitions" className="mx-auto w-full max-w-6xl px-6 py-12">
           <PublicCalendarEmbed
-            title="Compétition"
+            title={"Comp\u00e9tition"}
             src={CALENDAR_EMBED_URL}
             sectionBorderClassName="border-emerald-200/80"
             frameBorderClassName="border-emerald-200/80"
@@ -339,10 +339,10 @@ export default async function Home() {
         <section id="actualites" className="mx-auto w-full max-w-6xl px-6 pb-12">
           <div className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
             <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-              Actualités
+              {"Actualit\u00e9s"}
             </h2>
             <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-              Les dernières nouvelles du club seront publiées ici. Vous pouvez
+              {"Les derni\u00e8res nouvelles du club seront publi\u00e9es ici. Vous pouvez"}
               vous abonner pour recevoir les informations importantes.
             </p>
             <article className="mt-6 rounded-2xl border border-emerald-900/10 bg-white p-4">
