@@ -1,5 +1,6 @@
 const googleReviewUrl =
   "https://www.google.com/search?sca_esv=fc7fb3900d27d98e&rlz=1C1CHBF_frFR1183FR1183&sxsrf=ANbL-n51CAn7pmF6ifIi-eI28wuThryJKQ:1770466832235&q=golf+de+marcilly&si=AL3DRZHrmvnFAVQPOO2Bzhf8AX9KZZ6raUI_dT7DG_z0kV2_x23MOSeoEFh4vC2LBRPXFD1V2F_jTRO5kB88BUdfMe3g6UTkKed4JodrrblNHew6Obq_5ks%3D&uds=ALYpb_k6otuSYDT1zFYqBpNGDSzKYMjvwyaiyohXCVIZu88f7kNKnXdqNGuOESy8ak6thFtR4Wt_TTpdXYieOWImes85zhlHoT0wBgeRQZ2nit1VZwpk1ks&sa=X&sqi=2&ved=2ahUKEwj5zPz0rseSAxXLZqQEHR2JIuwQ3PALegQIGhAE&biw=1536&bih=738&dpr=1.25";
+const footerHeading = "Golf de Marcilly-Orl\u00e9ans";
 
 export default function SiteFooter() {
   return (
@@ -10,7 +11,7 @@ export default function SiteFooter() {
             Contact
           </p>
           <h2 className="mt-3 font-[var(--font-display)] text-2xl text-emerald-950">
-            Golf de Marcilly-Orl&eacute;ans
+            {footerHeading}
           </h2>
           <div className="mt-4 space-y-2 text-sm text-emerald-900/70">
             <p>829 domaine de la Plaine, 45240 Marcilly-en-Villette</p>

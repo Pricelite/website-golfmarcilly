@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import PageHero from "@/components/page-hero";
 import PublicCalendarEmbed from "@/components/public-calendar-embed";
@@ -19,6 +20,8 @@ const todayLabel = new Intl.DateTimeFormat("fr-FR", {
 const leClubGolfUrl = "https://leclub-golf.com";
 const heroHeaderGrayButtonClass =
   "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white/80 px-5 py-2.5 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white";
+const heroHeaderPrimaryButtonClass =
+  "inline-flex items-center justify-center rounded-full bg-emerald-900 px-7 py-3 text-base font-semibold text-emerald-50 shadow-lg shadow-emerald-900/25 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2";
 
 const dailyStatus = [
   { label: "Practice", status: "open" },
@@ -205,6 +208,11 @@ export default async function Home() {
         <a href="/tarifs" className={heroHeaderGrayButtonClass}>
           Tarifs 2026
         </a>
+        <div className="w-full">
+          <Link href="/debutants" className={heroHeaderPrimaryButtonClass}>
+            Non golfeur : commencez ici
+          </Link>
+        </div>
       </PageHero>
 
       <main>

@@ -288,7 +288,7 @@ export default function SiteHeader() {
                         )
                       }
                       aria-expanded={isOpen}
-                      aria-label={`${isOpen ? "Replier" : "Déplier"} le sous-menu ${item.label}`}
+                      aria-label={`${isOpen ? "Replier" : "D\u00e9plier"} le sous-menu ${item.label}`}
                     >
                       {isOpen ? "-" : "+"}
                     </button>
