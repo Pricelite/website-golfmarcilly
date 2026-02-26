@@ -2,7 +2,10 @@
 
 import { headers } from "next/headers";
 
-import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
+import {
+  processContactFallbackQueue,
+  storeContactFallbackEntry,
+} from "@/lib/contact/fallback-store";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 import {
   consumeRateLimit,
@@ -298,6 +301,16 @@ export async function sendContactEmail(
             : { code: "unknown", message: "Unknown mailer error" };
         console.error("[contact] confirmation email failed", detail);
       }
+    }
+
+    try {
+      await processContactFallbackQueue({ maxItems: 5 });
+    } catch (error) {
+      const detail =
+        error instanceof Error
+          ? { message: error.message }
+          : { message: "Unknown queue processing error" };
+      console.error("[contact] fallback queue processing failed", detail);
     }
 
     return {

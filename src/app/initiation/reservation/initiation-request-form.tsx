@@ -164,12 +164,12 @@ export default function InitiationRequestForm({
       !payload.phone ||
       !payload.email
     ) {
-      setErrorMessage("Merci de renseigner nom, prenom, telephone et mail.");
+      setErrorMessage("Merci de renseigner le nom, le prénom, le téléphone et l'e-mail.");
       return;
     }
 
     if (!payload.desiredSlot && !payload.desiredSlotYear) {
-      setErrorMessage("Merci de selectionner un creneau souhaite.");
+      setErrorMessage("Merci de sélectionner un créneau souhaité.");
       return;
     }
 
@@ -196,7 +196,7 @@ export default function InitiationRequestForm({
       lastFocusedElementRef.current = document.activeElement as HTMLElement | null;
       setIsSuccessModalOpen(true);
     } catch {
-      setErrorMessage("Une erreur reseau est survenue. Merci de reessayer.");
+      setErrorMessage("Une erreur réseau est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);
     }
@@ -209,7 +209,7 @@ export default function InitiationRequestForm({
           Document de demande
         </h3>
         <p className="mt-1 text-xs text-emerald-900/75">
-          Remplissez ce document puis envoyez-le directement a
+          Remplissez ce document puis envoyez-le directement à
           {" "}
           golf@marcilly.com.
         </p>
@@ -232,7 +232,7 @@ export default function InitiationRequestForm({
           </label>
 
           <label className="block text-sm text-emerald-900/85" htmlFor="initiation-first-name">
-            Prenom
+            Prénom
             <input
               id="initiation-first-name"
               name="firstName"
@@ -243,7 +243,7 @@ export default function InitiationRequestForm({
           </label>
 
           <label className="block text-sm text-emerald-900/85" htmlFor="initiation-phone">
-            Telephone
+            Téléphone
             <input
               id="initiation-phone"
               name="phone"
@@ -254,7 +254,7 @@ export default function InitiationRequestForm({
           </label>
 
           <label className="block text-sm text-emerald-900/85" htmlFor="initiation-email">
-            Mail
+            E-mail
             <input
               id="initiation-email"
               name="email"
@@ -264,15 +264,15 @@ export default function InitiationRequestForm({
             />
           </label>
 
-          <label className="block text-sm text-emerald-900/85" htmlFor="initiation-day">
-            Creneau souhaite (prochains 7 jours)
+          <div className="block text-sm text-emerald-900/85">
+            <label htmlFor="initiation-day">Créneau souhaité (prochains 7 jours)</label>
             <select
               id="initiation-day"
               name="desiredSlot"
               className="mt-1 w-full rounded-xl border border-emerald-900/15 bg-white px-3 py-2 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               defaultValue=""
             >
-              <option value="">Selectionner un creneau</option>
+              <option value="">Sélectionner un créneau</option>
               {next7DaysSlots.map((slot) => (
                 <option key={`next-${slot.value}`} value={slot.value}>
                   {slot.label}
@@ -281,7 +281,7 @@ export default function InitiationRequestForm({
             </select>
             {next7DaysSlots.length === 0 ? (
               <span className="mt-1 block text-xs text-amber-800">
-                Aucun creneau disponible sur les 7 prochains jours.
+                Aucun créneau disponible sur les 7 prochains jours.
               </span>
             ) : null}
             <details className="mt-3 block">
@@ -299,18 +299,18 @@ export default function InitiationRequestForm({
                   <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
                   <path d="M8 3.5v3M16 3.5v3M3.5 9.5h17" />
                 </svg>
-                Afficher toute l annee 2026
+                Afficher toute l&apos;année 2026
               </summary>
               <div className="mt-3">
                 <label className="block" htmlFor="initiation-day-year">
-                  Tous les creneaux 2026
+                  Tous les créneaux 2026
                   <select
                     id="initiation-day-year"
                     name="desiredSlotYear"
                     className="mt-1 w-full rounded-xl border border-emerald-900/15 bg-white px-3 py-2 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
                     defaultValue=""
                   >
-                    <option value="">Selectionner un creneau annuel</option>
+                    <option value="">Sélectionner un créneau annuel</option>
                     {fullYearSlots.map((slot) => (
                       <option key={`year-${slot.value}`} value={slot.value}>
                         {slot.label}
@@ -320,7 +320,7 @@ export default function InitiationRequestForm({
                 </label>
               </div>
             </details>
-          </label>
+          </div>
 
           <label className="block text-sm text-emerald-900/85" htmlFor="initiation-party-size">
             Nombre de personnes
@@ -342,7 +342,7 @@ export default function InitiationRequestForm({
               className="mt-1 w-full rounded-xl border border-emerald-900/15 bg-white px-3 py-2 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               defaultValue=""
             >
-              <option value="">Selectionner</option>
+              <option value="">Sélectionner</option>
               <option value="WITH_MEAL">Avec repas</option>
               <option value="WITHOUT_MEAL">Sans repas</option>
             </select>
@@ -353,10 +353,10 @@ export default function InitiationRequestForm({
             <textarea
               id="initiation-note"
               name="note"
-              rows={4}
-              className="mt-1 w-full rounded-xl border border-emerald-900/15 bg-white px-3 py-2 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              placeholder="Informations complementaires"
-            />
+            rows={4}
+            className="mt-1 w-full rounded-xl border border-emerald-900/15 bg-white px-3 py-2 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+            placeholder="Informations complémentaires"
+          />
           </label>
 
           {errorMessage ? (
@@ -381,7 +381,7 @@ export default function InitiationRequestForm({
         <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
           <button
             type="button"
-            aria-label="Fermer la fenetre de confirmation"
+            aria-label="Fermer la fenêtre de confirmation"
             onClick={closeSuccessModal}
             className="absolute inset-0 bg-emerald-950/50"
           />
@@ -419,13 +419,13 @@ export default function InitiationRequestForm({
               id="initiation-success-title"
               className="font-[var(--font-display)] text-2xl text-emerald-950"
             >
-              Message envoye
+              Message envoyé
             </h3>
             <p
               id="initiation-success-description"
               className="mt-3 text-sm leading-6 text-emerald-900/75"
             >
-              Votre message a bien ete recu et nous revenons vers vous au plus vite.
+              Votre message a bien été reçu et nous revenons vers vous au plus vite.
             </p>
 
             <button

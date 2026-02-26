@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import {
@@ -12,6 +13,8 @@ import ImageProtection from "@/components/image-protection";
 import AnnouncementMarquee from "@/components/announcement-marquee";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
+import CookieConsent from "@/components/cookie-consent";
+import Analytics from "@/components/analytics";
 
 const bodyFont = Manrope({
   subsets: ["latin"],
@@ -27,12 +30,6 @@ const metadataBase = getMetadataBase();
 
 export const metadata: Metadata = {
   metadataBase,
-  alternates: {
-    canonical: "/",
-    languages: {
-      "fr-FR": "/",
-    },
-  },
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
@@ -86,6 +83,10 @@ export default function RootLayout({
         <div id="content-start" tabIndex={-1} />
         {children}
         <SiteFooter />
+        <CookieConsent />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   );

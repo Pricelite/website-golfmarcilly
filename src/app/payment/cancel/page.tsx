@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "Paiement initiation | Annulation",
   description:
     "Retour apres annulation ou echec du paiement pour une reservation initiation.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 type CancelPageProps = {
@@ -31,4 +35,3 @@ export default async function PaymentCancelPage(props: CancelPageProps) {
     </main>
   );
 }
-

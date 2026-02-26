@@ -13,6 +13,10 @@ import {
 export const metadata: Metadata = {
   title: "Admin reservations initiation",
   description: "Admin dashboard for initiation reservations.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 type AdminPageProps = {
@@ -124,6 +128,17 @@ function buildSlotSummary(reservations: InitiationReservationWithSlot[]) {
 }
 
 function AdminLogin(props: { error?: string }) {
+  const errorMessage =
+    props.error === "rate_limited"
+      ? "Trop de tentatives. Merci de patienter avant de réessayer."
+      : props.error === "untrusted_origin"
+        ? "Origine non autorisée. Rechargez la page puis réessayez."
+        : props.error === "missing_password"
+          ? "Le mot de passe est requis."
+          : props.error
+            ? "Mot de passe invalide."
+            : "";
+
   return (
     <main className="mx-auto w-full max-w-md px-6 py-12">
       <section className="rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10">
@@ -134,9 +149,9 @@ function AdminLogin(props: { error?: string }) {
           Entrez le mot de passe administrateur.
         </p>
 
-        {props.error ? (
+        {errorMessage ? (
           <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-            Mot de passe invalide.
+            {errorMessage}
           </p>
         ) : null}
 
@@ -362,4 +377,3 @@ export default async function AdminPage(props: AdminPageProps) {
     </main>
   );
 }
-

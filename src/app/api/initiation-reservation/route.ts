@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 
-import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
+import {
+  processContactFallbackQueue,
+  storeContactFallbackEntry,
+} from "@/lib/contact/fallback-store";
 import { MailerError, sendMail } from "@/lib/email/mailer";
+import {
+  consumeRateLimit,
+  hasTrustedOrigin,
+  parseClientIpFromHeaders,
+} from "@/lib/security/request-guards";
 
 type InitiationReservationBody = {
   lastName: string;
@@ -16,6 +24,8 @@ type InitiationReservationBody = {
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const INITIATION_REQUEST_RATE_LIMIT_MAX_REQUESTS = 8;
+const INITIATION_REQUEST_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 
 function parseString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -25,7 +35,7 @@ function parsePayload(payload: unknown):
   | { ok: true; data: InitiationReservationBody }
   | { ok: false; error: string } {
   if (!payload || typeof payload !== "object") {
-    return { ok: false, error: "Requete invalide." };
+    return { ok: false, error: "Requête invalide." };
   }
 
   const source = payload as Partial<InitiationReservationBody>;
@@ -42,7 +52,7 @@ function parsePayload(payload: unknown):
   if (!lastName || !firstName || !phone || !email) {
     return {
       ok: false,
-      error: "Les champs nom, prenom, telephone et mail sont obligatoires.",
+      error: "Les champs nom, prénom, téléphone et e-mail sont obligatoires.",
     };
   }
 
@@ -51,7 +61,7 @@ function parsePayload(payload: unknown):
   }
 
   if (!desiredSlot && !desiredSlotYear) {
-    return { ok: false, error: "Veuillez selectionner un creneau souhaite." };
+    return { ok: false, error: "Veuillez sélectionner un créneau souhaité." };
   }
 
   return {
@@ -71,13 +81,41 @@ function parsePayload(payload: unknown):
 }
 
 export async function POST(request: Request) {
+  const fallbackHost = new URL(request.url).host;
+  if (!hasTrustedOrigin(request.headers, { fallbackHost })) {
+    return NextResponse.json(
+      { ok: false, error: "Origine de requête non autorisée." },
+      { status: 403 }
+    );
+  }
+
+  const requesterIp = parseClientIpFromHeaders(request.headers);
+  const rateLimit = consumeRateLimit({
+    namespace: "initiation-request-form",
+    identifier: requesterIp,
+    limit: INITIATION_REQUEST_RATE_LIMIT_MAX_REQUESTS,
+    windowMs: INITIATION_REQUEST_RATE_LIMIT_WINDOW_MS,
+  });
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "Trop de tentatives. Merci de réessayer plus tard." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      }
+    );
+  }
+
   let payload: unknown;
 
   try {
     payload = await request.json();
   } catch {
     return NextResponse.json(
-      { ok: false, error: "Impossible de lire la requete." },
+      { ok: false, error: "Impossible de lire la requête." },
       { status: 400 }
     );
   }
@@ -101,10 +139,10 @@ export async function POST(request: Request) {
     "",
     `Date: ${submittedAt.toISOString()}`,
     `Nom: ${parsed.data.lastName}`,
-    `Prenom: ${parsed.data.firstName}`,
-    `Telephone: ${parsed.data.phone}`,
+    `Prénom: ${parsed.data.firstName}`,
+    `Téléphone: ${parsed.data.phone}`,
     `Email: ${parsed.data.email}`,
-    `Creneau souhaite: ${selectedSlot}`,
+    `Créneau souhaité: ${selectedSlot}`,
     `Nombre de personnes: ${parsed.data.partySize || "-"}`,
     `Option repas: ${parsed.data.mealOption || "-"}`,
     "Commentaire:",
@@ -115,15 +153,23 @@ export async function POST(request: Request) {
     await sendMail({
       to: clubEmail,
       toName: clubEmailName,
-      subject: `[Initiation] Reservation - ${fullName}`,
+      subject: `[Initiation] Réservation - ${fullName}`,
       text,
       replyTo: parsed.data.email,
       replyToName: fullName,
     });
 
+    try {
+      await processContactFallbackQueue({ maxItems: 5 });
+    } catch (queueError) {
+      console.error("[initiation-reservation] fallback queue processing failed", {
+        message: queueError instanceof Error ? queueError.message : "unknown",
+      });
+    }
+
     return NextResponse.json({
       ok: true,
-      message: "Votre message a bien ete recu. Nous revenons vers vous au plus vite.",
+      message: "Votre message a bien été reçu. Nous revenons vers vous au plus vite.",
     });
   } catch (error) {
     const detail =
@@ -142,7 +188,7 @@ export async function POST(request: Request) {
         telephone: parsed.data.phone,
         email: parsed.data.email,
         message: [
-          `Creneau souhaite: ${selectedSlot}`,
+          `Créneau souhaité: ${selectedSlot}`,
           `Nombre de personnes: ${parsed.data.partySize || "-"}`,
           `Option repas: ${parsed.data.mealOption || "-"}`,
           "Commentaire:",
@@ -155,7 +201,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         ok: true,
         message:
-          "Votre message a bien ete enregistre. Notre equipe vous recontactera rapidement.",
+          "Votre message a bien été enregistré. Notre équipe vous recontactera rapidement.",
       });
     } catch (fallbackError) {
       const fallbackDetail =
@@ -171,7 +217,7 @@ export async function POST(request: Request) {
           {
             ok: false,
             error:
-              "Le service e-mail est temporairement indisponible. Merci de reessayer plus tard.",
+              "Le service e-mail est temporairement indisponible. Merci de réessayer plus tard.",
           },
           { status: 503 }
         );
@@ -182,7 +228,7 @@ export async function POST(request: Request) {
           {
             ok: false,
             error:
-              "Le service e-mail n'est pas encore configure. Merci de nous contacter par telephone.",
+              "Le service e-mail n'est pas encore configuré. Merci de nous contacter par téléphone.",
           },
           { status: 500 }
         );
@@ -193,7 +239,7 @@ export async function POST(request: Request) {
       {
         ok: false,
         error:
-          "Impossible d'envoyer la demande pour le moment. Merci de reessayer dans quelques instants.",
+          "Impossible d'envoyer la demande pour le moment. Merci de réessayer dans quelques instants.",
       },
       { status: 500 }
     );

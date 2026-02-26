@@ -10,8 +10,6 @@ type BeginnerTariff = {
   title: string;
   price: string;
   details: string;
-  reservationHref?: string;
-  reservationLabel?: string;
 };
 
 const beginnerTariffs: readonly BeginnerTariff[] = [
@@ -39,16 +37,12 @@ const beginnerTariffs: readonly BeginnerTariff[] = [
     title: "Formule initiation 1",
     price: "25 \u20ac",
     details: "1 heure de cours avec un pro et parcours d\u00e9couverte 9 trous.",
-    reservationHref: "/initiation/reservation?mealOption=WITHOUT_MEAL",
-    reservationLabel: "Reservez et payer",
   },
   {
     title: "Formule initiation 2",
     price: "48 \u20ac",
     details:
       "1 heure de cours avec un pro, repas du midi inclus et parcours 9 trous d\u00e9couverte l\u2019apr\u00e8s-midi.",
-    reservationHref: "/initiation/reservation?mealOption=WITH_MEAL",
-    reservationLabel: "Reservez et payer",
   },
 ];
 
@@ -128,16 +122,16 @@ export default function DebutantsPage() {
                 <p className="mt-2 text-sm leading-6 text-emerald-900/80">
                   {tariff.details}
                 </p>
-                {tariff.reservationHref ? (
-                  <Link
-                    href={tariff.reservationHref}
-                    className="mt-4 inline-flex items-center justify-center rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2"
-                  >
-                    {tariff.reservationLabel ?? "Reservez et payer"}
-                  </Link>
-                ) : null}
               </article>
             ))}
+          </div>
+          <div className="mt-6 flex justify-center">
+            <Link
+              href="/initiation/reservation"
+              className="inline-flex items-center justify-center rounded-full bg-emerald-900 px-5 py-2.5 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2"
+            >
+              Réserver mon initiation
+            </Link>
           </div>
         </section>
 

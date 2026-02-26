@@ -1,142 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# Website Golf Marcilly
 
-## Supabase setup
+## Prerequisites
 
-1. Copy `.env.local.example` to `.env.local` and fill values.
-2. In Vercel, add the same vars in Project Settings > Environment Variables.
-3. Use the helpers in `src/lib/supabase` when you start wiring data.
-4. Optional: call `/api/health` to verify envs are present (no secrets exposed).
+- Node.js 20+
+- pnpm
 
-## Environment variables (Supabase) / Vercel
-
-1. Copy `.env.local.example` to `.env.local`.
-2. Fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-3. Set `NEXT_PUBLIC_SITE_URL` (ex: `https://votre-domaine.fr`) for sitemap/metadata.
-4. In Vercel, add the same variables in Project Settings > Environment Variables.
-5. Verify locally: `pnpm dev` then `curl http://localhost:3000/api/health`.
-6. Validate a production build: `pnpm build`.
-
-## Contact email (Brevo)
-
-To send contact form emails through Brevo API, configure:
-
-- `MAIL_PROVIDER=brevo`
-- `BREVO_API_KEY=...`
-- `EMAIL_FROM=sender@your-domain.tld`
-- `EMAIL_FROM_NAME=Golf de Marcilly` (optional)
-- `EMAIL_TO=golf@marcilly.com`
-- `EMAIL_TO_NAME=Golf de Marcilly` (optional)
-- `EMAIL_REPLY_TO=contact@your-domain.tld` (optional)
-- `CONTACT_SEND_CONFIRMATION=true` (optional)
-
-Note: if `MAIL_PROVIDER` is unset and `BREVO_API_KEY` is present, Brevo is selected automatically.
-
-For SMTP mode (legacy), keep `MAIL_PROVIDER=smtp` (or unset) and use:
-
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USER`
-- `SMTP_PASS`
-- `SMTP_SECURE` (optional)
-- `EMAIL_FROM`
-
-## Getting Started
-
-First, run the development server:
+## Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Initiation Reservation Module (Production)
-
-### Features
-
-- Public booking page: `/initiation/reservation`
-- Slot API: `GET /api/slots`
-- Booking + SumUp checkout API: `POST /api/reservations`
-- Reservation status API: `GET /api/reservations/:id`
-- SumUp webhook API: `POST /api/sumup/webhook`
-- Payment return pages:
-  - `/payment/success`
-  - `/payment/cancel`
-- Admin dashboard protected by password: `/admin`
-
-### Supabase Migration
-
-Run the SQL migration:
-
-- File: `supabase/migrations/20260223_initiation_reservations.sql`
-- Apply it with Supabase SQL Editor or Supabase CLI migration workflow.
-
-This migration creates:
-
-- `initiation_session_slots`
-- `initiation_reservations`
-- a transactional function `create_initiation_reservation(...)` to prevent overbooking
-
-### Required Environment Variables
-
-Keep existing Supabase public vars and add:
-
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `SUMUP_API_KEY`
-- `SUMUP_MERCHANT_CODE`
-- `APP_BASE_URL` (example: `https://www.golfdemarcilly.fr`)
-- `ADMIN_PASSWORD`
-
-Optional:
-
-- `SUMUP_API_BASE_URL` (defaults to `https://api.sumup.com`)
-- `SUMUP_WEBHOOK_SECRET` (reserved for stricter webhook validation)
-
-### Capacity and Concurrency Rules
-
-- Booking allowed only within next 7 days (rolling window, server-side enforced).
-- Slots generated only on Friday, Saturday, Sunday.
-- Fixed slot templates:
-  - `11:00-12:00`
-  - `14:00-15:00`
-- Capacity = 15 participants per slot.
-- Pending reservations expire after 10 minutes.
-- Overbooking is prevented by database transaction function.
-
-### Payment Flow
-
-1. `POST /api/reservations` validates payload server-side.
-2. Reservation created as `PENDING` with 10-min expiration.
-3. SumUp hosted checkout is created server-side.
-4. User is redirected to SumUp checkout URL.
-5. Status is synchronized through webhook and success polling.
-
-### Local Verification Checklist
+## Production checks
 
 ```bash
 pnpm lint
@@ -144,9 +25,123 @@ pnpm typecheck
 pnpm build
 ```
 
-Then verify:
+## Environment variables
 
-- `/tarifs` buttons redirect to `/initiation/reservation`
-- booking form calculates total correctly
-- full slots display as `Complet`
-- `/admin` login works with `ADMIN_PASSWORD`
+Copy `.env.local.example` to `.env.local` and fill values.
+
+### Core
+
+- `NEXT_PUBLIC_SITE_URL` (ex: `https://www.golfdemarcilly.fr`)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### Email (required for forms)
+
+SMTP mode:
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `EMAIL_FROM`
+- `EMAIL_TO` (target mailbox, ex: `golf@marcilly.com`)
+
+Brevo mode:
+- `MAIL_PROVIDER=brevo`
+- `BREVO_API_KEY`
+- `EMAIL_FROM`
+- `EMAIL_TO`
+
+Optional:
+- `EMAIL_TO_NAME`
+- `EMAIL_FROM_NAME`
+- `EMAIL_REPLY_TO`
+- `CONTACT_SEND_CONFIRMATION=true`
+
+### Security hardening
+
+- `SUMUP_WEBHOOK_SECRET` (mandatory to process SumUp webhook)
+- `ADMIN_PASSWORD`
+- `OPS_CRON_TOKEN` (token for queue processing endpoint)
+
+### Optional analytics
+
+- `NEXT_PUBLIC_GA4_ID` (GA4 measurement ID, loaded only after cookie consent)
+
+## Fallback email queue (lead reliability)
+
+When primary email sending fails, submissions are queued in:
+
+- `.contact-fallback/pending`
+- `.contact-fallback/sent`
+- `.contact-fallback/failed`
+
+Legacy append-only file is still maintained:
+
+- `.contact-fallback/submissions.ndjson`
+
+### Automatic processing
+
+Trigger queue processing with:
+
+- `GET /api/ops/fallback-queue`
+- or `POST /api/ops/fallback-queue`
+
+Authentication:
+
+- Header `Authorization: Bearer <OPS_CRON_TOKEN>`
+- or `x-ops-token: <OPS_CRON_TOKEN>`
+
+Optional query parameter:
+
+- `maxItems` (default `25`, max `100`)
+
+Recommended: configure a cron job every 5 minutes.
+
+### Alerting
+
+An alert email is sent automatically when pending queue reaches threshold.
+
+Optional alert override recipient:
+
+- `FALLBACK_QUEUE_ALERT_EMAIL`
+
+Default recipient fallback:
+
+- `EMAIL_TO`
+
+## Security controls in place
+
+- Origin checks + rate limits on contact/restaurant/initiation APIs.
+- Rate limit on admin login.
+- SumUp webhook signature verification.
+- Security headers in `next.config.ts`.
+
+## SEO controls in place
+
+- Sitemap aligned with indexable pages (`/sitemap.xml`).
+- `robots.txt` disallows `/admin` and `/payment`.
+- `noindex` on admin and payment pages.
+
+## RGPD / compliance controls in place
+
+- Cookie consent banner before GA4 activation.
+- Legal pages:
+  - `/mentions-legales`
+  - `/politique-de-confidentialite`
+  - `/politique-cookies`
+
+## Form smoke tests (manual)
+
+1. Submit `/contact` with valid fields.
+2. Submit `/initiation/reservation` with valid fields.
+3. Break SMTP credentials intentionally and verify fallback queue file creation.
+4. Restore SMTP credentials and call `/api/ops/fallback-queue` to drain pending queue.
+5. Verify receipt on `EMAIL_TO` mailbox.
+
+## Deployment checklist
+
+1. Env vars set in hosting platform.
+2. `pnpm lint`, `pnpm typecheck`, `pnpm build` green.
+3. Cron configured for `/api/ops/fallback-queue`.
+4. Test real mail delivery in production.
+5. Verify legal pages and cookie consent display.

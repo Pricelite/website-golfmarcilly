@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const googleReviewUrl =
   "https://www.google.com/search?sca_esv=fc7fb3900d27d98e&rlz=1C1CHBF_frFR1183FR1183&sxsrf=ANbL-n51CAn7pmF6ifIi-eI28wuThryJKQ:1770466832235&q=golf+de+marcilly&si=AL3DRZHrmvnFAVQPOO2Bzhf8AX9KZZ6raUI_dT7DG_z0kV2_x23MOSeoEFh4vC2LBRPXFD1V2F_jTRO5kB88BUdfMe3g6UTkKed4JodrrblNHew6Obq_5ks%3D&uds=ALYpb_k6otuSYDT1zFYqBpNGDSzKYMjvwyaiyohXCVIZu88f7kNKnXdqNGuOESy8ak6thFtR4Wt_TTpdXYieOWImes85zhlHoT0wBgeRQZ2nit1VZwpk1ks&sa=X&sqi=2&ved=2ahUKEwj5zPz0rseSAxXLZqQEHR2JIuwQ3PALegQIGhAE&biw=1536&bih=738&dpr=1.25";
 const footerHeading = "Golf de Marcilly-Orl\u00e9ans";
@@ -20,6 +22,23 @@ export default function SiteFooter() {
           </div>
         </div>
         <div className="space-y-4">
+          <nav
+            aria-label="Liens légaux"
+            className="flex flex-wrap gap-3 text-xs font-semibold text-emerald-900/80"
+          >
+            <Link className="hover:text-emerald-700" href="/mentions-legales">
+              Mentions légales
+            </Link>
+            <Link
+              className="hover:text-emerald-700"
+              href="/politique-de-confidentialite"
+            >
+              Confidentialité
+            </Link>
+            <Link className="hover:text-emerald-700" href="/politique-cookies">
+              Cookies
+            </Link>
+          </nav>
           <div className="flex flex-wrap gap-3 text-sm font-semibold text-emerald-900">
             <a
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-900/20 bg-white text-emerald-900 transition hover:border-emerald-900/40 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"

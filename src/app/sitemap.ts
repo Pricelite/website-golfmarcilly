@@ -5,16 +5,17 @@ import { getSiteUrl } from "@/lib/site";
 const ROUTES = [
   "",
   "/contact",
+  "/debutants",
+  "/initiation/reservation",
   "/restaurant",
   "/enseignement",
-  "/enseignement/cours-individuels",
-  "/enseignement/ecole-de-golf",
-  "/enseignement/stages",
   "/tarifs",
   "/association-sportive",
   "/academie",
   "/vie-du-club",
-  "/vie-du-club/tarifs",
+  "/mentions-legales",
+  "/politique-de-confidentialite",
+  "/politique-cookies",
 ] as const;
 
 function getLastModifiedDate(): Date | undefined {
@@ -39,6 +40,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${siteUrl}${route}`,
     ...(lastModified ? { lastModified } : {}),
     changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : 0.7,
+    priority: route === "" ? 1 : 0.8,
   }));
 }

@@ -5,6 +5,10 @@ import InitiationPaymentStatus from "@/components/initiation-payment-status";
 export const metadata: Metadata = {
   title: "Paiement initiation | Confirmation",
   description: "Confirmation de paiement pour votre reservation initiation.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 type SuccessPageProps = {
@@ -30,4 +34,3 @@ export default async function PaymentSuccessPage(props: SuccessPageProps) {
     </main>
   );
 }
-

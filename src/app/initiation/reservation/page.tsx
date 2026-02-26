@@ -23,8 +23,8 @@ const SLOT_TEMPLATES: readonly SlotTemplate[] = [
 ];
 
 export const metadata: Metadata = {
-  title: "Reservation initiation | Golf de Marcilly",
-  description: "Contactez-nous pour reserver votre initiation.",
+  title: "Réservation initiation | Golf de Marcilly",
+  description: "Contactez-nous pour réserver votre initiation.",
 };
 
 function normalizeUtcDay(value: Date): Date {
@@ -72,7 +72,7 @@ function buildSlotOptions(startDate: Date, endDate: Date): SlotOption[] {
 
       slots.push({
         value: `${isoDate}|${template.startLabel}-${template.endLabel}|${template.coach}`,
-        label: `${dateLabel} - ${template.startLabel} a ${template.endLabel} (${template.coach})`,
+        label: `${dateLabel} - ${template.startLabel} à ${template.endLabel} (${template.coach})`,
       });
     }
   }
@@ -92,17 +92,17 @@ export default function InitiationReservationPage() {
     <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <section className="rounded-3xl border border-emerald-900/10 bg-white/80 p-7 shadow-xl shadow-emerald-900/10">
         <h1 className="font-[var(--font-display)] text-3xl text-emerald-950">
-          Reservation initiation
+          Réservation initiation
         </h1>
         <p className="mt-3 max-w-3xl text-sm text-emerald-900/75">
-          Contactez-nous directement pour reserver votre initiation.
+          Contactez-nous directement pour réserver votre initiation.
         </p>
       </section>
 
       <section className="mt-7 rounded-3xl border border-emerald-900/10 bg-white/80 p-6 shadow-lg shadow-emerald-900/10">
-        <h2 className="text-xl font-semibold text-emerald-950">Reservation</h2>
+        <h2 className="text-xl font-semibold text-emerald-950">Réservation</h2>
         <p className="mt-2 text-sm text-emerald-900/75">
-          Envoyez votre demande et nous vous proposerons un creneau.
+          Envoyez votre demande et nous vous proposerons un créneau.
         </p>
         <InitiationRequestForm
           next7DaysSlots={next7DaysSlots}
