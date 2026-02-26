@@ -324,10 +324,12 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
                 alt={asset.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-contain blur-[10px] grayscale"
+                className="object-contain blur-[2px]"
               />
-
-              <div className="pointer-events-none absolute inset-0 bg-zinc-900/74" aria-hidden="true" />
+              <div
+                className="pointer-events-none absolute inset-0 bg-zinc-600/36 backdrop-blur-[6px]"
+                aria-hidden="true"
+              />
               <button
                 type="button"
                 onClick={(event) => handleOpen(event, asset)}

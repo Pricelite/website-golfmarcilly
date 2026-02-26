@@ -377,7 +377,6 @@ export async function createGoogleCalendarReservation(input: {
   const url = `${GOOGLE_CALENDAR_API_BASE}/calendars/${encodeURIComponent(
     env.calendarId
   )}/events`;
-  const mealLabel = input.mealOption === "WITH_MEAL" ? "avec repas" : "sans repas";
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -385,13 +384,8 @@ export async function createGoogleCalendarReservation(input: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      summary: "Creneau reserve - Initiation golf",
-      description: [
-        `participants_count: ${input.participantsCount}`,
-        `meal_option: ${input.mealOption}`,
-        `repas: ${mealLabel}`,
-        "reservation_website: oui",
-      ].join("\n"),
+      summary: "Creneau indisponible - Initiation golf",
+      visibility: "private",
       start: {
         dateTime: `${input.date}T${input.startTime}:00`,
         timeZone: CALENDAR_TIME_ZONE,
@@ -405,9 +399,6 @@ export async function createGoogleCalendarReservation(input: {
           participantsCount: String(input.participantsCount),
           mealOption: input.mealOption,
           source: "website-golfmarcilly",
-          fullName: input.fullName,
-          email: input.email,
-          phone: input.phone,
         },
       },
     }),
