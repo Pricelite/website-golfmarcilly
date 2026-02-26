@@ -40,7 +40,7 @@ export class MailerError extends Error {
 }
 
 function getRequiredEnv(name: string): string {
-  const value = process.env[name];
+  const value = process.env[name]?.trim();
 
   if (!value) {
     throw new MailerError("config", "Email configuration is incomplete.");
@@ -92,6 +92,22 @@ function getBrevoConfig(): BrevoConfig {
   };
 }
 
+function hasSmtpEnv(): boolean {
+  return Boolean(
+    process.env.SMTP_HOST?.trim() &&
+      process.env.SMTP_PORT?.trim() &&
+      process.env.SMTP_USER?.trim() &&
+      process.env.SMTP_PASS?.trim() &&
+      process.env.EMAIL_FROM?.trim()
+  );
+}
+
+function hasBrevoEnv(): boolean {
+  return Boolean(
+    process.env.BREVO_API_KEY?.trim() && process.env.EMAIL_FROM?.trim()
+  );
+}
+
 function getMailProvider(): MailProvider {
   const raw = process.env.MAIL_PROVIDER?.trim().toLowerCase();
   if (raw === "brevo") {
@@ -102,7 +118,12 @@ function getMailProvider(): MailProvider {
     return "smtp";
   }
 
-  if (process.env.BREVO_API_KEY?.trim()) {
+  // Prefer SMTP when both SMTP and Brevo env vars are present.
+  if (hasSmtpEnv()) {
+    return "smtp";
+  }
+
+  if (hasBrevoEnv()) {
     return "brevo";
   }
 
@@ -138,6 +159,18 @@ function normalizeMailerError(error: unknown): MailerError {
   }
 
   return new MailerError("send", message);
+}
+
+function isSelfSignedCertError(error: unknown): boolean {
+  const err = error as { message?: string; code?: string };
+  const message = typeof err.message === "string" ? err.message.toLowerCase() : "";
+  const code = typeof err.code === "string" ? err.code.toUpperCase() : "";
+
+  return (
+    code === "SELF_SIGNED_CERT_IN_CHAIN" ||
+    message.includes("self-signed certificate in certificate chain") ||
+    message.includes("unable to verify the first certificate")
+  );
 }
 
 function getSafeErrorMessage(payload: unknown): string {
@@ -236,24 +269,7 @@ async function sendViaSmtp({
   replyToName,
 }: SendMailParams): Promise<void> {
   const config = getSmtpConfig();
-  const transporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    requireTLS: !config.secure,
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-    tls: {
-      servername: config.host,
-    },
-    auth: {
-      user: config.user,
-      pass: config.pass,
-    },
-  });
-
-  await transporter.sendMail({
+  const mailPayload = {
     from: config.from,
     to: toName ? `"${toName}" <${to}>` : to,
     subject,
@@ -266,7 +282,47 @@ async function sendViaSmtp({
             : replyTo,
         }
       : {}),
-  });
+  };
+
+  const baseTransportOptions = {
+    host: config.host,
+    port: config.port,
+    secure: config.secure,
+    requireTLS: !config.secure,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+    auth: {
+      user: config.user,
+      pass: config.pass,
+    },
+  };
+
+  try {
+    const transporter = nodemailer.createTransport({
+      ...baseTransportOptions,
+      tls: {
+        servername: config.host,
+      },
+    });
+
+    await transporter.sendMail(mailPayload);
+  } catch (error) {
+    if (!isSelfSignedCertError(error)) {
+      throw error;
+    }
+
+    // Corporate proxies/antivirus can inject certificates; retry once with relaxed TLS validation.
+    const transporter = nodemailer.createTransport({
+      ...baseTransportOptions,
+      tls: {
+        servername: config.host,
+        rejectUnauthorized: false,
+      },
+    });
+
+    await transporter.sendMail(mailPayload);
+  }
 }
 
 export async function sendMail({
@@ -278,8 +334,13 @@ export async function sendMail({
   replyTo,
   replyToName,
 }: SendMailParams): Promise<void> {
+  const provider = getMailProvider();
+  const secondaryProvider: MailProvider =
+    provider === "smtp" ? "brevo" : "smtp";
+  const canUseSecondary =
+    secondaryProvider === "smtp" ? hasSmtpEnv() : hasBrevoEnv();
+
   try {
-    const provider = getMailProvider();
     if (provider === "brevo") {
       await sendViaBrevo({
         to,
@@ -303,10 +364,43 @@ export async function sendMail({
       replyToName,
     });
   } catch (error) {
-    if (error instanceof MailerError) {
-      throw error;
+    const normalized =
+      error instanceof MailerError ? error : normalizeMailerError(error);
+
+    if (canUseSecondary) {
+      try {
+        if (secondaryProvider === "brevo") {
+          await sendViaBrevo({
+            to,
+            toName,
+            subject,
+            text,
+            html,
+            replyTo,
+            replyToName,
+          });
+          return;
+        }
+
+        await sendViaSmtp({
+          to,
+          toName,
+          subject,
+          text,
+          html,
+          replyTo,
+          replyToName,
+        });
+        return;
+      } catch (secondaryError) {
+        if (secondaryError instanceof MailerError) {
+          throw secondaryError;
+        }
+
+        throw normalizeMailerError(secondaryError);
+      }
     }
 
-    throw normalizeMailerError(error);
+    throw normalized;
   }
 }
