@@ -1,4 +1,3 @@
-import Link from "next/link";
 export default function TarifsSections() {
   return (
     <section className="mt-8 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
@@ -13,12 +12,6 @@ export default function TarifsSections() {
               <span className="text-right tabular-nums">25 €</span>
             </p>
             <p>Initiation encadrée - Parcours 9 trous</p>
-            <Link
-              className="mt-3 inline-flex rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              href="/initiation/reservation?mealOption=WITHOUT_MEAL"
-            >
-              Payer en ligne
-            </Link>
           </div>
           <div>
             <p className="grid grid-cols-[1fr_auto] items-baseline gap-3 font-semibold text-emerald-950">
@@ -26,12 +19,6 @@ export default function TarifsSections() {
               <span className="text-right tabular-nums">48 €</span>
             </p>
             <p>Initiation encadrée - repas - Parcours 9 trous</p>
-            <Link
-              className="mt-3 inline-flex rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              href="/initiation/reservation?mealOption=WITH_MEAL"
-            >
-              Payer en ligne
-            </Link>
           </div>
         </div>
       </div>
