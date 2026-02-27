@@ -2,7 +2,9 @@ import Link from "next/link";
 
 const googleReviewUrl =
   "https://www.google.com/search?sca_esv=fc7fb3900d27d98e&rlz=1C1CHBF_frFR1183FR1183&sxsrf=ANbL-n51CAn7pmF6ifIi-eI28wuThryJKQ:1770466832235&q=golf+de+marcilly&si=AL3DRZHrmvnFAVQPOO2Bzhf8AX9KZZ6raUI_dT7DG_z0kV2_x23MOSeoEFh4vC2LBRPXFD1V2F_jTRO5kB88BUdfMe3g6UTkKed4JodrrblNHew6Obq_5ks%3D&uds=ALYpb_k6otuSYDT1zFYqBpNGDSzKYMjvwyaiyohXCVIZu88f7kNKnXdqNGuOESy8ak6thFtR4Wt_TTpdXYieOWImes85zhlHoT0wBgeRQZ2nit1VZwpk1ks&sa=X&sqi=2&ved=2ahUKEwj5zPz0rseSAxXLZqQEHR2JIuwQ3PALegQIGhAE&biw=1536&bih=738&dpr=1.25";
-const footerHeading = "Golf de Marcilly-Orl\u00e9ans";
+const instagramUrl =
+  "https://www.instagram.com/golf_marcilly?igsh=cDVibnM3b2FlaTRj";
+const footerHeading = "Golf de Marcilly-Orléans";
 
 export default function SiteFooter() {
   return (
@@ -54,6 +56,33 @@ export default function SiteFooter() {
                 fill="currentColor"
               >
                 <path d="M13.2 21v-8.2h2.8l.4-3.2h-3.2V7.1c0-.9.3-1.6 1.6-1.6h1.7V2.6c-.3 0-1.4-.1-2.7-.1-2.7 0-4.5 1.6-4.5 4.6v2.5H7v3.2h2.3V21h3.9z" />
+              </svg>
+            </a>
+            <a
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-900/20 bg-white text-emerald-900 transition hover:border-emerald-900/40 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="3.5"
+                  y="3.5"
+                  width="17"
+                  height="17"
+                  rx="5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                />
+                <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+                <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
               </svg>
             </a>
           </div>

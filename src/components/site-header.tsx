@@ -17,7 +17,7 @@ const THEME_STORAGE_KEY = "site-theme";
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Accueil", href: "/" },
-  { label: "Pr\u00e9sentation", href: "/vie-du-club" },
+  { label: "Présentation", href: "/vie-du-club" },
   {
     label: "Restaurant",
     href: "/restaurant",
@@ -30,7 +30,7 @@ const NAV_ITEMS: NavItem[] = [
     label: "Association sportive",
     href: "/association-sportive",
   },
-  { label: "Acad\u00e9mie", href: "/academie" },
+  { label: "Académie", href: "/academie" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -288,7 +288,7 @@ export default function SiteHeader() {
                         )
                       }
                       aria-expanded={isOpen}
-                      aria-label={`${isOpen ? "Replier" : "D\u00e9plier"} le sous-menu ${item.label}`}
+                      aria-label={`${isOpen ? "Replier" : "Déplier"} le sous-menu ${item.label}`}
                     >
                       {isOpen ? "-" : "+"}
                     </button>

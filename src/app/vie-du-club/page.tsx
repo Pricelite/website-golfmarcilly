@@ -154,8 +154,16 @@ export default function Page() {
             Présentation du golf
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-            Le Golf de Marcilly est un domaine créé en 1986, situé au Domaine
-            de la Plaine à Marcilly-en-Villette, au sud d&apos;Orléans.
+            Situé dans la région orléanaise, le domaine du Golf de Marcilly est l&apos;un des
+            rares golfs en France à proposer 45 trous, offrant ainsi une expérience
+            unique aux golfeurs de tous niveaux. Avec ses structures d&apos;entraînement,
+            comme une zone de practice, deux zones d&apos;approche et une zone de putting
+            green, tout est pensé pour que vous passiez des moments dans une ambiance
+            conviviale.
+          </p>
+          <p className="mt-3 text-sm leading-6 text-emerald-900/80">
+            De plus, le club organise régulièrement des compétitions et des événements
+            en tout genre, pour tous les niveaux.
           </p>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -163,10 +171,167 @@ export default function Page() {
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
                 Parcours disponibles
               </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-emerald-900/80">
-                <li>18 trous compétition (Par 72)</li>
-                <li>Pitch and putt 18 trous (Par 55)</li>
-                <li>Parcours découverte / compact / Kaleka</li>
+              <ul className="mt-3 space-y-2 text-sm text-emerald-900/80">
+                <li
+                  id="designation-competition"
+                  className="rounded-xl border border-emerald-900/10 bg-emerald-50/40 px-3 py-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span>Parcours 18 trous compétition (Par 72)</span>
+                    <a
+                      href="#designation-competition"
+                      aria-label="Accéder à la désignation et au dessin du parcours 18 trous compétition"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-emerald-900/20 bg-white text-emerald-900 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 21s6-4.9 6-10a6 6 0 1 0-12 0c0 5.1 6 10 6 10Z"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 8.2v2.1M12 13.8h.01"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <circle cx="12" cy="11.1" r="2.7" stroke="currentColor" strokeWidth="1.8" />
+                      </svg>
+                    </a>
+                  </div>
+                </li>
+                <li
+                  id="designation-pitch-putt"
+                  className="rounded-xl border border-emerald-900/10 bg-emerald-50/40 px-3 py-2"
+                >
+                  <details>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 [&::-webkit-details-marker]:hidden">
+                      <span>Parcours 9 trous Pitch &amp; Putt (Par 27)</span>
+                      <span
+                        aria-label="Afficher la photo du parcours Pitch & Putt"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-emerald-900/20 bg-white text-emerald-900 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 24 24"
+                          className="h-4 w-4"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 21s6-4.9 6-10a6 6 0 1 0-12 0c0 5.1 6 10 6 10Z"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M12 8.2v2.1M12 13.8h.01"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <circle
+                            cx="12"
+                            cy="11.1"
+                            r="2.7"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                          />
+                        </svg>
+                      </span>
+                    </summary>
+                    <div className="mt-3 overflow-hidden rounded-xl border border-emerald-900/10 bg-white">
+                      <Image
+                        src={toProtectedImageSrc("/images/pitchandputt.png")}
+                        alt="Parcours 9 trous Pitch & Putt"
+                        width={1200}
+                        height={675}
+                        className="h-44 w-full object-cover"
+                      />
+                    </div>
+                  </details>
+                </li>
+                <li
+                  id="designation-kaleka-course"
+                  className="rounded-xl border border-emerald-900/10 bg-emerald-50/40 px-3 py-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span>Parcours 9 trous Kaleka Course (Par 28)</span>
+                    <a
+                      href="#designation-kaleka-course"
+                      aria-label="Accéder à la désignation et au dessin du parcours 9 trous Kaleka Course"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-emerald-900/20 bg-white text-emerald-900 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 21s6-4.9 6-10a6 6 0 1 0-12 0c0 5.1 6 10 6 10Z"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 8.2v2.1M12 13.8h.01"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <circle cx="12" cy="11.1" r="2.7" stroke="currentColor" strokeWidth="1.8" />
+                      </svg>
+                    </a>
+                  </div>
+                </li>
+                <li
+                  id="designation-decouverte"
+                  className="rounded-xl border border-emerald-900/10 bg-emerald-50/40 px-3 py-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span>Parcours 9 trous Découverte (Par 28)</span>
+                    <a
+                      href="#designation-decouverte"
+                      aria-label="Accéder à la désignation et au dessin du parcours 9 trous Découverte"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-emerald-900/20 bg-white text-emerald-900 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 21s6-4.9 6-10a6 6 0 1 0-12 0c0 5.1 6 10 6 10Z"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 8.2v2.1M12 13.8h.01"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <circle cx="12" cy="11.1" r="2.7" stroke="currentColor" strokeWidth="1.8" />
+                      </svg>
+                    </a>
+                  </div>
+                </li>
               </ul>
             </div>
             <div className="rounded-2xl border border-emerald-900/10 bg-white p-5">
@@ -176,7 +341,7 @@ export default function Page() {
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-emerald-900/80">
                 <li>Practice (plus de 40 postes)</li>
                 <li>Zones d&apos;approche et greens d&apos;entraînement</li>
-                <li>Club-house, restaurant et pro-shop</li>
+                <li>Club-house, restaurant et corner</li>
               </ul>
             </div>
           </div>

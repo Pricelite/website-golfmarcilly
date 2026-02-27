@@ -31,6 +31,67 @@ function parseString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function formatMealOption(value: string): string {
+  if (value === "WITH_MEAL") {
+    return "Oui";
+  }
+
+  if (value === "WITHOUT_MEAL") {
+    return "Non";
+  }
+
+  return "-";
+}
+
+function formatDesiredSlot(value: string): string {
+  const rawValue = parseString(value);
+  if (!rawValue) {
+    return "-";
+  }
+
+  const [datePart, timePart, teacherPart] = rawValue
+    .split("|")
+    .map((part) => part.trim());
+
+  if (!datePart || !timePart) {
+    return rawValue;
+  }
+
+  const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
+  if (!dateMatch) {
+    return rawValue;
+  }
+
+  const year = Number(dateMatch[1]);
+  const month = Number(dateMatch[2]);
+  const day = Number(dateMatch[3]);
+  const slotDate = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+
+  if (Number.isNaN(slotDate.getTime())) {
+    return rawValue;
+  }
+
+  const weekday = new Intl.DateTimeFormat("fr-FR", {
+    weekday: "long",
+    timeZone: "Europe/Paris",
+  }).format(slotDate);
+  const dayAndMonth = new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    timeZone: "Europe/Paris",
+  }).format(slotDate);
+
+  const capitalizedWeekday =
+    weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const readableDate = `${capitalizedWeekday} ${dayAndMonth}`;
+
+  if (teacherPart) {
+    return `${readableDate}, ${timePart} (${teacherPart})`;
+  }
+
+  return `${readableDate}, ${timePart}`;
+}
+
 function parsePayload(payload: unknown):
   | { ok: true; data: InitiationReservationBody }
   | { ok: false; error: string } {
@@ -129,6 +190,8 @@ export async function POST(request: Request) {
   }
 
   const selectedSlot = parsed.data.desiredSlot || parsed.data.desiredSlotYear;
+  const formattedSlot = formatDesiredSlot(selectedSlot || "");
+  const formattedMealOption = formatMealOption(parsed.data.mealOption || "");
   const fullName = `${parsed.data.firstName} ${parsed.data.lastName}`.trim();
   const submittedAt = new Date();
   const clubEmail = process.env.EMAIL_TO || "golf@marcilly.com";
@@ -142,9 +205,9 @@ export async function POST(request: Request) {
     `Prénom: ${parsed.data.firstName}`,
     `Téléphone: ${parsed.data.phone}`,
     `Email: ${parsed.data.email}`,
-    `Créneau souhaité: ${selectedSlot}`,
+    `Créneau souhaité: ${formattedSlot}`,
     `Nombre de personnes: ${parsed.data.partySize || "-"}`,
-    `Option repas: ${parsed.data.mealOption || "-"}`,
+    `Repas: ${formattedMealOption}`,
     "Commentaire:",
     parsed.data.note || "-",
   ].join("\n");
@@ -188,9 +251,9 @@ export async function POST(request: Request) {
         telephone: parsed.data.phone,
         email: parsed.data.email,
         message: [
-          `Créneau souhaité: ${selectedSlot}`,
+          `Créneau souhaité: ${formattedSlot}`,
           `Nombre de personnes: ${parsed.data.partySize || "-"}`,
-          `Option repas: ${parsed.data.mealOption || "-"}`,
+          `Repas: ${formattedMealOption}`,
           "Commentaire:",
           parsed.data.note || "-",
         ].join("\n"),
