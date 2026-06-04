@@ -24,8 +24,11 @@
 .DS_Store
 *.pem
 .codex/
+.codex-*.log
+.codex-*.err.log
 .contact-fallback/
 .vscode/
+.pnpm-store/
 
 # debug
 npm-debug.log*
