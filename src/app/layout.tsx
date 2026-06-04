@@ -1,61 +1,45 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { Fraunces, Manrope } from "next/font/google";
+
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { JsonLd } from "@/components/ui/json-ld";
+import { siteConfig } from "@/data/site";
+import { absoluteUrl } from "@/lib/metadata";
+import { buildOrganizationSchema } from "@/lib/schema";
 import "./globals.css";
-import {
-  SITE_DESCRIPTION,
-  SITE_LOCALE,
-  SITE_NAME,
-  getMetadataBase,
-} from "@/lib/site";
-import { toProtectedImageSrc } from "@/lib/protected-image";
-import ImageProtection from "@/components/image-protection";
-import AnnouncementMarquee from "@/components/announcement-marquee";
-import SiteHeader from "@/components/site-header";
-import SiteFooter from "@/components/site-footer";
-import CookieConsent from "@/components/cookie-consent";
-import Analytics from "@/components/analytics";
-
-const bodyFont = Manrope({
-  subsets: ["latin"],
-  variable: "--font-body",
-});
-
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-display",
-});
-
-const metadataBase = getMetadataBase();
+import "../../styles/prose.css";
 
 export const metadata: Metadata = {
-  metadataBase,
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: SITE_DESCRIPTION,
+  description: siteConfig.description,
+  alternates: {
+    canonical: siteConfig.url,
+  },
   openGraph: {
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
-    url: "/",
-    siteName: SITE_NAME,
-    locale: SITE_LOCALE,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    locale: "fr_FR",
     type: "website",
     images: [
       {
-        url: toProtectedImageSrc("/images/clubhouse.png"),
+        url: absoluteUrl("/images/club-house-marcilly.png"),
         width: 1200,
         height: 630,
-        alt: SITE_NAME,
+        alt: siteConfig.name,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
-    images: [toProtectedImageSrc("/images/clubhouse.png")],
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [absoluteUrl("/images/club-house-marcilly.png")],
   },
 };
 
@@ -66,27 +50,33 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body
-        className={`${bodyFont.variable} ${displayFont.variable} antialiased`}
-      >
-        <ImageProtection />
+      <body className="bg-stone-50 text-emerald-950 antialiased">
+        <JsonLd data={buildOrganizationSchema()} />
         <a
-          href="#content-start"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[120] focus:rounded-full focus:bg-emerald-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-emerald-50"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-emerald-950 focus:px-4 focus:py-2 focus:text-stone-50"
+          href="#main-content"
         >
-          Aller au contenu principal
+          Aller au contenu
         </a>
-        <div className="sticky top-0 z-30">
-          <SiteHeader />
-          <AnnouncementMarquee />
+        <Header />
+        <main id="main-content">{children}</main>
+        <Footer />
+        <div className="fixed inset-x-0 bottom-3 z-40 px-4 lg:hidden">
+          <div className="mx-auto flex max-w-md items-center gap-3 rounded-full border border-emerald-950/10 bg-white/95 p-2 shadow-lg shadow-emerald-950/15 backdrop-blur">
+            <a
+              className="flex-1 rounded-full border border-emerald-950/12 px-4 py-3 text-center text-sm font-semibold text-emerald-950"
+              href={`tel:${siteConfig.phoneHref}`}
+            >
+              Appeler
+            </a>
+            <a
+              className="flex-1 rounded-full bg-emerald-900 px-4 py-3 text-center text-sm font-semibold text-stone-50"
+              href={siteConfig.reservationUrl}
+            >
+              Reserver
+            </a>
+          </div>
         </div>
-        <div id="content-start" tabIndex={-1} />
-        {children}
-        <SiteFooter />
-        <CookieConsent />
-        <Suspense fallback={null}>
-          <Analytics />
-        </Suspense>
       </body>
     </html>
   );

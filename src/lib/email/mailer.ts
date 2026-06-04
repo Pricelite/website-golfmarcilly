@@ -43,7 +43,10 @@ function getRequiredEnv(name: string): string {
   const value = process.env[name]?.trim();
 
   if (!value) {
-    throw new MailerError("config", "Email configuration is incomplete.");
+    throw new MailerError(
+      "config",
+      `Email configuration is incomplete. Missing ${name}.`
+    );
   }
 
   return value;
@@ -72,7 +75,10 @@ function getSmtpConfig(): SmtpConfig {
   const port = Number.parseInt(portRaw, 10);
 
   if (Number.isNaN(port)) {
-    throw new MailerError("config", "Email configuration is incomplete.");
+    throw new MailerError(
+      "config",
+      "Email configuration is incomplete. SMTP_PORT must be a number."
+    );
   }
 
   const secure = parseSecureSetting(port);
@@ -403,4 +409,24 @@ export async function sendMail({
 
     throw normalized;
   }
+}
+
+export function getPublicMailerErrorMessage(error: unknown): string {
+  if (!(error instanceof MailerError)) {
+    return "Impossible d'envoyer l'email pour le moment.";
+  }
+
+  if (error.code === "config") {
+    return "Configuration email incomplete. Renseignez le fichier .env.local pour le SMTP ou Brevo.";
+  }
+
+  if (error.code === "auth") {
+    return "La connexion au service email a echoue. Verifiez les identifiants SMTP ou Brevo.";
+  }
+
+  if (error.code === "network") {
+    return "Le service email est momentanement injoignable. Merci de reessayer.";
+  }
+
+  return "Impossible d'envoyer l'email pour le moment.";
 }

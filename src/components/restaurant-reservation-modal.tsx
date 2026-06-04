@@ -295,7 +295,7 @@ export default function RestaurantReservationModal({
       setForm(INITIAL_FORM);
       setSelectedTime(null);
     } catch {
-      setApiError("Une erreur reseau est survenue. Merci de reessayer.");
+      setApiError("Une erreur réseau est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);
     }
@@ -387,7 +387,7 @@ export default function RestaurantReservationModal({
                       })}
                     </div>
 
-                    <p className="mt-5 text-sm font-semibold text-emerald-900">Creneaux</p>
+                    <p className="mt-5 text-sm font-semibold text-emerald-900">Créneaux</p>
                     <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
                       {slots.map((slot) => {
                         const isSelected = slot === selectedTime;
@@ -450,7 +450,7 @@ export default function RestaurantReservationModal({
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div>
                         <label htmlFor="reservation-phone" className="text-sm font-semibold text-emerald-900">
-                          Telephone
+                          Téléphone
                         </label>
                         <input
                           id="reservation-phone"

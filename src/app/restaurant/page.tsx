@@ -1,472 +1,138 @@
-﻿import Image from "next/image";
-import Link from "next/link";
-import type { Metadata } from "next";
+import { ContactForm } from "@/components/forms/contact-form";
+import { CTAButton } from "@/components/ui/cta-button";
+import { FAQAccordion } from "@/components/ui/faq-accordion";
+import { Gallery } from "@/components/ui/gallery";
+import { JsonLd } from "@/components/ui/json-ld";
+import { SectionTitle } from "@/components/ui/section-title";
+import {
+  restaurantFaqs,
+  restaurantGallery,
+  restaurantHighlights,
+  restaurantMenus,
+} from "@/data/restaurant";
+import { buildMetadata } from "@/lib/metadata";
+import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/schema";
 
-import PageHero from "@/components/page-hero";
-import RestaurantReservationModal from "@/components/restaurant-reservation-modal";
-import { toProtectedImageSrc } from "@/lib/protected-image";
-import { restaurantData } from "@/lib/restaurant-data";
-import { SITE_NAME } from "@/lib/site";
-
-export const metadata: Metadata = {
-  title: `Restaurant La Bergerie | ${SITE_NAME}`,
+export const metadata = buildMetadata({
+  title: "Restaurant La Bergerie",
   description:
-    "Cuisine simple et gourmande, carte du moment et menus de groupes pour réceptions, séminaires et événements.",
-};
-
-const quoteHref = "/contact";
-
-const secondaryButtonClass =
-  "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50";
-
-function splitEuroPrice(price: string): {
-  amount: string;
-  hasEuro: boolean;
-  suffix: string;
-} {
-  const trimmed = price.trim();
-  const euroIndex = trimmed.indexOf("€");
-
-  if (euroIndex === -1) {
-    return { amount: trimmed, hasEuro: false, suffix: "" };
-  }
-
-  const amount = trimmed.slice(0, euroIndex).trim();
-  const suffix = trimmed.slice(euroIndex + 1).trim();
-
-  return { amount, hasEuro: true, suffix };
-}
-
-function BergerieMenusSection() {
-  return (
-    <section className="bg-emerald-50/60 py-16 sm:py-20" id="menus-bergerie">
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <div className="flex flex-col gap-3">
-          <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-            Restaurant La Bergerie
-          </p>
-          <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-            la Bergerie — les Menus
-          </h2>
-        </div>
-
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
-            <h3 className="text-lg font-semibold text-emerald-950">Menu Enfant</h3>
-            <p className="mt-3 text-sm font-semibold text-emerald-900 tabular-nums">12€</p>
-            <ul className="mt-4 space-y-2 text-sm text-emerald-900/80">
-              <li>Nuggets ou Steak haché ou Fish pané</li>
-              <li>Accompagnement : Frites</li>
-              <li>1 glace au choix (2 boules, Smarties ou Oréo)</li>
-              <li>1 boisson au choix : Sirop à l’eau ou Diabolo</li>
-            </ul>
-          </article>
-
-          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
-            <h3 className="text-lg font-semibold text-emerald-950">Formule Bergerie</h3>
-            <div className="mt-5">
-              <p className="text-sm font-semibold text-emerald-900 tabular-nums">15€</p>
-              <p className="mt-2 text-sm text-emerald-900/80">Entrée du jour + Plat du jour</p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.3em] text-emerald-600/80">
-                OU
-              </p>
-              <p className="mt-2 text-sm text-emerald-900/80">Plat du jour + Dessert du jour</p>
-            </div>
-            <div className="mt-5">
-              <p className="text-sm font-semibold text-emerald-900 tabular-nums">17€</p>
-              <p className="mt-2 text-sm text-emerald-900/80">
-                Entrée du jour + Plat du jour + Dessert du jour
-              </p>
-            </div>
-            <p className="mt-auto pt-6 text-sm text-emerald-900/70">
-              Disponible du lundi midi au vendredi midi.
-            </p>
-          </article>
-
-          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
-            <h3 className="text-lg font-semibold text-emerald-950">Formule Par</h3>
-            <p className="mt-3 text-sm font-semibold text-emerald-900 tabular-nums">26€</p>
-            <div className="mt-3 space-y-2 text-sm text-emerald-900/80">
-              <p>Entrée + Plat</p>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-600/80">OU</p>
-              <p>Plat + Dessert</p>
-            </div>
-            <p className="mt-auto pt-6 text-sm text-emerald-900/70">
-              Supplément 5€ : Sole ou Pièce du Boucher.
-            </p>
-          </article>
-
-          <article className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm">
-            <h3 className="text-lg font-semibold text-emerald-950">Formule Birdie</h3>
-            <p className="mt-3 text-sm font-semibold text-emerald-900 tabular-nums">33€</p>
-            <div className="mt-3 text-sm text-emerald-900/80">
-              <p>Entrée + Plat + Dessert</p>
-            </div>
-            <p className="mt-auto pt-6 text-sm text-emerald-900/70">
-              Supplément 5€ : Sole ou Pièce du Boucher.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-  );
-}
+    "Restaurant golf Orléans : présentation, carte, menus, groupes, séminaires, privatisation et réservation pour La Bergerie au Golf de Marcilly.",
+  path: "/restaurant",
+  image: "/restaurant/hero.jpg",
+});
 
 export default function RestaurantPage() {
   return (
-    <div className="text-emerald-950">
-      <PageHero
-        title={restaurantData.title}
-        subtitle={restaurantData.name}
-        description={restaurantData.intro.paragraphs[0]}
-        backgroundImage="/images/cuisine.png"
-      >
-        <RestaurantReservationModal triggerLabel="Réserver une table" />
-        <Link className={secondaryButtonClass} href="#carte">
-          Carte du moment
-        </Link>
-      </PageHero>
+    <>
+      <JsonLd data={buildFaqSchema(restaurantFaqs)} />
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: "Accueil", path: "/" },
+          { name: "Restaurant", path: "/restaurant" },
+        ])}
+      />
 
-      <main>
-        <section className="bg-white py-16 sm:py-20" id="infos">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
-              <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                  Présentation
+      <section className="relative overflow-hidden border-b border-emerald-950/10 bg-emerald-950 text-stone-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(184,208,154,0.22),transparent_28%),linear-gradient(140deg,rgba(6,24,20,0.96),rgba(15,46,38,0.9))]" />
+        <div className="relative mx-auto max-w-7xl px-4 py-18 sm:px-6 lg:px-8 lg:py-24">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-stone-200/80">
+              Restaurant golf Orléans
+            </p>
+            <h1 className="mt-5 font-serif text-5xl leading-[0.95] sm:text-6xl">
+              Restaurant La Bergerie
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
+              Une adresse de domaine chaleureuse pour déjeuner, recevoir, organiser
+              un repas de groupe ou renforcer la crédibilité d&apos;un événement.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CTAButton href="/contact#reservation" variant="secondary">
+                Réserver une table
+              </CTAButton>
+              <CTAButton href="tel:+33238761173" variant="secondary">
+                Appeler le restaurant
+              </CTAButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionTitle
+          description="Une page premium dédiée à la crédibilité de l'offre restauration, des groupes et des privatisations."
+          eyebrow="La Bergerie"
+          title="Une table de domaine pensée pour le plaisir et l'image"
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-2">
+          {restaurantHighlights.map((item) => (
+            <article
+              className="rounded-[32px] border border-emerald-950/10 bg-white/92 p-8 shadow-xl shadow-emerald-950/8"
+              key={item.title}
+            >
+              <h3 className="font-serif text-2xl text-emerald-950">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-emerald-950/76">
+                {item.description}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-16">
+          <SectionTitle
+            eyebrow="Carte & menus"
+            title="Des formats pensés pour la table, les groupes et les séminaires"
+          />
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {restaurantMenus.map((menu) => (
+              <article
+                className="rounded-[30px] border border-emerald-950/10 bg-white/92 p-7 shadow-xl shadow-emerald-950/8"
+                key={menu.title}
+              >
+                <h3 className="font-serif text-2xl text-emerald-950">{menu.title}</h3>
+                <ul className="mt-4 space-y-2 text-sm leading-7 text-emerald-950/75">
+                  {menu.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <p className="mt-5 text-sm font-semibold text-emerald-700">
+                  {menu.price}
                 </p>
-                <h2 className="mt-3 font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                  Une table ouverte aux réceptions et aux événements
-                </h2>
-                <div className="mt-5 space-y-4 text-base leading-7 text-emerald-900/80">
-                  {restaurantData.intro.paragraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
+              </article>
+            ))}
+          </div>
+        </div>
 
-                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {restaurantData.services.map((service) => (
-                    <div
-                      key={service.title}
-                      className="rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-4"
-                    >
-                      <h3 className="text-sm font-semibold text-emerald-950">
-                        {service.title}
-                      </h3>
-                      {service.description ? (
-                        <p className="mt-2 text-sm text-emerald-900/75">
-                          {service.description}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                    Équipe cuisine
-                  </p>
-                  <div className="mt-4 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                  {[
-                    {
-                      src: "/images/benjamin.png",
-                      alt: "Benjamin en cuisine",
-                      overlayLabel: "Benjamin Chef de cuisine",
-                    },
-                    {
-                      src: "/images/charles.png",
-                      alt: "Charles en cuisine",
-                      overlayLabel: "Charles second de cuisine",
-                    },
-                    {
-                      src: "/images/lotfi.png",
-                      alt: "Lotfi en cuisine",
-                      overlayLabel: "Lotfi second de cuisine",
-                    },
-                  ].map((member, index) => (
-                    <div
-                      key={member.alt}
-                      className="relative overflow-hidden rounded-3xl border border-emerald-900/10 shadow-sm"
-                    >
-                      <Image
-                        src={toProtectedImageSrc(member.src)}
-                        alt={member.alt}
-                        width={520}
-                        height={640}
-                        className="h-64 w-full object-cover sm:h-72 lg:h-80"
-                        sizes="(min-width: 1280px) 18vw, (min-width: 640px) 45vw, 100vw"
-                        priority={index === 0}
-                      />
-                      {member.overlayLabel ? (
-                        <div className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.08em] text-white backdrop-blur-[1px]">
-                          {member.overlayLabel}
-                        </div>
-                      ) : null}
-                    </div>
-                  ))}
-                  </div>
-                </div>
-                <div className="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.3em] text-emerald-700">
-                    Location de salle
-                  </p>
-                  <p className="mt-3 text-base font-semibold text-emerald-950">
-                    {restaurantData.intro.roomRental}
-                  </p>
-                  <p className="mt-2 text-sm text-emerald-900/70">
-                    {restaurantData.intro.roomRentalNote}
-                  </p>
-                </div>
-              </div>
+        <div className="mt-16 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <SectionTitle eyebrow="Galerie" title="Une ambiance chaleureuse et premium" />
+            <div className="mt-8">
+              <Gallery items={restaurantGallery} />
             </div>
           </div>
-        </section>
-
-        {/* Menus signatures affichés au-dessus de la carte du moment. */}
-        <BergerieMenusSection />
-
-        <section className="bg-white py-16 sm:py-20" id="carte">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="flex flex-col gap-3">
-              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                {restaurantData.carte.title}
-              </p>
-              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                La Carte du Moment
-              </h2>
-            </div>
-
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {restaurantData.carte.sections.map((section) => (
-                <div
-                  key={section.title}
-                  className="rounded-3xl border border-emerald-900/10 bg-emerald-50/60 p-6 shadow-sm"
-                >
-                  <h3 className="text-lg font-semibold text-emerald-950">
-                    {section.title}
-                  </h3>
-                  <ul className="mt-4 space-y-3 text-sm text-emerald-900">
-                    {section.items.map((item) => {
-                      const { amount, hasEuro, suffix } = splitEuroPrice(item.price);
-
-                      return (
-                        <li
-                          key={`${section.title}-${item.name}`}
-                          className="border-b border-emerald-900/10 pb-3 last:border-b-0"
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <span className="font-medium text-emerald-950">
-                              {item.name}
-                            </span>
-                            {hasEuro ? (
-                              <span className="inline-flex items-baseline whitespace-nowrap font-semibold text-emerald-950">
-                                <span className="w-14 text-right tabular-nums">
-                                  {amount}
-                                </span>
-                                <span className="ml-1 w-3 text-left">€</span>
-                                {suffix ? (
-                                  <span className="ml-1 text-xs font-medium text-emerald-900/75">
-                                    {suffix}
-                                  </span>
-                                ) : null}
-                              </span>
-                            ) : (
-                              <span className="font-semibold text-emerald-950 tabular-nums">
-                                {item.price}
-                              </span>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  {section.note ? (
-                    <p className="mt-4 text-xs text-emerald-900/70">
-                      {section.note}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
+          <div>
+            <SectionTitle
+              eyebrow="Réservation"
+              title="Parlez-nous de votre table, de votre groupe ou de votre privatisation"
+            />
+            <div className="mt-8">
+              <ContactForm
+                context="restaurant"
+                subjectPlaceholder="Réservation de table, groupe, privatisation..."
+                submitLabel="Envoyer ma demande restaurant"
+                successMessage="Votre demande restaurant a bien été reçue par le site."
+              />
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="bg-emerald-50/60 py-16 sm:py-20" id="menus">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="flex flex-col gap-3">
-              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                Menus de groupes
-              </p>
-              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                {restaurantData.groupMenus.title}
-              </h2>
-            </div>
-
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {restaurantData.groupMenus.items.map((menu) => (
-                <div
-                  key={menu.name}
-                  className="flex h-full flex-col items-center rounded-3xl border border-emerald-900/10 bg-white p-6 text-center shadow-sm"
-                >
-                  <h3 className="text-lg font-semibold text-emerald-950">
-                    {menu.name}
-                  </h3>
-
-                  {menu.sections.map((section) => (
-                    <div key={`${menu.name}-${section.title}`} className="mt-5">
-                      <p className="text-xs uppercase tracking-[0.3em] text-emerald-700">
-                        {section.title}
-                      </p>
-                      {section.type === "list" ? (
-                        <ul className="mt-2 space-y-2 text-sm text-emerald-900/80">
-                          {section.items.map((item) => (
-                            <li key={`${section.title}-${item}`}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="mt-2 space-y-2 text-center text-sm text-emerald-900/80">
-                          {section.items.map((item, index) => (
-                            <div key={`${section.title}-${item}`}>
-                              <p>{item}</p>
-                              {index < section.items.length - 1 ? (
-                                <p className="mt-2 text-[11px] uppercase tracking-[0.3em] text-emerald-600/80">
-                                  OU
-                                </p>
-                              ) : null}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-
-                  <div className="mt-auto pt-6 text-sm font-semibold text-emerald-900 tabular-nums">
-                    {menu.price}
-                  </div>
-
-                  <div className="pt-4">
-                    <Link className={secondaryButtonClass} href={quoteHref}>
-                      {restaurantData.groupMenus.ctaLabel}
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="mt-16">
+          <SectionTitle eyebrow="FAQ" title="Questions fréquentes du restaurant" />
+          <div className="mt-8">
+            <FAQAccordion items={restaurantFaqs} />
           </div>
-        </section>
-
-        <section className="bg-white py-16 sm:py-20" id="seminaire">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="flex flex-col gap-3">
-              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                {restaurantData.seminarMenu.title}
-              </p>
-              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                Menu Séminaire
-              </h2>
-            </div>
-
-            <div className="mt-8 rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm">
-              <div className="grid gap-6 md:grid-cols-2">
-                {restaurantData.seminarMenu.sections.map((section) => (
-                  <div
-                    key={section.title}
-                    className="rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-4"
-                  >
-                    <h3 className="text-xs uppercase tracking-[0.3em] text-emerald-700">
-                      {section.title}
-                    </h3>
-                    {section.items.length ? (
-                      <ul className="mt-2 space-y-1 text-sm text-emerald-900/80">
-                        {section.items.map((item) => (
-                          <li key={`${section.title}-${item}`}>{item}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 text-center text-sm font-semibold text-emerald-900 tabular-nums">
-                {restaurantData.seminarMenu.price}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-emerald-50/60 py-16 sm:py-20" id="cgv">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="rounded-3xl border border-emerald-900/10 bg-white p-8 shadow-sm">
-              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                {restaurantData.cgv.title}
-              </h2>
-              <div className="mt-8 grid gap-6 md:grid-cols-3">
-                {restaurantData.cgv.sections.map((section) => (
-                  <div key={section.title}>
-                    <h3 className="text-sm font-semibold text-emerald-950">
-                      {section.title}
-                    </h3>
-                    <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-emerald-900/80">
-                      {section.items.map((item) => (
-                        <li key={`${section.title}-${item}`}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-8 text-sm italic text-emerald-900/70">
-                {restaurantData.cgv.closingNote}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-emerald-50/60 py-16 sm:py-20" id="horaires">
-          <div className="mx-auto w-full max-w-6xl px-6">
-            <div className="flex flex-col gap-3">
-              <p className="text-xs uppercase tracking-[0.35em] text-emerald-700">
-                Horaires
-              </p>
-              <h2 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-                Horaires du restaurant
-              </h2>
-            </div>
-
-            <div className="mt-8 overflow-hidden rounded-3xl border border-emerald-900/10 bg-white shadow-sm">
-              <table className="w-full text-left text-sm">
-                <caption className="sr-only">Horaires du restaurant</caption>
-                <thead className="bg-emerald-900/5 text-xs uppercase tracking-[0.2em] text-emerald-700">
-                  <tr>
-                    <th scope="col" className="px-6 py-4">
-                      Jours
-                    </th>
-                    <th scope="col" className="px-6 py-4 text-right">
-                      Horaires
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {restaurantData.hours.map((row) => (
-                    <tr key={row.label} className="border-t border-emerald-900/10">
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-emerald-950"
-                      >
-                        {row.label}
-                      </th>
-                      <td className="px-6 py-4 text-right font-semibold text-emerald-950">
-                        {row.hours}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
+        </div>
+      </section>
+    </>
   );
 }

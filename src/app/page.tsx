@@ -1,360 +1,192 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import { ContactForm } from "@/components/forms/contact-form";
+import { Hero } from "@/components/sections/hero";
+import { BlogCard } from "@/components/ui/blog-card";
+import { CTAButton } from "@/components/ui/cta-button";
+import { CourseCard } from "@/components/ui/course-card";
+import { FAQAccordion } from "@/components/ui/faq-accordion";
+import { FeatureCard } from "@/components/ui/feature-card";
+import { JsonLd } from "@/components/ui/json-ld";
+import { MapEmbed } from "@/components/ui/map-embed";
+import { SectionTitle } from "@/components/ui/section-title";
+import { TestimonialCard } from "@/components/ui/testimonial-card";
+import { courses } from "@/data/courses";
+import { homeFaqs, homeHighlights, homeReasons } from "@/data/home";
+import { posts } from "@/data/posts";
+import { globalTestimonials, siteConfig } from "@/data/site";
+import { buildMetadata } from "@/lib/metadata";
+import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/schema";
 
-import PageHero from "@/components/page-hero";
-import PublicCalendarEmbed from "@/components/public-calendar-embed";
-import HomeNewsGallery, { type HomeNewsAsset } from "@/components/home-news-gallery";
-import { CALENDAR_EMBED_URL } from "@/lib/calendar";
-import { PRIMA_URL } from "@/lib/prima";
-import { SITE_DESCRIPTION } from "@/lib/site";
-import { getTodayWeather, type TodayWeather } from "@/lib/weather";
+export const metadata = buildMetadata({
+  title: "45 trous d'exception aux portes d'Orléans",
+  description:
+    "Golf, restaurant, enseignement et événements dans un domaine naturel unique. Une destination premium pour jouer, recevoir et progresser dans le Loiret.",
+  path: "/",
+});
 
-export const metadata: Metadata = {
-  title: "Accueil",
-  description: SITE_DESCRIPTION,
-};
-
-const todayLabel = new Intl.DateTimeFormat("fr-FR", {
-  dateStyle: "full",
-}).format(new Date());
-const leClubGolfUrl = "https://leclub-golf.com";
-const heroHeaderGrayButtonClass =
-  "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white/80 px-5 py-2.5 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-white";
-const heroHeaderPrimaryButtonClass =
-  "inline-flex items-center justify-center rounded-full bg-emerald-900 px-7 py-3 text-base font-semibold text-emerald-50 shadow-lg shadow-emerald-900/25 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2";
-
-const dailyStatus = [
-  { label: "Practice", status: "open" },
-  { label: "Parcours D\u00e9couverte", status: "open" },
-  { label: "Parcours Pitch and Putt", status: "open" },
-  { label: "Parcours Kaleka", status: "open" },
-  { label: "Parcours Comp\u00e9tition Aller", status: "open" },
-  { label: "Parcours Comp\u00e9tition Retour", status: "open" },
-  { label: "Restaurant La Bergerie", status: "open" },
-];
-
-const HOME_NEWS_ASSETS: readonly HomeNewsAsset[] = [
-  {
-    title: "Actualit\u00e9 1",
-    src: "/images/Dec Jeunes 2026.png",
-    icon: "youth",
-    iconLabel: "Jeunes",
-  },
-  {
-    title: "Actualit\u00e9 2",
-    src: "/images/initiation golf 2026.png",
-    icon: "initiation",
-    iconLabel: "Initiation",
-  },
-  {
-    title: "Actualit\u00e9 3",
-    src: "/images/RUGBY.png",
-    icon: "rugby",
-    iconLabel: "Rugby",
-  },
-] as const;
-
-function WeatherIllustration({
-  visual,
-  size = "lg",
-}: {
-  visual: TodayWeather["visual"];
-  size?: "sm" | "lg";
-}) {
-  const iconSize = size === "sm" ? "h-7 w-7" : "h-16 w-16";
-
-  if (visual === "sun") {
-    return (
-      <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r="12" fill="#f59e0b" />
-        <g stroke="#d97706" strokeLinecap="round" strokeWidth="4">
-          <line x1="32" y1="5" x2="32" y2="15" />
-          <line x1="32" y1="49" x2="32" y2="59" />
-          <line x1="5" y1="32" x2="15" y2="32" />
-          <line x1="49" y1="32" x2="59" y2="32" />
-          <line x1="11" y1="11" x2="18" y2="18" />
-          <line x1="46" y1="46" x2="53" y2="53" />
-          <line x1="11" y1="53" x2="18" y2="46" />
-          <line x1="46" y1="18" x2="53" y2="11" />
-        </g>
-      </svg>
-    );
-  }
-
-  if (visual === "partly") {
-    return (
-      <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-        <circle cx="22" cy="20" r="9" fill="#f59e0b" />
-        <g stroke="#d97706" strokeLinecap="round" strokeWidth="2.5">
-          <line x1="22" y1="6" x2="22" y2="11" />
-          <line x1="10" y1="20" x2="15" y2="20" />
-          <line x1="29" y1="11" x2="32" y2="8" />
-        </g>
-        <path
-          d="M12 45c0-6.3 5.1-11.4 11.4-11.4 3.5 0 6.6 1.5 8.7 3.9 1.4-.7 3-1.1 4.8-1.1 5.8 0 10.5 4.7 10.5 10.6H12z"
-          fill="#94a3b8"
-          stroke="#475569"
-          strokeWidth="2"
-        />
-      </svg>
-    );
-  }
-
-  if (visual === "fog") {
-    return (
-      <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-        <path
-          d="M12 34c0-6 4.9-10.9 10.9-10.9 3 0 5.9 1.3 8 3.4 1.3-.6 2.7-.9 4.2-.9 5.6 0 10.1 4.5 10.1 10.1H12z"
-          fill="#94a3b8"
-          stroke="#475569"
-          strokeWidth="2"
-        />
-        <g stroke="#64748b" strokeLinecap="round" strokeWidth="3">
-          <line x1="10" y1="44" x2="54" y2="44" />
-          <line x1="14" y1="51" x2="50" y2="51" />
-        </g>
-      </svg>
-    );
-  }
-
-  if (visual === "rain") {
-    return (
-      <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-        <path
-          d="M12 33c0-6.2 5-11.2 11.2-11.2 3.2 0 6.1 1.4 8.2 3.6 1.3-.6 2.8-.9 4.3-.9 5.8 0 10.5 4.7 10.5 10.5H12z"
-          fill="#64748b"
-          stroke="#334155"
-          strokeWidth="2"
-        />
-        <g stroke="#0284c7" strokeLinecap="round" strokeWidth="3.5">
-          <line x1="22" y1="41" x2="18" y2="51" />
-          <line x1="32" y1="41" x2="28" y2="51" />
-          <line x1="42" y1="41" x2="38" y2="51" />
-        </g>
-      </svg>
-    );
-  }
-
-  if (visual === "snow") {
-    return (
-      <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-        <path
-          d="M12 33c0-6.2 5-11.2 11.2-11.2 3.2 0 6.1 1.4 8.2 3.6 1.3-.6 2.8-.9 4.3-.9 5.8 0 10.5 4.7 10.5 10.5H12z"
-          fill="#94a3b8"
-          stroke="#475569"
-          strokeWidth="2"
-        />
-        <g fill="#dbeafe" stroke="#60a5fa" strokeWidth="1.5">
-          <circle cx="22" cy="45" r="3" />
-          <circle cx="32" cy="47" r="3" />
-          <circle cx="42" cy="45" r="3" />
-        </g>
-      </svg>
-    );
-  }
-
-  if (visual === "storm") {
-    return (
-      <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-        <path
-          d="M12 33c0-6.2 5-11.2 11.2-11.2 3.2 0 6.1 1.4 8.2 3.6 1.3-.6 2.8-.9 4.3-.9 5.8 0 10.5 4.7 10.5 10.5H12z"
-          fill="#475569"
-          stroke="#1f2937"
-          strokeWidth="2"
-        />
-        <path d="M33 38l-8 13h6l-3 9 11-16h-6l3-6z" fill="#fbbf24" />
-      </svg>
-    );
-  }
-
+export default function HomePage() {
   return (
-    <svg aria-hidden="true" className={iconSize} viewBox="0 0 64 64">
-      <path
-        d="M12 36c0-6.2 5-11.2 11.2-11.2 3.2 0 6.1 1.4 8.2 3.6 1.3-.6 2.8-.9 4.3-.9 5.8 0 10.5 4.7 10.5 10.5H12z"
-        fill="#94a3b8"
-        stroke="#475569"
-        strokeWidth="2"
+    <>
+      <JsonLd data={buildFaqSchema(homeFaqs)} />
+      <JsonLd
+        data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }])}
       />
-    </svg>
-  );
-}
+      <Hero
+        eyebrow="Golf près d'Orléans"
+        image="/images/club-house-marcilly.png"
+        primaryCta={{ label: "Réserver un départ", href: siteConfig.reservationUrl }}
+        secondaryCta={{ label: "Découvrir le golf", href: "/golf" }}
+        subtitle="Golf, restaurant, enseignement et événements dans un domaine naturel unique."
+        tertiaryCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
+        title="45 trous d'exception aux portes d'Orléans"
+      />
 
-export default async function Home() {
-  const weather = await getTodayWeather();
-
-  return (
-    <div className="text-emerald-950">
-      <PageHero
-        title={"Golf de Marcilly-Orl\u00e9ans"}
-        backgroundImage="/images/club-house-marcilly.png"
-        showBackButton={false}
-      >
-        <a
-          href={PRIMA_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={heroHeaderGrayButtonClass}
-        >
-          {"R\u00e9server un d\u00e9part"}
-        </a>
-        <a
-          href={leClubGolfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={heroHeaderGrayButtonClass}
-        >
-          Le ClubGolf
-        </a>
-        <a href="/tarifs" className={heroHeaderGrayButtonClass}>
-          Tarifs 2026
-        </a>
-        <div className="w-full">
-          <Link href="/debutants" className={heroHeaderPrimaryButtonClass}>
-            Non golfeur : commencez ici
-          </Link>
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionTitle
+          description="Un site pensé pour les joueurs, les visiteurs, les entreprises et les familles qui recherchent une expérience premium, naturelle et lisible."
+          eyebrow="Pourquoi choisir Marcilly"
+          title="Une destination complète pour jouer, déjeuner, progresser et recevoir"
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {homeHighlights.map((item) => (
+            <FeatureCard
+              description={item.description}
+              eyebrow={item.eyebrow}
+              key={item.title}
+              title={item.title}
+            />
+          ))}
         </div>
-      </PageHero>
+      </section>
 
-      <main>
-        <section className="mx-auto w-full max-w-6xl px-6 py-12" id="info-jour">
-          <div className="grid gap-6 rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur md:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
-                Info du jour
-              </p>
-              <h2 className="mt-4 font-[var(--font-display)] text-3xl text-emerald-950">
-                {todayLabel}
-              </h2>
-              <div className="mt-5 rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                  {"M\u00e9t\u00e9o du jour"}
-                </p>
-                {weather ? (
-                  <div className="mt-3 grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
-                    <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl border border-emerald-900/10 bg-white/80">
-                      <WeatherIllustration visual={weather.visual} />
-                    </div>
-                    <div>
-                      <p className="text-base font-semibold text-emerald-950">
-                        {weather.summary}
-                      </p>
-                      <p className="mt-1 text-xs font-medium text-emerald-700">
-                        {"Mise \u00e0 jour"} {weather.updatedAtLabel}
-                      </p>
-                      <p className="mt-1 text-2xl font-bold text-emerald-900">
-                        {weather.temperatureC} {"\u00b0C"}
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-emerald-900/80">
-                        <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Min {weather.minC} {"\u00b0C"}
-                        </span>
-                        <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Max {weather.maxC} {"\u00b0C"}
-                        </span>
-                        <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Vent {weather.windKmh} km/h
-                        </span>
-                        <span className="rounded-full border border-emerald-900/10 bg-white px-2.5 py-1">
-                          Pluie 3h {weather.precipitationNext3hMm} mm
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-                {weather?.hourly.length ? (
-                  <div className="mt-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-                      Prochaines 3 heures
-                    </p>
-                    <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
-                      {weather.hourly.map((slot) => (
-                        <div
-                          key={slot.label}
-                          className="rounded-xl border border-emerald-900/10 bg-white/90 px-2.5 py-2"
-                        >
-                          <p className="text-[11px] font-semibold text-emerald-700">
-                            {slot.label}
-                          </p>
-                          <div className="mt-1 flex items-center gap-1.5">
-                            <WeatherIllustration visual={slot.visual} size="sm" />
-                            <p className="text-sm font-bold text-emerald-900">
-                              {slot.temperatureC} {"\u00b0"}
-                            </p>
-                          </div>
-                          <p className="mt-1 text-[11px] text-emerald-800/80">
-                            Vent {slot.windKmh} km/h
-                          </p>
-                          <p className="text-[11px] text-emerald-800/80">
-                            Pluie {slot.precipitationMm} mm
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  !weather && (
-                    <p className="mt-2 text-sm leading-6 text-emerald-900/70">
-                      {"M\u00e9t\u00e9o indisponible pour le moment."}
-                    </p>
-                  )
-                )}
-              </div>
-            </div>
-            <div className="rounded-3xl border border-emerald-900/10 bg-emerald-50/70 p-6 text-sm text-emerald-900 md:h-fit md:self-center">
-              {dailyStatus.map((item, index) => {
-                const isOpen = item.status === "open";
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionTitle
+          description="Chaque espace du domaine a un rôle clair dans l'expérience client et la progression sportive."
+          eyebrow="Les parcours"
+          title="Des formats complémentaires pour tous les rythmes de jeu"
+        />
+        <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {courses.slice(0, 4).map((course) => (
+            <CourseCard key={course.slug} showMeta={false} {...course} />
+          ))}
+        </div>
+      </section>
 
-                return (
-                  <div
-                    key={item.label}
-                    className={`${index > 0 ? "mt-3" : ""} flex items-center justify-between`}
-                  >
-                    <span>{item.label}</span>
-                    <span className="inline-flex items-center gap-2 font-semibold">
-                      <span
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          isOpen ? "bg-emerald-600" : "bg-rose-500"
-                        }`}
-                        aria-hidden="true"
-                      />
-                      {isOpen ? "Ouvert" : "Non accessible"}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+      <section className="bg-white/60 py-16">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
+            <SectionTitle
+              description="Une table crédible et chaleureuse pour prolonger l'expérience golf, recevoir des clients ou organiser un déjeuner d'équipe."
+              eyebrow="Restaurant La Bergerie"
+              title="L'adresse du domaine pour les déjeuners golf et les rendez-vous d'affaires"
+            />
           </div>
-        </section>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {homeReasons.map((item) => (
+              <FeatureCard
+                description={item.description}
+                key={item.title}
+                title={item.title}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <section id="competitions" className="mx-auto w-full max-w-6xl px-6 py-12">
-          <PublicCalendarEmbed
-            title={"Comp\u00e9tition"}
-            src={CALENDAR_EMBED_URL}
-            sectionBorderClassName="border-emerald-200/80"
-            frameBorderClassName="border-emerald-200/80"
-            frameAspectClassName="aspect-[16/6.5]"
-          />
-        </section>
-
-        <section id="actualites" className="mx-auto w-full max-w-6xl px-6 pb-12">
-          <div className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-            <h2 className="font-[var(--font-display)] text-2xl text-emerald-950 md:text-3xl">
-              {"Actualit\u00e9s"}
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-emerald-900/80">
-              {"Les derni\u00e8res nouvelles du club seront publi\u00e9es ici. Vous pouvez"}
-              vous abonner pour recevoir les informations importantes.
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1fr_0.95fr]">
+          <div>
+            <SectionTitle
+              description="Des parcours pédagogiques lisibles pour débuter, retrouver de la régularité ou préparer un objectif plus ambitieux."
+              eyebrow="École de golf"
+              title="Un enseignement structuré pour débutants, joueurs loisirs et compétiteurs"
+            />
+          </div>
+          <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
+            <p className="text-sm leading-7 text-emerald-950/76">
+              Cours collectifs, coaching individuel, stages et accompagnement jeune :
+              l&apos;offre est pensée pour transformer l&apos;envie en progression concrète.
             </p>
-            <article className="mt-6 rounded-2xl border border-emerald-900/10 bg-white p-4">
-              <HomeNewsGallery assets={HOME_NEWS_ASSETS} />
-            </article>
+            <div className="mt-6">
+              <CTAButton href="/je-debute-le-golf">Je débute le golf</CTAButton>
+            </div>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+
+      <section className="bg-emerald-950 py-16 text-stone-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle
+            align="center"
+            description="Séminaires, team buildings, déjeuners clients et réceptions privées dans un cadre qui marque les esprits."
+            eyebrow="Séminaires & événements"
+            title="Un lieu naturellement convaincant pour vos temps forts"
+          />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionTitle
+          description="Des retours qui renforcent la crédibilité du lieu autant pour le golf que pour la restauration et l'événementiel."
+          eyebrow="Avis clients"
+          title="Une expérience premium mais accessible"
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {globalTestimonials.map((testimonial) => (
+            <TestimonialCard key={testimonial.name} {...testimonial} />
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-white/60 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle
+            description="Un blog structure pour travailler le SEO, valoriser la vie du domaine et soutenir la conversion."
+            eyebrow="Actualités"
+            title="Les temps forts du Golf de Marcilly"
+          />
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {posts.map((post) => (
+              <BlogCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <SectionTitle eyebrow="FAQ" title="Questions fréquentes" />
+            <div className="mt-8">
+              <FAQAccordion items={homeFaqs} />
+            </div>
+          </div>
+          <div>
+            <SectionTitle
+              description={`${siteConfig.addressLine1}, ${siteConfig.addressLine2}. Golf Orléans, restaurant golf Orléans et séminaire golf Orléans sur un même domaine.`}
+              eyebrow="Carte / accès"
+              title="Un accès simple depuis Orléans"
+            />
+            <div className="mt-8">
+              <MapEmbed src={siteConfig.mapEmbedUrl} title="Accès Golf de Marcilly" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white/60 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <SectionTitle
+                description="Besoin d'un green fee, d'un cours, d'une table au restaurant ou d'un devis événementiel ?"
+                eyebrow="Contact rapide"
+                title="Parlons de votre projet à Marcilly"
+              />
+            </div>
+            <ContactForm />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
-
-
-
-

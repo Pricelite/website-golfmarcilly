@@ -1,0 +1,9 @@
+.prose-brand p {
+  margin-top: 1rem;
+  line-height: 1.9;
+  color: rgba(16, 42, 36, 0.8);
+}
+
+.prose-brand p:first-child {
+  margin-top: 0;
+}

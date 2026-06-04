@@ -1,9 +1,6 @@
-﻿# Website Golf Marcilly
+# Golf de Marcilly - Refonte Next.js
 
-## Prerequisites
-
-- Node.js 20+
-- pnpm
+Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS et Framer Motion.
 
 ## Installation
 
@@ -11,137 +8,94 @@
 pnpm install
 ```
 
-## Local run
+## Commandes
 
 ```bash
-pnpm dev
+pnpm.cmd dev
+pnpm.cmd build
+pnpm.cmd lint
+pnpm.cmd typecheck
 ```
 
-## Production checks
+Sur PowerShell Windows, `pnpm.cmd` est la commande la plus fiable.
 
-```bash
-pnpm lint
-pnpm typecheck
-pnpm build
+## Structure du projet
+
+```text
+src/
+  app/                  Pages App Router, metadata, sitemap, robots, API forms
+  components/
+    forms/              ContactForm, QuoteForm, NewsletterForm
+    layout/             Header, Footer
+    sections/           Hero
+    ui/                 Composants reutilisables
+  data/                 Contenus mockes et faciles a remplacer
+  lib/                  Helpers SEO, metadata, schema.org, utils
+public/
+  images/               Visuels du golf
+  restaurant/           Visuels du restaurant
+styles/
+  prose.css             Styles de contenus editoriaux
 ```
 
-## Environment variables
+## Pages livrees
 
-Copy `.env.local.example` to `.env.local` and fill values.
+- `/`
+- `/golf`
+- `/tarifs`
+- `/enseignement`
+- `/restaurant`
+- `/evenements`
+- `/actualites`
+- `/actualites/[slug]`
+- `/contact`
+- `/mentions-legales`
+- `/politique-de-confidentialite`
 
-### Core
+## Ou modifier les contenus
 
-- `NEXT_PUBLIC_SITE_URL` (ex: `https://www.golfdemarcilly.fr`)
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Donnees globales du site, navigation, footer, testimonials : [src/data/site.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/site.ts:1)
+- Contenu accueil et FAQ home : [src/data/home.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/home.ts:1)
+- Parcours golf : [src/data/courses.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/courses.ts:1)
+- Enseignement et pros : [src/data/teaching.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/teaching.ts:1)
+- Restaurant : [src/data/restaurant.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/restaurant.ts:1)
+- Evenements : [src/data/events.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/events.ts:1)
+- Articles SEO / actualites : [src/data/posts.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/posts.ts:1)
 
-### Email (required for forms)
+## Ou modifier les tarifs
 
-SMTP mode:
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USER`
-- `SMTP_PASS`
-- `EMAIL_FROM`
-- `EMAIL_TO` (target mailbox, ex: `golf@marcilly.com`)
+- Toute la structure tarifaire est centralisee dans [src/data/pricing.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/pricing.ts:1)
+- Les tableaux HTML affiches sur la page tarifs sont rendus par [src/components/ui/pricing-table.tsx](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/components/ui/pricing-table.tsx:1)
 
-Brevo mode:
-- `MAIL_PROVIDER=brevo`
-- `BREVO_API_KEY`
-- `EMAIL_FROM`
-- `EMAIL_TO`
+## Ou modifier les metadonnees SEO
 
-Optional:
-- `EMAIL_TO_NAME`
-- `EMAIL_FROM_NAME`
-- `EMAIL_REPLY_TO`
-- `CONTACT_SEND_CONFIRMATION=true`
+- Helper SEO global : [src/lib/metadata.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/lib/metadata.ts:1)
+- Schema.org JSON-LD : [src/lib/schema.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/lib/schema.ts:1)
+- Layout global et metadata par defaut : [src/app/layout.tsx](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/layout.tsx:1)
+- Metadata par page : dans chaque fichier `page.tsx` sous `src/app/...`
 
-### Security hardening
+## Formulaires
 
-- `SUMUP_WEBHOOK_SECRET` (mandatory to process SumUp webhook)
-- `ADMIN_PASSWORD`
-- `OPS_CRON_TOKEN` (token for queue processing endpoint)
+Les formulaires front appellent ces endpoints JSON :
 
-### Optional analytics
+- [src/app/api/contact/route.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/api/contact/route.ts:1)
+- [src/app/api/quote/route.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/api/quote/route.ts:1)
+- [src/app/api/newsletter/route.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/api/newsletter/route.ts:1)
 
-- `NEXT_PUBLIC_GA4_ID` (GA4 measurement ID, loaded only after cookie consent)
+Ils retournent actuellement des succes simples, prets a etre branches plus tard sur un CRM, un email transactionnel ou Supabase.
 
-## Fallback email queue (lead reliability)
+## Images
 
-When primary email sending fails, submissions are queued in:
+- Les images sont servies depuis `public/images` et `public/restaurant`
+- Pour remplacer un visuel, gardez idealement le meme ratio et mettez a jour le chemin dans le fichier de donnees concerne
 
-- `.contact-fallback/pending`
-- `.contact-fallback/sent`
-- `.contact-fallback/failed`
+## Validation effectuee
 
-Legacy append-only file is still maintained:
+- `pnpm.cmd build` passe
 
-- `.contact-fallback/submissions.ndjson`
+## Suite recommandee
 
-### Automatic processing
-
-Trigger queue processing with:
-
-- `GET /api/ops/fallback-queue`
-- or `POST /api/ops/fallback-queue`
-
-Authentication:
-
-- Header `Authorization: Bearer <OPS_CRON_TOKEN>`
-- or `x-ops-token: <OPS_CRON_TOKEN>`
-
-Optional query parameter:
-
-- `maxItems` (default `25`, max `100`)
-
-Recommended: configure a cron job every 5 minutes.
-
-### Alerting
-
-An alert email is sent automatically when pending queue reaches threshold.
-
-Optional alert override recipient:
-
-- `FALLBACK_QUEUE_ALERT_EMAIL`
-
-Default recipient fallback:
-
-- `EMAIL_TO`
-
-## Security controls in place
-
-- Origin checks + rate limits on contact/restaurant/initiation APIs.
-- Rate limit on admin login.
-- SumUp webhook signature verification.
-- Security headers in `next.config.ts`.
-
-## SEO controls in place
-
-- Sitemap aligned with indexable pages (`/sitemap.xml`).
-- `robots.txt` disallows `/admin` and `/payment`.
-- `noindex` on admin and payment pages.
-
-## RGPD / compliance controls in place
-
-- Cookie consent banner before GA4 activation.
-- Legal pages:
-  - `/mentions-legales`
-  - `/politique-de-confidentialite`
-  - `/politique-cookies`
-
-## Form smoke tests (manual)
-
-1. Submit `/contact` with valid fields.
-2. Submit `/initiation/reservation` with valid fields.
-3. Break SMTP credentials intentionally and verify fallback queue file creation.
-4. Restore SMTP credentials and call `/api/ops/fallback-queue` to drain pending queue.
-5. Verify receipt on `EMAIL_TO` mailbox.
-
-## Deployment checklist
-
-1. Env vars set in hosting platform.
-2. `pnpm lint`, `pnpm typecheck`, `pnpm build` green.
-3. Cron configured for `/api/ops/fallback-queue`.
-4. Test real mail delivery in production.
-5. Verify legal pages and cookie consent display.
+1. Remplacer les contenus mockes par les contenus definitifs du golf.
+2. Brancher les formulaires sur votre solution email/CRM.
+3. Ajouter les vraies coordonnees legales et RGPD finales.
+4. Remplacer les URLs de reservation placeholder par les liens reels.

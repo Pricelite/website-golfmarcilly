@@ -2,19 +2,23 @@
   "name": "website-golfmarcilly",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "postinstall": "node scripts/repair-next-links.js",
+    "dev": "node scripts/dev-server.js",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && node -e \"const fs=require('fs');const path=require('path');const target=path.join('.next','types','cache-life.d.ts');const source=path.join('.next','dev','types','cache-life.d.ts');if(!fs.existsSync(target)){fs.mkdirSync(path.dirname(target),{recursive:true});if(fs.existsSync(source)){fs.copyFileSync(source,target);}else{fs.writeFileSync(target,'// generated fallback for typecheck\\n');}}\" && tsc -p tsconfig.json --noEmit --incremental false"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.93.3",
-    "next": "16.1.6",
+    "framer-motion": "^12.40.0",
+    "next": "16.2.6",
     "nodemailer": "^8.0.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -23,7 +27,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

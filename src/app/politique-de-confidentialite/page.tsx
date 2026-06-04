@@ -1,40 +1,43 @@
-import type { Metadata } from "next";
+import { JsonLd } from "@/components/ui/json-ld";
+import { SectionTitle } from "@/components/ui/section-title";
+import { buildMetadata } from "@/lib/metadata";
+import { buildBreadcrumbSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "Politique de confidentialité",
-  description:
-    "Gestion des données personnelles collectées par le site du Golf de Marcilly.",
-};
+export const metadata = buildMetadata({
+  title: "Politique de confidentialite",
+  description: "Politique de confidentialite du site du Golf de Marcilly.",
+  path: "/politique-de-confidentialite",
+});
 
-export default function PrivacyPolicyPage() {
+export default function PrivacyPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-emerald-950">
-      <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-        <h1 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-          Politique de confidentialité
-        </h1>
-        <div className="mt-6 space-y-4 text-sm leading-7 text-emerald-900/80">
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: "Accueil", path: "/" },
+          { name: "Politique de confidentialite", path: "/politique-de-confidentialite" },
+        ])}
+      />
+      <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionTitle
+          eyebrow="Donnees personnelles"
+          title="Politique de confidentialite"
+        />
+        <div className="prose-brand mt-8">
           <p>
-            Les données transmises via les formulaires (nom, prénom, téléphone,
-            e-mail, message) sont utilisées uniquement pour traiter votre
-            demande.
+            Les informations transmises via les formulaires sont utilisees uniquement
+            pour repondre a vos demandes commerciales ou organisationnelles.
           </p>
           <p>
-            Base légale: intérêt légitime à répondre aux demandes entrantes et
-            relation commerciale précontractuelle.
+            Vous pouvez demander l&apos;acces, la rectification ou la suppression de vos
+            donnees en ecrivant a golf@marcilly.com.
           </p>
           <p>
-            Durée de conservation: le temps nécessaire au traitement de la
-            demande et au suivi opérationnel.
-          </p>
-          <p>
-            Vous pouvez exercer vos droits d&apos;accès, de rectification,
-            d&apos;effacement et d&apos;opposition en écrivant à
-            {" "}
-            golf@marcilly.com.
+            Cette page est prete a etre completee avec vos mentions RGPD finales
+            avant mise en production.
           </p>
         </div>
       </section>
-    </main>
+    </>
   );
 }

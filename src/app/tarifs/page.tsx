@@ -1,28 +1,42 @@
-﻿import type { Metadata } from "next";
+import { CTAButton } from "@/components/ui/cta-button";
+import { JsonLd } from "@/components/ui/json-ld";
+import { PricingTable } from "@/components/ui/pricing-table";
+import { SectionTitle } from "@/components/ui/section-title";
+import { pricingSections } from "@/data/pricing";
+import { buildMetadata } from "@/lib/metadata";
+import { buildBreadcrumbSchema } from "@/lib/schema";
 
-import TarifsSections from "@/components/tarifs-sections";
+export const metadata = buildMetadata({
+  title: "Tarifs",
+  description:
+    "Tarifs 2026 du Golf de Marcilly : découverte, practice, green fees, location et abonnements.",
+  path: "/tarifs",
+});
 
-export const metadata: Metadata = {
-  title: "Tarifs 2026",
-  description: "Consultez les tarifs 2026 du Golf de Marcilly.",
-};
-
-export default function TarifsPage() {
+export default function PricingPage() {
   return (
-    <div className="text-emerald-950">
-      <main className="mx-auto w-full max-w-6xl px-6 py-8 md:py-10">
-        <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
-          <h1 className="font-[var(--font-display)] text-3xl text-emerald-950 md:text-4xl">
-            Tarifs 2026
-          </h1>
-          <p className="mt-3 text-sm leading-6 text-emerald-900/70">
-            Consultez les tarifs par catégorie : initiation, practice, green fees
-            et location.
-          </p>
-        </section>
-
-        <TarifsSections />
-      </main>
-    </div>
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: "Accueil", path: "/" },
+          { name: "Tarifs", path: "/tarifs" },
+        ])}
+      />
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <SectionTitle
+            description="Tarifs 2026 mis à jour à partir de la plaquette officielle publiée sur le site du Golf de Marcilly."
+            eyebrow="Tarifs 2026"
+            title="Des tarifs lisibles pour jouer, apprendre et recevoir"
+          />
+          <CTAButton href="/contact#reservation">Demander une offre</CTAButton>
+        </div>
+        <div className="mt-10 grid gap-6 xl:grid-cols-2">
+          {pricingSections.map((section) => (
+            <PricingTable key={section.title} section={section} />
+          ))}
+        </div>
+      </section>
+    </>
   );
 }
