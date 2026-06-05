@@ -27,9 +27,8 @@ export default function TeachingPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionTitle
-            description="Une approche pédagogique claire, premium et rassurante pour débuter ou accélérer sa progression."
             eyebrow="Cours de golf Orléans"
-            title="Une académie structurée pour tous les profils"
+            title="Une academie structuree pour tous les profils"
           />
           <CTAButton href="/contact#reservation">Réserver un cours</CTAButton>
         </div>
@@ -46,9 +45,8 @@ export default function TeachingPage() {
 
         <div className="mt-16">
           <SectionTitle
-            description="Des pros identifiables et rassurants pour renforcer la crédibilité de l'offre."
             eyebrow="Pros enseignants"
-            title="Des enseignants visibles, pédagogues et orientés progression"
+            title="Des enseignants visibles et orientes progression"
           />
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {teachingPros.map((pro) => (

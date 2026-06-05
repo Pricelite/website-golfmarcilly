@@ -1,3 +1,11 @@
+export type HomeOffer = {
+  slug: string;
+  title: string;
+  imageSrc: string;
+  actionLabel: string;
+  actionHref: string;
+};
+
 export const homeHighlights = [
   {
     eyebrow: "Cadre d'exception",
@@ -19,38 +27,33 @@ export const homeHighlights = [
   },
 ] as const;
 
-export const homeOffers = [
+export const homeOffers: HomeOffer[] = [
   {
-    eyebrow: "Affiche 01",
+    slug: "offre-decouverte",
     title: "Offre decouverte",
-    description:
-      "Affiche active sur l'accueil pour votre offre decouverte.",
-    ctaLabel: "Voir l'offre",
-    ctaHref: "/golf",
-    accentClassName: "from-amber-200/80 via-stone-50 to-white",
     imageSrc: "/offre dec.png",
+    actionLabel: "Nous contacter",
+    actionHref: "/contact#reservation",
   },
   {
-    eyebrow: "Affiche 02",
+    slug: "offre-green-fee",
     title: "Offre green fee",
-    description:
-      "Affiche active sur l'accueil pour votre offre green fee competition.",
-    ctaLabel: "Voir l'offre",
-    ctaHref: "https://prima.golf/marcilly/login",
-    accentClassName: "from-emerald-200/80 via-white to-emerald-50",
     imageSrc: "/offre gf.png",
+    actionLabel: "Reserver un depart",
+    actionHref: "https://prima.golf/marcilly/login",
   },
   {
-    eyebrow: "Affiche 03",
-    title: "Votre troisieme affiche",
-    description:
-      "Emplacement reserve pour mettre en avant une offre forte, une nouveaute saisonniere ou une operation commerciale.",
-    ctaLabel: "Ajouter une offre",
-    ctaHref: "https://prima.golf/marcilly/login",
-    accentClassName: "from-sky-200/70 via-white to-stone-50",
-    imageSrc: null,
+    slug: "offre-carnet",
+    title: "Offre carnet",
+    imageSrc: "/offre carnets.png",
+    actionLabel: "Reserver un depart",
+    actionHref: "https://prima.golf/marcilly/login",
   },
 ] as const;
+
+export function getHomeOfferBySlug(slug: string) {
+  return homeOffers.find((offer) => offer.slug === slug);
+}
 
 export const homeReasons = [
   {

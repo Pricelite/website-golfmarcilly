@@ -52,9 +52,8 @@ export default function EventsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
-          description="Une page de conversion pour les demandes de séminaire golf Orléans, incentives et réceptions privées."
           eyebrow="Formats"
-          title="Des scénarios adaptables à vos clients, équipes et invités"
+          title="Des formats adaptables a vos clients, equipes et invites"
         />
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {eventFormats.map((format) => (
@@ -68,22 +67,7 @@ export default function EventsPage() {
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]" id="devis">
           <div>
-            <SectionTitle
-              description="Partagez votre besoin pour recevoir une première recommandation de format, de restauration et de timing."
-              eyebrow="Formulaire de devis"
-              title="Recevoir un devis sur mesure"
-            />
-            <div className="mt-8 rounded-[32px] border border-emerald-950/10 bg-white/92 p-7 shadow-xl shadow-emerald-950/8">
-              <h2 className="font-serif text-2xl text-emerald-950">
-                Idées de demandes
-              </h2>
-              <ul className="mt-5 space-y-3 text-sm leading-7 text-emerald-950/75">
-                <li>Séminaire avec restauration et salle de réunion</li>
-                <li>Team building avec initiation golf ou footgolf</li>
-                <li>Réception privée ou mariage dans le domaine</li>
-                <li>Événement client avec expérience premium et mémorable</li>
-              </ul>
-            </div>
+            <SectionTitle eyebrow="Formulaire de devis" title="Recevoir un devis sur mesure" />
           </div>
           <QuoteForm />
         </div>

@@ -18,8 +18,8 @@ type ApiErrorPayload = {
 export function ContactForm({
   context = "contact",
   submitLabel = "Envoyer ma demande",
-  successMessage = "Votre demande a bien été reçue par le site.",
-  subjectPlaceholder = "Réservation, renseignement, événement...",
+  successMessage = "Votre demande a bien ete recue par le site.",
+  subjectPlaceholder = "Reservation, renseignement, evenement...",
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,9 +43,7 @@ export function ContactForm({
         const payload = (await response.json().catch(() => null)) as
           | ApiErrorPayload
           | null;
-        setErrorMessage(
-          payload?.error || "Une erreur est survenue. Merci de réessayer."
-        );
+        setErrorMessage(payload?.error || "Une erreur est survenue. Merci de reessayer.");
         setState("error");
         return;
       }
@@ -53,7 +51,7 @@ export function ContactForm({
       form.reset();
       setState("success");
     } catch {
-      setErrorMessage("Une erreur est survenue. Merci de réessayer.");
+      setErrorMessage("Une erreur est survenue. Merci de reessayer.");
       setState("error");
     }
   }
@@ -64,29 +62,22 @@ export function ContactForm({
       onSubmit={handleSubmit}
     >
       <input name="context" type="hidden" value={context} />
-      <div className="rounded-[24px] border border-emerald-950/8 bg-stone-50 px-4 py-4 text-sm leading-7 text-emerald-950/72">
-        Formulaire connecté au système d&apos;email du site. Si la configuration
-        SMTP ou Brevo n&apos;est pas encore renseignée, un message clair
-        s&apos;affichera ici.
-      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-medium text-emerald-950">
           <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-            Prénom
+            Prenom
           </span>
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="firstName"
-            placeholder="Votre prénom"
+            placeholder="Votre prenom"
             required
             type="text"
           />
         </label>
         <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-            Nom
-          </span>
+          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Nom</span>
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="lastName"
@@ -100,7 +91,7 @@ export function ContactForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-medium text-emerald-950">
           <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-            Téléphone
+            Telephone
           </span>
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
@@ -110,9 +101,7 @@ export function ContactForm({
           />
         </label>
         <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-            Email
-          </span>
+          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Email</span>
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="email"
@@ -124,9 +113,7 @@ export function ContactForm({
       </div>
 
       <label className="block text-sm font-medium text-emerald-950">
-        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-          Objet
-        </span>
+        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Objet</span>
         <input
           className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="subject"
@@ -136,22 +123,16 @@ export function ContactForm({
       </label>
 
       <label className="block text-sm font-medium text-emerald-950">
-        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-          Message
-        </span>
+        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Message</span>
         <textarea
           className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="message"
-          placeholder="Décrivez votre demande, votre date souhaitée ou votre besoin."
+          placeholder="Decrivez votre demande."
           required
         />
       </label>
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="max-w-md text-xs leading-6 text-emerald-950/55">
-          Votre demande est envoyée vers l&apos;API du site puis vers votre boîte
-          email dès que la configuration du fournisseur est en place.
-        </p>
+      <div className="flex justify-end">
         <button
           className="rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-stone-50 shadow-lg shadow-emerald-950/15 transition hover:-translate-y-0.5 hover:bg-emerald-800"
           type="submit"
@@ -168,7 +149,7 @@ export function ContactForm({
 
       {state === "error" ? (
         <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {errorMessage || "Une erreur est survenue. Merci de réessayer."}
+          {errorMessage || "Une erreur est survenue. Merci de reessayer."}
         </p>
       ) : null}
     </form>
