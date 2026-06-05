@@ -30,7 +30,7 @@ export default function TeachingPage() {
             eyebrow="Cours de golf Orléans"
             title="Une academie structuree pour tous les profils"
           />
-          <CTAButton href="/contact#reservation">Réserver un cours</CTAButton>
+          <CTAButton href="/reserver-un-cours">Réserver un cours</CTAButton>
         </div>
 
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -68,6 +68,9 @@ export default function TeachingPage() {
                   <p className="mt-2 text-sm leading-7 text-emerald-950/75">
                     {pro.specialty}
                   </p>
+                  <div className="mt-6">
+                    <CTAButton href={pro.website}>Voir le site</CTAButton>
+                  </div>
                 </div>
               </article>
             ))}

@@ -33,18 +33,21 @@ export const teachingPrograms = [
 
 export const teachingPros = [
   {
-    name: "Camille Delmas",
-    specialty: "Debutants et progression feminine",
+    name: "Adrien Lafuge",
+    specialty: "Cours, accompagnement et progression",
     image: "/images/camilledaviolante.png",
+    website: "https://www.adrienlafuge.com",
   },
   {
-    name: "Benjamin Martin",
-    specialty: "Performance et strategie parcours",
+    name: "Roman Lissowski",
+    specialty: "Technique, strategie et accompagnement parcours",
     image: "/images/benjamin.png",
+    website: "https://www.romanlissowski.com",
   },
   {
-    name: "Nathalie Simon",
-    specialty: "Jeunes et ecole de golf",
+    name: "Baptiste Courtachon",
+    specialty: "Enseignement, progression et suivi des joueurs",
     image: "/images/nathalie.png",
+    website: "https://baptistecourtachon.com",
   },
 ] as const;

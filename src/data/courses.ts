@@ -5,7 +5,7 @@ export const courses = [
     level: "Tous niveaux",
     distance: "Postes couverts et extérieurs",
     ctaLabel: "Réserver un cours",
-    ctaHref: "/contact#reservation",
+    ctaHref: "/reserver-un-cours",
     description:
       "Zones d'entraînement pour le long jeu, les approches et le putting, pensées pour des séances efficaces toute l'année.",
     image: "/images/practicemarcilly.png",
