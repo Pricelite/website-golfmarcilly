@@ -49,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" data-scroll-behavior="smooth">
       <body className="bg-stone-50 text-emerald-950 antialiased">
         <JsonLd data={buildOrganizationSchema()} />
         <a
