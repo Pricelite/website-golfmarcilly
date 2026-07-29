@@ -24,6 +24,13 @@ export const metadata = buildMetadata({
 });
 
 export default function HomePage() {
+  const orderedCourses = [
+    courses.find((course) => course.slug === "practice"),
+    courses.find((course) => course.slug === "parcours-decouverte-9-trous"),
+    courses.find((course) => course.slug === "pitch-putt-kaleka-18-trous"),
+    courses.find((course) => course.slug === "parcours-competitions-18-trous"),
+  ].filter((course): course is (typeof courses)[number] => Boolean(course));
+
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }])} />
@@ -32,7 +39,14 @@ export default function HomePage() {
         eyebrow="Golf pres d'Orleans"
         image="/images/club-house-marcilly.png"
         primaryCta={{ label: "Reserver un depart", href: siteConfig.reservationUrl }}
-        secondaryCta={{ label: "Decouvrir le golf", href: "/golf" }}
+        quaternaryCta={{
+          label: "Departs competition",
+          href: "https://pages.ffgolf.org/departs/golf/5824d6b19f01d21a2e53b0249f2e9656",
+        }}
+        quinaryCta={{
+          label: "Resultats competition",
+          href: "https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656",
+        }}
         subtitle="Golf, restaurant, enseignement et evenements dans un domaine naturel unique."
         tertiaryCta={{ label: "Je debute le golf", href: "/je-debute-le-golf" }}
         title="45 trous aux portes d'Orleans"
@@ -63,7 +77,7 @@ export default function HomePage() {
                 </Link>
                 <div className="p-4">
                   <CTAButton className="w-full" href={`/offres/${offer.slug}`}>
-                    Voir l'offre
+                    Voir l&apos;offre
                   </CTAButton>
                 </div>
               </article>
@@ -95,7 +109,7 @@ export default function HomePage() {
           title="Des formats complementaires pour tous les rythmes de jeu"
         />
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {courses.slice(0, 4).map((course) => (
+          {orderedCourses.map((course) => (
             <CourseCard key={course.slug} showMeta={false} {...course} />
           ))}
         </div>
@@ -106,7 +120,7 @@ export default function HomePage() {
           <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
             <SectionTitle
               eyebrow="Restaurant La Bergerie"
-              title="L'adresse du domaine pour dejeuner et recevoir"
+              title="L&apos;adresse du domaine pour dejeuner et recevoir"
             />
           </div>
           <div className="grid gap-5 sm:grid-cols-2">

@@ -1,6 +1,18 @@
-# Golf de Marcilly - Refonte Next.js
+# Golf de Marcilly - site Next.js
 
-Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS et Framer Motion.
+Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase, Google Calendar, SumUp et envoi d'emails transactionnels.
+
+## Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- Framer Motion
+- Supabase
+- Google Calendar
+- SumUp
+- Nodemailer / SMTP ou Brevo
 
 ## Installation
 
@@ -12,33 +24,33 @@ pnpm install
 
 ```bash
 pnpm.cmd dev
-pnpm.cmd build
 pnpm.cmd lint
 pnpm.cmd typecheck
+pnpm.cmd test
+pnpm.cmd build
+pnpm.cmd start
 ```
 
 Sur PowerShell Windows, `pnpm.cmd` est la commande la plus fiable.
 
-## Structure du projet
+## Structure
 
 ```text
 src/
-  app/                  Pages App Router, metadata, sitemap, robots, API forms
-  components/
-    forms/              ContactForm, QuoteForm, NewsletterForm
-    layout/             Header, Footer
-    sections/           Hero
-    ui/                 Composants reutilisables
-  data/                 Contenus mockes et faciles a remplacer
-  lib/                  Helpers SEO, metadata, schema.org, utils
+  app/                  Pages App Router, layout, metadata, routes API
+  components/           UI, layout, formulaires, sections metier
+  data/                 Contenu editorial centralise
+  lib/                  SEO, securite, email, reservations, calendrier, Supabase
 public/
   images/               Visuels du golf
   restaurant/           Visuels du restaurant
+supabase/
+  migrations/           Schema SQL des reservations initiation
 styles/
-  prose.css             Styles de contenus editoriaux
+  prose.css             Styles editoriaux
 ```
 
-## Pages livrees
+## Pages principales
 
 - `/`
 - `/golf`
@@ -48,54 +60,81 @@ styles/
 - `/evenements`
 - `/actualites`
 - `/actualites/[slug]`
+- `/offres/[slug]`
+- `/je-debute-le-golf`
+- `/reserver-un-cours`
 - `/contact`
 - `/mentions-legales`
 - `/politique-de-confidentialite`
+- `/admin`
 
-## Ou modifier les contenus
+## Fonctions metier presentes
 
-- Donnees globales du site, navigation, footer, testimonials : [src/data/site.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/site.ts:1)
-- Contenu accueil et FAQ home : [src/data/home.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/home.ts:1)
-- Parcours golf : [src/data/courses.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/courses.ts:1)
-- Enseignement et pros : [src/data/teaching.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/teaching.ts:1)
-- Restaurant : [src/data/restaurant.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/restaurant.ts:1)
-- Evenements : [src/data/events.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/events.ts:1)
-- Articles SEO / actualites : [src/data/posts.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/posts.ts:1)
+- formulaires `contact`, `newsletter` et `devis`
+- demande de reservation restaurant avec email au club + accuse reception client
+- page "Je debute le golf"
+- reservation d'initiation avec creneaux, disponibilites et suivi
+- integration Google Calendar pour les initiations
+- integration SumUp pour le paiement initiation
+- page admin de suivi des reservations initiation
+- maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
+- sitemap, robots, metadata et JSON-LD
 
-## Ou modifier les tarifs
+## Fichiers de contenu
 
-- Toute la structure tarifaire est centralisee dans [src/data/pricing.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/pricing.ts:1)
-- Les tableaux HTML affiches sur la page tarifs sont rendus par [src/components/ui/pricing-table.tsx](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/components/ui/pricing-table.tsx:1)
+- [src/data/site.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/site.ts:1)
+- [src/data/home.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/home.ts:1)
+- [src/data/courses.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/courses.ts:1)
+- [src/data/pricing.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/pricing.ts:1)
+- [src/data/teaching.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/teaching.ts:1)
+- [src/data/restaurant.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/restaurant.ts:1)
+- [src/data/events.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/events.ts:1)
+- [src/data/posts.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/data/posts.ts:1)
 
-## Ou modifier les metadonnees SEO
+## Variables d'environnement
 
-- Helper SEO global : [src/lib/metadata.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/lib/metadata.ts:1)
-- Schema.org JSON-LD : [src/lib/schema.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/lib/schema.ts:1)
-- Layout global et metadata par defaut : [src/app/layout.tsx](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/layout.tsx:1)
-- Metadata par page : dans chaque fichier `page.tsx` sous `src/app/...`
+Voir :
 
-## Formulaires
+- [.env.local.example](/c:/Users/Anthony/Desktop/website-golfmarcilly/.env.local.example:1)
 
-Les formulaires front appellent ces endpoints JSON :
+Les blocs principaux couvrent :
 
-- [src/app/api/contact/route.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/api/contact/route.ts:1)
-- [src/app/api/quote/route.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/api/quote/route.ts:1)
-- [src/app/api/newsletter/route.ts](/c:/Users/Anthony/Desktop/website-golfmarcilly/src/app/api/newsletter/route.ts:1)
+- Supabase public et admin
+- Google Calendar
+- SumUp
+- email SMTP / Brevo
+- analytics
+- operations / monitoring
 
-Ils retournent actuellement des succes simples, prets a etre branches plus tard sur un CRM, un email transactionnel ou Supabase.
+## Healthcheck et exploitation
 
-## Images
+- `GET /api/health`
+  Retour public minimal avec l'etat global des services.
+- `GET /api/health` avec `Authorization: Bearer <OPS_CRON_TOKEN>`
+  Retour detaille interne avec l'etat de configuration et la file fallback.
+- `GET /api/ops/fallback-queue` ou `POST /api/ops/fallback-queue`
+  Traitement manuel/provoque de la file de secours avec `OPS_CRON_TOKEN`.
 
-- Les images sont servies depuis `public/images` et `public/restaurant`
-- Pour remplacer un visuel, gardez idealement le meme ratio et mettez a jour le chemin dans le fichier de donnees concerne
+Notes:
 
-## Validation effectuee
+- la file `.contact-fallback` reste locale pour l'instant, mais elle expose maintenant un etat exploitable et une retention configurable via `FALLBACK_QUEUE_RETENTION_DAYS`
+- `OPS_CRON_TOKEN` est reutilise pour les diagnostics internes et les operations cron
 
-- `pnpm.cmd build` passe
+## Verification actuelle
 
-## Suite recommandee
+Au 29 juillet 2026 :
 
-1. Remplacer les contenus mockes par les contenus definitifs du golf.
-2. Brancher les formulaires sur votre solution email/CRM.
-3. Ajouter les vraies coordonnees legales et RGPD finales.
-4. Remplacer les URLs de reservation placeholder par les liens reels.
+- `pnpm.cmd lint` : OK
+- `pnpm.cmd typecheck` : OK
+- `pnpm.cmd test` : OK
+- `pnpm.cmd build` : OK
+
+## Notes de reprise
+
+- Le controle `typecheck` passe via `tsconfig.typecheck.json` pour ne pas dependre des artefacts `.next` generes partiellement par `next typegen`.
+- Le build reste la verification la plus complete du projet, car Next y applique aussi ses controles de routes et de metadata.
+- Le parcours d'initiation canonique est maintenant `/initiation/reservation` avec les APIs `/api/slots` et `/api/reservations`.
+- L'ancien endpoint `/api/initiation-reservation` est conserve uniquement comme fallback legacy et n'est plus le parcours principal.
+- La reprise globale du projet est documentee dans [COMPTE-RENDU-REPRISE.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/COMPTE-RENDU-REPRISE.md:1).
+- La checklist de mise en production est documentee dans [CHECKLIST-MISE-EN-PROD.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/CHECKLIST-MISE-EN-PROD.md:1).
+- La procedure d'application Supabase et de configuration production est documentee dans [PROCEDURE-SUPABASE-VERCEL.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/PROCEDURE-SUPABASE-VERCEL.md:1).

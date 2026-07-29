@@ -69,7 +69,7 @@ export default function BookLessonPage() {
         </div>
         <div className="mt-10">
           <Link className="text-sm font-medium text-emerald-900 underline-offset-4 hover:underline" href="/enseignement">
-            Retour a l'enseignement
+            Retour a l&apos;enseignement
           </Link>
         </div>
       </section>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "node:crypto";
 
 import {
   ADMIN_SESSION_COOKIE_NAME,
@@ -14,6 +15,17 @@ import {
 
 const ADMIN_LOGIN_RATE_LIMIT_MAX_REQUESTS = 8;
 const ADMIN_LOGIN_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+
+function safeCompare(value: string, expected: string): boolean {
+  const valueBuffer = Buffer.from(value);
+  const expectedBuffer = Buffer.from(expected);
+
+  if (valueBuffer.length !== expectedBuffer.length) {
+    return false;
+  }
+
+  return timingSafeEqual(valueBuffer, expectedBuffer);
+}
 
 function redirectToAdmin(url: string, params?: Record<string, string>) {
   const target = new URL("/admin", url);
@@ -51,14 +63,14 @@ export async function POST(request: Request) {
     return redirectToAdmin(request.url, { error: "missing_password" });
   }
 
-  if (password !== getAdminPassword()) {
+  if (!safeCompare(password, getAdminPassword())) {
     return redirectToAdmin(request.url, { error: "invalid_password" });
   }
 
   const response = redirectToAdmin(request.url);
   const secure = process.env.NODE_ENV === "production";
 
-  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, createAdminSessionToken(password), {
+  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, await createAdminSessionToken(password), {
     httpOnly: true,
     sameSite: "strict",
     secure,

@@ -16,6 +16,24 @@ function getRequiredEnv(name: string): string {
   return value;
 }
 
+function getOptionalEnv(name: string): string | undefined {
+  const value = process.env[name]?.trim();
+
+  if (!value) {
+    return undefined;
+  }
+
+  return value;
+}
+
+export function hasInitiationPaymentEnv(): boolean {
+  return Boolean(
+    getOptionalEnv("SUMUP_API_KEY") &&
+      getOptionalEnv("SUMUP_MERCHANT_CODE") &&
+      getOptionalEnv("APP_BASE_URL")
+  );
+}
+
 export function getInitiationPaymentEnv(): InitiationPaymentEnv {
   return {
     sumupApiKey: getRequiredEnv("SUMUP_API_KEY"),

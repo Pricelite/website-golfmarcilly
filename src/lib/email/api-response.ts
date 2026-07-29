@@ -5,7 +5,6 @@ export function buildMailApiErrorResponse(error: unknown) {
     return {
       error: getPublicMailerErrorMessage(error),
       code: error.code,
-      details: error.message,
     };
   }
 

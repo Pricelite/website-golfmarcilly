@@ -5,6 +5,7 @@ import { createSign } from "node:crypto";
 import { INITIATION_SLOT_CAPACITY } from "./constants";
 import { buildAllowedWeekendSlots } from "./time";
 import type { InitiationMealOption, InitiationSlot } from "./types";
+import { fetchWithTimeout } from "@/lib/http/fetch";
 
 type GoogleCalendarEvent = {
   id?: string;
@@ -132,7 +133,7 @@ async function getGoogleAccessToken(env: GoogleCalendarEnv): Promise<string> {
   }
 
   const assertion = buildJwtAssertion(env);
-  const response = await fetch(GOOGLE_TOKEN_URL, {
+  const response = await fetchWithTimeout(GOOGLE_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -140,6 +141,7 @@ async function getGoogleAccessToken(env: GoogleCalendarEnv): Promise<string> {
       assertion,
     }),
     cache: "no-store",
+    timeoutMs: 10_000,
   });
 
   const payload = (await response.json()) as
@@ -285,9 +287,11 @@ async function listCalendarEvents(params: {
   url.searchParams.set("timeMax", params.timeMaxIso);
   url.searchParams.set("maxResults", "2500");
 
-  const response = await fetch(url.toString(), {
+  const response = await fetchWithTimeout(url.toString(), {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
+    timeoutMs: 10_000,
+    retryCount: 1,
   });
   const payload = (await response.json()) as
     | { items?: GoogleCalendarEvent[]; error?: { message?: string } }
@@ -377,7 +381,7 @@ export async function createGoogleCalendarReservation(input: {
   const url = `${GOOGLE_CALENDAR_API_BASE}/calendars/${encodeURIComponent(
     env.calendarId
   )}/events`;
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -402,6 +406,7 @@ export async function createGoogleCalendarReservation(input: {
         },
       },
     }),
+    timeoutMs: 10_000,
   });
 
   const payload = (await response.json()) as

@@ -43,6 +43,13 @@ export type FallbackQueueProcessResult = {
   alertSent: boolean;
 };
 
+export type FallbackQueueSnapshot = {
+  pending: number;
+  sent: number;
+  failed: number;
+  oldestPendingAgeMinutes: number | null;
+};
+
 const FALLBACK_ROOT_DIR = path.join(process.cwd(), ".contact-fallback");
 const FALLBACK_PENDING_DIR = path.join(FALLBACK_ROOT_DIR, "pending");
 const FALLBACK_SENT_DIR = path.join(FALLBACK_ROOT_DIR, "sent");
@@ -54,6 +61,7 @@ const FALLBACK_MAX_ATTEMPTS = 5;
 const FALLBACK_ALERT_COOLDOWN_MS = 30 * 60 * 1000;
 const FALLBACK_ALERT_PENDING_THRESHOLD = 3;
 const DEFAULT_PROCESS_MAX_ITEMS = 25;
+const DEFAULT_RETENTION_DAYS = 14;
 
 function parsePositiveInt(raw: string | undefined, fallback: number): number {
   if (!raw) {
@@ -210,6 +218,11 @@ async function countFailedMessages(): Promise<number> {
   return failedFiles.length;
 }
 
+async function countSentMessages(): Promise<number> {
+  const sentFiles = await listQueueFiles(FALLBACK_SENT_DIR);
+  return sentFiles.length;
+}
+
 async function getOldestPendingAgeMinutes(): Promise<number | null> {
   const pendingFiles = await listQueueFiles(FALLBACK_PENDING_DIR);
   if (pendingFiles.length === 0) {
@@ -291,6 +304,60 @@ async function maybeSendFallbackQueueAlert(): Promise<boolean> {
   }
 }
 
+async function purgeDirectoryOlderThan(
+  directory: string,
+  olderThanMs: number
+): Promise<number> {
+  const files = await listQueueFiles(directory);
+  let deleted = 0;
+
+  for (const fileName of files) {
+    const filePath = path.join(directory, fileName);
+
+    try {
+      const info = await stat(filePath);
+      if (Date.now() - info.mtimeMs > olderThanMs) {
+        await unlink(filePath);
+        deleted += 1;
+      }
+    } catch {
+      // Ignore per-file cleanup errors.
+    }
+  }
+
+  return deleted;
+}
+
+async function cleanupFallbackArchives(): Promise<void> {
+  const retentionDays = parsePositiveInt(
+    process.env.FALLBACK_QUEUE_RETENTION_DAYS,
+    DEFAULT_RETENTION_DAYS
+  );
+  const retentionMs = retentionDays * 24 * 60 * 60 * 1000;
+
+  await purgeDirectoryOlderThan(FALLBACK_SENT_DIR, retentionMs);
+  await purgeDirectoryOlderThan(FALLBACK_FAILED_DIR, retentionMs);
+}
+
+export async function getContactFallbackQueueSnapshot(): Promise<FallbackQueueSnapshot> {
+  await ensureFallbackDirectories();
+
+  const [pendingFiles, sentCount, failedCount, oldestPendingAgeMinutes] =
+    await Promise.all([
+      listQueueFiles(FALLBACK_PENDING_DIR),
+      countSentMessages(),
+      countFailedMessages(),
+      getOldestPendingAgeMinutes(),
+    ]);
+
+  return {
+    pending: pendingFiles.length,
+    sent: sentCount,
+    failed: failedCount,
+    oldestPendingAgeMinutes,
+  };
+}
+
 export async function storeContactFallbackEntry(
   entry: ContactFallbackEntry
 ): Promise<void> {
@@ -313,6 +380,7 @@ export async function processContactFallbackQueue(options?: {
   maxItems?: number;
 }): Promise<FallbackQueueProcessResult> {
   await ensureFallbackDirectories();
+  await cleanupFallbackArchives();
 
   const result: FallbackQueueProcessResult = {
     processed: 0,

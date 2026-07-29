@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 
 import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
+import { logApiError } from "@/lib/api/logging";
+import { readJsonBody } from "@/lib/api/request-body";
+import {
+  isNonEmptyWithinLength,
+  isValidEmail,
+  isWithinLength,
+  parseTrimmedString,
+} from "@/lib/api/public-form-validation";
+import { methodNotAllowed } from "@/lib/api/responses";
 import { buildMailApiErrorResponse } from "@/lib/email/api-response";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 import { buildContactEmail } from "@/lib/form-emails";
@@ -12,6 +21,15 @@ import {
 
 const CONTACT_RATE_LIMIT_MAX_REQUESTS = 8;
 const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const MAX_NAME_LENGTH = 120;
+const MAX_EMAIL_LENGTH = 160;
+const MAX_PHONE_LENGTH = 30;
+const MAX_SUBJECT_LENGTH = 160;
+const MAX_MESSAGE_LENGTH = 4000;
+
+function buildMethodNotAllowed() {
+  return methodNotAllowed("POST", { error: "Method not allowed" });
+}
 
 export async function POST(request: Request) {
   const fallbackHost = new URL(request.url).host;
@@ -34,9 +52,33 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = await request.json();
+  const bodyResult = await readJsonBody<Record<string, unknown>>(request);
+  if (!bodyResult.ok) {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  }
 
-  if (!body?.firstName || !body?.lastName || !body?.email || !body?.message) {
+  const payload = {
+    context:
+      typeof bodyResult.data.context === "string"
+        ? bodyResult.data.context
+        : "contact",
+    firstName: parseTrimmedString(bodyResult.data.firstName),
+    lastName: parseTrimmedString(bodyResult.data.lastName),
+    phone: parseTrimmedString(bodyResult.data.phone),
+    email: parseTrimmedString(bodyResult.data.email).toLowerCase(),
+    subject: parseTrimmedString(bodyResult.data.subject),
+    message: parseTrimmedString(bodyResult.data.message),
+  };
+
+  if (
+    !isNonEmptyWithinLength(payload.firstName, MAX_NAME_LENGTH) ||
+    !isNonEmptyWithinLength(payload.lastName, MAX_NAME_LENGTH) ||
+    !isNonEmptyWithinLength(payload.message, MAX_MESSAGE_LENGTH) ||
+    !isNonEmptyWithinLength(payload.email, MAX_EMAIL_LENGTH) ||
+    !isValidEmail(payload.email) ||
+    !isWithinLength(payload.phone, MAX_PHONE_LENGTH) ||
+    !isWithinLength(payload.subject, MAX_SUBJECT_LENGTH)
+  ) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
@@ -53,16 +95,6 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-
-  const payload = {
-    context: typeof body.context === "string" ? body.context : "contact",
-    firstName: String(body.firstName).trim(),
-    lastName: String(body.lastName).trim(),
-    phone: typeof body.phone === "string" ? body.phone.trim() : "",
-    email: String(body.email).trim(),
-    subject: typeof body.subject === "string" ? body.subject.trim() : "",
-    message: String(body.message).trim(),
-  };
 
   const emailContent = buildContactEmail(payload);
 
@@ -96,6 +128,25 @@ export async function POST(request: Request) {
       // Ignore fallback storage failures and return the primary mail error.
     }
 
+    logApiError("api/contact", "mail_failed", {
+      code: error instanceof MailerError ? error.code : "send",
+    });
     return NextResponse.json(buildMailApiErrorResponse(error), { status: 500 });
   }
+}
+
+export function GET() {
+  return buildMethodNotAllowed();
+}
+
+export function PUT() {
+  return buildMethodNotAllowed();
+}
+
+export function PATCH() {
+  return buildMethodNotAllowed();
+}
+
+export function DELETE() {
+  return buildMethodNotAllowed();
 }

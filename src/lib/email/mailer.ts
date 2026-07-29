@@ -1,6 +1,7 @@
 import "server-only";
 
 import nodemailer from "nodemailer";
+import { fetchWithTimeout } from "@/lib/http/fetch";
 
 type SendMailParams = {
   to: string;
@@ -210,7 +211,7 @@ async function sendViaBrevo({
   replyToName,
 }: SendMailParams): Promise<void> {
   const config = getBrevoConfig();
-  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+  const response = await fetchWithTimeout("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -235,6 +236,7 @@ async function sendViaBrevo({
           }
         : {}),
     }),
+    timeoutMs: 12_000,
   });
 
   if (response.ok) {

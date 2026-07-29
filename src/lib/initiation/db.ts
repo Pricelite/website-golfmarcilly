@@ -337,13 +337,39 @@ export async function setReservationCheckoutId(params: {
   checkoutId: string;
 }): Promise<void> {
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("initiation_reservations")
     .update({ sumup_checkout_id: params.checkoutId })
-    .eq("id", params.reservationId);
+    .eq("id", params.reservationId)
+    .is("sumup_checkout_id", null)
+    .select("id");
 
   if (error) {
     throw new Error(`Failed to set checkout id: ${error.message}`);
+  }
+
+  if ((data?.length ?? 0) > 0) {
+    return;
+  }
+
+  const { data: current, error: currentError } = await supabase
+    .from("initiation_reservations")
+    .select("sumup_checkout_id")
+    .eq("id", params.reservationId)
+    .maybeSingle();
+
+  if (currentError) {
+    throw new Error(
+      `Failed to confirm checkout id assignment: ${currentError.message}`
+    );
+  }
+
+  if (!current?.sumup_checkout_id) {
+    throw new Error("Checkout id could not be assigned.");
+  }
+
+  if (current.sumup_checkout_id !== params.checkoutId) {
+    throw new Error("Checkout id is already assigned to a different value.");
   }
 }
 
@@ -362,10 +388,16 @@ export async function setReservationStatus(params: {
     payload.sumup_transaction_id = params.sumupTransactionId;
   }
 
-  const { error } = await supabase
+  let query = supabase
     .from("initiation_reservations")
     .update(payload)
     .eq("id", params.reservationId);
+
+  if (params.status !== "PAID") {
+    query = query.neq("status", "PAID");
+  }
+
+  const { error } = await query;
 
   if (error) {
     throw new Error(`Failed to update reservation status: ${error.message}`);

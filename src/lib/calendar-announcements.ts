@@ -3,6 +3,7 @@ import {
   CALENDAR_EMBED_URL,
   getCalendarIcsUrlsFromEnv,
 } from "./calendar";
+import { fetchWithTimeout } from "@/lib/http/fetch";
 const PARIS_TIMEZONE = "Europe/Paris";
 
 type RRule = {
@@ -572,9 +573,11 @@ export async function fetchPlanningEventsFromExistingCalendar(
   const allCalendars = await Promise.all(
     calendarFeeds.map(async ({ icsUrl, color }) => {
       try {
-        const response = await fetch(icsUrl, {
+        const response = await fetchWithTimeout(icsUrl, {
           next: { revalidate: CALENDAR_DATA_REFRESH_SECONDS },
           headers: { accept: "text/calendar" },
+          timeoutMs: 10_000,
+          retryCount: 1,
         });
 
         if (!response.ok) {

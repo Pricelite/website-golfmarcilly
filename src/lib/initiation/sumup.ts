@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { InitiationReservationStatus } from "./types";
+import { fetchWithTimeout } from "@/lib/http/fetch";
 
 export type SumUpCheckout = {
   id: string;
@@ -34,7 +35,8 @@ export type CreateHostedCheckoutInput = {
 };
 
 async function sumupRequest<T>(options: SumUpRequestOptions): Promise<T> {
-  const response = await fetch(`${options.apiBaseUrl}${options.path}`, {
+  const isSafeRead = options.method === "GET";
+  const response = await fetchWithTimeout(`${options.apiBaseUrl}${options.path}`, {
     method: options.method,
     headers: {
       Authorization: `Bearer ${options.apiKey}`,
@@ -42,6 +44,8 @@ async function sumupRequest<T>(options: SumUpRequestOptions): Promise<T> {
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
     cache: "no-store",
+    timeoutMs: 10_000,
+    retryCount: isSafeRead ? 1 : 0,
   });
 
   if (!response.ok) {

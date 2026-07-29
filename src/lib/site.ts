@@ -3,7 +3,7 @@ export const SITE_DESCRIPTION =
   "Un parcours 18 trous au cœur de la Sologne, un club house chaleureux et des services premium pour tous les golfeurs.";
 export const SITE_LOCALE = "fr_FR";
 
-export const RESERVATION_URL = "https://prima.golf/marcilly/login";
+export const RESERVATION_URL = "https://marcilly.reservations-golf.fr/";
 
 export const CONTACT_EMAIL = "golf@marcilly.com";
 export const CONTACT_PHONE_DISPLAY = "02 38 76 11 73";

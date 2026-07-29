@@ -80,7 +80,7 @@ export default function BeginnerGolfPage() {
               pour commencer le golf près d&apos;Orléans.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <CTAButton href="/contact#reservation">Je veux commencer</CTAButton>
+              <CTAButton href="/initiation/reservation">Réserver une initiation</CTAButton>
               <CTAButton href="/enseignement" variant="secondary">
                 Voir l&apos;enseignement
               </CTAButton>
@@ -105,8 +105,8 @@ export default function BeginnerGolfPage() {
               vous découvrez dans de bonnes conditions.
             </p>
             <div className="mt-6">
-              <CTAButton href="/contact#reservation">
-                Demander une initiation
+              <CTAButton href="/initiation/reservation">
+                Réserver mon initiation
               </CTAButton>
             </div>
           </div>
@@ -153,16 +153,16 @@ export default function BeginnerGolfPage() {
               Prochaine étape
             </p>
             <h2 className="mt-4 font-serif text-4xl text-emerald-950">
-              Prendre contact avec le golf
+              Réserver votre créneau
             </h2>
             <p className="mt-4 text-sm leading-7 text-emerald-950/76">
-              Dites-nous simplement que vous débutez. Nous pourrons vous orienter
-              vers la formule la plus simple pour essayer, apprendre et prendre
-              plaisir rapidement.
+              Vous pouvez désormais choisir directement un créneau disponible,
+              préciser le nombre de participants et suivre le statut de la
+              réservation.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <CTAButton href="/contact#reservation">
-                Je débute et je veux être conseillé
+              <CTAButton href="/initiation/reservation">
+                Je débute et je réserve
               </CTAButton>
               <CTAButton href="tel:+33238761173" variant="secondary">
                 Appeler le golf

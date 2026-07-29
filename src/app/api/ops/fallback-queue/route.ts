@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { hasValidOpsToken } from "@/lib/ops/auth";
 import { processContactFallbackQueue } from "@/lib/contact/fallback-store";
 
 function methodNotAllowed(): NextResponse {
@@ -7,15 +8,6 @@ function methodNotAllowed(): NextResponse {
     { ok: false, error: "Method not allowed" },
     { status: 405, headers: { Allow: "GET, POST" } }
   );
-}
-
-function getTokenFromRequest(request: NextRequest): string {
-  const bearer = request.headers.get("authorization")?.trim();
-  if (bearer?.toLowerCase().startsWith("bearer ")) {
-    return bearer.slice(7).trim();
-  }
-
-  return request.headers.get("x-ops-token")?.trim() || "";
 }
 
 function parseMaxItems(request: NextRequest): number {
@@ -41,8 +33,7 @@ async function handleProcessQueue(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const providedToken = getTokenFromRequest(request);
-  if (!providedToken || providedToken !== expectedToken) {
+  if (!hasValidOpsToken(request, expectedToken)) {
     return NextResponse.json(
       { ok: false, error: "Unauthorized." },
       { status: 401 }

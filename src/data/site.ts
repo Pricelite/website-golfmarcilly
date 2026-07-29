@@ -12,7 +12,7 @@ export const siteConfig = {
   region: "Loiret",
   city: "Marcilly-en-Villette",
   country: "France",
-  reservationUrl: "https://prima.golf/marcilly/login",
+  reservationUrl: "https://marcilly.reservations-golf.fr/",
   mapEmbedUrl:
     "https://www.google.com/maps?q=Golf%20de%20Marcilly&z=13&output=embed",
   socialLinks: [

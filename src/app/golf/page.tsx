@@ -13,6 +13,13 @@ export const metadata = buildMetadata({
 });
 
 export default function GolfPage() {
+  const orderedCourses = [
+    courses.find((course) => course.slug === "practice"),
+    courses.find((course) => course.slug === "parcours-decouverte-9-trous"),
+    courses.find((course) => course.slug === "pitch-putt-kaleka-18-trous"),
+    courses.find((course) => course.slug === "parcours-competitions-18-trous"),
+  ].filter((course): course is (typeof courses)[number] => Boolean(course));
+
   return (
     <>
       <JsonLd
@@ -28,7 +35,7 @@ export default function GolfPage() {
           title="Des parcours complémentaires pour tous les niveaux"
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          {courses.map((course) => (
+          {orderedCourses.map((course) => (
             <CourseCard key={course.slug} showMeta={false} {...course} />
           ))}
         </div>

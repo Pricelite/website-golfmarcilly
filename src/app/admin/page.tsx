@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 
-import {
-  isAdminAuthenticated,
-} from "@/lib/initiation/admin-auth";
+import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import {
   listReservationsForAdmin,
   markExpiredPendingReservations,
@@ -181,7 +179,7 @@ export default async function AdminPage(props: AdminPageProps) {
   const searchParams = await props.searchParams;
   const cookieStore = await cookies();
 
-  if (!isAdminAuthenticated(cookieStore)) {
+  if (!(await isAdminAuthenticated(cookieStore))) {
     return <AdminLogin error={searchParams.error} />;
   }
 
@@ -238,7 +236,9 @@ export default async function AdminPage(props: AdminPageProps) {
 
         <div className="mt-6 grid gap-4 md:grid-cols-4">
           <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-4">
-            <p className="text-xs uppercase tracking-wide text-emerald-900/70">Participants</p>
+            <p className="text-xs uppercase tracking-wide text-emerald-900/70">
+              Participants
+            </p>
             <p className="mt-1 text-2xl font-semibold text-emerald-950">
               {totals.totalParticipants}
             </p>
@@ -271,28 +271,43 @@ export default async function AdminPage(props: AdminPageProps) {
       </section>
 
       <section className="mt-6 rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-lg shadow-emerald-900/10">
-        <h2 className="text-xl font-semibold text-emerald-950">Participants par creneau</h2>
+        <h2 className="text-xl font-semibold text-emerald-950">
+          Participants par creneau
+        </h2>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/85">
             <thead>
               <tr className="border-b border-emerald-900/10">
-                <th className="px-2 py-2 font-semibold text-emerald-950">Creneau</th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Creneau
+                </th>
                 <th className="px-2 py-2 text-right font-semibold text-emerald-950">
                   Avec repas
                 </th>
                 <th className="px-2 py-2 text-right font-semibold text-emerald-950">
                   Sans repas
                 </th>
-                <th className="px-2 py-2 text-right font-semibold text-emerald-950">Total</th>
-                <th className="px-2 py-2 text-right font-semibold text-emerald-950">Encaisse</th>
+                <th className="px-2 py-2 text-right font-semibold text-emerald-950">
+                  Total
+                </th>
+                <th className="px-2 py-2 text-right font-semibold text-emerald-950">
+                  Encaisse
+                </th>
               </tr>
             </thead>
             <tbody>
               {slotSummary.map((summary) => (
-                <tr key={summary.slotLabel} className="border-b border-emerald-900/10">
+                <tr
+                  key={summary.slotLabel}
+                  className="border-b border-emerald-900/10"
+                >
                   <td className="px-2 py-2">{summary.slotLabel}</td>
-                  <td className="px-2 py-2 text-right">{summary.withMealParticipants}</td>
-                  <td className="px-2 py-2 text-right">{summary.withoutMealParticipants}</td>
+                  <td className="px-2 py-2 text-right">
+                    {summary.withMealParticipants}
+                  </td>
+                  <td className="px-2 py-2 text-right">
+                    {summary.withoutMealParticipants}
+                  </td>
                   <td className="px-2 py-2 text-right font-semibold">
                     {summary.totalParticipants}
                   </td>
@@ -314,25 +329,48 @@ export default async function AdminPage(props: AdminPageProps) {
       </section>
 
       <section className="mt-6 rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-lg shadow-emerald-900/10">
-        <h2 className="text-xl font-semibold text-emerald-950">Liste des reservations</h2>
+        <h2 className="text-xl font-semibold text-emerald-950">
+          Liste des reservations
+        </h2>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/85">
             <thead>
               <tr className="border-b border-emerald-900/10">
-                <th className="px-2 py-2 font-semibold text-emerald-950">Cree le</th>
-                <th className="px-2 py-2 font-semibold text-emerald-950">Creneau</th>
-                <th className="px-2 py-2 font-semibold text-emerald-950">Client</th>
-                <th className="px-2 py-2 font-semibold text-emerald-950">Contact</th>
-                <th className="px-2 py-2 text-right font-semibold text-emerald-950">Pax</th>
-                <th className="px-2 py-2 font-semibold text-emerald-950">Repas</th>
-                <th className="px-2 py-2 text-right font-semibold text-emerald-950">Total</th>
-                <th className="px-2 py-2 font-semibold text-emerald-950">Statut</th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Cree le
+                </th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Creneau
+                </th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Client
+                </th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Contact
+                </th>
+                <th className="px-2 py-2 text-right font-semibold text-emerald-950">
+                  Pax
+                </th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Repas
+                </th>
+                <th className="px-2 py-2 text-right font-semibold text-emerald-950">
+                  Total
+                </th>
+                <th className="px-2 py-2 font-semibold text-emerald-950">
+                  Statut
+                </th>
               </tr>
             </thead>
             <tbody>
               {reservations.map((reservation) => (
-                <tr key={reservation.id} className="border-b border-emerald-900/10">
-                  <td className="px-2 py-2">{parseDateTime(reservation.createdAt)}</td>
+                <tr
+                  key={reservation.id}
+                  className="border-b border-emerald-900/10"
+                >
+                  <td className="px-2 py-2">
+                    {parseDateTime(reservation.createdAt)}
+                  </td>
                   <td className="px-2 py-2">
                     {reservation.slot
                       ? `${formatDate(reservation.slot.date)} ${reservation.slot.startTime}-${reservation.slot.endTime}`
@@ -345,9 +383,13 @@ export default async function AdminPage(props: AdminPageProps) {
                     <div>{reservation.email}</div>
                     <div>{reservation.phone}</div>
                   </td>
-                  <td className="px-2 py-2 text-right">{reservation.participantsCount}</td>
+                  <td className="px-2 py-2 text-right">
+                    {reservation.participantsCount}
+                  </td>
                   <td className="px-2 py-2">
-                    {reservation.mealOption === "WITH_MEAL" ? "Avec repas" : "Sans repas"}
+                    {reservation.mealOption === "WITH_MEAL"
+                      ? "Avec repas"
+                      : "Sans repas"}
                   </td>
                   <td className="px-2 py-2 text-right font-semibold">
                     {formatEuro(reservation.totalPriceCents)}

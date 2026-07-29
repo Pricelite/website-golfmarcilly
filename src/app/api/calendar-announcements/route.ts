@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logApiError } from "@/lib/api/logging";
 import { mapPlanningEventsToAnnouncementItems } from "@/lib/calendar-announcement-items";
 import { getUpcomingPlanningAnnouncements } from "@/lib/calendar-announcements";
 
@@ -31,11 +32,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     50
   );
 
-  const events = await getUpcomingPlanningAnnouncements({ daysAhead, limit });
-  const announcements = mapPlanningEventsToAnnouncementItems(events);
+  try {
+    const events = await getUpcomingPlanningAnnouncements({ daysAhead, limit });
+    const announcements = mapPlanningEventsToAnnouncementItems(events);
 
-  return NextResponse.json(
-    { announcements, daysAhead, limit },
-    { headers: { "Cache-Control": "no-store" } }
-  );
+    return NextResponse.json(
+      { announcements, daysAhead, limit },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    logApiError("api/calendar-announcements", "load_failed", {
+      message: error instanceof Error ? error.message : "unknown error",
+    });
+
+    return NextResponse.json(
+      { ok: false, error: "Unable to load calendar announcements." },
+      { status: 500, headers: { "Cache-Control": "no-store" } }
+    );
+  }
 }

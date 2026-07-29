@@ -7,8 +7,8 @@ type CourseCardProps = {
   description: string;
   level: string;
   distance: string;
-  ctaLabel: string;
-  ctaHref: string;
+  ctaLabel?: string;
+  ctaHref?: string;
   image: string;
   showMeta?: boolean;
 };
@@ -43,10 +43,14 @@ export function CourseCard({
           </div>
         ) : null}
         <h3 className="font-serif text-2xl text-emerald-950">{title}</h3>
-        <p className="flex-1 text-sm leading-7 text-emerald-950/76">{description}</p>
-        <CTAButton className="mt-auto" href={ctaHref}>
-          {ctaLabel}
-        </CTAButton>
+        <p className="flex-1 text-sm leading-7 text-emerald-950/76">
+          {description}
+        </p>
+        {ctaLabel && ctaHref ? (
+          <CTAButton className="mt-auto" href={ctaHref}>
+            {ctaLabel}
+          </CTAButton>
+        ) : null}
       </div>
     </article>
   );

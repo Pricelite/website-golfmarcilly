@@ -11,7 +11,7 @@ import {
   parseClientIpFromHeaders,
 } from "@/lib/security/request-guards";
 
-type InitiationReservationBody = {
+type LegacyInitiationRequestBody = {
   lastName: string;
   firstName: string;
   phone: string;
@@ -24,8 +24,29 @@ type InitiationReservationBody = {
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const INITIATION_REQUEST_RATE_LIMIT_MAX_REQUESTS = 8;
-const INITIATION_REQUEST_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const LEGACY_INITIATION_RATE_LIMIT_MAX_REQUESTS = 8;
+const LEGACY_INITIATION_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const LEGACY_ENDPOINT_HEADER = "X-Legacy-Endpoint";
+const RECOMMENDED_INITIATION_PATH = "/initiation/reservation";
+
+function methodNotAllowed() {
+  return NextResponse.json(
+    {
+      ok: false,
+      error:
+        "Cette route legacy n'accepte que les requêtes POST. Utilisez l'interface de réservation moderne.",
+      legacy: true,
+      recommendedPath: RECOMMENDED_INITIATION_PATH,
+    },
+    {
+      status: 405,
+      headers: {
+        Allow: "POST",
+        [LEGACY_ENDPOINT_HEADER]: "true",
+      },
+    }
+  );
+}
 
 function parseString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -93,13 +114,13 @@ function formatDesiredSlot(value: string): string {
 }
 
 function parsePayload(payload: unknown):
-  | { ok: true; data: InitiationReservationBody }
+  | { ok: true; data: LegacyInitiationRequestBody }
   | { ok: false; error: string } {
   if (!payload || typeof payload !== "object") {
     return { ok: false, error: "Requête invalide." };
   }
 
-  const source = payload as Partial<InitiationReservationBody>;
+  const source = payload as Partial<LegacyInitiationRequestBody>;
   const lastName = parseString(source.lastName);
   const firstName = parseString(source.firstName);
   const phone = parseString(source.phone);
@@ -141,32 +162,46 @@ function parsePayload(payload: unknown):
   };
 }
 
+function buildLegacyResponse(body: Record<string, unknown>, status: number) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      [LEGACY_ENDPOINT_HEADER]: "true",
+    },
+  });
+}
+
 export async function POST(request: Request) {
   const fallbackHost = new URL(request.url).host;
   if (!hasTrustedOrigin(request.headers, { fallbackHost })) {
-    return NextResponse.json(
-      { ok: false, error: "Origine de requête non autorisée." },
-      { status: 403 }
+    return buildLegacyResponse(
+      {
+        ok: false,
+        error: "Origine de requête non autorisée.",
+        legacy: true,
+        recommendedPath: RECOMMENDED_INITIATION_PATH,
+      },
+      403
     );
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
   const rateLimit = consumeRateLimit({
-    namespace: "initiation-request-form",
+    namespace: "legacy-initiation-request-form",
     identifier: requesterIp,
-    limit: INITIATION_REQUEST_RATE_LIMIT_MAX_REQUESTS,
-    windowMs: INITIATION_REQUEST_RATE_LIMIT_WINDOW_MS,
+    limit: LEGACY_INITIATION_RATE_LIMIT_MAX_REQUESTS,
+    windowMs: LEGACY_INITIATION_RATE_LIMIT_WINDOW_MS,
   });
 
   if (!rateLimit.allowed) {
-    return NextResponse.json(
-      { ok: false, error: "Trop de tentatives. Merci de réessayer plus tard." },
+    return buildLegacyResponse(
       {
-        status: 429,
-        headers: {
-          "Retry-After": String(rateLimit.retryAfterSeconds),
-        },
-      }
+        ok: false,
+        error: "Trop de tentatives. Merci de réessayer plus tard.",
+        legacy: true,
+        recommendedPath: RECOMMENDED_INITIATION_PATH,
+      },
+      429
     );
   }
 
@@ -175,17 +210,27 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json(
-      { ok: false, error: "Impossible de lire la requête." },
-      { status: 400 }
+    return buildLegacyResponse(
+      {
+        ok: false,
+        error: "Impossible de lire la requête.",
+        legacy: true,
+        recommendedPath: RECOMMENDED_INITIATION_PATH,
+      },
+      400
     );
   }
 
   const parsed = parsePayload(payload);
   if (!parsed.ok) {
-    return NextResponse.json(
-      { ok: false, error: parsed.error },
-      { status: 400 }
+    return buildLegacyResponse(
+      {
+        ok: false,
+        error: parsed.error,
+        legacy: true,
+        recommendedPath: RECOMMENDED_INITIATION_PATH,
+      },
+      400
     );
   }
 
@@ -198,7 +243,10 @@ export async function POST(request: Request) {
   const clubEmailName = process.env.EMAIL_TO_NAME?.trim();
 
   const text = [
-    "Nouvelle demande de reservation initiation",
+    "Nouvelle demande d'initiation legacy",
+    "",
+    "Ce message provient de l'ancien endpoint /api/initiation-reservation.",
+    `Parcours recommandé: ${RECOMMENDED_INITIATION_PATH}`,
     "",
     `Date: ${submittedAt.toISOString()}`,
     `Nom: ${parsed.data.lastName}`,
@@ -216,7 +264,7 @@ export async function POST(request: Request) {
     await sendMail({
       to: clubEmail,
       toName: clubEmailName,
-      subject: `[Initiation] Réservation - ${fullName}`,
+      subject: `[Initiation legacy] Demande - ${fullName}`,
       text,
       replyTo: parsed.data.email,
       replyToName: fullName,
@@ -225,32 +273,39 @@ export async function POST(request: Request) {
     try {
       await processContactFallbackQueue({ maxItems: 5 });
     } catch (queueError) {
-      console.error("[initiation-reservation] fallback queue processing failed", {
+      console.error("[legacy-initiation-reservation] fallback queue processing failed", {
         message: queueError instanceof Error ? queueError.message : "unknown",
       });
     }
 
-    return NextResponse.json({
-      ok: true,
-      message: "Votre message a bien été reçu. Nous revenons vers vous au plus vite.",
-    });
+    return buildLegacyResponse(
+      {
+        ok: true,
+        legacy: true,
+        recommendedPath: RECOMMENDED_INITIATION_PATH,
+        message:
+          "Votre demande legacy a bien été reçue. Pour les prochaines réservations, utilisez le parcours moderne.",
+      },
+      200
+    );
   } catch (error) {
     const detail =
       error instanceof MailerError
         ? { code: error.code, message: error.message }
         : { code: "unknown", message: "Unknown mailer error" };
-    console.error("[initiation-reservation] primary email failed", detail);
+    console.error("[legacy-initiation-reservation] primary email failed", detail);
 
     try {
       await storeContactFallbackEntry({
         receivedAt: submittedAt.toISOString(),
-        reason: `initiation-${detail.code}`,
+        reason: `legacy-initiation-${detail.code}`,
         nom: parsed.data.lastName,
         prenom: parsed.data.firstName,
         entreprise: "",
         telephone: parsed.data.phone,
         email: parsed.data.email,
         message: [
+          "[Legacy endpoint] /api/initiation-reservation",
           `Créneau souhaité: ${formattedSlot}`,
           `Nombre de personnes: ${parsed.data.partySize || "-"}`,
           `Repas: ${formattedMealOption}`,
@@ -259,52 +314,84 @@ export async function POST(request: Request) {
         ].join("\n"),
       });
 
-      console.error("[initiation-reservation] message stored in local fallback queue");
+      console.error(
+        "[legacy-initiation-reservation] message stored in local fallback queue"
+      );
 
-      return NextResponse.json({
-        ok: true,
-        message:
-          "Votre message a bien été enregistré. Notre équipe vous recontactera rapidement.",
-      });
+      return buildLegacyResponse(
+        {
+          ok: true,
+          legacy: true,
+          recommendedPath: RECOMMENDED_INITIATION_PATH,
+          message:
+            "Votre demande legacy a bien été enregistrée. Notre équipe vous recontactera rapidement.",
+        },
+        200
+      );
     } catch (fallbackError) {
       const fallbackDetail =
         fallbackError instanceof Error
           ? { message: fallbackError.message }
           : { message: "Unknown fallback error" };
-      console.error("[initiation-reservation] fallback storage failed", fallbackDetail);
+      console.error(
+        "[legacy-initiation-reservation] fallback storage failed",
+        fallbackDetail
+      );
     }
 
     if (error instanceof MailerError) {
       if (error.code === "auth") {
-        return NextResponse.json(
+        return buildLegacyResponse(
           {
             ok: false,
             error:
               "Le service e-mail est temporairement indisponible. Merci de réessayer plus tard.",
+            legacy: true,
+            recommendedPath: RECOMMENDED_INITIATION_PATH,
           },
-          { status: 503 }
+          503
         );
       }
 
       if (error.code === "config") {
-        return NextResponse.json(
+        return buildLegacyResponse(
           {
             ok: false,
             error:
               "Le service e-mail n'est pas encore configuré. Merci de nous contacter par téléphone.",
+            legacy: true,
+            recommendedPath: RECOMMENDED_INITIATION_PATH,
           },
-          { status: 500 }
+          500
         );
       }
     }
 
-    return NextResponse.json(
+    return buildLegacyResponse(
       {
         ok: false,
         error:
           "Impossible d'envoyer la demande pour le moment. Merci de réessayer dans quelques instants.",
+        legacy: true,
+        recommendedPath: RECOMMENDED_INITIATION_PATH,
       },
-      { status: 500 }
+      500
     );
   }
+}
+
+export function GET() {
+  return methodNotAllowed();
+}
+
+export function PUT() {
+  return methodNotAllowed();
+}
+
+export function PATCH() {
+  return methodNotAllowed();
+}
+
+export function DELETE() {
+  return methodNotAllowed();
 }

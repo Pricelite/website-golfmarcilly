@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { logApiError } from "@/lib/api/logging";
 import {
   getReservationByCheckoutId,
   setReservationStatus,
@@ -190,9 +191,17 @@ export async function POST(request: Request) {
       });
     }
 
+    console.error("[api/sumup/webhook] processed", {
+      checkoutId,
+      reservationId: reservation.id,
+      previousStatus: reservation.status,
+      nextStatus,
+      transactionId,
+    });
+
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
-    console.error("[api/sumup/webhook] failed", {
+    logApiError("api/sumup/webhook", "processing_failed", {
       checkoutId,
       message: error instanceof Error ? error.message : "unknown error",
     });

@@ -40,14 +40,14 @@ export const homeOffers: HomeOffer[] = [
     title: "Offre green fee",
     imageSrc: "/offre gf.png",
     actionLabel: "Reserver un depart",
-    actionHref: "https://prima.golf/marcilly/login",
+    actionHref: "https://marcilly.reservations-golf.fr/",
   },
   {
     slug: "offre-carnet",
     title: "Offre carnet",
     imageSrc: "/offre carnets.png",
     actionLabel: "Reserver un depart",
-    actionHref: "https://prima.golf/marcilly/login",
+    actionHref: "https://marcilly.reservations-golf.fr/",
   },
 ] as const;
 

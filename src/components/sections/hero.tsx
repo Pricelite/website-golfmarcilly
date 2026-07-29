@@ -8,8 +8,10 @@ type HeroProps = {
   title: string;
   subtitle: string;
   primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
   tertiaryCta?: { label: string; href: string };
+  quaternaryCta?: { label: string; href: string };
+  quinaryCta?: { label: string; href: string };
   image: string;
 };
 
@@ -20,6 +22,8 @@ export function Hero({
   primaryCta,
   secondaryCta,
   tertiaryCta,
+  quaternaryCta,
+  quinaryCta,
   image,
 }: HeroProps) {
   return (
@@ -56,12 +60,24 @@ export function Hero({
           <Reveal delay={0.15}>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href={primaryCta.href}>{primaryCta.label}</CTAButton>
-              <CTAButton href={secondaryCta.href} variant="secondary">
-                {secondaryCta.label}
-              </CTAButton>
+              {secondaryCta ? (
+                <CTAButton href={secondaryCta.href} variant="secondary">
+                  {secondaryCta.label}
+                </CTAButton>
+              ) : null}
               {tertiaryCta ? (
                 <CTAButton href={tertiaryCta.href} variant="secondary">
                   {tertiaryCta.label}
+                </CTAButton>
+              ) : null}
+              {quaternaryCta ? (
+                <CTAButton href={quaternaryCta.href} variant="secondary">
+                  {quaternaryCta.label}
+                </CTAButton>
+              ) : null}
+              {quinaryCta ? (
+                <CTAButton href={quinaryCta.href} variant="secondary">
+                  {quinaryCta.label}
                 </CTAButton>
               ) : null}
             </div>

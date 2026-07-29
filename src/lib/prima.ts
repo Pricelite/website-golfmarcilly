@@ -1,1 +1,1 @@
-export const PRIMA_URL = "https://prima.golf/marcilly/public-booking";
+export const PRIMA_URL = "https://marcilly.reservations-golf.fr/";

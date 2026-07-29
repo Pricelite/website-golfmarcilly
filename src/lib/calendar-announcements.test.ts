@@ -1,4 +1,5 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
+import test from "node:test";
 
 import type { PlanningEvent } from "./calendar-announcements";
 import { selectUpcomingPlanningEvents } from "./calendar-announcements";
@@ -21,7 +22,7 @@ const baseEvents: PlanningEvent[] = [
   },
 ];
 
-{
+test("selectUpcomingPlanningEvents excludes past and out-of-range events", () => {
   const selected = selectUpcomingPlanningEvents(baseEvents, {
     today: new Date("2026-03-10T12:00:00.000Z"),
     daysAhead: 7,
@@ -29,11 +30,10 @@ const baseEvents: PlanningEvent[] = [
     timeZone: "Europe/Paris",
   });
 
-  // Cases obligatoires: passe / dans 3 jours / dans 10 jours.
   assert.deepEqual(selected.map((event) => event.id), ["in-3-days"]);
-}
+});
 
-{
+test("selectUpcomingPlanningEvents includes boundaries", () => {
   const selected = selectUpcomingPlanningEvents(
     [
       { id: "today", title: "Evenement du jour", date: "2026-03-10" },
@@ -48,4 +48,4 @@ const baseEvents: PlanningEvent[] = [
   );
 
   assert.deepEqual(selected.map((event) => event.id), ["today", "in-7-days"]);
-}
+});

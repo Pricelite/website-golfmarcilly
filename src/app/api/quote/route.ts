@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
 
+import { logApiError } from "@/lib/api/logging";
+import { readJsonBody } from "@/lib/api/request-body";
+import {
+  isNonEmptyWithinLength,
+  isValidEmail,
+  isWithinLength,
+  parseTrimmedString,
+} from "@/lib/api/public-form-validation";
+import { methodNotAllowed } from "@/lib/api/responses";
 import { buildMailApiErrorResponse } from "@/lib/email/api-response";
 import { sendMail } from "@/lib/email/mailer";
 import { buildQuoteEmail } from "@/lib/form-emails";
@@ -11,6 +20,15 @@ import {
 
 const QUOTE_RATE_LIMIT_MAX_REQUESTS = 8;
 const QUOTE_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const MAX_COMPANY_LENGTH = 160;
+const MAX_EMAIL_LENGTH = 160;
+const MAX_EVENT_TYPE_LENGTH = 120;
+const MAX_PARTICIPANTS_LENGTH = 40;
+const MAX_DETAILS_LENGTH = 4000;
+
+function buildMethodNotAllowed() {
+  return methodNotAllowed("POST", { error: "Method not allowed" });
+}
 
 export async function POST(request: Request) {
   const fallbackHost = new URL(request.url).host;
@@ -33,9 +51,27 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = await request.json();
+  const bodyResult = await readJsonBody<Record<string, unknown>>(request);
+  if (!bodyResult.ok) {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  }
 
-  if (!body?.company || !body?.email || !body?.eventType || !body?.details) {
+  const payload = {
+    company: parseTrimmedString(bodyResult.data.company),
+    email: parseTrimmedString(bodyResult.data.email).toLowerCase(),
+    eventType: parseTrimmedString(bodyResult.data.eventType),
+    participants: parseTrimmedString(bodyResult.data.participants),
+    details: parseTrimmedString(bodyResult.data.details),
+  };
+
+  if (
+    !isNonEmptyWithinLength(payload.company, MAX_COMPANY_LENGTH) ||
+    !isNonEmptyWithinLength(payload.email, MAX_EMAIL_LENGTH) ||
+    !isValidEmail(payload.email) ||
+    !isNonEmptyWithinLength(payload.eventType, MAX_EVENT_TYPE_LENGTH) ||
+    !isNonEmptyWithinLength(payload.details, MAX_DETAILS_LENGTH) ||
+    !isWithinLength(payload.participants, MAX_PARTICIPANTS_LENGTH)
+  ) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
@@ -53,15 +89,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const payload = {
-    company: String(body.company).trim(),
-    email: String(body.email).trim(),
-    eventType: String(body.eventType).trim(),
-    participants:
-      body.participants === undefined ? "" : String(body.participants).trim(),
-    details: String(body.details).trim(),
-  };
-
   const emailContent = buildQuoteEmail(payload);
 
   try {
@@ -77,6 +104,23 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+    logApiError("api/quote", "mail_failed", {});
     return NextResponse.json(buildMailApiErrorResponse(error), { status: 500 });
   }
+}
+
+export function GET() {
+  return buildMethodNotAllowed();
+}
+
+export function PUT() {
+  return buildMethodNotAllowed();
+}
+
+export function PATCH() {
+  return buildMethodNotAllowed();
+}
+
+export function DELETE() {
+  return buildMethodNotAllowed();
 }

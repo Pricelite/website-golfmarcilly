@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { logApiError } from "@/lib/api/logging";
 import { INITIATION_PENDING_TTL_MINUTES } from "@/lib/initiation/constants";
 import { createGoogleCalendarReservation, hasGoogleCalendarEnv } from "@/lib/initiation/google-calendar";
 import {
@@ -7,8 +8,8 @@ import {
   setReservationCheckoutId,
   setReservationStatus,
 } from "@/lib/initiation/db";
-import { getInitiationPaymentEnv } from "@/lib/initiation/env";
-import { createHostedCheckout } from "@/lib/initiation/sumup";
+import { getInitiationPaymentEnv, hasInitiationPaymentEnv } from "@/lib/initiation/env";
+import { createHostedCheckout, getCheckoutById } from "@/lib/initiation/sumup";
 import { parseCreateReservationPayload } from "@/lib/initiation/validation";
 import {
   consumeRateLimit,
@@ -89,8 +90,10 @@ export async function POST(request: Request) {
   }
 
   const expiresAt = getPendingExpirationIso();
+  const useGoogleCalendarDirect =
+    hasGoogleCalendarEnv() && !hasInitiationPaymentEnv();
 
-  if (hasGoogleCalendarEnv()) {
+  if (useGoogleCalendarDirect) {
     try {
       const event = await createGoogleCalendarReservation({
         date: parsed.data.date,
@@ -135,7 +138,10 @@ export async function POST(request: Request) {
         );
       }
 
-      console.error("[api/reservations][google] failed", { message });
+      logApiError("api/reservations", "google_reservation_failed", {
+        mode: "google-direct",
+        message,
+      });
       return NextResponse.json(
         { ok: false, error: "Failed to create reservation in Google Calendar." },
         { status: 500 }
@@ -159,6 +165,42 @@ export async function POST(request: Request) {
     });
 
     const env = getInitiationPaymentEnv();
+
+    if (reservation.sumupCheckoutId) {
+      console.error("[api/reservations] checkout_reused", {
+        reservationId: reservation.id,
+        checkoutId: reservation.sumupCheckoutId,
+      });
+      const existingCheckout = await getCheckoutById({
+        apiKey: env.sumupApiKey,
+        apiBaseUrl: env.sumupApiBaseUrl,
+        checkoutId: reservation.sumupCheckoutId,
+      });
+
+      if (existingCheckout.id && existingCheckout.hosted_checkout_url) {
+        console.error("[api/reservations] reservation_created", {
+          reservationId: reservation.id,
+          checkoutId: existingCheckout.id,
+          mode: "supabase-sumup-reused",
+        });
+        return NextResponse.json(
+          {
+            ok: true,
+            reservationId: reservation.id,
+            checkoutId: existingCheckout.id,
+            checkoutUrl: existingCheckout.hosted_checkout_url,
+            expiresAt: reservation.expiresAt,
+          },
+          { status: 201 }
+        );
+      }
+
+      return NextResponse.json(
+        { ok: false, error: "Existing payment checkout could not be loaded." },
+        { status: 502 }
+      );
+    }
+
     const returnUrl = `${env.appBaseUrl}/payment/success?reservationId=${reservation.id}`;
     const checkout = await createHostedCheckout({
       apiKey: env.sumupApiKey,
@@ -190,6 +232,12 @@ export async function POST(request: Request) {
     await setReservationCheckoutId({
       reservationId: reservation.id,
       checkoutId: checkout.id,
+    });
+
+    console.error("[api/reservations] reservation_created", {
+      reservationId: reservation.id,
+      checkoutId: checkout.id,
+      mode: "supabase-sumup",
     });
 
     return NextResponse.json(
@@ -226,7 +274,10 @@ export async function POST(request: Request) {
       );
     }
 
-    console.error("[api/reservations] failed", { message });
+    logApiError("api/reservations", "reservation_failed", {
+      mode: useGoogleCalendarDirect ? "google-direct" : "supabase-sumup",
+      message,
+    });
     return NextResponse.json(
       { ok: false, error: "Failed to create reservation." },
       { status: 500 }
