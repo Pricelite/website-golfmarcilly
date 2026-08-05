@@ -10,14 +10,14 @@ export default function NotFound() {
         Cette page n&apos;existe pas
       </h1>
       <p className="mt-5 text-base leading-8 text-emerald-950/75">
-        Revenez a l&apos;accueil ou explorez les parcours, le restaurant et les
-        evenements du Golf de Marcilly.
+        Revenez à l&apos;accueil ou explorez les parcours, le restaurant et les
+        événements du Golf de Marcilly.
       </p>
       <Link
         className="mt-8 inline-flex rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-stone-50"
         href="/"
       >
-        Retour a l&apos;accueil
+        Retour à l&apos;accueil
       </Link>
     </section>
   );

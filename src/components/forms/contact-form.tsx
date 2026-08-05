@@ -18,8 +18,8 @@ type ApiErrorPayload = {
 export function ContactForm({
   context = "contact",
   submitLabel = "Envoyer ma demande",
-  successMessage = "Votre demande a bien ete recue par le site.",
-  subjectPlaceholder = "Reservation, renseignement, evenement...",
+  successMessage = "Votre demande a bien été reçue par le site.",
+  subjectPlaceholder = "Réservation, renseignement, événement...",
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,7 +43,7 @@ export function ContactForm({
         const payload = (await response.json().catch(() => null)) as
           | ApiErrorPayload
           | null;
-        setErrorMessage(payload?.error || "Une erreur est survenue. Merci de reessayer.");
+        setErrorMessage(payload?.error || "Une erreur est survenue. Merci de réessayer.");
         setState("error");
         return;
       }
@@ -51,7 +51,7 @@ export function ContactForm({
       form.reset();
       setState("success");
     } catch {
-      setErrorMessage("Une erreur est survenue. Merci de reessayer.");
+      setErrorMessage("Une erreur est survenue. Merci de réessayer.");
       setState("error");
     }
   }
@@ -66,12 +66,12 @@ export function ContactForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-medium text-emerald-950">
           <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-            Prenom
+            Prénom
           </span>
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="firstName"
-            placeholder="Votre prenom"
+            placeholder="Votre prénom"
             required
             type="text"
           />
@@ -91,7 +91,7 @@ export function ContactForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-medium text-emerald-950">
           <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
-            Telephone
+            Téléphone
           </span>
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
@@ -127,7 +127,7 @@ export function ContactForm({
         <textarea
           className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="message"
-          placeholder="Decrivez votre demande."
+          placeholder="Décrivez votre demande."
           required
         />
       </label>
@@ -149,7 +149,7 @@ export function ContactForm({
 
       {state === "error" ? (
         <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {errorMessage || "Une erreur est survenue. Merci de reessayer."}
+          {errorMessage || "Une erreur est survenue. Merci de réessayer."}
         </p>
       ) : null}
     </form>

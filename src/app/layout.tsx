@@ -73,7 +73,7 @@ export default function RootLayout({
               className="flex-1 rounded-full bg-emerald-900 px-4 py-3 text-center text-sm font-semibold text-stone-50"
               href={siteConfig.reservationUrl}
             >
-              Reserver
+              Réserver
             </a>
           </div>
         </div>

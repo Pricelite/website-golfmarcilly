@@ -34,7 +34,6 @@ export const navigationItems = [
   { label: "Enseignement", href: "/enseignement" },
   { label: "Restaurant", href: "/restaurant" },
   { label: "Événements", href: "/evenements" },
-  { label: "Actualités", href: "/actualites" },
   { label: "Contact", href: "/contact" },
 ] as const;
 
@@ -55,13 +54,13 @@ export const globalTestimonials = [
   },
   {
     name: "Nicolas T.",
-    role: "Seminaire entreprise",
+    role: "Séminaire entreprise",
     quote:
       "Organisation fluide, restauration qualitative et activités golf parfaitement adaptées à notre équipe. Nous avons gagné en image et en cohésion.",
   },
   {
     name: "Claire M.",
-    role: "Cours debutante",
+    role: "Cours débutante",
     quote:
       "Les pros mettent tout de suite en confiance. Le cadre est superbe et le parcours d'apprentissage est très bien pensé pour progresser vite.",
   },

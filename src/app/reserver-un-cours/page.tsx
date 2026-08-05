@@ -8,9 +8,9 @@ import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
-  title: "Reserver un cours",
+  title: "Réserver un cours",
   description:
-    "Choisissez votre pro au Golf de Marcilly et accedez directement a son site pour reserver un cours.",
+    "Choisissez votre pro au Golf de Marcilly et accédez directement à son site pour réserver un cours.",
   path: "/reserver-un-cours",
 });
 
@@ -21,7 +21,7 @@ export default function BookLessonPage() {
         data={buildBreadcrumbSchema([
           { name: "Accueil", path: "/" },
           { name: "Enseignement", path: "/enseignement" },
-          { name: "Reserver un cours", path: "/reserver-un-cours" },
+          { name: "Réserver un cours", path: "/reserver-un-cours" },
         ])}
       />
 
@@ -36,7 +36,7 @@ export default function BookLessonPage() {
               Choisissez votre pro
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
-              Accedez directement au site du pro qui vous correspond pour reserver
+              Accédez directement au site du pro qui vous correspond pour réserver
               votre cours.
             </p>
           </div>
@@ -45,8 +45,8 @@ export default function BookLessonPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
-          eyebrow="Reservation"
-          title="Trois pros, trois acces directs"
+          eyebrow="Réservation"
+          title="Trois pros, trois accès directs"
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {teachingPros.map((pro) => (
@@ -69,7 +69,7 @@ export default function BookLessonPage() {
         </div>
         <div className="mt-10">
           <Link className="text-sm font-medium text-emerald-900 underline-offset-4 hover:underline" href="/enseignement">
-            Retour a l&apos;enseignement
+            Retour à l&apos;enseignement
           </Link>
         </div>
       </section>

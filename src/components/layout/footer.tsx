@@ -44,7 +44,7 @@ export function Footer() {
 
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-stone-100/70">
-            Acces rapide
+            Accès rapide
           </h2>
           <div className="mt-4 space-y-3 text-sm text-stone-100/80">
             <p>
@@ -55,7 +55,7 @@ export function Footer() {
             </p>
             <p>
               <Link className="hover:text-stone-100/75" href={siteConfig.reservationUrl}>
-                Reserver un depart
+                Réserver un départ
               </Link>
             </p>
           </div>

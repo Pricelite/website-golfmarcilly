@@ -10,7 +10,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "Contact",
   description:
-    "Adresse, telephone, email, horaires, acces et formulaire de contact du Golf de Marcilly.",
+    "Adresse, téléphone, email, horaires, accès et formulaire de contact du Golf de Marcilly.",
   path: "/contact",
 });
 
@@ -49,7 +49,7 @@ export default function ContactPage() {
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           <article className="rounded-[30px] border border-emerald-950/10 bg-white/90 p-6 shadow-sm shadow-emerald-950/5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700">
-              Telephone
+              Téléphone
             </p>
             <a
               className="mt-4 block font-serif text-2xl text-emerald-950"
@@ -109,7 +109,7 @@ export default function ContactPage() {
         </div>
 
         <div className="mt-16">
-          <SectionTitle eyebrow="Carte" title="Acces et Google Maps" />
+          <SectionTitle eyebrow="Carte" title="Accès et Google Maps" />
           <div className="mt-8">
             <MapEmbed src={siteConfig.mapEmbedUrl} title="Google Maps Golf de Marcilly" />
           </div>
