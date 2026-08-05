@@ -9,8 +9,8 @@ import {
 } from "@/lib/initiation/db";
 
 export const metadata: Metadata = {
-  title: "Admin reservations initiation",
-  description: "Admin dashboard for initiation reservations.",
+  title: "Admin réservations initiation",
+  description: "Tableau de bord des réservations d'initiation.",
   robots: {
     index: false,
     follow: false,
@@ -120,9 +120,7 @@ function buildSlotSummary(reservations: InitiationReservationWithSlot[]) {
     grouped.set(key, current);
   }
 
-  return Array.from(grouped.values()).sort((a, b) =>
-    a.slotLabel.localeCompare(b.slotLabel)
-  );
+  return Array.from(grouped.values()).sort((a, b) => a.slotLabel.localeCompare(b.slotLabel));
 }
 
 function AdminLogin(props: { error?: string }) {
@@ -221,7 +219,7 @@ export default async function AdminPage(props: AdminPageProps) {
               Admin initiation
             </h1>
             <p className="mt-1 text-sm text-emerald-900/70">
-              Reservations, participants et paiements.
+              Réservations, participants et paiements.
             </p>
           </div>
           <form action="/admin/logout" method="post">
@@ -229,7 +227,7 @@ export default async function AdminPage(props: AdminPageProps) {
               className="inline-flex rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"
               type="submit"
             >
-              Deconnexion
+              Déconnexion
             </button>
           </form>
         </div>
@@ -261,7 +259,7 @@ export default async function AdminPage(props: AdminPageProps) {
           </article>
           <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-4">
             <p className="text-xs uppercase tracking-wide text-emerald-900/70">
-              Montant encaisse
+              Montant encaissé
             </p>
             <p className="mt-1 text-2xl font-semibold text-emerald-950">
               {formatEuro(totals.totalPaidCents)}
@@ -272,14 +270,14 @@ export default async function AdminPage(props: AdminPageProps) {
 
       <section className="mt-6 rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-lg shadow-emerald-900/10">
         <h2 className="text-xl font-semibold text-emerald-950">
-          Participants par creneau
+          Participants par créneau
         </h2>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/85">
             <thead>
               <tr className="border-b border-emerald-900/10">
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Creneau
+                  Créneau
                 </th>
                 <th className="px-2 py-2 text-right font-semibold text-emerald-950">
                   Avec repas
@@ -291,7 +289,7 @@ export default async function AdminPage(props: AdminPageProps) {
                   Total
                 </th>
                 <th className="px-2 py-2 text-right font-semibold text-emerald-950">
-                  Encaisse
+                  Encaissé
                 </th>
               </tr>
             </thead>
@@ -319,7 +317,7 @@ export default async function AdminPage(props: AdminPageProps) {
               {slotSummary.length === 0 ? (
                 <tr>
                   <td className="px-2 py-3 text-sm text-emerald-900/70" colSpan={5}>
-                    Aucune reservation pour le moment.
+                    Aucune réservation pour le moment.
                   </td>
                 </tr>
               ) : null}
@@ -330,17 +328,17 @@ export default async function AdminPage(props: AdminPageProps) {
 
       <section className="mt-6 rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-lg shadow-emerald-900/10">
         <h2 className="text-xl font-semibold text-emerald-950">
-          Liste des reservations
+          Liste des réservations
         </h2>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/85">
             <thead>
               <tr className="border-b border-emerald-900/10">
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Cree le
+                  Créé le
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
-                  Creneau
+                  Créneau
                 </th>
                 <th className="px-2 py-2 font-semibold text-emerald-950">
                   Client
@@ -408,7 +406,7 @@ export default async function AdminPage(props: AdminPageProps) {
               {reservations.length === 0 ? (
                 <tr>
                   <td className="px-2 py-3 text-sm text-emerald-900/70" colSpan={8}>
-                    Aucune reservation enregistree.
+                    Aucune réservation enregistrée.
                   </td>
                 </tr>
               ) : null}

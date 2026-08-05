@@ -52,6 +52,7 @@ export default async function OfferPage({ params }: OfferPageProps) {
         ])}
       />
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <h1 className="sr-only">{offer.title}</h1>
         <div className="rounded-[36px] border border-emerald-950/10 bg-white p-4 shadow-xl shadow-emerald-950/10 sm:p-6">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-4xl overflow-hidden rounded-[28px] bg-stone-100">
             <Image

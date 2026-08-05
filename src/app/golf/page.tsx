@@ -30,6 +30,7 @@ export default function GolfPage() {
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
+          as="h1"
           description="Le domaine propose plusieurs façons de jouer et de progresser : grand parcours, format court, entraînement et activités groupes."
           eyebrow="Golf Orléans"
           title="Des parcours complémentaires pour tous les niveaux"

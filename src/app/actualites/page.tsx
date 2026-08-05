@@ -23,6 +23,7 @@ export default function NewsPage() {
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
+          as="h1"
           description="Une structure d'articles simple à enrichir pour travailler le SEO, la crédibilité et l'animation commerciale."
           eyebrow="Blog"
           title="Actualités du Golf de Marcilly"

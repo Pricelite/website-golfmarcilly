@@ -25,6 +25,7 @@ export default function PricingPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionTitle
+            as="h1"
             description="Tarifs 2026 mis à jour à partir de la plaquette officielle publiée sur le site du Golf de Marcilly."
             eyebrow="Tarifs 2026"
             title="Des tarifs lisibles pour jouer, apprendre et recevoir"

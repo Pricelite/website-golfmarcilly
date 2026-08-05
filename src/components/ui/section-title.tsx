@@ -3,6 +3,7 @@ type SectionTitleProps = {
   title: string;
   description?: string;
   align?: "left" | "center";
+  as?: "h1" | "h2";
 };
 
 export function SectionTitle({
@@ -10,8 +11,10 @@ export function SectionTitle({
   title,
   description,
   align = "left",
+  as = "h2",
 }: SectionTitleProps) {
   const alignClass = align === "center" ? "text-center mx-auto" : "text-left";
+  const HeadingTag = as;
 
   return (
     <div className={alignClass}>
@@ -20,9 +23,9 @@ export function SectionTitle({
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="mt-3 font-serif text-3xl text-emerald-950 sm:text-4xl">
+      <HeadingTag className="mt-3 font-serif text-3xl text-emerald-950 sm:text-4xl">
         {title}
-      </h2>
+      </HeadingTag>
       {description ? (
         <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-950/72 sm:text-base">
           {description}

@@ -33,17 +33,17 @@ export function buildMetadata({
   image = "/images/club-house-marcilly.png",
 }: MetadataInput): Metadata {
   const url = absoluteUrl(path);
-  const fullTitle = `${title} | ${siteConfig.name}`;
+  const socialTitle = `${title} | ${siteConfig.name}`;
 
   return {
-    title: fullTitle,
+    title,
     description,
     keywords: [...defaultKeywords, ...keywords],
     alternates: {
       canonical: url,
     },
     openGraph: {
-      title: fullTitle,
+      title: socialTitle,
       description,
       url,
       siteName: siteConfig.name,
@@ -60,7 +60,7 @@ export function buildMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: fullTitle,
+      title: socialTitle,
       description,
       images: [absoluteUrl(image)],
     },

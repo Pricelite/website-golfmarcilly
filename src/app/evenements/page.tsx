@@ -53,7 +53,7 @@ export default function EventsPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Formats"
-          title="Des formats adaptables a vos clients, equipes et invites"
+          title="Des formats adaptables à vos clients, équipes et invités"
         />
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {eventFormats.map((format) => (
