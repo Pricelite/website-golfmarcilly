@@ -1,6 +1,6 @@
 import { ContactForm } from "@/components/forms/contact-form";
+import { RestaurantDishesCarousel } from "@/components/restaurant-dishes-carousel";
 import { CTAButton } from "@/components/ui/cta-button";
-import { Gallery } from "@/components/ui/gallery";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import {
@@ -58,7 +58,7 @@ export default function RestaurantPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="La Bergerie"
-          title="Une table de domaine pensee pour le plaisir"
+          title="Une table de domaine pensée pour le plaisir"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           {restaurantHighlights.map((item) => (
@@ -101,9 +101,9 @@ export default function RestaurantPage() {
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <SectionTitle eyebrow="Galerie" title="Une ambiance chaleureuse" />
+            <SectionTitle eyebrow="Galerie" title="Un carrousel de plats et d'ambiances" />
             <div className="mt-8">
-              <Gallery items={restaurantGallery} />
+              <RestaurantDishesCarousel items={restaurantGallery} />
             </div>
           </div>
           <div>
@@ -114,9 +114,9 @@ export default function RestaurantPage() {
             <div className="mt-8">
               <ContactForm
                 context="restaurant"
-                subjectPlaceholder="Reservation de table, groupe, privatisation..."
+                subjectPlaceholder="Réservation de table, groupe, privatisation..."
                 submitLabel="Envoyer ma demande restaurant"
-                successMessage="Votre demande restaurant a bien ete recue par le site."
+                successMessage="Votre demande restaurant a bien été reçue par le site."
               />
             </div>
           </div>
