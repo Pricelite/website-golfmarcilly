@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import type { SiteOffer } from "@/data/offers";
+import { PromoOffersModal } from "@/components/promo-offers-modal";
 import { CTAButton } from "@/components/ui/cta-button";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -12,6 +14,7 @@ type HeroProps = {
   tertiaryCta?: { label: string; href: string };
   quaternaryCta?: { label: string; href: string };
   quinaryCta?: { label: string; href: string };
+  promoCta?: { label: string; offers: SiteOffer[] };
   image: string;
 };
 
@@ -24,6 +27,7 @@ export function Hero({
   tertiaryCta,
   quaternaryCta,
   quinaryCta,
+  promoCta,
   image,
 }: HeroProps) {
   return (
@@ -41,6 +45,11 @@ export function Hero({
       </div>
 
       <div className="relative mx-auto flex min-h-[76vh] max-w-7xl items-end px-4 py-20 sm:px-6 lg:px-8">
+        {promoCta ? (
+          <Reveal delay={0.05}>
+            <PromoOffersModal label={promoCta.label} offers={promoCta.offers} />
+          </Reveal>
+        ) : null}
         <div className="max-w-3xl">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.34em] text-stone-200/80">
@@ -60,11 +69,7 @@ export function Hero({
           <Reveal delay={0.15}>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href={primaryCta.href}>{primaryCta.label}</CTAButton>
-              {secondaryCta ? (
-                <CTAButton href={secondaryCta.href} variant="secondary">
-                  {secondaryCta.label}
-                </CTAButton>
-              ) : null}
+              {secondaryCta ? <CTAButton href={secondaryCta.href}>{secondaryCta.label}</CTAButton> : null}
               {tertiaryCta ? (
                 <CTAButton href={tertiaryCta.href} variant="secondary">
                   {tertiaryCta.label}

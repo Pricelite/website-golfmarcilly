@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
-import { getHomeOfferBySlug, homeOffers } from "@/data/home";
+import { getSiteOfferBySlug, siteOffers } from "@/data/offers";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
@@ -12,12 +12,12 @@ type OfferPageProps = {
 };
 
 export async function generateStaticParams() {
-  return homeOffers.map((offer) => ({ slug: offer.slug }));
+  return siteOffers.map((offer) => ({ slug: offer.slug }));
 }
 
 export async function generateMetadata({ params }: OfferPageProps) {
   const { slug } = await params;
-  const offer = getHomeOfferBySlug(slug);
+  const offer = getSiteOfferBySlug(slug);
 
   if (!offer) {
     return buildMetadata({
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: OfferPageProps) {
 
 export default async function OfferPage({ params }: OfferPageProps) {
   const { slug } = await params;
-  const offer = getHomeOfferBySlug(slug);
+  const offer = getSiteOfferBySlug(slug);
 
   if (!offer) {
     notFound();
