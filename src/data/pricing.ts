@@ -69,16 +69,7 @@ export const pricingSections: PricingSection[] = [
         label: "18 trous après 16h00",
         values: ["44 € (4T)", "39 € (3T)"],
       },
-      {
-        label: "Carnet 10 tickets dématérialisés",
-        values: ["Pitch & Kaleka", "200 €"],
-      },
-      {
-        label: "Carnet 30 tickets dématérialisés",
-        values: ["Grand Parcours", "300 €"],
-      },
     ],
-    footnotes: ["Carnets valables 6 mois."],
   },
   {
     title: "Location",
@@ -88,7 +79,6 @@ export const pricingSections: PricingSection[] = [
       { label: "Chariot", values: ["5 €", "5 €"] },
       { label: "Voiturette 9 trous", values: ["28 €", "24 €"] },
       { label: "Voiturette 18 trous", values: ["38 €", "32 €"] },
-      { label: "Carnet de 11 voiturettes", values: ["380 €", "320 €"] },
       { label: "Casier à l'année", values: ["48 €", "48 €"] },
       {
         label: "Local chariot à l'année (manuel)",
@@ -98,16 +88,6 @@ export const pricingSections: PricingSection[] = [
         label: "Local chariot à l'année (électrique)",
         values: ["96 €", "96 €"],
       },
-    ],
-  },
-  {
-    title: "Abonnements Practice",
-    description: "Droit practice aux tarifs abonnés.",
-    columns: ["Profil", "Tarif"],
-    rows: [
-      { label: "25 ans et moins", values: ["Abonnement", "222 €"] },
-      { label: "26 ans et plus", values: ["Abonnement", "270 €"] },
-      { label: "Couple 26 ans et plus", values: ["Abonnement", "420 €"] },
     ],
   },
   {
