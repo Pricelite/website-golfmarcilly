@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
 
 type FormState = "idle" | "loading" | "success" | "error";
 
@@ -11,10 +12,6 @@ type ContactFormProps = {
   subjectPlaceholder?: string;
 };
 
-type ApiErrorPayload = {
-  error?: string;
-};
-
 export function ContactForm({
   context = "contact",
   submitLabel = "Envoyer ma demande",
@@ -23,9 +20,12 @@ export function ContactForm({
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const submittingRef = useRef(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setState("loading");
     setErrorMessage("");
 
@@ -39,11 +39,9 @@ export function ContactForm({
         body: JSON.stringify(Object.fromEntries(formData)),
       });
 
-      if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as
-          | ApiErrorPayload
-          | null;
-        setErrorMessage(payload?.error || "Une erreur est survenue. Merci de réessayer.");
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || payload?.ok !== true) {
+        setErrorMessage(getFormErrorMessage(response.status));
         setState("error");
         return;
       }
@@ -51,8 +49,10 @@ export function ContactForm({
       form.reset();
       setState("success");
     } catch {
-      setErrorMessage("Une erreur est survenue. Merci de réessayer.");
+      setErrorMessage(FORM_NETWORK_ERROR);
       setState("error");
+    } finally {
+      submittingRef.current = false;
     }
   }
 
@@ -60,6 +60,7 @@ export function ContactForm({
     <form
       className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
       onSubmit={handleSubmit}
+      aria-busy={state === "loading"}
     >
       <input name="context" type="hidden" value={context} />
 
@@ -134,7 +135,8 @@ export function ContactForm({
 
       <div className="flex justify-end">
         <button
-          className="rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-stone-50 shadow-lg shadow-emerald-950/15 transition hover:-translate-y-0.5 hover:bg-emerald-800"
+          className="rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-stone-50 shadow-lg shadow-emerald-950/15 transition hover:-translate-y-0.5 hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60"
+          disabled={state === "loading"}
           type="submit"
         >
           {state === "loading" ? "Envoi..." : submitLabel}
@@ -142,13 +144,13 @@ export function ContactForm({
       </div>
 
       {state === "success" ? (
-        <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
           {successMessage}
         </p>
       ) : null}
 
       {state === "error" ? (
-        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {errorMessage || "Une erreur est survenue. Merci de réessayer."}
         </p>
       ) : null}

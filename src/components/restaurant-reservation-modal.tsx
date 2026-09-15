@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
+import { getRestaurantDays, parseReservationPayload } from "@/lib/restaurant/validation";
+
 import { generateTimeSlots } from "@/lib/restaurant/slots";
 
 type RestaurantReservationModalProps = {
@@ -29,7 +32,7 @@ const DEFAULT_TRIGGER_CLASS_NAME =
   "inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
 
 const SUCCESS_MESSAGE =
-  "Nous regardons la disponibilit\u00e9 et nous allons vous confirmer par mail dans les plus brefs d\u00e9lais.";
+  "Votre demande a été transmise au restaurant. Votre table reste à confirmer par notre équipe.";
 
 const INITIAL_FORM: ReservationForm = {
   name: "",
@@ -38,13 +41,6 @@ const INITIAL_FORM: ReservationForm = {
   partySize: "2",
   message: "",
 };
-
-function toLocalIsoDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 function capitalize(value: string): string {
   if (!value) {
@@ -57,34 +53,16 @@ function normalizeWeekdayLabel(rawWeekday: string): string {
   return capitalize(rawWeekday.replace(".", "").trim());
 }
 
-function getNextDays(count = 7): DayOption[] {
-  const weekdayFormatter = new Intl.DateTimeFormat("fr-FR", { weekday: "short" });
-  const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
+function getNextDays(): DayOption[] {
+  return getRestaurantDays().map((iso) => {
+    const date = new Date(iso + "T12:00:00Z");
+    return {
+      iso,
+      weekday: normalizeWeekdayLabel(new Intl.DateTimeFormat("fr-FR", { weekday: "short", timeZone: "Europe/Paris" }).format(date)),
+      dateLabel: new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "2-digit", timeZone: "Europe/Paris" }).format(date),
+      longLabel: new Intl.DateTimeFormat("fr-FR", { dateStyle: "full", timeZone: "Europe/Paris" }).format(date),
+    };
   });
-  const longFormatter = new Intl.DateTimeFormat("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-
-  const now = new Date();
-  const days: DayOption[] = [];
-
-  for (let index = 0; index < count; index += 1) {
-    const date = new Date(now);
-    date.setHours(0, 0, 0, 0);
-    date.setDate(now.getDate() + index);
-    days.push({
-      iso: toLocalIsoDate(date),
-      weekday: normalizeWeekdayLabel(weekdayFormatter.format(date)),
-      dateLabel: dateFormatter.format(date),
-      longLabel: capitalize(longFormatter.format(date)),
-    });
-  }
-
-  return days;
 }
 
 function getFocusableElements(container: HTMLElement): HTMLElement[] {
@@ -121,6 +99,7 @@ export default function RestaurantReservationModal({
   const [lastSubmittedFingerprint, setLastSubmittedFingerprint] = useState<string>("");
   const [isClient, setIsClient] = useState(false);
 
+  const submittingRef = useRef(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
@@ -128,7 +107,7 @@ export default function RestaurantReservationModal({
   const titleId = useId();
   const descriptionId = useId();
 
-  const dayOptions = useMemo(() => getNextDays(7), []);
+  const dayOptions = useMemo(() => isOpen ? getNextDays() : [], [isOpen]);
   const slots = useMemo(() => generateTimeSlots("12:00", "14:30", 30), []);
 
   useEffect(() => {
@@ -136,7 +115,7 @@ export default function RestaurantReservationModal({
   }, []);
 
   useEffect(() => {
-    if (!selectedDay && dayOptions.length > 0) {
+    if (dayOptions.length > 0 && !dayOptions.some((day) => day.iso === selectedDay)) {
       setSelectedDay(dayOptions[0].iso);
     }
   }, [dayOptions, selectedDay]);
@@ -224,12 +203,13 @@ export default function RestaurantReservationModal({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submittingRef.current) return;
     setFormError("");
     setApiError("");
     setSuccessMessage("");
 
     if (!selectedDay || !selectedTime) {
-      setFormError("Selectionnez un jour et un horaire.");
+      setFormError("Sélectionnez un jour et un horaire.");
       return;
     }
 
@@ -237,7 +217,7 @@ export default function RestaurantReservationModal({
     const email = form.email.trim();
     const phone = form.phone.trim();
     const message = form.message.trim();
-    const partySize = Number.parseInt(form.partySize, 10);
+    const partySize = Number(form.partySize);
 
     if (!name) {
       setFormError("Le nom est obligatoire.");
@@ -250,7 +230,7 @@ export default function RestaurantReservationModal({
     }
 
     if (!Number.isInteger(partySize) || partySize < 1) {
-      setFormError("Le nombre de personnes doit etre superieur ou egal a 1.");
+      setFormError("Le nombre de personnes doit être supérieur ou égal à 1.");
       return;
     }
 
@@ -264,39 +244,48 @@ export default function RestaurantReservationModal({
       message,
     };
 
+    const parsed = parseReservationPayload(payload);
+    if (!parsed.ok) {
+      setFormError(parsed.error);
+      return;
+    }
+
     const fingerprint = JSON.stringify(payload);
     if (fingerprint === lastSubmittedFingerprint) {
       setSuccessMessage(SUCCESS_MESSAGE);
       return;
     }
 
+    submittingRef.current = true;
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/restaurant-reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Idempotency-Key": fingerprint,
         },
         body: JSON.stringify(payload),
       });
 
       const result = (await response.json().catch(() => null)) as
-        | { ok?: boolean; error?: string }
+        | { ok?: boolean; acknowledgementSent?: boolean }
         | null;
 
       if (!response.ok || !result?.ok) {
-        setApiError(result?.error || "Impossible d'envoyer votre demande pour le moment.");
+        setApiError(getFormErrorMessage(response.status));
         return;
       }
 
       setLastSubmittedFingerprint(fingerprint);
-      setSuccessMessage(SUCCESS_MESSAGE);
+      setSuccessMessage(result.acknowledgementSent === false
+        ? "Votre demande a été transmise au restaurant, mais l’accusé de réception par email n’a pas pu être envoyé. Ne renvoyez pas la demande. La table reste à confirmer par notre équipe."
+        : SUCCESS_MESSAGE);
       setForm(INITIAL_FORM);
       setSelectedTime(null);
     } catch {
-      setApiError("Une erreur réseau est survenue. Merci de réessayer.");
+      setApiError(FORM_NETWORK_ERROR);
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   }
@@ -334,10 +323,10 @@ export default function RestaurantReservationModal({
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h2 id={titleId} className="font-[var(--font-display)] text-3xl text-emerald-950">
-                    Reservation restaurant
+                    Demande de réservation restaurant
                   </h2>
                   <p id={descriptionId} className="mt-2 text-sm text-emerald-900/75">
-                    Choisissez un jour, un horaire puis envoyez votre demande.
+                    Choisissez une date et un horaire souhaités. La disponibilité sera vérifiée par notre équipe : votre table sera réservée uniquement après sa confirmation.
                   </p>
                 </div>
                 <button
@@ -350,10 +339,10 @@ export default function RestaurantReservationModal({
                 </button>
               </div>
 
-              <form className="mt-5" onSubmit={handleSubmit} noValidate>
+              <form className="mt-5" onSubmit={handleSubmit} aria-busy={isSubmitting} noValidate>
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                   <section>
-                    <p className="text-sm font-semibold text-emerald-900">Planning (7 jours)</p>
+                    <p className="text-sm font-semibold text-emerald-900">Dates souhaitées (7 jours)</p>
                     <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                       {dayOptions.map((day) => {
                         const isSelected = day.iso === selectedDay;
@@ -387,7 +376,7 @@ export default function RestaurantReservationModal({
                       })}
                     </div>
 
-                    <p className="mt-5 text-sm font-semibold text-emerald-900">Créneaux</p>
+                    <p className="mt-5 text-sm font-semibold text-emerald-900">Horaires souhaités</p>
                     <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
                       {slots.map((slot) => {
                         const isSelected = slot === selectedTime;
@@ -496,15 +485,15 @@ export default function RestaurantReservationModal({
                 </div>
 
                 {formError ? (
-                  <p className="mt-4 rounded-xl bg-rose-100 px-4 py-3 text-sm text-rose-800">{formError}</p>
+                  <p role="alert" className="mt-4 rounded-xl bg-rose-100 px-4 py-3 text-sm text-rose-800">{formError}</p>
                 ) : null}
 
                 {apiError ? (
-                  <p className="mt-4 rounded-xl bg-rose-100 px-4 py-3 text-sm text-rose-800">{apiError}</p>
+                  <p role="alert" className="mt-4 rounded-xl bg-rose-100 px-4 py-3 text-sm text-rose-800">{apiError}</p>
                 ) : null}
 
                 {successMessage ? (
-                  <p className="mt-4 rounded-xl bg-emerald-100 px-4 py-3 text-sm text-emerald-900">
+                  <p role="status" className="mt-4 rounded-xl bg-emerald-100 px-4 py-3 text-sm text-emerald-900">
                     {successMessage}
                   </p>
                 ) : null}

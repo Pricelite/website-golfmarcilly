@@ -1,4 +1,5 @@
 import "server-only";
+import { getFormErrorMessage } from "@/lib/api/form-feedback";
 
 import nodemailer from "nodemailer";
 import { fetchWithTimeout } from "@/lib/http/fetch";
@@ -419,15 +420,15 @@ export function getPublicMailerErrorMessage(error: unknown): string {
   }
 
   if (error.code === "config") {
-    return "Configuration email incomplete. Renseignez le fichier .env.local pour le SMTP ou Brevo.";
+    return getFormErrorMessage(503);
   }
 
   if (error.code === "auth") {
-    return "La connexion au service email a echoue. Verifiez les identifiants SMTP ou Brevo.";
+    return getFormErrorMessage(503);
   }
 
   if (error.code === "network") {
-    return "Le service email est momentanement injoignable. Merci de reessayer.";
+    return getFormErrorMessage(503);
   }
 
   return "Impossible d'envoyer l'email pour le moment.";

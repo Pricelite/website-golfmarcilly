@@ -12,7 +12,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
   "connect-src 'self' https://api.open-meteo.com https://api.brevo.com",
-  "frame-src 'self' https://calendar.google.com",
+  "frame-src 'self' https://calendar.google.com https://www.google.com/maps",
 ].join("; ");
 
 const nextConfig: NextConfig = {

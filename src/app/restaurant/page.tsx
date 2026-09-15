@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/forms/contact-form";
+import RestaurantReservationModal from "@/components/restaurant-reservation-modal";
 import { RestaurantDishesCarousel } from "@/components/restaurant-dishes-carousel";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
@@ -44,9 +45,7 @@ export default function RestaurantPage() {
               un repas de groupe ou renforcer la crédibilité d&apos;un événement.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <CTAButton href="/contact#reservation" variant="secondary">
-                Réserver une table
-              </CTAButton>
+              <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full border border-emerald-950/15 bg-white/85 px-5 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2" />
               <CTAButton href="tel:+33238761173" variant="secondary">
                 Appeler le restaurant
               </CTAButton>
@@ -108,13 +107,13 @@ export default function RestaurantPage() {
           </div>
           <div>
             <SectionTitle
-              eyebrow="Réservation"
-              title="Parlez-nous de votre table, de votre groupe ou de votre privatisation"
+              eyebrow="Groupes & privatisation"
+              title="Parlez-nous de votre groupe ou de votre privatisation"
             />
             <div className="mt-8">
               <ContactForm
                 context="restaurant"
-                subjectPlaceholder="Réservation de table, groupe, privatisation..."
+                subjectPlaceholder="Groupe, privatisation..."
                 submitLabel="Envoyer ma demande restaurant"
                 successMessage="Votre demande restaurant a bien été reçue par le site."
               />

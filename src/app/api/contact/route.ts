@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getFormErrorMessage } from "@/lib/api/form-feedback";
 
 import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
 import { logApiError } from "@/lib/api/logging";
@@ -34,7 +35,7 @@ function buildMethodNotAllowed() {
 export async function POST(request: Request) {
   const fallbackHost = new URL(request.url).host;
   if (!hasTrustedOrigin(request.headers, { fallbackHost })) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: getFormErrorMessage(403) }, { status: 403 });
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
@@ -47,14 +48,14 @@ export async function POST(request: Request) {
 
   if (!rateLimit.allowed) {
     return NextResponse.json(
-      { error: "Too many requests" },
+      { error: getFormErrorMessage(429) },
       { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
     );
   }
 
   const bodyResult = await readJsonBody<Record<string, unknown>>(request);
   if (!bodyResult.ok) {
-    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
   }
 
   const payload = {
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
     !isWithinLength(payload.phone, MAX_PHONE_LENGTH) ||
     !isWithinLength(payload.subject, MAX_SUBJECT_LENGTH)
   ) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
   }
 
   const clubEmail = process.env.EMAIL_TO?.trim();
@@ -88,11 +89,10 @@ export async function POST(request: Request) {
   if (!clubEmail) {
     return NextResponse.json(
       {
-        error:
-          "Configuration email incomplete. Ajoutez EMAIL_TO dans le fichier .env.local.",
+        error: getFormErrorMessage(503),
         code: "config",
       },
-      { status: 500 },
+      { status: 503 },
     );
   }
 

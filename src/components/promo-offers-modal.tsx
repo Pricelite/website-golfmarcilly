@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { createPortal } from "react-dom";
+import { CTAButton } from "@/components/ui/cta-button";
 import {
   useCallback,
   useEffect,
@@ -274,7 +276,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
         </span>
       </button>
 
-      {isMounted ? (
+      {isMounted ? createPortal(
         <div
           aria-hidden={!isVisible}
           className={`fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 ${
@@ -300,10 +302,11 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
             aria-describedby={descriptionId}
             aria-labelledby={titleId}
             aria-modal="true"
-            className={`relative w-[95%] max-w-[900px] overflow-hidden rounded-[24px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,244,238,0.94))] text-emerald-950 shadow-[0_28px_80px_rgba(6,24,20,0.28)] transition-all duration-[350ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:w-[90%] ${
+            className={`relative max-h-[90dvh] w-[95%] max-w-[900px] overflow-y-auto rounded-[24px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,244,238,0.94))] text-emerald-950 shadow-[0_28px_80px_rgba(6,24,20,0.28)] transition-all duration-[350ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:w-[90%] ${
               isVisible ? "scale-100 opacity-100" : "scale-[0.9] opacity-0"
             }`}
             onMouseEnter={() => setIsPaused(true)}
+            onFocusCapture={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchEnd={handleTouchEnd}
             onTouchMove={handleTouchMove}
@@ -388,14 +391,14 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                   </div>
 
                   <div className="relative flex flex-col justify-between p-5 sm:p-7">
-                    <div className="relative min-h-[18rem]">
+                    <div className="grid min-h-[18rem]">
                       {offers.map((offer, index) => {
                         const isActive = index === activeIndex;
 
                         return (
                           <div
                             aria-hidden={!isActive}
-                            className={`absolute inset-0 flex flex-col transition-all duration-[450ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+                            className={`[grid-area:1/1] flex flex-col transition-all duration-[450ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                               isActive
                                 ? "translate-y-0 opacity-100"
                                 : "pointer-events-none translate-y-3 opacity-0"
@@ -430,6 +433,12 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                           </div>
                         );
                       })}
+                    </div>
+
+                    <div className="mt-6" onClick={completeClose}>
+                      <CTAButton href={offers[activeIndex].actionHref}>
+                        {offers[activeIndex].actionLabel}
+                      </CTAButton>
                     </div>
 
                     <div className="mt-8 flex flex-col gap-5 border-t border-emerald-950/8 pt-5 sm:flex-row sm:items-center sm:justify-between">
@@ -477,7 +486,8 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       ) : null}
     </>
   );
