@@ -121,6 +121,7 @@ export default function HomePage() {
           <SectionTitle
             align="center"
             eyebrow="Séminaires & événements"
+            tone="inverse"
             title="Un lieu naturellement convaincant pour vos temps forts"
           />
         </div>

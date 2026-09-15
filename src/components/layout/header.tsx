@@ -11,8 +11,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-emerald-950/10 bg-stone-50/88 backdrop-blur-lg">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-stone-50/88 backdrop-blur-lg">
+      <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-4 px-4 py-4 sm:flex-nowrap sm:px-6 lg:px-8">
         <Link className="shrink-0" href="/">
           <span className="block font-serif text-2xl text-emerald-950">
             Golf de Marcilly
@@ -50,7 +50,7 @@ export function Header() {
           <CTAButton href={siteConfig.reservationUrl}>Réserver un départ</CTAButton>
         </div>
 
-        <div className="flex items-center gap-2 xl:hidden">
+        <div className="ml-auto flex items-center gap-2 xl:hidden">
           <a
             aria-label="Appeler le Golf de Marcilly"
             className="inline-flex rounded-full border border-emerald-950/12 px-3 py-2 text-sm font-semibold text-emerald-950 lg:hidden"
@@ -60,7 +60,8 @@ export function Header() {
           </a>
           <button
             aria-expanded={open}
-            aria-label="Ouvrir le menu"
+            aria-controls="mobile-navigation"
+            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             className="inline-flex rounded-full border border-emerald-950/12 px-3 py-2 text-sm font-semibold text-emerald-950"
             onClick={() => setOpen((current) => !current)}
             type="button"
@@ -71,12 +72,13 @@ export function Header() {
       </div>
 
       <div
+        id="mobile-navigation"
         className={cn(
-          "overflow-hidden border-t border-emerald-950/10 bg-stone-50 xl:hidden",
-          open ? "max-h-[420px]" : "max-h-0",
+          "min-h-0 overflow-y-auto overscroll-contain border-t border-emerald-950/10 bg-stone-50 xl:hidden",
+          open ? "block" : "hidden",
         )}
       >
-        <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <nav aria-label="Navigation mobile" className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <ul className="space-y-3">
             {navigationItems.map((item) => (
               <li key={item.href}>

@@ -4,6 +4,7 @@ type SectionTitleProps = {
   description?: string;
   align?: "left" | "center";
   as?: "h1" | "h2";
+  tone?: "default" | "inverse";
 };
 
 export function SectionTitle({
@@ -12,6 +13,7 @@ export function SectionTitle({
   description,
   align = "left",
   as = "h2",
+  tone = "default",
 }: SectionTitleProps) {
   const alignClass = align === "center" ? "text-center mx-auto" : "text-left";
   const HeadingTag = as;
@@ -19,15 +21,15 @@ export function SectionTitle({
   return (
     <div className={alignClass}>
       {eyebrow ? (
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-700">
+        <p className={`text-xs font-semibold uppercase tracking-[0.28em] ${tone === "inverse" ? "text-stone-200" : "text-emerald-700"}`}>
           {eyebrow}
         </p>
       ) : null}
-      <HeadingTag className="mt-3 font-serif text-3xl text-emerald-950 sm:text-4xl">
+      <HeadingTag className={`mt-3 font-serif text-3xl sm:text-4xl ${tone === "inverse" ? "text-stone-50" : "text-emerald-950"}`}>
         {title}
       </HeadingTag>
       {description ? (
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-950/72 sm:text-base">
+        <p className={`mt-4 max-w-3xl text-sm leading-7 sm:text-base ${tone === "inverse" ? "text-stone-50/80" : "text-emerald-950/72"}`}>
           {description}
         </p>
       ) : null}
