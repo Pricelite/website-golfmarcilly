@@ -35,9 +35,8 @@ export default function InitiationReservationPage() {
               Réserver une initiation
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
-              Sélectionnez un créneau disponible, indiquez votre groupe et votre
-              formule, puis poursuivez vers la confirmation ou le paiement selon
-              la configuration active du site.
+              Consultez les créneaux, indiquez le nombre de participants et
+              choisissez une formule avec ou sans repas.
             </p>
           </div>
         </div>
@@ -47,7 +46,7 @@ export default function InitiationReservationPage() {
         <SectionTitle
           eyebrow="Réservation"
           title="Un parcours simple pour débuter"
-          description="Le flux utilise désormais la logique de réservation moderne déjà présente côté API, avec contrôle des places et suivi du statut."
+          description="Choisissez la date et l'horaire qui vous conviennent, puis renseignez vos coordonnées."
         />
         <div className="mt-10">
           <InitiationReservationForm />

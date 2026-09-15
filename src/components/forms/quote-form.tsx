@@ -46,8 +46,7 @@ export function QuoteForm() {
       className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
     >
       <div className="rounded-[24px] border border-emerald-950/8 bg-stone-50 px-4 py-4 text-sm leading-7 text-emerald-950/72">
-        Formulaire de devis connecté au système d&apos;email du site. S&apos;il manque
-        encore la configuration SMTP ou Brevo, le message de blocage sera affiché.
+        Indiquez vos coordonnées et décrivez votre événement pour demander un devis à l&apos;équipe du golf.
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

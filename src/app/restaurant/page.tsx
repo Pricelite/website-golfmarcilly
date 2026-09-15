@@ -41,8 +41,9 @@ export default function RestaurantPage() {
               Restaurant La Bergerie
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
-              Une adresse de domaine chaleureuse pour déjeuner, recevoir, organiser
-              un repas de groupe ou renforcer la crédibilité d&apos;un événement.
+              Retrouvez-vous à La Bergerie pour déjeuner après une partie,
+              partager un repas de groupe ou organiser une réception.
+              Le restaurant accueille aussi les visiteurs qui ne jouent pas au golf.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full border border-emerald-950/15 bg-white/85 px-5 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2" />
@@ -76,7 +77,7 @@ export default function RestaurantPage() {
         <div className="mt-16">
           <SectionTitle
             eyebrow="Carte & menus"
-            title="Des formats pensés pour la table, les groupes et les séminaires"
+            title="Choisissez votre formule de repas"
           />
           <div className="mt-8 grid gap-5 lg:grid-cols-3">
             {restaurantMenus.map((menu) => (
@@ -100,7 +101,7 @@ export default function RestaurantPage() {
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <SectionTitle eyebrow="Galerie" title="Un carrousel de plats et d'ambiances" />
+            <SectionTitle eyebrow="Galerie" title="Découvrez le restaurant en images" />
             <div className="mt-8">
               <RestaurantDishesCarousel items={restaurantGallery} />
             </div>

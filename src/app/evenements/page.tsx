@@ -32,11 +32,11 @@ export default function EventsPage() {
               Séminaire golf Orléans
             </p>
             <h1 className="mt-5 font-serif text-5xl leading-[0.95] sm:text-6xl">
-              Des événements qui valorisent votre image
+              Organisez votre événement au golf
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
-              Séminaires, team buildings, réceptions privées, mariages et temps forts
-              corporate dans un cadre naturel premium aux portes d&apos;Orléans.
+              Réunissez vos collègues, vos clients ou vos proches à Marcilly.
+              Séminaires, activités de groupe et réceptions : présentez-nous votre projet.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href="#devis" variant="secondary">
@@ -53,7 +53,7 @@ export default function EventsPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
           eyebrow="Formats"
-          title="Des formats adaptables à vos clients, équipes et invités"
+          title="Quel événement souhaitez-vous organiser ?"
         />
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {eventFormats.map((format) => (
@@ -65,9 +65,9 @@ export default function EventsPage() {
           ))}
         </div>
 
-        <div className="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]" id="devis">
+        <div className="mt-16 grid scroll-mt-40 gap-10 lg:grid-cols-[0.9fr_1.1fr]" id="devis">
           <div>
-            <SectionTitle eyebrow="Formulaire de devis" title="Recevoir un devis sur mesure" />
+            <SectionTitle eyebrow="Votre projet" title="Demandez un devis" description="Précisez la date souhaitée, le nombre de participants et le type d'événement. Ajoutez vos besoins en restauration ou en activités golf pour aider l'équipe à préparer sa réponse." />
           </div>
           <QuoteForm />
         </div>

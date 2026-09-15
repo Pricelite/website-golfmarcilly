@@ -1,4 +1,6 @@
 import { CourseCard } from "@/components/ui/course-card";
+import { CTAButton } from "@/components/ui/cta-button";
+import { siteConfig } from "@/data/site";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { courses } from "@/data/courses";
@@ -37,8 +39,12 @@ export default function GolfPage() {
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           {orderedCourses.map((course) => (
-            <CourseCard key={course.slug} showMeta={false} {...course} />
+            <CourseCard key={course.slug} {...course} />
           ))}
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <CTAButton href="/tarifs">Consulter les tarifs</CTAButton>
+          <CTAButton href={siteConfig.reservationUrl} variant="secondary">Réserver un départ</CTAButton>
         </div>
       </section>
     </>

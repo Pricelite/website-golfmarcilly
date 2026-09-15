@@ -2,22 +2,22 @@ export const eventFormats = [
   {
     title: "Séminaires",
     description:
-      "Journées d'étude, comités de direction et rendez-vous clients dans un environnement premium, calme et dépaysant.",
+      "Organisez une journée d'étude, un comité de direction ou un rendez-vous clients au golf.",
   },
   {
     title: "Team building",
     description:
-      "Initiations, challenges, footgolf et activations sur mesure pour souder vos équipes et travailler votre image employeur.",
+      "Partagez une initiation, un challenge ou une partie de footgolf avec votre équipe.",
   },
   {
     title: "Réceptions privées",
     description:
-      "Anniversaires, repas de famille, lancements et moments de célébration dans un cadre naturel rare près d'Orléans.",
+      "Réunissez vos proches pour un anniversaire, un repas de famille ou une autre occasion à célébrer.",
   },
   {
     title: "Mariages",
     description:
-      "Un domaine crédible, photogénique et flexible pour imaginer une réception élégante et chaleureuse.",
+      "Présentez votre projet de réception de mariage à l'équipe pour étudier les possibilités au domaine.",
   },
   {
     title: "Groupes",

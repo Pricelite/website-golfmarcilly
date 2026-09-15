@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Hero } from "@/components/sections/hero";
 import { BlogCard } from "@/components/ui/blog-card";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -7,7 +8,7 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { MapEmbed } from "@/components/ui/map-embed";
 import { SectionTitle } from "@/components/ui/section-title";
 import { courses } from "@/data/courses";
-import { homeHighlights, homeReasons } from "@/data/home";
+import { homeHighlights } from "@/data/home";
 import { siteOffers } from "@/data/offers";
 import { posts } from "@/data/posts";
 import { siteConfig } from "@/data/site";
@@ -17,7 +18,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "45 trous aux portes d'Orléans",
   description:
-    "Golf, restaurant, enseignement et événements dans un domaine naturel unique. Une destination premium pour jouer, recevoir et progresser dans le Loiret.",
+    "Découvrez les parcours, le restaurant La Bergerie, les cours et les événements du Golf de Marcilly, aux portes d'Orléans.",
   path: "/",
 });
 
@@ -38,23 +39,23 @@ export default function HomePage() {
         image="/images/club-house-marcilly.png"
         primaryCta={{ label: "Réserver un départ", href: siteConfig.reservationUrl }}
         promoCta={{ label: "Offre du moment", offers: siteOffers }}
-        quaternaryCta={{
-          label: "Départs compétition",
-          href: "https://pages.ffgolf.org/departs/golf/5824d6b19f01d21a2e53b0249f2e9656",
-        }}
-        quinaryCta={{
-          label: "Résultats compétition",
-          href: "https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656",
-        }}
         subtitle="Golf, restaurant, enseignement et événements dans un domaine naturel unique."
         tertiaryCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
         title="45 trous aux portes d'Orléans"
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <nav aria-label="Informations compétition" className="border-b border-emerald-950/10 bg-white/60">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-4 sm:px-6 lg:px-8">
+          <span className="text-sm font-semibold text-emerald-950">Vous jouez en compétition ?</span>
+          <CTAButton href="https://pages.ffgolf.org/departs/golf/5824d6b19f01d21a2e53b0249f2e9656" variant="ghost">Consulter les départs</CTAButton>
+          <CTAButton href="https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656" variant="ghost">Voir les résultats</CTAButton>
+        </div>
+      </nav>
+
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <SectionTitle
           eyebrow="Pourquoi choisir Marcilly"
-          title="Une destination complète pour jouer, déjeuner et recevoir"
+          title="Jouer, apprendre et se retrouver au golf"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {homeHighlights.map((item) => (
@@ -68,62 +69,78 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <SectionTitle
           eyebrow="Les parcours"
-          title="Des formats complémentaires pour tous les rythmes de jeu"
+          title="Choisissez votre parcours ou votre espace d'entraînement"
         />
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {orderedCourses.map((course) => (
-            <CourseCard key={course.slug} showMeta={false} {...course} />
+            <CourseCard key={course.slug} {...course} />
           ))}
         </div>
+        <div className="mt-6"><CTAButton href="/golf" variant="ghost">Explorer les parcours et leurs caractéristiques</CTAButton></div>
       </section>
 
-      <section className="bg-white/60 py-16">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
+      <section id="restaurant" className="bg-white/60 py-10 sm:py-14">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:aspect-[3/2]">
+            <Image src="/images/cuisine.png" alt="Des plats préparés en cuisine" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          </div>
+          <div>
             <SectionTitle
               eyebrow="Restaurant La Bergerie"
-              title="L&apos;adresse du domaine pour déjeuner et recevoir"
+              title="Retrouvez-vous autour d'un déjeuner"
+              description="Après une partie ou simplement pour déjeuner, découvrez la carte et les menus de La Bergerie."
             />
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {homeReasons.map((item) => (
-              <FeatureCard
-                description={item.description}
-                key={item.title}
-                title={item.title}
-              />
-            ))}
+            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/80">
+              <li>Ouvert aux golfeurs et aux visiteurs qui ne jouent pas.</li>
+              <li>Menus pour les déjeuners, les groupes et les séminaires.</li>
+              <li>Demande de table en ligne, à confirmer par le restaurant.</li>
+            </ul>
+            <div className="mt-6"><CTAButton href="/restaurant">Voir les menus et demander une table</CTAButton></div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1fr_0.95fr]">
+      <section id="enseignement" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:order-2 lg:aspect-[3/2]">
+            <Image src="/images/ecoledegolf.png" alt="Des enfants s'entraînent au golf" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          </div>
           <div>
             <SectionTitle
-              eyebrow="École de golf"
-              title="Un enseignement structuré pour débutants et compétiteurs"
+              eyebrow="École de golf & enseignement"
+              title="Apprenez et progressez à votre rythme"
+              description="Vous découvrez le golf ou souhaitez travailler votre jeu ? Retrouvez les formules d'enseignement et les enseignants du club."
             />
-          </div>
-          <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
-            <div className="mt-6">
-              <CTAButton href="/je-debute-le-golf">Je débute le golf</CTAButton>
+            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/80">
+              <li>Des programmes pour les débutants, les adultes et les enfants.</li>
+              <li>Cours collectifs, coaching individuel et stages.</li>
+              <li>Un accompagnement pour préparer les compétitions.</li>
+            </ul>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <CTAButton href="/enseignement">Découvrir les cours et les enseignants</CTAButton>
+              <CTAButton href="/je-debute-le-golf" variant="ghost">Je débute le golf</CTAButton>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-emerald-950 py-16 text-stone-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            align="center"
-            eyebrow="Séminaires & événements"
-            tone="inverse"
-            title="Un lieu naturellement convaincant pour vos temps forts"
-          />
+      <section id="evenements" className="bg-emerald-950 py-10 text-stone-50 sm:py-14">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:aspect-[3/2]">
+            <Image src="/restaurant/hero.jpg" alt="Le club-house et ses abords lors d'un événement de golf" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          </div>
+          <div>
+            <SectionTitle eyebrow="Séminaires & événements" tone="inverse" title="Réunissez votre équipe au golf" description="Organisez une journée de travail, une activité de groupe ou une réception avec l'équipe de Marcilly." />
+            <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-stone-100/85">
+              <li>Journées d&apos;étude, réunions et rendez-vous clients.</li>
+              <li>Initiations, challenges et footgolf pour vos activités d&apos;équipe.</li>
+              <li>Restauration pour les groupes et réceptions privées.</li>
+            </ul>
+            <div className="mt-6"><CTAButton href="/evenements#devis" variant="secondary">Parler de mon événement et demander un devis</CTAButton></div>
+          </div>
         </div>
       </section>
 

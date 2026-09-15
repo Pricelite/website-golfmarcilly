@@ -1,44 +1,21 @@
 export const homeHighlights = [
   {
-    eyebrow: "Cadre d'exception",
-    title: "Un domaine golfique complet dans un écrin naturel",
+    eyebrow: "Les parcours",
+    title: "45 trous et un practice pour varier le jeu",
     description:
-      "Entre forêts, plans d'eau et larges fairways, Marcilly propose une expérience golf et art de vivre rare dans le Loiret.",
+      "Découvrez le grand parcours, le parcours 9 trous, le pitch & putt et les espaces d'entraînement.",
   },
   {
     eyebrow: "Accessibilité",
-    title: "Une destination premium à moins de 25 minutes d'Orléans",
+    title: "Le golf aux portes d'Orléans",
     description:
-      "Idéal pour un green fee, un déjeuner au restaurant, un cours de golf ou un séminaire d'entreprise sans logistique complexe.",
+      "Retrouvez les parcours, les cours et le restaurant à Marcilly-en-Villette, dans le Loiret.",
   },
   {
-    eyebrow: "Polyvalence",
-    title: "Golf, restauration, enseignement et événements sur un même site",
+    eyebrow: "Ensemble",
+    title: "Venez jouer, déjeuner ou organiser une sortie",
     description:
-      "Le domaine réunit les conditions idéales pour accueillir joueurs réguliers, débutants, familles, groupes et entreprises.",
-  },
-] as const;
-
-export const homeReasons = [
-  {
-    title: "45 trous pour tous les niveaux",
-    description:
-      "Grand parcours, 9 trous, pitch & putt et practice pour varier les plaisirs et jouer toute l'année.",
-  },
-  {
-    title: "Restaurant La Bergerie",
-    description:
-      "Une adresse chaleureuse, crédible pour vos rendez-vous, déjeuners golfeurs et réceptions privées.",
-  },
-  {
-    title: "Académie et coaching",
-    description:
-      "Parcours d'apprentissage clairs pour débutants, joueurs loisirs et compétiteurs cherchant un accompagnement sur mesure.",
-  },
-  {
-    title: "Séminaires à forte valeur perçue",
-    description:
-      "Espaces, restauration et activités team building réunis dans une même expérience haut de gamme.",
+      "Débutants, joueurs réguliers, familles et groupes : choisissez l'activité qui vous correspond.",
   },
 ] as const;
 

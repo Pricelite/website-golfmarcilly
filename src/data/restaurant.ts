@@ -1,13 +1,13 @@
 export const restaurantHighlights = [
   {
-    title: "Une table de domaine chaleureuse",
+    title: "Déjeunez au golf, même sans jouer",
     description:
-      "La Bergerie signe une expérience culinaire sincère, végétale et conviviale, parfaite après une partie comme pour un rendez-vous d'affaires.",
+      "La Bergerie accueille les golfeurs et les visiteurs extérieurs pour un déjeuner ou un rendez-vous d'affaires.",
   },
   {
-    title: "Menus lisibles et saisonniers",
+    title: "Des menus pour votre repas ou votre groupe",
     description:
-      "La carte évolue selon les produits et les moments de vie du club, avec une offre adaptée au déjeuner, aux groupes et aux privatisations.",
+      "Consultez les formules de déjeuner, de séminaire et de réception, puis contactez l'équipe pour votre repas de groupe ou votre privatisation.",
   },
 ] as const;
 

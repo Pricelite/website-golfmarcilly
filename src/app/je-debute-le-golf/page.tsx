@@ -2,6 +2,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { FAQAccordion } from "@/components/ui/faq-accordion";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
+import { pricingSections } from "@/data/pricing";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/schema";
 
@@ -9,7 +10,7 @@ const beginnerFaqs = [
   {
     question: "Faut-il déjà savoir jouer pour venir ?",
     answer:
-      "Non. Cette page est justement faite pour les personnes qui n'ont jamais joué ou qui veulent reprendre très simplement, sans pression.",
+      "Non. Les initiations accueillent les personnes qui n'ont jamais joué et celles qui souhaitent reprendre les bases.",
   },
   {
     question: "Dois-je avoir mon propre matériel ?",
@@ -42,7 +43,7 @@ const beginnerSteps = [
   {
     title: "3. Continuer à votre rythme",
     description:
-      "Cours, practice, petit jeu et premiers parcours : tout est ensuite progressif pour ne pas vous dégoûter ni vous perdre.",
+      "Poursuivez avec des cours, du practice et vos premiers parcours selon vos envies.",
   },
 ] as const;
 
@@ -54,6 +55,7 @@ export const metadata = buildMetadata({
 });
 
 export default function BeginnerGolfPage() {
+  const discoveryFormulas = pricingSections.find((section) => section.title === "Découverte")?.rows ?? [];
   return (
     <>
       <JsonLd data={buildFaqSchema(beginnerFaqs)} />
@@ -75,9 +77,22 @@ export default function BeginnerGolfPage() {
               Je débute le golf
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
-              Vous n&apos;avez jamais joué ? C&apos;est exactement le bon point de
-              départ. Nous avons pensé un parcours simple, rassurant et accessible
-              pour commencer le golf près d&apos;Orléans.
+              Découvrez le golf avec une initiation encadrée, puis un parcours
+              découverte de 9 trous. Choisissez la formule avec ou sans repas.
+            </p>
+            <dl className="mt-6 grid gap-5 sm:grid-cols-2">
+              {discoveryFormulas.map((formula) => (
+                <div key={formula.label} className="border-l-2 border-stone-200/40 pl-4">
+                  <dt className="text-base font-semibold">{formula.label}</dt>
+                  <dd className="mt-2 text-3xl font-semibold">{formula.values[1]} <span className="text-sm font-normal text-stone-100/80">par personne</span></dd>
+                  <dd className="mt-2 text-sm leading-6 text-stone-100/85">{formula.values[0]}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-6 text-sm leading-7 text-stone-100/85">
+              Les initiations sont proposées le week-end. Consultez les créneaux
+              pour préparer votre venue. Pour toute question sur le matériel,
+              appelez le golf au <a className="underline underline-offset-4" href="tel:+33238761173">02 38 76 11 73</a>.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href="/initiation/reservation">Réserver une initiation</CTAButton>
@@ -89,34 +104,10 @@ export default function BeginnerGolfPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-          <div>
-            <SectionTitle
-              description="Le golf peut sembler impressionnant quand on n&apos;a jamais commencé. À Marcilly, l&apos;idée est au contraire de rendre la première expérience simple, élégante et motivante."
-              eyebrow="Débutants bienvenus"
-              title="Un cadre idéal pour faire vos premiers pas"
-            />
-          </div>
-          <div className="rounded-[32px] border border-emerald-950/10 bg-white/92 p-8 shadow-xl shadow-emerald-950/8">
-            <p className="text-sm leading-7 text-emerald-950/76">
-              Pas besoin de connaître les codes, pas besoin d&apos;être équipé, pas besoin
-              de savoir si vous allez aimer à long terme. Vous venez, vous testez,
-              vous découvrez dans de bonnes conditions.
-            </p>
-            <div className="mt-6">
-              <CTAButton href="/initiation/reservation">
-                Réserver mon initiation
-              </CTAButton>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-white/60 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle
-            description="Une progression lisible pour ne pas vous noyer dans trop d'informations dès le départ."
+            description="De la première découverte aux premiers parcours, avancez étape par étape."
             eyebrow="Comment ça se passe"
             title="Trois étapes simples pour commencer"
           />
@@ -140,7 +131,7 @@ export default function BeginnerGolfPage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_0.95fr]">
           <div>
             <SectionTitle
-              description="Cette page est pensée pour les personnes qui cherchent un premier pas clair, sans se perdre dans toute l&apos;offre golf."
+              description="Expérience, matériel ou venue en groupe : préparez votre première visite."
               eyebrow="FAQ débutant"
               title="Les questions que l&apos;on se pose quand on commence"
             />
@@ -156,9 +147,8 @@ export default function BeginnerGolfPage() {
               Réserver votre créneau
             </h2>
             <p className="mt-4 text-sm leading-7 text-emerald-950/76">
-              Vous pouvez désormais choisir directement un créneau disponible,
-              préciser le nombre de participants et suivre le statut de la
-              réservation.
+              Consultez les créneaux d&apos;initiation et choisissez votre formule.
+              Si vous ne trouvez pas de créneau, contactez le golf pour préparer votre venue.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href="/initiation/reservation">
