@@ -13,10 +13,11 @@ export function buildOrganizationSchema() {
     image: absoluteUrl("/images/club-house-marcilly.png"),
     address: {
       "@type": "PostalAddress",
-      streetAddress: `${siteConfig.addressLine1}, ${siteConfig.addressLine2}`,
+      streetAddress: siteConfig.addressLine1,
+      postalCode: siteConfig.postalCode,
       addressLocality: siteConfig.city,
       addressRegion: siteConfig.region,
-      addressCountry: siteConfig.country,
+      addressCountry: siteConfig.countryCode,
     },
   };
 }

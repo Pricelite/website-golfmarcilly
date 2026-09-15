@@ -8,6 +8,7 @@ export const metadata = buildMetadata({
   description:
     "Reprenez ou vérifiez votre réservation d'initiation au Golf de Marcilly.",
   path: "/payment/cancel",
+  indexable: false,
 });
 
 type PaymentCancelPageProps = {

@@ -12,7 +12,7 @@ export function BlogCard({ post }: { post: Post }) {
           alt={post.title}
           className="object-cover"
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
+          sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 3), 389px"
           src={post.coverImage}
         />
       </div>

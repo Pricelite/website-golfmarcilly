@@ -380,8 +380,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                               alt={offer.title}
                               className="object-contain object-center p-4 sm:p-6"
                               fill
-                              priority={index === 0}
-                              sizes="(max-width: 1024px) 100vw, 48vw"
+                              sizes="(max-width: 640px) calc(95vw - 96px), (max-width: 1024px) calc(90vw - 104px), 400px"
                               src={offer.imageSrc}
                             />
                           </div>

@@ -11,6 +11,7 @@ type CourseCardProps = {
   ctaHref?: string;
   image: string;
   showMeta?: boolean;
+  sizes?: string;
 };
 
 export function CourseCard({
@@ -22,6 +23,7 @@ export function CourseCard({
   ctaHref,
   image,
   showMeta = true,
+  sizes = "(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 88px) / 2), 596px",
 }: CourseCardProps) {
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-[32px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
@@ -30,7 +32,7 @@ export function CourseCard({
           alt={title}
           className="object-cover"
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes={sizes}
           src={image}
         />
       </div>

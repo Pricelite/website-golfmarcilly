@@ -50,6 +50,9 @@ export type FallbackQueueSnapshot = {
   oldestPendingAgeMinutes: number | null;
 };
 
+// Production requirement: writable, persistent storage shared by the app and queue worker.
+// TODO deployment: confirm this mount or migrate to durable shared storage before launch.
+// See CONSOLIDATION-PRODUCTION.md; a serverless temporary directory is not a durable queue.
 const FALLBACK_ROOT_DIR = path.join(process.cwd(), ".contact-fallback");
 const FALLBACK_PENDING_DIR = path.join(FALLBACK_ROOT_DIR, "pending");
 const FALLBACK_SENT_DIR = path.join(FALLBACK_ROOT_DIR, "sent");

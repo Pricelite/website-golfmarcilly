@@ -12,6 +12,8 @@ export const siteConfig = {
   region: "Loiret",
   city: "Marcilly-en-Villette",
   country: "France",
+  countryCode: "FR",
+  postalCode: "45240",
   reservationUrl: "https://marcilly.reservations-golf.fr/",
   mapEmbedUrl:
     "https://www.google.com/maps?q=Golf%20de%20Marcilly&z=13&output=embed",

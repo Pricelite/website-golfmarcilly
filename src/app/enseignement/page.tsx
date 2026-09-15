@@ -62,7 +62,7 @@ export default function TeachingPage() {
                     alt={pro.name}
                     className="object-cover"
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 768px) calc(100vw - 48px), (max-width: 1024px) calc((100vw - 88px) / 3), (max-width: 1280px) calc((100vw - 104px) / 3), 395px"
                     src={pro.image}
                   />
                 </div>

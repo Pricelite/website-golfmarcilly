@@ -29,8 +29,6 @@ export const metadata: Metadata = {
     images: [
       {
         url: absoluteUrl("/images/club-house-marcilly.png"),
-        width: 1200,
-        height: 630,
         alt: siteConfig.name,
       },
     ],

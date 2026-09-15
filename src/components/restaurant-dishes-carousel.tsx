@@ -95,7 +95,7 @@ export function RestaurantDishesCarousel({
                   isActive ? "scale-100" : "scale-110"
                 }`}
                 fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
+                sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 104px) * 0.55), 647px"
                 src={item.src}
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,24,20,0.04),rgba(6,24,20,0.58))]" />

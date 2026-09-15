@@ -23,6 +23,8 @@ type MetadataInput = {
   path?: string;
   keywords?: string[];
   image?: string;
+  indexable?: boolean;
+  type?: "website" | "article";
 };
 
 export function buildMetadata({
@@ -31,6 +33,8 @@ export function buildMetadata({
   path = "/",
   keywords = [],
   image = "/images/club-house-marcilly.png",
+  indexable = true,
+  type = "website",
 }: MetadataInput): Metadata {
   const url = absoluteUrl(path);
   const socialTitle = `${title} | ${siteConfig.name}`;
@@ -39,6 +43,7 @@ export function buildMetadata({
     title,
     description,
     keywords: [...defaultKeywords, ...keywords],
+    robots: { index: indexable, follow: true },
     alternates: {
       canonical: url,
     },
@@ -48,12 +53,10 @@ export function buildMetadata({
       url,
       siteName: siteConfig.name,
       locale: "fr_FR",
-      type: "website",
+      type,
       images: [
         {
           url: absoluteUrl(image),
-          width: 1200,
-          height: 630,
           alt: title,
         },
       ],

@@ -6,6 +6,7 @@ export const metadata = buildMetadata({
   description:
     "Suivi du statut de votre réservation d'initiation au Golf de Marcilly.",
   path: "/payment/success",
+  indexable: false,
 });
 
 type PaymentSuccessPageProps = {

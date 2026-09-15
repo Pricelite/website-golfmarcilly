@@ -11,6 +11,7 @@ export const metadata = buildMetadata({
   description:
     "Réservez votre initiation golf au Golf de Marcilly avec choix du créneau, du nombre de participants et de la formule.",
   path: "/initiation/reservation",
+  indexable: false,
 });
 
 export default function InitiationReservationPage() {

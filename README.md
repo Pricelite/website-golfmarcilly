@@ -108,6 +108,8 @@ Les blocs principaux couvrent :
 
 ## Healthcheck et exploitation
 
+État avant déploiement et points à fournir par le propriétaire : [CONSOLIDATION-PRODUCTION.md](CONSOLIDATION-PRODUCTION.md).
+
 - `GET /api/health`
   Retour public minimal avec l'etat global des services.
 - `GET /api/health` avec `Authorization: Bearer <OPS_CRON_TOKEN>`

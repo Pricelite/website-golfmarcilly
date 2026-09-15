@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/ui/json-ld";
 import { posts } from "@/data/posts";
-import { absoluteUrl, buildMetadata } from "@/lib/metadata";
+import { buildMetadata } from "@/lib/metadata";
 import { buildBlogPostingSchema, buildBreadcrumbSchema } from "@/lib/schema";
 import { formatDate } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ export async function generateMetadata({
   const post = posts.find((entry) => entry.slug === slug);
 
   if (!post) {
-    return {};
+    notFound();
   }
 
   return buildMetadata({
@@ -28,6 +28,7 @@ export async function generateMetadata({
     description: post.seoDescription,
     path: `/actualites/${post.slug}`,
     image: post.coverImage,
+    type: "article",
   });
 }
 
@@ -73,9 +74,6 @@ export default async function PostPage({
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
-        <p className="mt-10 text-sm text-emerald-950/55">
-          URL canonique : {absoluteUrl(`/actualites/${post.slug}`)}
-        </p>
       </article>
     </>
   );

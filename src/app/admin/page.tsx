@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/metadata";
 import { cookies } from "next/headers";
 
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
@@ -11,6 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Admin réservations initiation",
   description: "Tableau de bord des réservations d'initiation.",
+  alternates: { canonical: absoluteUrl("/admin") },
   robots: {
     index: false,
     follow: false,
