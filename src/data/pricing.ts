@@ -52,22 +52,22 @@ export const pricingSections: PricingSection[] = [
       { label: "9 trous Découverte ou Footgolf", values: ["10 €", "10 €"] },
       {
         label: "18 trous Pitch & Putt ou Kaleka",
-        values: ["25 € (1T)", "23 € (1T)"],
+        values: ["25 €", "23 €"],
         note: "Jeunes -20 ans : 20 € / licencié 18 €",
       },
       {
         label: "9 trous Grand Parcours",
-        values: ["44 € (4T)", "39 € (3T)"],
+        values: ["44 €", "39 €"],
         note: "Jeunes -20 ans : 30 € / licencié 25 €",
       },
       {
         label: "18 trous Grand Parcours",
-        values: ["64 € (6T)", "59 € (5T)"],
+        values: ["64 €", "59 €"],
         note: "Jeunes -20 ans : 40 € / licencié 30 €",
       },
       {
         label: "18 trous après 16h00",
-        values: ["44 € (4T)", "39 € (3T)"],
+        values: ["44 €", "39 €"],
       },
     ],
   },
