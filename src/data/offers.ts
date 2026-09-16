@@ -1,4 +1,4 @@
-export type SiteOffer = {
+﻿export type SiteOffer = {
   slug: string;
   title: string;
   imageSrc: string;
@@ -11,45 +11,30 @@ export type SiteOffer = {
   actionHref: string;
 };
 
-// Pour ajouter une nouvelle offre :
-// 1. Déposer l'image dans public/offers/
-// 2. Copier un bloc ci-dessous
-// 3. Changer slug, title, imageSrc, description, prix et lien
-// 4. Le carrousel et la page /offres/[slug] seront mis à jour automatiquement
+// Les affiches fournies sont la source des tarifs et conditions ci-dessous.
+// Le carrousel, les pages d'offres et le sitemap utilisent cette liste.
 export const siteOffers: SiteOffer[] = [
   {
-    slug: "offre-decouverte",
-    title: "Débutant, notre priorité",
-    imageSrc: "/offers/debutant.jpg",
+    slug: "abonnement-900",
+    title: "Votre abonnement 45 trous à 900 €",
+    imageSrc: "/offers/abonnement-900.png",
     description:
-      "Deux seaux de balles d'entraînement ou un parcours découverte pour progresser à votre rythme dans un cadre accessible à tous.",
-    badgeLabel: "Offre limitée",
-    eyebrow: "Expérience débutant",
-    promoPrice: "6 € et 10 €",
-    actionLabel: "Nous contacter",
+      "Accès aux 45 trous 7 jours sur 7, pour 900 € ou 12 mensualités de 75 €. Vous payez 8 mois et jouez 12 mois. Offre réservée aux 30 premiers nouveaux abonnés, non abonnés en 2026. Renseignements à l’accueil du golf.",
+    badgeLabel: "Nouveaux abonnés",
+    eyebrow: "Abonnement 45 trous · 7 jours sur 7",
+    promoPrice: "900 €",
+    actionLabel: "Me renseigner sur l’abonnement",
     actionHref: "/contact#reservation",
   },
   {
-    slug: "offre-79",
-    title: "30 jours pour tomber amoureux du golf",
-    imageSrc: "/offers/offre-79.png",
+    slug: "tarifs-septembre",
+    title: "Profitez des tarifs de septembre",
+    imageSrc: "/offers/tarifs-septembre.png",
     description:
-      "Une formule tout compris sans engagement avec parcours débutant illimité, carte de 25 seaux et accès libre aux zones d'entraînement.",
-    badgeLabel: "Offre limitée",
-    eyebrow: "Formule 30 jours",
-    promoPrice: "79 €",
-    actionLabel: "Réserver un départ",
-    actionHref: "https://marcilly.reservations-golf.fr/",
-  },
-  {
-    slug: "offre-129",
-    title: "30 jours 45 trous tout compris",
-    imageSrc: "/offers/offre-129.png",
-    description:
-      "Un mois de golf en illimité sur 45 trous, avec carte de seaux et accès libre aux zones d'entraînement, sans engagement.",
-    badgeLabel: "Offre limitée",
-    eyebrow: "Formule 45 trous",
-    promoPrice: "129 €",
+      "Tout le mois de septembre : 10 € les 9 trous sur le Pitch and Putt, le Kaleka ou le parcours Découverte. Sur le Grand Parcours : 20 € les 9 trous aller ou les 9 trous retour, et 39 € les 18 trous.",
+    badgeLabel: "Tout septembre",
+    eyebrow: "Tarifs des parcours",
+    promoPrice: "Dès 10 €",
     actionLabel: "Réserver un départ",
     actionHref: "https://marcilly.reservations-golf.fr/",
   },

@@ -10,6 +10,7 @@ type ContactFormProps = {
   submitLabel?: string;
   successMessage?: string;
   subjectPlaceholder?: string;
+  messagePlaceholder?: string;
 };
 
 export function ContactForm({
@@ -17,6 +18,7 @@ export function ContactForm({
   submitLabel = "Envoyer ma demande",
   successMessage = "Votre demande a bien été reçue par le site.",
   subjectPlaceholder = "Réservation, renseignement, événement...",
+  messagePlaceholder = "Décrivez votre demande.",
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -128,7 +130,7 @@ export function ContactForm({
         <textarea
           className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="message"
-          placeholder="Décrivez votre demande."
+          placeholder={messagePlaceholder}
           required
         />
       </label>

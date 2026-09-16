@@ -1,15 +1,15 @@
 import { ContactForm } from "@/components/forms/contact-form";
 import RestaurantReservationModal from "@/components/restaurant-reservation-modal";
 import { RestaurantDishesCarousel } from "@/components/restaurant-dishes-carousel";
+import { RestaurantMenus } from "@/components/sections/restaurant-menus";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import {
   restaurantGallery,
-  restaurantHighlights,
-  restaurantMenus,
 } from "@/data/restaurant";
 import { buildMetadata } from "@/lib/metadata";
+import { restaurantData } from "@/lib/restaurant-data";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
@@ -46,6 +46,7 @@ export default function RestaurantPage() {
               Le restaurant accueille aussi les visiteurs qui ne jouent pas au golf.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
+              <CTAButton href="#menus" variant="secondary">Découvrir les menus</CTAButton>
               <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full border border-emerald-950/15 bg-white/85 px-5 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2" />
               <CTAButton href="tel:+33238761173" variant="secondary">
                 Appeler le restaurant
@@ -56,48 +57,60 @@ export default function RestaurantPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <SectionTitle
-          eyebrow="La Bergerie"
-          title="Une table de domaine pensée pour le plaisir"
-        />
-        <div className="mt-10 grid gap-5 lg:grid-cols-2">
-          {restaurantHighlights.map((item) => (
-            <article
-              className="rounded-[32px] border border-emerald-950/10 bg-white/92 p-8 shadow-xl shadow-emerald-950/8"
-              key={item.title}
-            >
-              <h3 className="font-serif text-2xl text-emerald-950">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-emerald-950/76">
-                {item.description}
-              </p>
-            </article>
-          ))}
-        </div>
+        <section id="horaires-restaurant" aria-labelledby="horaires-restaurant-title" className="mb-12 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] lg:grid lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="bg-emerald-950 p-6 text-stone-50 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-100/80">Votre déjeuner à La Bergerie</p>
+            <h2 id="horaires-restaurant-title" className="mt-3 font-serif text-3xl">Horaires d’ouverture</h2>
+            <p className="mt-4 text-sm leading-7 text-stone-100/85">Le restaurant vous accueille pour le service du midi, sauf le mardi.</p>
+          </div>
+          <dl className="divide-y divide-emerald-950/15 px-6 py-2 sm:px-8">
+            {restaurantData.hours.map(day => (
+              <div key={day.label} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4 text-sm leading-6 text-emerald-950">
+                <dt className="font-medium">{day.label}</dt>
+                <dd className={day.hours === "Fermé" ? "rounded-full bg-emerald-950/10 px-3 py-1 text-xs font-semibold" : "whitespace-nowrap font-semibold"}>{day.hours}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
 
-        <div className="mt-16">
-          <SectionTitle
-            eyebrow="Carte & menus"
-            title="Choisissez votre formule de repas"
-          />
-          <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {restaurantMenus.map((menu) => (
-              <article
-                className="rounded-[30px] border border-emerald-950/10 bg-white/92 p-7 shadow-xl shadow-emerald-950/8"
-                key={menu.title}
-              >
-                <h3 className="font-serif text-2xl text-emerald-950">{menu.title}</h3>
-                <ul className="mt-4 space-y-2 text-sm leading-7 text-emerald-950/75">
-                  {menu.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <p className="mt-5 text-sm font-semibold text-emerald-700">
-                  {menu.price}
-                </p>
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
+          <div>
+            <SectionTitle eyebrow="La Bergerie" title="Votre réception, à votre image" />
+            <div className="mt-5 space-y-4 text-base leading-8 text-emerald-950/80">
+              {restaurantData.intro.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
+            </div>
+            <div className="mt-6 border-l-2 border-emerald-700 bg-[#f7f4e9] px-5 py-4">
+              <h3 className="font-serif text-xl text-emerald-950">Location de salle seule</h3>
+              <p className="mt-2 text-sm font-semibold leading-7 text-emerald-950">{restaurantData.intro.roomRental}</p>
+              <p className="mt-1 text-sm leading-7 text-emerald-950/75">{restaurantData.intro.roomRentalNote}</p>
+            </div>
+          </div>
+          <div className="divide-y divide-emerald-950/15 rounded-2xl border border-emerald-950/10 bg-[#f7f4e9] px-6 sm:px-8">
+            {restaurantData.services.map(service => (
+              <article key={service.title} className="py-6">
+                <h3 className="font-serif text-2xl text-emerald-950">{service.title}</h3>
+                {service.description ? <p className="mt-3 text-sm leading-7 text-emerald-950/80">{service.description}</p> : null}
               </article>
             ))}
           </div>
         </div>
+
+        <RestaurantMenus />
+
+        <section id="conditions-restaurant" className="mt-12 scroll-mt-28 border-y border-emerald-950/15 py-10">
+          <SectionTitle eyebrow="Préparer votre réception" title={restaurantData.cgv.title} />
+          <div className="mt-7 grid gap-8 lg:grid-cols-3">
+            {restaurantData.cgv.sections.map(section => (
+              <div key={section.title}>
+                <h3 className="font-serif text-xl text-emerald-950">{section.title}</h3>
+                <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-7 text-emerald-950/80">
+                  {section.items.map(item => <li key={item}>{item}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 font-serif text-xl text-emerald-900">{restaurantData.cgv.closingNote}</p>
+        </section>
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
@@ -106,16 +119,18 @@ export default function RestaurantPage() {
               <RestaurantDishesCarousel items={restaurantGallery} />
             </div>
           </div>
-          <div>
+          <div id="devis-restaurant" className="scroll-mt-28">
             <SectionTitle
               eyebrow="Groupes & privatisation"
-              title="Parlez-nous de votre groupe ou de votre privatisation"
+              title="Votre demande de devis global"
+              description="Précisez la date, le nombre de personnes, le menu et le forfait boissons souhaités. Ajoutez vos besoins pour la salle ou le séminaire, le cas échéant."
             />
             <div className="mt-8">
               <ContactForm
                 context="restaurant"
-                subjectPlaceholder="Groupe, privatisation..."
-                submitLabel="Envoyer ma demande restaurant"
+                subjectPlaceholder="Devis global : repas, boissons, réception..."
+                messagePlaceholder="Date souhaitée, nombre de personnes, menu choisi, forfait boissons et besoins complémentaires..."
+                submitLabel="Envoyer ma demande de devis global"
                 successMessage="Votre demande restaurant a bien été reçue par le site."
               />
             </div>

@@ -24,7 +24,7 @@ export const siteConfig = {
   ],
   hours: [
     { label: "Accueil", value: "Tous les jours, 8h00 - 19h00" },
-    { label: "Restaurant", value: "Mercredi au dimanche, 12h00 - 15h00" },
+    { label: "Restaurant", value: "Lundi et mercredi à vendredi : 12 h – 14 h. Samedi et dimanche : 12 h – 15 h. Fermé le mardi." },
     { label: "Practice", value: "Tous les jours, 7h30 - 20h00" },
   ],
 } as const;
@@ -36,11 +36,11 @@ export const navigationItems = [
   { label: "Enseignement", href: "/enseignement" },
   { label: "Restaurant", href: "/restaurant" },
   { label: "Événements", href: "/evenements" },
-  { label: "Contact", href: "/contact" },
+  { label: "Association sportive", href: "/association-sportive" },
 ] as const;
 
 export const footerNavigation = {
-  visiter: navigationItems,
+  visiter: [...navigationItems, { label: "Contact", href: "/contact" }],
   infos: [
     { label: "Mentions légales", href: "/mentions-legales" },
     { label: "Politique de confidentialité", href: "/politique-de-confidentialite" },

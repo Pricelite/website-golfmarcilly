@@ -87,7 +87,7 @@ export const restaurantData: RestaurantData = {
     {
       title: "Au Quotidien",
       description:
-        "Du lundi au dimanche midi, le restaurant La Bergerie vous accueille avec une cuisine simple et gourmande.",
+        "Le lundi et du mercredi au dimanche midi, le restaurant La Bergerie vous accueille avec une cuisine simple et gourmande.",
     },
     {
       title: "Réservations pour Séminaires et Groupes",
@@ -99,8 +99,13 @@ export const restaurantData: RestaurantData = {
     },
   ],
   hours: [
-    { label: "Lundi au vendredi", hours: "12h00 à 14h00" },
-    { label: "Samedi et dimanche", hours: "12h00 à 15h00" },
+    { label: "Lundi", hours: "12 h – 14 h" },
+    { label: "Mardi", hours: "Fermé" },
+    { label: "Mercredi", hours: "12 h – 14 h" },
+    { label: "Jeudi", hours: "12 h – 14 h" },
+    { label: "Vendredi", hours: "12 h – 14 h" },
+    { label: "Samedi", hours: "12 h – 15 h" },
+    { label: "Dimanche", hours: "12 h – 15 h" },
   ],
   carte: {
     title: "La Carte du Moment",

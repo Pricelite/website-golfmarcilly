@@ -26,7 +26,7 @@ export function Header() {
           aria-label="Navigation principale"
           className="hidden min-w-0 flex-1 xl:block"
         >
-          <ul className="flex items-center justify-center gap-5 text-sm text-emerald-950">
+          <ul className="flex items-center justify-center gap-3 text-sm text-emerald-950">
             {navigationItems.map((item) => (
               <li key={item.href}>
                 <Link

@@ -1,4 +1,5 @@
 import "server-only";
+import { isTrustedRequestOrigin } from "./trusted-origin";
 
 type RateLimitBucket = {
   count: number;
@@ -19,18 +20,6 @@ type RateLimitResult = {
 
 const rateLimitStore = new Map<string, RateLimitBucket>();
 
-function normalizeHost(value: string): string {
-  return value.trim().toLowerCase();
-}
-
-function parseHostFromUrl(value: string): string | null {
-  try {
-    return normalizeHost(new URL(value).host);
-  } catch {
-    return null;
-  }
-}
-
 function cleanupExpiredRateLimits(now: number): void {
   if (rateLimitStore.size < 2048) {
     return;
@@ -41,20 +30,6 @@ function cleanupExpiredRateLimits(now: number): void {
       rateLimitStore.delete(key);
     }
   }
-}
-
-function resolveExpectedHost(fallbackHost?: string): string | null {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  const configuredHost = configured ? parseHostFromUrl(configured) : null;
-  if (configuredHost) {
-    return configuredHost;
-  }
-
-  if (fallbackHost && fallbackHost.trim()) {
-    return normalizeHost(fallbackHost);
-  }
-
-  return null;
 }
 
 export function parseClientIpFromHeaders(headers: Headers): string {
@@ -83,28 +58,12 @@ export function hasTrustedOrigin(
   headers: Headers,
   options?: { fallbackHost?: string }
 ): boolean {
-  const expectedHost = resolveExpectedHost(options?.fallbackHost);
-  if (!expectedHost) {
-    return true;
-  }
-
-  const origin = headers.get("origin")?.trim();
-  if (origin) {
-    const originHost = parseHostFromUrl(origin);
-    if (!originHost || originHost !== expectedHost) {
-      return false;
-    }
-  }
-
-  const referer = headers.get("referer")?.trim();
-  if (referer) {
-    const refererHost = parseHostFromUrl(referer);
-    if (!refererHost || refererHost !== expectedHost) {
-      return false;
-    }
-  }
-
-  return true;
+  return isTrustedRequestOrigin(headers, {
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+    additionalOrigins: process.env.FORM_ALLOWED_ORIGINS,
+    fallbackHost: options?.fallbackHost,
+    development: process.env.NODE_ENV === "development",
+  });
 }
 
 export function consumeRateLimit(options: RateLimitOptions): RateLimitResult {

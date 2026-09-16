@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/evenements",
     "/actualites",
     "/contact",
+    "/association-sportive",
     "/je-debute-le-golf",
     "/reserver-un-cours",
     ...(legalContent.reviewed ? ["/mentions-legales", "/politique-de-confidentialite"] : []),

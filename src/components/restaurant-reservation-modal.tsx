@@ -32,7 +32,7 @@ const DEFAULT_TRIGGER_CLASS_NAME =
   "inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
 
 const SUCCESS_MESSAGE =
-  "Votre demande a été transmise au restaurant. Votre table reste à confirmer par notre équipe.";
+  "Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre réservation.";
 
 const INITIAL_FORM: ReservationForm = {
   name: "",
@@ -278,7 +278,7 @@ export default function RestaurantReservationModal({
 
       setLastSubmittedFingerprint(fingerprint);
       setSuccessMessage(result.acknowledgementSent === false
-        ? "Votre demande a été transmise au restaurant, mais l’accusé de réception par email n’a pas pu être envoyé. Ne renvoyez pas la demande. La table reste à confirmer par notre équipe."
+        ? `${SUCCESS_MESSAGE} L’accusé de réception par email n’a pas pu vous être envoyé ; inutile de renvoyer votre demande.`
         : SUCCESS_MESSAGE);
       setForm(INITIAL_FORM);
       setSelectedTime(null);

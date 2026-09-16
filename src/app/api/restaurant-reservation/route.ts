@@ -213,7 +213,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { ok: false, error: getFormErrorMessage(503) },
-      { status: 500 }
+      { status: 503 }
     );
   }
 }

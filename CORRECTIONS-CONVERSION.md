@@ -30,13 +30,21 @@ L'API envoie d'abord la demande au restaurant, puis un accusé de réception au 
 
 Pour le contact : `EMAIL_TO` et un fournisseur d'envoi fonctionnel.
 
-Pour le restaurant : `RESTAURANT_RESERVATION_EMAIL_TO` (ou repli sur `EMAIL_TO`). Les noms de destinataires sont facultatifs : `RESTAURANT_RESERVATION_EMAIL_TO_NAME`, `EMAIL_TO_NAME`.
+Pour le restaurant : `RESTAURANT_RESERVATION_EMAIL_TO=golf@marcilly.com`. En l'absence de cette variable, le destinataire reste `golf@marcilly.com`, indépendamment du contact général. Les noms de destinataires sont facultatifs : `RESTAURANT_RESERVATION_EMAIL_TO_NAME`, `EMAIL_TO_NAME`.
 
 Choisir le fournisseur avec `MAIL_PROVIDER` et configurer :
 
 - SMTP : `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` ; `SMTP_SECURE` selon le serveur.
 - Ou Brevo : `BREVO_API_KEY`, `EMAIL_FROM` ; `EMAIL_FROM_NAME` facultatif. L'expéditeur doit être autorisé chez le fournisseur.
-- `NEXT_PUBLIC_SITE_URL` doit correspondre à l'origine publique effectivement utilisée, car les routes contrôlent l'origine des formulaires.
+- `NEXT_PUBLIC_SITE_URL` doit correspondre à l'origine publique effectivement utilisée, car les routes contrôlent l'origine des formulaires. Les autres domaines réellement utilisés doivent être déclarés dans `FORM_ALLOWED_ORIGINS` (origines complètes séparées par des virgules, sans joker). Le contrôle compare protocole, domaine et port. Seul le mode développement autorise aussi l'origine locale de la requête (`localhost`, `127.0.0.1`, `::1`).
+
+### Demande restaurant : activation de l'envoi
+
+Le message après acceptation de l'email par le fournisseur est : « Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre réservation. » Il ne confirme pas la table ni la remise finale en boîte de réception. Un échec d'envoi reste une erreur ; l'échec du seul accusé client ne déclenche pas de nouvel envoi au restaurant.
+
+Le texte de refus observé dans la capture correspond au statut 403 du contrôle d'origine. La configuration locale pointe vers `https://millionnaire-chi-ochre.vercel.app`, ce qui refusait une page ouverte sur localhost. La correction locale ne désactive pas la protection en production. Pour un autre domaine de production, renseigner son origine exacte comme indiqué ci-dessus.
+
+Les identifiants SMTP et la clé Brevo sont toujours vides dans l'environnement local inspecté. Renseigner les secrets directement dans l'environnement de l'hébergeur (et dans `.env.local` pour un développement autorisé), jamais dans Git ni dans une conversation. Avec SMTP, renseigner hôte, port, utilisateur, mot de passe et expéditeur autorisé ; avec Brevo, sélectionner `MAIL_PROVIDER=brevo`, renseigner la clé et l'expéditeur autorisé. Redémarrer ou redéployer après configuration. Aucun email réel n'est envoyé pendant les tests automatisés.
 
 Inspection locale sans affichage des secrets : `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` et `BREVO_API_KEY` sont absents ou vides. Les adresses d'expéditeur/destinataires et `SMTP_PORT` sont présents, mais leur validité n'a pas été vérifiée. **L'envoi réel d'emails n'est donc pas validé.** Les intégrations initiation, paiement et calendrier restent hors de ce lot.
 

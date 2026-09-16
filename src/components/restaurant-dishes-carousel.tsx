@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
-const AUTOPLAY_DELAY_MS = 5000;
+const AUTOPLAY_DELAY_MS = 8000;
 
 type RestaurantSlide = {
   src: string;
@@ -21,6 +21,7 @@ export function RestaurantDishesCarousel({
 }: RestaurantDishesCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -50,7 +51,7 @@ export function RestaurantDishesCarousel({
   }, [items.length]);
 
   useEffect(() => {
-    if (items.length <= 1 || isPaused) {
+    if (items.length <= 1 || isPaused || isHovered || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
@@ -61,7 +62,7 @@ export function RestaurantDishesCarousel({
     return () => {
       window.clearInterval(interval);
     };
-  }, [goToNext, isPaused, items.length]);
+  }, [goToNext, isPaused, isHovered, items.length]);
 
   if (items.length === 0) {
     return null;
@@ -70,17 +71,19 @@ export function RestaurantDishesCarousel({
   return (
     <div
       className="overflow-hidden rounded-[32px] border border-emerald-950/10 bg-white/92 shadow-xl shadow-emerald-950/8"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      role="region"
+      aria-label="Photos du restaurant La Bergerie"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">
         {items.map((item, index) => {
           const isActive = index === activeIndex;
 
           return (
             <div
               aria-hidden={!isActive}
-              className={`absolute inset-0 transition-all duration-700 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+              className={`absolute inset-0 transition-all duration-700 motion-reduce:transition-none [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
                 isActive
                   ? "pointer-events-auto translate-x-0 opacity-100"
                   : index < activeIndex
@@ -91,45 +94,14 @@ export function RestaurantDishesCarousel({
             >
               <Image
                 alt={item.alt}
-                className={`object-cover transition-transform duration-[1400ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                  isActive ? "scale-100" : "scale-110"
-                }`}
+                className="object-contain"
                 fill
                 sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 104px) * 0.55), 647px"
                 src={item.src}
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,24,20,0.04),rgba(6,24,20,0.58))]" />
             </div>
           );
         })}
-
-        <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-7">
-          {items.map((item, index) => {
-            const isActive = index === activeIndex;
-
-            return (
-              <div
-                aria-hidden={!isActive}
-                className={`transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-                  isActive
-                    ? "translate-y-0 opacity-100"
-                    : "pointer-events-none absolute inset-x-5 bottom-5 translate-y-4 opacity-0 sm:inset-x-7 sm:bottom-7"
-                }`}
-                key={item.title}
-              >
-                <div className="max-w-xl rounded-[24px] border border-white/20 bg-emerald-950/62 p-5 text-stone-50 backdrop-blur-md sm:p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.26em] text-stone-100/70">
-                    Suggestions du moment
-                  </p>
-                  <h3 className="mt-3 font-serif text-2xl sm:text-3xl">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-stone-100/78 sm:text-base">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
         {items.length > 1 ? (
           <>
@@ -153,22 +125,27 @@ export function RestaurantDishesCarousel({
         ) : null}
       </div>
 
+
+      <div className="px-5 pt-5 sm:px-7">
+        <p className="text-xs uppercase tracking-[0.2em] text-emerald-800">La Bergerie en images · {activeIndex + 1} / {items.length}</p>
+        <h3 className="mt-2 font-serif text-2xl text-emerald-950">{items[activeIndex].title}</h3>
+        <p className="mt-2 min-h-12 text-sm leading-6 text-emerald-950/70">{items[activeIndex].description}</p>
+      </div>
       {items.length > 1 ? (
-        <div className="flex items-center justify-center gap-2 border-t border-emerald-950/8 px-5 py-4">
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-emerald-950/8 px-5 py-4">
+          <button type="button" className="h-11 rounded-full px-3 text-sm text-emerald-950 hover:bg-stone-100" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}>{isPaused ? "Lecture" : "Pause"}</button>
           {items.map((item, index) => {
             const isActive = index === activeIndex;
 
             return (
               <button
                 aria-label={`Afficher ${item.title}`}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  isActive ? "w-10 bg-emerald-950" : "w-2.5 bg-emerald-950/20 hover:bg-emerald-950/35"
-                }`}
+                className="flex h-11 w-6 items-center justify-center rounded-full hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-emerald-800"
                 key={item.src}
-                onClick={() => goToSlide(index)}
+                onClick={() => { goToSlide(index); setIsPaused(true); }}
                 aria-pressed={isActive}
                 type="button"
-              />
+              ><span aria-hidden="true" className={`h-2 rounded-full ${isActive ? "w-6 bg-emerald-950" : "w-2 bg-emerald-950/25"}`} /></button>
             );
           })}
         </div>

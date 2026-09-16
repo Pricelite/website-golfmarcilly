@@ -29,41 +29,59 @@ export const restaurantFaqs = [
   },
 ] as const;
 
-export const restaurantMenus = [
-  {
-    title: "Déjeuner golf & terroir",
-    items: ["Entrée du marché", "Pièce de poisson ou viande rôtie", "Dessert du chef"],
-    price: "À partir de 34 €",
-  },
-  {
-    title: "Menu séminaire",
-    items: ["Entrée à partager", "Plat de saison", "Café gourmand"],
-    price: "À partir de 42 €",
-  },
-  {
-    title: "Cocktail réception",
-    items: ["12 pièces salées", "4 pièces sucrées", "Boissons soft incluses"],
-    price: "À partir de 29 €",
-  },
-] as const;
-
 export const restaurantGallery = [
   {
-    src: "/restaurant/hero.jpg",
-    alt: "Salle du restaurant La Bergerie",
-    title: "La salle du restaurant",
-    description: "Un cadre lumineux et chaleureux pour déjeuner ou recevoir.",
+    "src": "/restaurant/gallery/bar.webp",
+    "alt": "Comptoir en bois et tabourets du bar de La Bergerie",
+    "title": "Le bar de La Bergerie",
+    "description": "Le comptoir et les tables du restaurant."
   },
   {
-    src: "/restaurant/chef-1.jpg",
-    alt: "Le chef de La Bergerie en cuisine",
-    title: "Le chef en cuisine",
-    description: "Une cuisine de domaine soignée, sincère et généreuse.",
+    "src": "/restaurant/gallery/salade.webp",
+    "alt": "Salade avec crevettes, concombre, tomates et œufs",
+    "title": "De la couleur dans l’assiette",
+    "description": "Une salade composée, photographiée en cuisine."
   },
   {
-    src: "/images/cuisine.png",
-    alt: "Assiette du restaurant La Bergerie",
-    title: "Une assiette signature",
-    description: "Des plats élégants pensés pour la table, les groupes et les événements.",
+    "src": "/restaurant/gallery/preparation-ananas.webp",
+    "alt": "Découpe d’un ananas sur un plan de travail",
+    "title": "Les gestes en cuisine",
+    "description": "La préparation des fruits, avant le dressage."
   },
+  {
+    "src": "/restaurant/gallery/dessert-brioche.webp",
+    "alt": "Tranches de brioche avec glace, caramel et crème fouettée",
+    "title": "Une pause gourmande",
+    "description": "Un dessert dressé sur ardoise."
+  },
+  {
+    "src": "/images/accueil-club-house.png",
+    "alt": "Vue aérienne du club-house et du golf de Marcilly",
+    "title": "Le cadre du golf",
+    "description": "Une vue du club-house et des espaces qui l’entourent."
+  },
+  {
+    "src": "/restaurant/gallery/dressage-plats.webp",
+    "alt": "Assiettes alignées avec frites et salade en cuisine",
+    "title": "Prêts pour le service",
+    "description": "Les assiettes et leurs accompagnements au dressage."
+  },
+  {
+    "src": "/restaurant/gallery/dessert-chocolat.webp",
+    "alt": "Dessert sur une assiette blanche avec décor de chocolat",
+    "title": "La touche sucrée",
+    "description": "Un dessert et son décor de chocolat."
+  },
+  {
+    "src": "/restaurant/gallery/plancha.webp",
+    "alt": "Cuisson des aliments sur la plancha du restaurant",
+    "title": "Côté cuisine",
+    "description": "Un aperçu des préparations à la plancha."
+  },
+  {
+    "src": "/restaurant/gallery/dressage-desserts.webp",
+    "alt": "Préparation de plusieurs desserts sur ardoises en cuisine",
+    "title": "Les dernières finitions",
+    "description": "Le dressage des desserts avant le service."
+  }
 ] as const;

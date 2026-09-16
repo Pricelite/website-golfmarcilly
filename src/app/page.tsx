@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Hero } from "@/components/sections/hero";
+import { Partners } from "@/components/sections/partners";
 import { BlogCard } from "@/components/ui/blog-card";
 import { CTAButton } from "@/components/ui/cta-button";
 import { CourseCard } from "@/components/ui/course-card";
@@ -35,11 +36,10 @@ export default function HomePage() {
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }])} />
 
       <Hero
-        eyebrow="Golf près d'Orléans"
-        image="/images/club-house-marcilly.png"
+        eyebrow="Bienvenue au Golf de Marcilly"
         primaryCta={{ label: "Réserver un départ", href: siteConfig.reservationUrl }}
         promoCta={{ label: "Offre du moment", offers: siteOffers }}
-        subtitle="Golf, restaurant, enseignement et événements dans un domaine naturel unique."
+        subtitle="Venez jouer sur nos parcours, découvrir le golf ou déjeuner à La Bergerie. À chacun sa façon de profiter de Marcilly."
         tertiaryCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
         title="45 trous aux portes d'Orléans"
       />
@@ -184,6 +184,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <Partners />
     </>
   );
 }

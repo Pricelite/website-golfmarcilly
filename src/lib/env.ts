@@ -36,11 +36,11 @@ export function getSupabaseEnv(): SupabaseEnv {
 export function getRestaurantReservationEnv(): RestaurantReservationEnv {
   const emailTo =
     getOptionalEnv("RESTAURANT_RESERVATION_EMAIL_TO") ||
-    getOptionalEnv("EMAIL_TO");
+    "golf@marcilly.com";
 
   if (!emailTo || !EMAIL_PATTERN.test(emailTo)) {
     throw new Error(
-      "Missing restaurant reservation env var: RESTAURANT_RESERVATION_EMAIL_TO (or EMAIL_TO fallback)."
+      "Invalid restaurant reservation env var: RESTAURANT_RESERVATION_EMAIL_TO."
     );
   }
 
