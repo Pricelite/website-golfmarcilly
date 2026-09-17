@@ -9,6 +9,9 @@ import { associationFaqs, associationLinks, associationMembers, associationRoles
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
+import { publicAssociationEvents } from "@/lib/association-events-db";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Association sportive",
@@ -16,7 +19,8 @@ export const metadata = buildMetadata({
   path: "/association-sportive",
 });
 
-export default function AssociationPage() {
+export default async function AssociationPage() {
+  const calendar = await publicAssociationEvents();
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([
@@ -68,7 +72,7 @@ export default function AssociationPage() {
       <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier des compétitions" description="Parcourez les mois et sélectionnez une épreuve pour découvrir ses détails. Retrouvez ici les rendez-vous sportifs de Marcilly." />
-          <AssociationCalendar initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />
+          {calendar.unavailable ? <p role="status" className="mt-8 rounded-2xl bg-white p-6 text-emerald-950">Le calendrier est momentanément indisponible. Réessayez dans quelques instants ou contactez l’accueil au {siteConfig.phoneDisplay}.</p> : <AssociationCalendar events={calendar.events} initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />}
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {[
               { title: "Vérifier son départ", text: "Retrouvez les départs publiés pour les compétitions du club sur le service de la Fédération française de golf.", label: "Consulter les départs", href: associationLinks.starts },

@@ -1,18 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { associationEvents, type AssociationEvent } from "@/data/association-events";
-import { eventsInMonth, eventsOnDay, formatCalendarDate, monthDays } from "@/lib/association-calendar";
+import type { AssociationEvent } from "@/data/association-events";
+import { eventsInMonth, eventsOnDay, formatCalendarDate, isPastEvent, monthDays } from "@/lib/association-calendar";
 import { siteConfig } from "@/data/site";
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-full border border-emerald-950/20 px-4 text-sm font-medium transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
 
-function eventStyle(event: AssociationEvent) {
+function eventStyle(event: AssociationEvent, today: string) {
+  if (isPastEvent(event, today)) return "border-slate-400 bg-slate-100 text-slate-600";
   return event.status === "private" ? "border-stone-400 bg-stone-100 text-stone-700" : event.status === "provisional" ? "border-amber-500 bg-amber-50 text-amber-900" : "border-emerald-600 bg-emerald-50 text-emerald-950";
 }
 
-function eventStatus(event: AssociationEvent) {
+function eventStatus(event: AssociationEvent, today: string) {
+  if (isPastEvent(event, today)) {
+    return event.status === "provisional" ? "Date passée · En option" : event.status === "private" ? "Terminée · Épreuve privée" : "Terminée";
+  }
   return event.status === "private" ? "Épreuve privée" : event.status === "provisional" ? "En option" : "Au programme";
 }
 
@@ -26,7 +30,7 @@ function subscribeToDate(callback: () => void) {
   return () => { window.clearInterval(interval); window.removeEventListener("focus", callback); };
 }
 
-export function AssociationCalendar({ initialDate }: { initialDate: string }) {
+export function AssociationCalendar({ initialDate, events: associationEvents }: { initialDate: string; events: AssociationEvent[] }) {
   const today = useSyncExternalStore(subscribeToDate, currentParisDate, () => initialDate);
   const [view, setView] = useState<{ year: number; month: number } | null>(null);
   const year = view?.year ?? Number(today.slice(0, 4));
@@ -67,23 +71,28 @@ export function AssociationCalendar({ initialDate }: { initialDate: string }) {
         </div>
       </div>
 
+      <p className="flex items-center gap-2 px-4 pb-4 text-xs text-slate-600 sm:px-6">
+        <span aria-hidden="true" className="h-3 w-3 rounded-sm border border-slate-400 bg-slate-100" />
+        En gris : les compétitions dont la date de fin est passée.
+      </p>
       <div className="grid grid-cols-7 border-y border-emerald-950/10 bg-stone-50 text-center text-xs font-semibold text-emerald-800">
         {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map(day => <div key={day} className="py-3">{day}</div>)}
       </div>
       <div className="grid grid-cols-7 gap-px bg-emerald-950/10">
         {monthDays(year, month).map((day, index) => {
           const dayEvents = day ? eventsOnDay(events, day) : [];
+          const pastDayEvents = dayEvents.length > 0 && dayEvents.every(event => isPastEvent(event, today));
           return (
-            <div key={day ?? `blank-${index}`} className={`min-w-0 ${day ? "bg-white" : "bg-stone-50"} min-h-16 p-1 sm:min-h-20 md:min-h-32 md:p-2`}>
+            <div key={day ?? `blank-${index}`} className={`min-w-0 ${pastDayEvents ? "bg-slate-100" : day ? "bg-white" : "bg-stone-50"} min-h-16 p-1 sm:min-h-20 md:min-h-32 md:p-2`}>
               {day ? <>
                 <button type="button" aria-label={`${formatCalendarDate(day)}, ${dayEvents.length} épreuve${dayEvents.length > 1 ? "s" : ""}`} aria-pressed={selectedDay === day} aria-current={day === today ? "date" : undefined} onClick={() => { setSelectedDay(selectedDay === day ? null : day); setSelected(null); }} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 md:mx-0 ${day === today ? "bg-emerald-900 font-bold text-white" : selectedDay === day ? "bg-amber-100 font-bold text-emerald-950" : "hover:bg-emerald-50"}`}>
                   {Number(day.slice(-2))}
                 </button>
-                <div aria-hidden="true" className="mt-1 flex justify-center gap-1 md:hidden">{dayEvents.length > 0 ? <span className="h-1.5 w-1.5 rounded-full bg-emerald-700" /> : null}</div>
+                <div aria-hidden="true" className="mt-1 flex justify-center gap-1 md:hidden">{dayEvents.length > 0 ? <span className={`h-1.5 w-1.5 rounded-full ${pastDayEvents ? "bg-slate-500" : "bg-emerald-700"}`} /> : null}</div>
                 <div className="mt-1 hidden space-y-1 md:block">
-                  {dayEvents.map(event => <button key={event.id} type="button" onClick={() => setSelected(event)} className={`block w-full break-words rounded-md border-l-3 px-2 py-1.5 text-left text-xs leading-5 focus-visible:outline-2 focus-visible:outline-offset-2 ${eventStyle(event)}`}>
+                  {dayEvents.map(event => <button key={event.id} type="button" onClick={() => setSelected(event)} className={`block w-full break-words rounded-md border-l-3 px-2 py-1.5 text-left text-xs leading-5 focus-visible:outline-2 focus-visible:outline-offset-2 ${eventStyle(event, today)}`}>
                     {event.time ? `${event.time} · ` : ""}{event.title}
-                    {event.status ? <span className="block text-[11px] font-semibold">{eventStatus(event)}</span> : null}
+                    {event.status || isPastEvent(event, today) ? <span className="block text-[11px] font-semibold">{eventStatus(event, today)}</span> : null}
                   </button>)}
                 </div>
               </> : null}
@@ -94,7 +103,7 @@ export function AssociationCalendar({ initialDate }: { initialDate: string }) {
 
       {selected ? <div ref={detailRef} tabIndex={-1} role="region" aria-label="Détails de l’épreuve" className="m-4 scroll-mt-28 rounded-xl border border-emerald-800/20 bg-[#f7f4e9] p-5 focus:outline-2 focus:outline-emerald-700 sm:m-6">
         <div className="flex items-start justify-between gap-3">
-          <div><p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">{eventStatus(selected)}</p><h4 className="mt-2 font-serif text-2xl">{selected.title}</h4></div>
+          <div><p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">{eventStatus(selected, today)}</p><h4 className="mt-2 font-serif text-2xl">{selected.title}</h4></div>
           <button className={buttonClass} type="button" onClick={() => setSelected(null)}>Fermer</button>
         </div>
         <p className="mt-3 text-sm">{formatCalendarDate(selected.start)}{selected.end ? ` au ${formatCalendarDate(selected.end)}` : ""}</p>
@@ -110,10 +119,10 @@ export function AssociationCalendar({ initialDate }: { initialDate: string }) {
         </div>
         {visibleEvents.length === 0 ? <p className="text-sm leading-7 text-emerald-900/70">Aucune épreuve publiée pour {selectedDay ? "cette date" : "ce mois"}.</p> : <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visibleEvents.map(event => <li key={event.id}>
-            <button type="button" onClick={() => setSelected(event)} className={`h-full w-full rounded-lg border-l-3 p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 ${eventStyle(event)}`}>
+            <button type="button" onClick={() => setSelected(event)} className={`h-full w-full rounded-lg border-l-3 p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 ${eventStyle(event, today)}`}>
               <span className="block text-xs">{formatCalendarDate(event.start)}{event.end ? ` → ${formatCalendarDate(event.end)}` : ""}</span>
               <span className="mt-1 block text-sm font-semibold">{event.title}</span>
-              <span className="mt-1 block text-xs">{event.time ?? eventStatus(event)} · Voir les détails</span>
+              <span className="mt-1 block text-xs">{event.time ? `${event.time} · ` : ""}{eventStatus(event, today)} · Voir les détails</span>
             </button>
           </li>)}
         </ul>}

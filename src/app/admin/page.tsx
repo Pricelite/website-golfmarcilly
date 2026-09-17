@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { absoluteUrl } from "@/lib/metadata";
 import { cookies } from "next/headers";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import {
@@ -10,7 +12,7 @@ import {
 } from "@/lib/initiation/db";
 
 export const metadata: Metadata = {
-  title: "Admin réservations initiation",
+  title: "Administration du golf",
   description: "Tableau de bord des réservations d'initiation.",
   alternates: { canonical: absoluteUrl("/admin") },
   robots: {
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 type AdminPageProps = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 };
 
 function formatEuro(cents: number): string {
@@ -125,7 +127,7 @@ function buildSlotSummary(reservations: InitiationReservationWithSlot[]) {
   return Array.from(grouped.values()).sort((a, b) => a.slotLabel.localeCompare(b.slotLabel));
 }
 
-function AdminLogin(props: { error?: string }) {
+function AdminLogin(props: { error?: string; next?: string }) {
   const errorMessage =
     props.error === "rate_limited"
       ? "Trop de tentatives. Merci de patienter avant de réessayer."
@@ -141,7 +143,7 @@ function AdminLogin(props: { error?: string }) {
     <main className="mx-auto w-full max-w-md px-6 py-12">
       <section className="rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10">
         <h1 className="font-[var(--font-display)] text-2xl text-emerald-950">
-          Admin initiation
+          Administration du golf
         </h1>
         <p className="mt-2 text-sm text-emerald-900/70">
           Entrez le mot de passe administrateur.
@@ -154,6 +156,7 @@ function AdminLogin(props: { error?: string }) {
         ) : null}
 
         <form action="/admin/login" method="post" className="mt-4 space-y-4">
+          <input type="hidden" name="next" value={props.next === "/admin/competitions" ? props.next : "/admin"} />
           <label className="block text-sm text-emerald-900/80">
             Mot de passe
             <input
@@ -179,12 +182,23 @@ export default async function AdminPage(props: AdminPageProps) {
   const searchParams = await props.searchParams;
   const cookieStore = await cookies();
 
-  if (!(await isAdminAuthenticated(cookieStore))) {
-    return <AdminLogin error={searchParams.error} />;
+  if (!process.env.ADMIN_PASSWORD?.trim()) {
+    return <main className="mx-auto max-w-xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><p className="mt-4">L’accès administrateur n’est pas encore configuré. Définissez le mot de passe administrateur dans la configuration du serveur pour activer la connexion.</p></main>;
   }
 
-  await markExpiredPendingReservations();
-  const reservations = await listReservationsForAdmin();
+  if (!(await isAdminAuthenticated(cookieStore))) {
+    return <AdminLogin error={searchParams.error} next={searchParams.next} />;
+  }
+
+  if (searchParams.next === "/admin/competitions") redirect("/admin/competitions");
+
+  let reservations: InitiationReservationWithSlot[];
+  try {
+    await markExpiredPendingReservations();
+    reservations = await listReservationsForAdmin();
+  } catch {
+    return <main className="mx-auto max-w-5xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><Link className="mt-6 inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><p role="alert" className="mt-6">Les réservations d’initiation sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="mt-4 underline">Déconnexion</button></form></main>;
+  }
   const slotSummary = buildSlotSummary(reservations);
 
   const totals = reservations.reduce(
@@ -224,6 +238,7 @@ export default async function AdminPage(props: AdminPageProps) {
               Réservations, participants et paiements.
             </p>
           </div>
+          <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/competitions">Gérer les compétitions</Link>
           <form action="/admin/logout" method="post">
             <button
               className="inline-flex rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"

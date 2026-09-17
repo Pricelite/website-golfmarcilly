@@ -23,9 +23,10 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
-    const isAuthenticated = await isAdminAuthenticated(request.cookies);
+    const isAuthenticated = Boolean(process.env.ADMIN_PASSWORD) && await isAdminAuthenticated(request.cookies);
     if (!isAuthenticated) {
       const target = new URL("/admin", request.url);
+      if (pathname === "/admin/competitions") target.searchParams.set("next", pathname);
       return NextResponse.redirect(target);
     }
   }

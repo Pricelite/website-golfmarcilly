@@ -27,14 +27,14 @@ function safeCompare(value: string, expected: string): boolean {
   return timingSafeEqual(valueBuffer, expectedBuffer);
 }
 
-function redirectToAdmin(url: string, params?: Record<string, string>) {
-  const target = new URL("/admin", url);
+function redirectToAdmin(url: string, params?: Record<string, string>, path = "/admin") {
+  const target = new URL(path, url);
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       target.searchParams.set(key, value);
     }
   }
-  return NextResponse.redirect(target);
+  return NextResponse.redirect(target, 303);
 }
 
 export async function POST(request: Request) {
@@ -56,18 +56,19 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData();
+  const next = formData.get("next") === "/admin/competitions" ? "/admin/competitions" : "/admin";
   const passwordValue = formData.get("password");
   const password = typeof passwordValue === "string" ? passwordValue : "";
 
   if (!password) {
-    return redirectToAdmin(request.url, { error: "missing_password" });
+    return redirectToAdmin(request.url, { error: "missing_password", next });
   }
 
   if (!safeCompare(password, getAdminPassword())) {
-    return redirectToAdmin(request.url, { error: "invalid_password" });
+    return redirectToAdmin(request.url, { error: "invalid_password", next });
   }
 
-  const response = redirectToAdmin(request.url);
+  const response = redirectToAdmin(request.url, undefined, next);
   const secure = process.env.NODE_ENV === "production";
 
   response.cookies.set(ADMIN_SESSION_COOKIE_NAME, await createAdminSessionToken(password), {

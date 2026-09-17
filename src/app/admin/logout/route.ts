@@ -4,7 +4,7 @@ import { ADMIN_SESSION_COOKIE_NAME } from "@/lib/initiation/admin-auth";
 
 export async function POST(request: Request) {
   const target = new URL("/admin", request.url);
-  const response = NextResponse.redirect(target);
+  const response = NextResponse.redirect(target, 303);
 
   response.cookies.set(ADMIN_SESSION_COOKIE_NAME, "", {
     httpOnly: true,

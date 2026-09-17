@@ -1,5 +1,9 @@
 import type { AssociationEvent } from "@/data/association-events";
 
+export function isPastEvent(event: AssociationEvent, today: string) {
+  return (event.end ?? event.start) < today;
+}
+
 export function monthDays(year: number, month: number): (string | null)[] {
   const offset = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7;
   const count = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();

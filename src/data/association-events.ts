@@ -12,7 +12,7 @@ export type AssociationEvent = {
 // Calendar year 2026 confirmed by the owner in the conversation.
 // Numeric dates take precedence over inconsistent weekday labels (12-13 September).
 // Omitted unnamed entries: July 5, August 31, September 6/27, October 25.
-// Update this local list to maintain the calendar; no Google account or API needed.
+// Initial programme / fallback before Supabase setup. Once configured, use /admin/competitions.
 const entries: Omit<AssociationEvent, "id">[] = [
   { start: "2026-03-15", title: "Coupe SweetSpot", note: "Scramble à 2" },
   { start: "2026-03-22", title: "Coupe de Classement" },

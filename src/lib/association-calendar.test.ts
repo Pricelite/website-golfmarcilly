@@ -1,7 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { monthDays, eventsOnDay, eventsInMonth } from "./association-calendar";
+import { monthDays, eventsOnDay, eventsInMonth, isPastEvent } from "./association-calendar";
 import { associationEvents } from "../data/association-events";
+
+test("events become past only after their inclusive final day", () => {
+  const single = { id: "single", title: "Coupe", start: "2026-09-16" };
+  assert.equal(isPastEvent(single, "2026-09-15"), false);
+  assert.equal(isPastEvent(single, "2026-09-16"), false);
+  assert.equal(isPastEvent(single, "2026-09-17"), true);
+  const multiple = { ...single, start: "2026-12-31", end: "2027-01-02" };
+  assert.equal(isPastEvent(multiple, "2027-01-01"), false);
+  assert.equal(isPastEvent(multiple, "2027-01-02"), false);
+  assert.equal(isPastEvent(multiple, "2027-01-03"), true);
+});
 
 test("calendar starts on Monday and handles leap years and year boundaries", () => {
   assert.deepEqual(monthDays(2026, 8).slice(0, 3), [null, "2026-09-01", "2026-09-02"]);
