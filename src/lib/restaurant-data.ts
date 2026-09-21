@@ -220,7 +220,7 @@ export const restaurantData: RestaurantData = {
           {
             title: "Boissons comprises",
             type: "list",
-            items: ["1 verre de vin blanc ou rouge", "1 café"],
+            items: ["1 café"],
           },
         ],
       },
@@ -255,7 +255,7 @@ export const restaurantData: RestaurantData = {
           {
             title: "Boissons comprises",
             type: "list",
-            items: ["1 verre de vin blanc ou rouge", "1 café"],
+            items: ["1 café"],
           },
         ],
       },

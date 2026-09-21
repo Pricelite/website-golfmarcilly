@@ -10,10 +10,11 @@ type HeroProps = {
   subtitle: string;
   primaryCta: { label: string; href: string };
   tertiaryCta?: { label: string; href: string };
+  competitionCta?: { label: string; href: string };
   promoCta?: { label: string; offers: SiteOffer[] };
 };
 
-export function Hero({ eyebrow, title, subtitle, primaryCta, tertiaryCta, promoCta }: HeroProps) {
+export function Hero({ eyebrow, title, subtitle, primaryCta, tertiaryCta, competitionCta, promoCta }: HeroProps) {
   return (
     <section aria-label="Bienvenue au Golf de Marcilly" className="overflow-hidden bg-[#f7f4e9] text-emerald-950">
       <div className="mx-auto grid max-w-[1600px] lg:grid-cols-2">
@@ -26,6 +27,7 @@ export function Hero({ eyebrow, title, subtitle, primaryCta, tertiaryCta, promoC
           <div className="mt-8 flex flex-col gap-3 min-[400px]:flex-row min-[400px]:flex-wrap">
             <CTAButton className="min-h-12" href={primaryCta.href}>{primaryCta.label}</CTAButton>
             {tertiaryCta ? <CTAButton className="min-h-12 border-emerald-900/30 bg-transparent" href={tertiaryCta.href} variant="secondary">{tertiaryCta.label}</CTAButton> : null}
+            {competitionCta ? <CTAButton className="min-h-12 border-emerald-900/30 bg-transparent" href={competitionCta.href} variant="secondary">{competitionCta.label}</CTAButton> : null}
           </div>
           <nav aria-label="Explorer le golf" className="mt-9 border-t border-emerald-950/15 pt-5">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-900/65">À découvrir aussi</p>

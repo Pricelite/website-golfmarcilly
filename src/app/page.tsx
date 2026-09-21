@@ -41,6 +41,7 @@ export default function HomePage() {
         promoCta={{ label: "Offre du moment", offers: siteOffers }}
         subtitle="Venez jouer sur nos parcours, découvrir le golf ou déjeuner à La Bergerie. À chacun sa façon de profiter de Marcilly."
         tertiaryCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
+        competitionCta={{ label: "Calendrier des compétitions", href: "/association-sportive#competitions" }}
         title="45 trous aux portes d'Orléans"
       />
 
@@ -106,7 +107,7 @@ export default function HomePage() {
       <section id="enseignement" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:order-2 lg:aspect-[3/2]">
-            <Image src="/images/ecoledegolf.png" alt="Des enfants s'entraînent au golf" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
+            <Image src="/images/initiation-groupe-professeur.png" alt="Illustration d’une initiation conviviale au golf avec un professeur et un groupe d’adultes" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
           </div>
           <div>
             <SectionTitle

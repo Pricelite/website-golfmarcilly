@@ -70,6 +70,16 @@ const entries: Omit<AssociationEvent, "id">[] = [
   { start: "2026-11-22", title: "Coupe Beaujolais" },
 ];
 
-export const associationEvents: AssociationEvent[] = entries.map((event, index) => ({
+const thursdayRankingCups: AssociationEvent[] = [
+  "2026-09-24",
+  "2026-10-01",
+  "2026-10-08",
+  "2026-10-15",
+  "2026-10-22",
+  "2026-10-29",
+].filter(start => !entries.some(event => event.start <= start && (event.end ?? event.start) >= start))
+  .map(start => ({ id: `coupe-classement-${start}`, start, title: "Coupe de Classement" }));
+
+export const associationEvents: AssociationEvent[] = [...entries.map((event, index) => ({
   ...event, id: `${event.start}-${index}`,
-}));
+})), ...thursdayRankingCups].sort((a, b) => a.start.localeCompare(b.start));

@@ -32,7 +32,7 @@ test("multi-day events appear on each day inclusively but count once per month",
   for (const day of ["2026-09-18", "2026-09-19", "2026-09-20"]) {
     assert.ok(eventsOnDay(associationEvents, day).some(event => event.title === "Grand Prix Jeunes Marcilly"));
   }
-  assert.equal(eventsInMonth(associationEvents, 2026, 8).length, 4);
+  assert.equal(eventsInMonth(associationEvents, 2026, 8).length, 5);
 });
 
 test("published programme has valid unique dates and preserves private and provisional notices", () => {
