@@ -34,6 +34,10 @@ export function hasInitiationPaymentEnv(): boolean {
   );
 }
 
+export function isOnSitePayment(): boolean {
+  return process.env.INITIATION_PAYMENT_MODE !== "online";
+}
+
 export function getInitiationPaymentEnv(): InitiationPaymentEnv {
   return {
     sumupApiKey: getRequiredEnv("SUMUP_API_KEY"),

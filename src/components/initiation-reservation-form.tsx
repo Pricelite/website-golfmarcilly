@@ -1,357 +1,111 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { INITIATION_PRICE_PER_PERSON_CENTS } from "@/lib/initiation/constants";
+import type { InitiationOption } from "@/lib/initiation/calendar-options";
 
-type Slot = {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  remainingSeats: number;
-  capacity: number;
-};
-
-type SlotsApiResponse = {
-  ok: boolean;
-  error?: string;
-  slots?: Slot[];
-};
-
-type ReservationApiResponse = {
-  ok: boolean;
-  error?: string;
-  reservationId?: string;
-  checkoutUrl?: string;
-  calendarEventUrl?: string;
-  message?: string;
-};
-
-type MealOption = "WITH_MEAL" | "WITHOUT_MEAL";
-
-const mealLabels: Record<MealOption, string> = {
-  WITH_MEAL: "Avec repas - 48 € / personne",
-  WITHOUT_MEAL: "Sans repas - 25 € / personne",
-};
-
-const priceByMealOption: Record<MealOption, number> = {
-  WITH_MEAL: 48,
-  WITHOUT_MEAL: 25,
-};
-
-function formatSlotDate(date: string): string {
-  const [year, month, day] = date.split("-").map(Number);
-  return new Intl.DateTimeFormat("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(new Date(year, month - 1, day));
-}
+const field = "mt-2 w-full min-w-0 rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300";
 
 export default function InitiationReservationForm() {
-  const [slots, setSlots] = useState<Slot[]>([]);
-  const [slotsError, setSlotsError] = useState<string | null>(null);
-  const [slotsLoading, setSlotsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [calendarEventUrl, setCalendarEventUrl] = useState<string | null>(null);
-  const [selectedSlotId, setSelectedSlotId] = useState<string>("");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [participantsCount, setParticipantsCount] = useState("1");
-  const [mealOption, setMealOption] = useState<MealOption>("WITHOUT_MEAL");
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
-  useEffect(() => {
-    void (async () => {
-      try {
-        const response = await fetch("/api/slots", { cache: "no-store" });
-        const data = (await response.json()) as SlotsApiResponse;
-
-        if (!response.ok || !data.ok || !data.slots) {
-          throw new Error(data.error || "Impossible de charger les créneaux.");
-        }
-
-        setSlots(data.slots.filter((slot) => slot.remainingSeats > 0));
-        setSlotsError(null);
-      } catch (error) {
-        setSlotsError(
-          error instanceof Error
-            ? error.message
-            : "Impossible de charger les créneaux."
-        );
-      } finally {
-        setSlotsLoading(false);
-      }
-    })();
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [participants, setParticipants] = useState(1);
+  const [meal, setMeal] = useState<"WITH_MEAL" | "WITHOUT_MEAL">("WITHOUT_MEAL");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [slots, setSlots] = useState<InitiationOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [calendarError, setCalendarError] = useState("");
+  const loadSlots = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/initiation-options", { cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "Impossible de charger le planning.");
+      setSlots(result.slots);
+      setCalendarError("");
+    } catch (cause) {
+      setSlots([]);
+      setCalendarError(cause instanceof Error ? cause.message : "Impossible de charger le planning.");
+    } finally { setLoading(false); }
   }, []);
+  useEffect(() => {
+    void loadSlots();
+    const timer = window.setInterval(() => { void loadSlots(); }, 60_000);
+    return () => window.clearInterval(timer);
+  }, [loadSlots]);
+  const dates = [...new Set(slots.map(slot => slot.date))];
+  const selectedDate = dates.includes(date) ? date : "";
+  const times = slots.filter(slot => slot.date === selectedDate).map(slot => slot.time);
+  const selectedTime = times.includes(time) ? time : "";
 
-  const groupedSlots = useMemo(() => {
-    const groups = new Map<string, Slot[]>();
-
-    for (const slot of slots) {
-      const current = groups.get(slot.date) || [];
-      current.push(slot);
-      groups.set(slot.date, current);
-    }
-
-    return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-  }, [slots]);
-
-  const selectedSlot =
-    slots.find((slot) => slot.id === selectedSlotId) ?? null;
-  const participants = Number.parseInt(participantsCount, 10) || 0;
-  const total =
-    participants > 0 ? participants * priceByMealOption[mealOption] : 0;
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitError(null);
-    setSuccessMessage(null);
-    setCalendarEventUrl(null);
-
-    if (!selectedSlot) {
-      setSubmitError("Merci de choisir un créneau.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
+    if (sending || success || loading || !selectedDate || !selectedTime || calendarError) return;
+    const form = new FormData(event.currentTarget);
+    setSending(true); setError("");
     try {
       const response = await fetch("/api/reservations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          date: selectedSlot.date,
-          startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime,
-          fullName,
-          email,
-          phone,
-          participantsCount: participants,
-          mealOption,
-        }),
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, startTime: time, participantsCount: participants, mealOption: meal, fullName: form.get("fullName"), email: form.get("email"), phone: form.get("phone"), note: form.get("note") }),
       });
-
-      const data = (await response.json()) as ReservationApiResponse;
-
-      if (!response.ok || !data.ok) {
-        throw new Error(data.error || "Impossible de créer la réservation.");
+      const result = await response.json();
+      if (!response.ok || !result.ok) {
+        if (response.status === 409) { setTime(""); void loadSlots(); }
+        throw new Error(result.error || "L’envoi a échoué. Merci de réessayer.");
       }
-
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-        return;
-      }
-
-      setSuccessMessage(
-        data.message ||
-          "Votre réservation a bien été enregistrée."
-      );
-      setCalendarEventUrl(data.calendarEventUrl || null);
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Impossible de créer la réservation."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+      setSuccess(result.message);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Impossible d’envoyer votre demande."); }
+    finally { setSending(false); }
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="rounded-[32px] border border-emerald-900/10 bg-white/90 p-8 shadow-xl shadow-emerald-900/10">
-        <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
-          Étape 1
-        </p>
-        <h2 className="mt-4 font-[var(--font-display)] text-3xl text-emerald-950">
-          Choisir un créneau
-        </h2>
-        <p className="mt-3 text-sm leading-7 text-emerald-900/75">
-          Les initiations sont proposées sur les prochains week-ends. Sélectionnez
-          une date puis l&apos;horaire qui vous convient.
-        </p>
-
-        {slotsLoading ? (
-          <p className="mt-6 text-sm text-emerald-900/70">
-            Chargement des créneaux...
-          </p>
-        ) : null}
-
-        {slotsError ? (
-          <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            {slotsError}
-          </p>
-        ) : null}
-
-        {!slotsLoading && !slotsError ? (
-          <div className="mt-6 space-y-5">
-            {groupedSlots.length === 0 ? (
-              <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                Aucun créneau disponible pour le moment.
-              </p>
-            ) : null}
-
-            {groupedSlots.map(([date, daySlots]) => (
-              <div key={date} className="rounded-2xl border border-emerald-900/10 p-4">
-                <p className="font-semibold capitalize text-emerald-950">
-                  {formatSlotDate(date)}
-                </p>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  {daySlots.map((slot) => {
-                    const isSelected = slot.id === selectedSlotId;
-                    return (
-                      <button
-                        key={slot.id}
-                        type="button"
-                        onClick={() => setSelectedSlotId(slot.id)}
-                        className={`rounded-2xl border px-4 py-4 text-left transition ${
-                          isSelected
-                            ? "border-emerald-800 bg-emerald-900 text-emerald-50"
-                            : "border-emerald-900/10 bg-white hover:bg-emerald-50"
-                        }`}
-                      >
-                        <p className="text-sm font-semibold">
-                          {slot.startTime} - {slot.endTime}
-                        </p>
-                        <p
-                          className={`mt-1 text-xs ${
-                            isSelected ? "text-emerald-100" : "text-emerald-900/70"
-                          }`}
-                        >
-                          {slot.remainingSeats} place(s) restante(s) sur {slot.capacity}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </section>
-
-      <section className="rounded-[32px] border border-emerald-900/10 bg-white/90 p-8 shadow-xl shadow-emerald-900/10">
-        <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
-          Étape 2
-        </p>
-        <h2 className="mt-4 font-[var(--font-display)] text-3xl text-emerald-950">
-          Finaliser la demande
-        </h2>
-
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-          <label className="block text-sm text-emerald-900/80">
-            Nom et prénom
-            <input
-              className="mt-1 w-full rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              value={fullName}
-              onChange={(event) => setFullName(event.target.value)}
-              required
-            />
-          </label>
-
-          <label className="block text-sm text-emerald-900/80">
-            E-mail
-            <input
-              className="mt-1 w-full rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </label>
-
-          <label className="block text-sm text-emerald-900/80">
-            Téléphone
-            <input
-              className="mt-1 w-full rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-              required
-            />
-          </label>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block text-sm text-emerald-900/80">
-              Participants
-              <select
-                className="mt-1 w-full rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-                value={participantsCount}
-                onChange={(event) => setParticipantsCount(event.target.value)}
-              >
-                {Array.from({ length: 12 }, (_, index) => index + 1).map((count) => (
-                  <option key={count} value={count}>
-                    {count}
-                  </option>
+    <form onSubmit={submit} className="grid gap-8 lg:grid-cols-2">
+      <fieldset disabled={sending || Boolean(success)} className="min-w-0 rounded-[32px] border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10 sm:p-8">
+        <legend className="sr-only">Date et horaire souhaités</legend>
+        <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">Étape 1</p>
+        <h2 className="mt-4 font-serif text-3xl text-emerald-950">Votre initiation souhaitée</h2>
+        <p className="mt-3 text-sm leading-7 text-emerald-900/75">Choisissez parmi les créneaux d’initiation proposés dans l’agenda pour les six prochains mois. Notre équipe confirmera votre demande par e-mail.</p>
+        {loading ? <p role="status" className="mt-4 text-sm text-emerald-900">Actualisation des créneaux…</p> : null}
+        {calendarError ? <p role="alert" className="mt-4 text-sm text-red-800">{calendarError}</p> : null}
+        {!loading && !calendarError && slots.length === 0 ? <p role="status" className="mt-4 text-sm text-emerald-900">Aucun créneau d’initiation n’est proposé pour le moment.</p> : null}
+        <button type="button" onClick={() => { void loadSlots(); }} disabled={loading} className="mt-3 text-sm text-emerald-900 underline disabled:opacity-50">Actualiser les créneaux</button>
+        <div className="mt-6 space-y-5 text-sm text-emerald-900">
+          <label className="block">Date souhaitée<select required disabled={dates.length === 0} value={selectedDate} onChange={e => { setDate(e.target.value); setTime(""); }} className={field}><option value="">Choisir une date</option>{dates.map(day => <option key={day} value={day}>{new Intl.DateTimeFormat("fr-FR", { dateStyle: "full", timeZone: "Europe/Paris" }).format(new Date(`${day}T12:00:00Z`))}</option>)}</select></label>
+          <fieldset>
+            <legend>Horaire souhaité</legend>
+            {!selectedDate ? <p className="mt-2 text-sm text-emerald-900/70">Choisissez d’abord une date pour afficher les horaires proposés.</p> : (
+              <div className="mt-2 flex flex-wrap gap-3">
+                {times.map(hour => (
+                  <label key={`${selectedDate}-${hour}`} className="cursor-pointer">
+                    <input type="radio" name="desiredTime" value={hour} checked={selectedTime === hour} onChange={() => setTime(hour)} required className="peer sr-only" />
+                    <span className="inline-flex min-h-12 min-w-24 items-center justify-center rounded-2xl border border-emerald-900/20 bg-white px-5 py-3 font-semibold peer-checked:border-emerald-900 peer-checked:bg-emerald-900 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-2">{hour}</span>
+                  </label>
                 ))}
-              </select>
-            </label>
-
-            <label className="block text-sm text-emerald-900/80">
-              Formule
-              <select
-                className="mt-1 w-full rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-sm text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-                value={mealOption}
-                onChange={(event) =>
-                  setMealOption(event.target.value as MealOption)
-                }
-              >
-                <option value="WITHOUT_MEAL">{mealLabels.WITHOUT_MEAL}</option>
-                <option value="WITH_MEAL">{mealLabels.WITH_MEAL}</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-4 text-sm text-emerald-900/80">
-            <p>
-              Créneau choisi :{" "}
-              <span className="font-semibold text-emerald-950">
-                {selectedSlot
-                  ? `${formatSlotDate(selectedSlot.date)} - ${selectedSlot.startTime} / ${selectedSlot.endTime}`
-                  : "aucun"}
-              </span>
-            </p>
-            <p className="mt-1">
-              Total estimé :{" "}
-              <span className="font-semibold text-emerald-950">{total} €</span>
-            </p>
-          </div>
-
-          {submitError ? (
-            <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-              {submitError}
-            </p>
-          ) : null}
-
-          {successMessage ? (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-              <p>{successMessage}</p>
-              {calendarEventUrl ? (
-                <a
-                  className="mt-2 inline-flex font-semibold underline underline-offset-4"
-                  href={calendarEventUrl}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Voir l&apos;événement
-                </a>
-              ) : null}
-            </div>
-          ) : null}
-
-          <button
-            className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-stone-50 transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={isSubmitting || !selectedSlot || Boolean(slotsError)}
-            type="submit"
-          >
-            {isSubmitting ? "Envoi en cours..." : "Continuer vers la réservation"}
-          </button>
-        </form>
+              </div>
+            )}
+          </fieldset>
+          <label className="block">Participants<select value={participants} onChange={e => setParticipants(Number(e.target.value))} className={field}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}</select></label>
+          <label className="block">Formule<select value={meal} onChange={e => setMeal(e.target.value as typeof meal)} className={field}><option value="WITHOUT_MEAL">Sans repas — 25 € / personne</option><option value="WITH_MEAL">Avec repas — 48 € / personne</option></select></label>
+          <p className="rounded-2xl bg-emerald-50 p-4">Total estimé : <strong>{participants * INITIATION_PRICE_PER_PERSON_CENTS[meal] / 100} €</strong><br />Paiement sur place, après confirmation par notre équipe.</p>
+        </div>
+      </fieldset>
+      <section className="min-w-0 rounded-[32px] border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10 sm:p-8">
+        <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">Étape 2</p>
+        <h2 className="mt-4 font-serif text-3xl text-emerald-950">Envoyer votre demande</h2>
+        <fieldset disabled={sending || Boolean(success)} className="mt-6 space-y-4 text-sm text-emerald-900">
+          <legend className="sr-only">Vos coordonnées</legend>
+          <label className="block">Nom et prénom<input name="fullName" autoComplete="name" maxLength={120} required className={field} /></label>
+          <label className="block">E-mail<input name="email" type="email" autoComplete="email" maxLength={160} required className={field} /></label>
+          <label className="block">Téléphone<input name="phone" type="tel" autoComplete="tel" maxLength={30} required className={field} /></label>
+          <label className="block">Commentaire (facultatif)<textarea name="note" rows={3} maxLength={2000} className={field} /></label>
+          <p className="leading-6">Cette demande ne vaut pas réservation. Nous vous répondrons par e-mail pour confirmer la date et l’horaire.</p>
+          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} className="w-full rounded-full bg-emerald-900 px-5 py-3 font-semibold text-white disabled:opacity-60">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
+        </fieldset>
+        {error ? <p role="alert" className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
+        {success ? <p role="status" className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-900">{success}</p> : null}
       </section>
-    </div>
+    </form>
   );
 }

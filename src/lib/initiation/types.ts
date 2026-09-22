@@ -3,6 +3,7 @@ export type InitiationMealOption = "WITH_MEAL" | "WITHOUT_MEAL";
 export type InitiationReservationStatus =
   | "PENDING"
   | "PAID"
+  | "CONFIRMED"
   | "CANCELED"
   | "EXPIRED"
   | "FAILED";

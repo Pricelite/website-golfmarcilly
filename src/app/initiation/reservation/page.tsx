@@ -9,7 +9,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "Réserver une initiation",
   description:
-    "Réservez votre initiation golf au Golf de Marcilly avec choix du créneau, du nombre de participants et de la formule.",
+    "Demandez une initiation au Golf de Marcilly à la date souhaitée. Notre équipe vous confirmera la disponibilité par e-mail.",
   path: "/initiation/reservation",
   indexable: false,
 });
@@ -36,8 +36,8 @@ export default function InitiationReservationPage() {
               Réserver une initiation
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-50/80">
-              Consultez les créneaux, indiquez le nombre de participants et
-              choisissez une formule avec ou sans repas.
+              Choisissez la date souhaitée et votre formule avec ou sans repas.
+              Notre équipe vous confirmera la réservation par e-mail, selon les disponibilités.
             </p>
           </div>
         </div>
@@ -59,7 +59,6 @@ export default function InitiationReservationPage() {
           <PublicCalendarEmbed
             title="Planning initiation"
             src={INITIATION_CALENDAR_EMBED_URL}
-            highlightWeekends
           />
         </div>
       </section>

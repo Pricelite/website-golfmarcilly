@@ -35,7 +35,7 @@ export const posts: Post[] = [
       "Un domaine golfique premium peut transformer une journée d'entreprise en véritable levier d'image, d'engagement et de mémorisation.",
     publishedAt: "2026-02-06",
     category: "Entreprise",
-    coverImage: "/images/clubhouse.png",
+    coverImage: "/images/bar-la-bergerie-seminaire.jpeg",
     readingTime: "5 min",
     seoDescription:
       "Pourquoi choisir un séminaire golf près d'Orléans pour vos équipes et vos clients.",

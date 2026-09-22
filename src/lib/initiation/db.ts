@@ -165,7 +165,7 @@ export async function ensureAndListSlotAvailability(params: {
       .from("initiation_reservations")
       .select("slot_id,participants_count,status,expires_at")
       .in("slot_id", slotIds)
-      .in("status", ["PENDING", "PAID"]);
+      .in("status", ["PENDING", "PAID", "CONFIRMED"]);
 
     if (reservationError) {
       throw new Error(
@@ -181,6 +181,7 @@ export async function ensureAndListSlotAvailability(params: {
     }> | null) || []) {
       const isCounted =
         row.status === "PAID" ||
+        row.status === "CONFIRMED" ||
         (row.status === "PENDING" && row.expires_at > nowIso);
       if (!isCounted) {
         continue;
@@ -210,11 +211,12 @@ export async function ensureAndListSlotAvailability(params: {
 }
 
 export async function createPendingReservation(
-  input: CreatePendingReservationInput
+  input: CreatePendingReservationInput,
+  onSite = false
 ): Promise<InitiationReservation> {
   const supabase = createSupabaseAdminClient();
 
-  const { data, error } = await supabase.rpc("create_initiation_reservation", {
+  const { data, error } = await supabase.rpc(onSite ? "create_initiation_reservation_on_site" : "create_initiation_reservation", {
     p_date: input.date,
     p_start_time: input.startTime,
     p_end_time: input.endTime,

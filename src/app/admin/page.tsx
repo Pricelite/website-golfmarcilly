@@ -34,6 +34,8 @@ function formatEuro(cents: number): string {
 
 function statusLabel(status: InitiationReservationWithSlot["status"]): string {
   switch (status) {
+    case "CONFIRMED":
+      return "Confirmée - paiement sur place";
     case "PAID":
       return "PAID";
     case "PENDING":
@@ -51,6 +53,7 @@ function statusLabel(status: InitiationReservationWithSlot["status"]): string {
 
 function statusClass(status: InitiationReservationWithSlot["status"]): string {
   switch (status) {
+    case "CONFIRMED":
     case "PAID":
       return "bg-emerald-100 text-emerald-900";
     case "PENDING":
@@ -108,7 +111,7 @@ function buildSlotSummary(reservations: InitiationReservationWithSlot[]) {
       totalPaidCents: 0,
     };
 
-    if (reservation.status === "PAID" || reservation.status === "PENDING") {
+    if (reservation.status === "PAID" || reservation.status === "PENDING" || reservation.status === "CONFIRMED") {
       current.totalParticipants += reservation.participantsCount;
       if (reservation.mealOption === "WITH_MEAL") {
         current.withMealParticipants += reservation.participantsCount;
@@ -203,7 +206,7 @@ export default async function AdminPage(props: AdminPageProps) {
 
   const totals = reservations.reduce(
     (acc, reservation) => {
-      if (reservation.status === "PAID" || reservation.status === "PENDING") {
+      if (reservation.status === "PAID" || reservation.status === "PENDING" || reservation.status === "CONFIRMED") {
         acc.totalParticipants += reservation.participantsCount;
         if (reservation.mealOption === "WITH_MEAL") {
           acc.withMealParticipants += reservation.participantsCount;

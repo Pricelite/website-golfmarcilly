@@ -107,7 +107,7 @@ export default function HomePage() {
       <section id="enseignement" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:order-2 lg:aspect-[3/2]">
-            <Image src="/images/initiation-groupe-professeur.png" alt="Illustration d’une initiation conviviale au golf avec un professeur et un groupe d’adultes" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
+            <Image src="/images/practice-enseignement-vue-aerienne.png" alt="Vue aérienne du practice et des espaces d’entraînement du Golf de Marcilly" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
           </div>
           <div>
             <SectionTitle
@@ -131,7 +131,7 @@ export default function HomePage() {
       <section id="evenements" className="bg-emerald-950 py-10 text-stone-50 sm:py-14">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:aspect-[3/2]">
-            <Image src="/restaurant/hero.jpg" alt="Le club-house et ses abords lors d'un événement de golf" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
+            <Image src="/images/seminaire-conference-marcilly.png" alt="Illustration d’une conférence réunissant des participants autour d’une présentation du Golf de Marcilly" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
           </div>
           <div>
             <SectionTitle eyebrow="Séminaires & événements" tone="inverse" title="Réunissez votre équipe au golf" description="Organisez une journée de travail, une activité de groupe ou une réception avec l'équipe de Marcilly." />

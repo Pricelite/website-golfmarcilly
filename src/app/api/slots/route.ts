@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { ensureAndListSlotAvailability } from "@/lib/initiation/db";
-import { hasInitiationPaymentEnv } from "@/lib/initiation/env";
+import { hasInitiationPaymentEnv, isOnSitePayment } from "@/lib/initiation/env";
 import {
   getGoogleCalendarSlotAvailability,
   getMissingGoogleCalendarEnv,
@@ -19,7 +19,7 @@ function methodNotAllowed() {
 export async function GET() {
   try {
     const useGoogleCalendarDirect =
-      hasGoogleCalendarEnv() && !hasInitiationPaymentEnv();
+      !isOnSitePayment() && hasGoogleCalendarEnv() && !hasInitiationPaymentEnv();
 
     if (useGoogleCalendarDirect) {
       const availability = await getGoogleCalendarSlotAvailability();
