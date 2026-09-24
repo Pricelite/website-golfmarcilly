@@ -6,12 +6,15 @@ export async function readJsonBody<T = unknown>(
   request: Request
 ): Promise<JsonBodyReadResult<T>> {
   try {
+    const data: unknown = await request.json();
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return { ok: false };
+    }
     return {
       ok: true,
-      data: (await request.json()) as T,
+      data: data as T,
     };
   } catch {
     return { ok: false };
   }
 }
-

@@ -143,7 +143,7 @@ function AdminLogin(props: { error?: string; next?: string }) {
             : "";
 
   return (
-    <main className="mx-auto w-full max-w-md px-6 py-12">
+    <div className="mx-auto w-full max-w-md px-6 py-12">
       <section className="rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10">
         <h1 className="font-[var(--font-display)] text-2xl text-emerald-950">
           Administration du golf
@@ -177,7 +177,7 @@ function AdminLogin(props: { error?: string; next?: string }) {
           </button>
         </form>
       </section>
-    </main>
+    </div>
   );
 }
 
@@ -186,7 +186,7 @@ export default async function AdminPage(props: AdminPageProps) {
   const cookieStore = await cookies();
 
   if (!process.env.ADMIN_PASSWORD?.trim()) {
-    return <main className="mx-auto max-w-xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><p className="mt-4">L’accès administrateur n’est pas encore configuré. Définissez le mot de passe administrateur dans la configuration du serveur pour activer la connexion.</p></main>;
+    return <div className="mx-auto max-w-xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><p className="mt-4">L’accès administrateur n’est pas encore configuré. Définissez le mot de passe administrateur dans la configuration du serveur pour activer la connexion.</p></div>;
   }
 
   if (!(await isAdminAuthenticated(cookieStore))) {
@@ -200,7 +200,7 @@ export default async function AdminPage(props: AdminPageProps) {
     await markExpiredPendingReservations();
     reservations = await listReservationsForAdmin();
   } catch {
-    return <main className="mx-auto max-w-5xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><Link className="mt-6 inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><p role="alert" className="mt-6">Les réservations d’initiation sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="mt-4 underline">Déconnexion</button></form></main>;
+    return <div className="mx-auto max-w-5xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><Link className="mt-6 inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><p role="alert" className="mt-6">Les réservations d’initiation sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="mt-4 underline">Déconnexion</button></form></div>;
   }
   const slotSummary = buildSlotSummary(reservations);
 
@@ -230,7 +230,7 @@ export default async function AdminPage(props: AdminPageProps) {
   );
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 py-10">
+    <div className="mx-auto w-full max-w-7xl px-6 py-10">
       <section className="rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -434,6 +434,6 @@ export default async function AdminPage(props: AdminPageProps) {
           </table>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

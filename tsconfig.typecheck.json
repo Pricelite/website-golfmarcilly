@@ -8,6 +8,8 @@
   ],
   "exclude": [
     "node_modules",
-    ".next"
+    ".next",
+    ".codex",
+    ".next-build"
   ]
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getFormErrorMessage } from "@/lib/api/form-feedback";
 
 import { logApiError } from "@/lib/api/logging";
 import { readJsonBody } from "@/lib/api/request-body";
@@ -33,7 +34,7 @@ function buildMethodNotAllowed() {
 export async function POST(request: Request) {
   const fallbackHost = new URL(request.url).host;
   if (!hasTrustedOrigin(request.headers, { fallbackHost })) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: getFormErrorMessage(403) }, { status: 403 });
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
@@ -46,14 +47,14 @@ export async function POST(request: Request) {
 
   if (!rateLimit.allowed) {
     return NextResponse.json(
-      { error: "Too many requests" },
+      { error: getFormErrorMessage(429) },
       { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
     );
   }
 
   const bodyResult = await readJsonBody<Record<string, unknown>>(request);
   if (!bodyResult.ok) {
-    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
   }
 
   const payload = {
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
     !isNonEmptyWithinLength(payload.details, MAX_DETAILS_LENGTH) ||
     !isWithinLength(payload.participants, MAX_PARTICIPANTS_LENGTH)
   ) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
   }
 
   const clubEmail = process.env.EMAIL_TO?.trim();
@@ -82,10 +83,10 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Configuration email incomplete. Ajoutez EMAIL_TO dans le fichier .env.local.",
+          getFormErrorMessage(503),
         code: "config",
       },
-      { status: 500 },
+      { status: 503 },
     );
   }
 
@@ -105,7 +106,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     logApiError("api/quote", "mail_failed", {});
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: 500 });
+    return NextResponse.json(buildMailApiErrorResponse(error), { status: 503 });
   }
 }
 

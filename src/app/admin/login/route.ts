@@ -55,7 +55,12 @@ export async function POST(request: Request) {
     return redirectToAdmin(request.url, { error: "rate_limited" });
   }
 
-  const formData = await request.formData();
+  if (!process.env.ADMIN_PASSWORD?.trim()) {
+    return redirectToAdmin(request.url, { error: "unavailable" });
+  }
+  let formData: FormData;
+  try { formData = await request.formData(); }
+  catch { return redirectToAdmin(request.url, { error: "missing_password" }); }
   const next = formData.get("next") === "/admin/competitions" ? "/admin/competitions" : "/admin";
   const passwordValue = formData.get("password");
   const password = typeof passwordValue === "string" ? passwordValue : "";

@@ -19,7 +19,7 @@ export default async function PaymentSuccessPage(
   const searchParams = await props.searchParams;
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12">
+    <div className="mx-auto max-w-4xl px-6 py-12">
       <section className="rounded-[32px] border border-emerald-900/10 bg-white/90 p-8 shadow-xl shadow-emerald-900/10">
         <h1 className="font-[var(--font-display)] text-3xl text-emerald-950">
           Vérification de votre réservation
@@ -32,6 +32,6 @@ export default async function PaymentSuccessPage(
           <InitiationPaymentStatus reservationId={searchParams.reservationId} />
         </div>
       </section>
-    </main>
+    </div>
   );
 }

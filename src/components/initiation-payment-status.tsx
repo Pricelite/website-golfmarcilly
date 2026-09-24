@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type ReservationStatus =
+  | "CONFIRMED"
   | "PENDING"
   | "PAID"
   | "CANCELED"
@@ -38,6 +39,8 @@ function formatEuro(cents: number): string {
 
 function statusLabel(status: ReservationStatus): string {
   switch (status) {
+    case "CONFIRMED":
+      return "Réservation confirmée — règlement sur place";
     case "PAID":
       return "Paiement confirme";
     case "PENDING":
@@ -54,7 +57,7 @@ function statusLabel(status: ReservationStatus): string {
 }
 
 function statusTone(status: ReservationStatus): string {
-  if (status === "PAID") {
+  if (status === "PAID" || status === "CONFIRMED") {
     return "border-emerald-300 bg-emerald-50 text-emerald-900";
   }
   if (status === "PENDING") {

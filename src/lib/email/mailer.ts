@@ -74,9 +74,9 @@ function getSmtpConfig(): SmtpConfig {
   const user = getRequiredEnv("SMTP_USER");
   const pass = getRequiredEnv("SMTP_PASS");
   const from = getRequiredEnv("EMAIL_FROM");
-  const port = Number.parseInt(portRaw, 10);
+  const port = Number(portRaw);
 
-  if (Number.isNaN(port)) {
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new MailerError(
       "config",
       "Email configuration is incomplete. SMTP_PORT must be a number."
@@ -167,18 +167,6 @@ function normalizeMailerError(error: unknown): MailerError {
   }
 
   return new MailerError("send", message);
-}
-
-function isSelfSignedCertError(error: unknown): boolean {
-  const err = error as { message?: string; code?: string };
-  const message = typeof err.message === "string" ? err.message.toLowerCase() : "";
-  const code = typeof err.code === "string" ? err.code.toUpperCase() : "";
-
-  return (
-    code === "SELF_SIGNED_CERT_IN_CHAIN" ||
-    message.includes("self-signed certificate in certificate chain") ||
-    message.includes("unable to verify the first certificate")
-  );
 }
 
 function getSafeErrorMessage(payload: unknown): string {
@@ -307,31 +295,44 @@ async function sendViaSmtp({
     },
   };
 
-  try {
-    const transporter = nodemailer.createTransport({
-      ...baseTransportOptions,
-      tls: {
-        servername: config.host,
-      },
-    });
+  const transporter = nodemailer.createTransport({
+    ...baseTransportOptions,
+    tls: { servername: config.host },
+  });
+  await transporter.sendMail(mailPayload);
+}
 
-    await transporter.sendMail(mailPayload);
-  } catch (error) {
-    if (!isSelfSignedCertError(error)) {
-      throw error;
+/** Authenticate with the configured providers without sending any message. */
+export async function checkMailConnection(): Promise<void> {
+  const primary = getMailProvider();
+  const secondary: MailProvider = primary === "smtp" ? "brevo" : "smtp";
+  const providers = [primary];
+  if (secondary === "smtp" ? hasSmtpEnv() : hasBrevoEnv()) providers.push(secondary);
+  for (const provider of providers) {
+    try {
+      if (provider === "brevo") {
+        const config = getBrevoConfig();
+        const response = await fetchWithTimeout("https://api.brevo.com/v3/account", {
+          headers: { "api-key": config.apiKey, accept: "application/json" },
+          cache: "no-store", redirect: "error", timeoutMs: 8_000,
+        });
+        if (!response.ok) throw new MailerError("auth", "Email provider unavailable");
+      } else {
+        const config = getSmtpConfig();
+        const transport = nodemailer.createTransport({
+          host: config.host, port: config.port, secure: config.secure,
+          requireTLS: !config.secure, auth: { user: config.user, pass: config.pass },
+          connectionTimeout: 5_000, greetingTimeout: 5_000, socketTimeout: 5_000,
+          tls: { servername: config.host },
+        });
+        try { await transport.verify(); } finally { transport.close(); }
+      }
+      return;
+    } catch {
+      // Try the same fallback provider as sendMail, without leaking credentials.
     }
-
-    // Corporate proxies/antivirus can inject certificates; retry once with relaxed TLS validation.
-    const transporter = nodemailer.createTransport({
-      ...baseTransportOptions,
-      tls: {
-        servername: config.host,
-        rejectUnauthorized: false,
-      },
-    });
-
-    await transporter.sendMail(mailPayload);
   }
+  throw new MailerError("network", "Email providers unavailable");
 }
 
 export async function sendMail({

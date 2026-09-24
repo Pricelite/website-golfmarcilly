@@ -19,7 +19,7 @@ export default async function AdminCompetitionsPage() {
       ? "La gestion du calendrier doit être activée : configurez Supabase et appliquez la migration des compétitions indiquée dans CALENDRIER-AS.md. Le programme actuel reste visible sur le site."
       : "Le calendrier est temporairement indisponible. Rechargez la page pour réessayer.";
   }
-  return <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+  return <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
     <div className="flex flex-wrap items-center justify-between gap-4">
       <h1 className="font-serif text-3xl text-emerald-950">Gestion des compétitions</h1>
       <form action="/admin/logout" method="post"><button className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" type="submit">Déconnexion</button></form>
@@ -29,5 +29,5 @@ export default async function AdminCompetitionsPage() {
       <Link className="underline underline-offset-4" href="/association-sportive#competitions" target="_blank" rel="noreferrer">Voir le calendrier public ↗</Link>
     </nav>
     {error ? <p role="alert" className="mt-8 rounded-2xl bg-amber-50 p-5 text-amber-950">{error}</p> : <CompetitionManager initialEvents={events ?? []} />}
-  </main>;
+  </div>;
 }

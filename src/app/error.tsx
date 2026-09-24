@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useEffect } from "react";
@@ -16,7 +16,7 @@ export default function Error({
 
   return (
     <div className="text-emerald-950">
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
+      <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <section className="rounded-[32px] border border-emerald-900/10 bg-white/80 p-8 shadow-xl shadow-emerald-900/10 backdrop-blur">
           <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">
             Erreur
@@ -44,7 +44,7 @@ export default function Error({
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }
