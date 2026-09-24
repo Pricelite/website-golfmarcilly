@@ -38,3 +38,31 @@ h6,
 img {
   display: block;
 }
+
+.sponsor-marquee-track {
+  animation: sponsor-marquee-scroll 100s linear infinite;
+}
+
+.sponsor-marquee-track:has(li:hover) {
+  animation-play-state: paused;
+}
+
+@keyframes sponsor-marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-marquee-viewport {
+    overflow-x: auto;
+  }
+
+  .sponsor-marquee-track {
+    animation: none;
+  }
+
+  .sponsor-marquee-copy {
+    display: none;
+  }
+}

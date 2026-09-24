@@ -1,5 +1,5 @@
 // TODO propriétaire : coordonnées propres à l'AS, cotisation et bulletin
-// d'adhésion, équipes/capitaines, documents et partenaires validés de l'AS.
+// d'adhésion, équipes/capitaines et documents validés de l'AS.
 // Sources consultées : https://www.marcilly.com/l-association
 // https://www.ffgolf.org/golf-amateur/jouer-en-competition
 // https://www.ffgolf.org/emploi-et-formation/benevoles-sportifs/animateur-sportif-benevole-de-club

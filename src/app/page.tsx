@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Hero } from "@/components/sections/hero";
 import { Partners } from "@/components/sections/partners";
+import { SponsorMarquee } from "@/components/sections/sponsor-marquee";
 import { BlogCard } from "@/components/ui/blog-card";
 import { CTAButton } from "@/components/ui/cta-button";
 import { CourseCard } from "@/components/ui/course-card";
@@ -52,6 +53,8 @@ export default function HomePage() {
           <CTAButton href="https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656" variant="ghost">Voir les résultats</CTAButton>
         </div>
       </nav>
+
+      <SponsorMarquee />
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <SectionTitle

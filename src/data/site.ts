@@ -37,6 +37,7 @@ export const navigationItems = [
   { label: "Restaurant", href: "/restaurant" },
   { label: "Événements", href: "/evenements" },
   { label: "Association sportive", href: "/association-sportive" },
+  { label: "Partenaires", href: "/partenaires" },
 ] as const;
 
 export const footerNavigation = {

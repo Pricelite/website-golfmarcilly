@@ -11,7 +11,7 @@ import { buildOrganizationSchema } from "../lib/schema";
 test("sitemap includes editorial entry points and current offers, without transaction pages", () => {
   const urls = sitemap().map(item => item.url);
   assert.equal(new Set(urls).size, urls.length);
-  for (const path of ["/je-debute-le-golf", "/reserver-un-cours", ...siteOffers.map(offer => `/offres/${offer.slug}`)]) {
+  for (const path of ["/je-debute-le-golf", "/reserver-un-cours", "/partenaires", ...siteOffers.map(offer => `/offres/${offer.slug}`)]) {
     assert.ok(urls.includes(new URL(path, siteConfig.url).href), path);
   }
   for (const url of urls) {

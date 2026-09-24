@@ -1,16 +1,25 @@
 export type Partner = {
   name: string;
-  /** Local logo path in public/partners, for example /partners/example.png. */
-  logo: string;
-  /** Optional full HTTPS URL of the partner's website. */
+  logo?: string;
   website?: string;
 };
 
-// Add only confirmed partners and their supplied logos.
-// The homepage section remains hidden until the first partner is added.
 export const partners: Partner[] = [
-  {
-    name: "Golf de Marcilly",
-    logo: "/images/LogoNoir.png",
-  },
+  { name: "Citya", logo: "/partners/citya.png" },
+  { name: "Rotary", logo: "/partners/rotary.png" },
+  { name: "Eden Park", logo: "/partners/eden-park.jpg" },
+  { name: "SAFTI", logo: "/partners/safti.svg" },
+  { name: "ACE TRANS", logo: "/partners/ace-trans.png" },
+  { name: "Menuiserie GODEL", logo: "/partners/menuiserie-godel.png" },
+  { name: "RENOV’ CENTRE" },
+  { name: "WAGC", logo: "/partners/wagc.png" },
+  { name: "TLM" },
+  { name: "Maserati", logo: "/partners/maserati.svg" },
+  { name: "KIA", logo: "/partners/kia.svg" },
+  { name: "Crit", logo: "/partners/crit.svg" },
+  { name: "AVC Sécurité", logo: "/partners/avc-securite.jpg" },
+  { name: "Equip Jardin", logo: "/partners/equip-jardin.png" },
+  { name: "Soditra", logo: "/partners/soditra.jpg" },
+  { name: "Bregent", logo: "/partners/bregent.png" },
+  { name: "La Bergerie" },
 ];
