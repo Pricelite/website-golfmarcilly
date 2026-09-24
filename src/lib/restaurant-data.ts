@@ -6,6 +6,7 @@ export type RestaurantService = {
 export type RestaurantHours = {
   label: string;
   hours: string;
+  barHours: string;
 };
 
 export type RestaurantMenuItem = {
@@ -99,13 +100,13 @@ export const restaurantData: RestaurantData = {
     },
   ],
   hours: [
-    { label: "Lundi", hours: "12 h – 14 h" },
-    { label: "Mardi", hours: "Fermé" },
-    { label: "Mercredi", hours: "12 h – 14 h" },
-    { label: "Jeudi", hours: "12 h – 14 h" },
-    { label: "Vendredi", hours: "12 h – 14 h" },
-    { label: "Samedi", hours: "12 h – 15 h" },
-    { label: "Dimanche", hours: "12 h – 15 h" },
+    { label: "Lundi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
+    { label: "Mardi", hours: "Fermé", barHours: "8 h 30 – 19 h" },
+    { label: "Mercredi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
+    { label: "Jeudi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
+    { label: "Vendredi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
+    { label: "Samedi", hours: "12 h – 15 h", barHours: "8 h – 20 h" },
+    { label: "Dimanche", hours: "12 h – 15 h", barHours: "8 h – 20 h" },
   ],
   carte: {
     title: "La Carte du Moment",
@@ -320,7 +321,7 @@ export const restaurantData: RestaurantData = {
         title: "Informations diverses",
         items: [
           "Horaire maximum d'animation : 06 heures du matin.",
-          "Possibilité d'apporter votre vin pour le repas avec un droit de bouchon de 5 € par bouteille ouverte.",
+          "Possibilité d'apporter votre vin ou votre champagne pour le repas avec un droit de bouchon de 5 € par bouteille de vin ouverte et de 8 € par bouteille de champagne ouverte.",
         ],
       },
     ],

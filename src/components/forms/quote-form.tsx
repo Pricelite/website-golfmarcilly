@@ -46,7 +46,7 @@ export function QuoteForm() {
       className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
     >
       <div className="rounded-[24px] border border-emerald-950/8 bg-stone-50 px-4 py-4 text-sm leading-7 text-emerald-950/72">
-        Indiquez vos coordonnées et décrivez votre événement pour demander un devis à l&apos;équipe du golf.
+        Décrivez votre projet en quelques mots. Notre équipe prendra contact avec vous pour préciser les possibilités.
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -116,14 +116,13 @@ export function QuoteForm() {
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-md text-xs leading-6 text-emerald-950/55">
-          Cette demande part vers l&apos;API du site puis vers votre boîte email
-          dès que le fournisseur mail est configuré.
+          Date, restauration, activité golf : partagez ce qui compte pour vous dans votre message.
         </p>
         <button
           className="rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-stone-50 shadow-lg shadow-emerald-950/15 transition hover:-translate-y-0.5 hover:bg-emerald-800"
           type="submit"
         >
-          {state === "loading" ? "Envoi..." : "Recevoir un devis"}
+          {state === "loading" ? "Envoi..." : "Demander mon devis"}
         </button>
       </div>
 

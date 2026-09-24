@@ -1,27 +1,26 @@
 export const eventFormats = [
   {
-    title: "Séminaires",
+    eyebrow: "01 / Se réunir",
+    title: "Séminaires & réunions",
     description:
-      "Organisez une journée d'étude, un comité de direction ou un rendez-vous clients au golf.",
+      "Changez de décor pour votre journée d’étude, votre comité de direction ou votre rendez-vous clients. Un temps de travail qui laisse aussi la place aux échanges.",
+    image: "/images/seminaire-conference-marcilly.png",
+    imageAlt: "Illustration d’un séminaire réunissant des participants autour d’une conférence",
   },
   {
-    title: "Team building",
+    eyebrow: "02 / Partager",
+    title: "Team building & golf",
     description:
-      "Partagez une initiation, un challenge ou une partie de footgolf avec votre équipe.",
+      "Offrez à votre équipe une expérience à vivre ensemble : initiation au golf, challenge ou footgolf, selon les envies et le niveau de chacun.",
+    image: "/images/initiation-groupe-professeur.png",
+    imageAlt: "Illustration d’une initiation au golf en groupe",
   },
   {
-    title: "Réceptions privées",
+    eyebrow: "03 / Prolonger",
+    title: "Déjeuners & réceptions",
     description:
-      "Réunissez vos proches pour un anniversaire, un repas de famille ou une autre occasion à célébrer.",
-  },
-  {
-    title: "Mariages",
-    description:
-      "Présentez votre projet de réception de mariage à l'équipe pour étudier les possibilités au domaine.",
-  },
-  {
-    title: "Groupes",
-    description:
-      "Sorties clubs, associations, réseaux professionnels ou groupes d'amis avec restauration et formats de jeu adaptés.",
+      "Retrouvez vos collaborateurs ou vos clients autour d’un repas à La Bergerie. Étudions ensemble le format de votre réception ou de votre soirée.",
+    image: "/images/bar-la-bergerie-seminaire.jpeg",
+    imageAlt: "Le bar du restaurant La Bergerie au Golf de Marcilly",
   },
 ] as const;

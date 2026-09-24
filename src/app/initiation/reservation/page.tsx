@@ -1,8 +1,6 @@
 import InitiationReservationForm from "@/components/initiation-reservation-form";
-import PublicCalendarEmbed from "@/components/public-calendar-embed";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { INITIATION_CALENDAR_EMBED_URL } from "@/lib/calendar";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
@@ -54,14 +52,6 @@ export default function InitiationReservationPage() {
         </div>
       </section>
 
-      <section className="bg-white/60 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <PublicCalendarEmbed
-            title="Planning initiation"
-            src={INITIATION_CALENDAR_EMBED_URL}
-          />
-        </div>
-      </section>
     </>
   );
 }

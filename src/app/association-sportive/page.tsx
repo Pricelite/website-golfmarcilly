@@ -5,7 +5,7 @@ import { AssociationCalendar } from "@/components/association-calendar";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { associationFaqs, associationLinks, associationMembers, associationRoles } from "@/data/association";
+import { associationFaqs, associationLinks, associationRoles } from "@/data/association";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -90,19 +90,19 @@ export default async function AssociationPage() {
 
       <section id="equipe" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <SectionTitle eyebrow="Les personnes à votre écoute" title="L’équipe de l’association sportive" />
-        {associationMembers.length > 0 ? (
-          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {associationMembers.map((member) => (
-              <li key={`${member.name}-${member.role}`} className="border-t border-emerald-950/15 pt-5">
-                {member.photo ? <div className="relative mb-4 aspect-square max-w-48 overflow-hidden rounded-2xl"><Image src={member.photo} alt={member.name} fill sizes="192px" className="object-cover" /></div> : null}
-                <h3 className="font-serif text-2xl text-emerald-950">{member.name}</h3>
-                <p className="mt-2 text-sm text-emerald-800">{member.role}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-5 max-w-2xl text-base leading-8 text-emerald-950/75">Une question pour l’AS ? L’accueil du golf peut vous orienter vers votre interlocuteur au sein de l’association.</p>
-        )}
+        <figure className="mt-8">
+          <Image
+            src="/images/organigramme-association-sportive.webp"
+            alt="Organigramme de l’association sportive : bureau, commissions, membres de droit et invités permanents."
+            width={1025}
+            height={768}
+            sizes="(max-width: 1280px) 100vw, 1216px"
+            className="h-auto w-full rounded-3xl"
+          />
+          <figcaption className="mt-3 text-sm text-emerald-950/75">
+            <a className="underline underline-offset-4" href="/images/organigramme-association-sportive.webp" target="_blank" rel="noopener noreferrer">Ouvrir l’organigramme en grand</a>
+          </figcaption>
+        </figure>
         <div className="mt-6"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="ghost">Contacter l’accueil : {siteConfig.phoneDisplay}</CTAButton></div>
       </section>
 

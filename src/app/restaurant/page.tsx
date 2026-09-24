@@ -61,13 +61,22 @@ export default function RestaurantPage() {
           <div className="bg-emerald-950 p-6 text-stone-50 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-100/80">Votre déjeuner à La Bergerie</p>
             <h2 id="horaires-restaurant-title" className="mt-3 font-serif text-3xl">Horaires d’ouverture</h2>
-            <p className="mt-4 text-sm leading-7 text-stone-100/85">Le restaurant vous accueille pour le service du midi, sauf le mardi.</p>
+            <p className="mt-4 text-sm leading-7 text-stone-100/85">Le restaurant vous accueille pour le service du midi, sauf le mardi. Le bar est ouvert tous les jours.</p>
           </div>
           <dl className="divide-y divide-emerald-950/15 px-6 py-2 sm:px-8">
             {restaurantData.hours.map(day => (
-              <div key={day.label} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4 text-sm leading-6 text-emerald-950">
-                <dt className="font-medium">{day.label}</dt>
-                <dd className={day.hours === "Fermé" ? "rounded-full bg-emerald-950/10 px-3 py-1 text-xs font-semibold" : "whitespace-nowrap font-semibold"}>{day.hours}</dd>
+              <div key={day.label} className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 py-3 text-sm leading-6 text-emerald-950 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6">
+                <dt className="font-semibold">{day.label}</dt>
+                <dd className="space-y-1">
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+                    <span>Restaurant</span>
+                    <span className="whitespace-nowrap font-semibold">{day.hours}</span>
+                  </div>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 text-emerald-800">
+                    <span>Bar</span>
+                    <span className="whitespace-nowrap font-semibold">{day.barHours}</span>
+                  </div>
+                </dd>
               </div>
             ))}
           </dl>

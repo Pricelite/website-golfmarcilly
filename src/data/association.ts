@@ -1,13 +1,3 @@
-export type AssociationMember = {
-  name: string;
-  role: string;
-  photo?: string;
-};
-
-// TODO propriétaire : fournir l'organigramme actuel et les photos autorisées.
-// L'ordre de cette liste est l'ordre d'affichage, sans hiérarchie inventée.
-export const associationMembers: AssociationMember[] = [];
-
 // TODO propriétaire : coordonnées propres à l'AS, cotisation et bulletin
 // d'adhésion, équipes/capitaines, documents et partenaires validés de l'AS.
 // Sources consultées : https://www.marcilly.com/l-association
