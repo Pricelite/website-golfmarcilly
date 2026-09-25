@@ -9,8 +9,8 @@ export async function POST(request: Request) {
   if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) {
     return NextResponse.json({ ok: false, error: "Origine de requête non autorisée." }, { status: 403 });
   }
-  const limit = consumeRateLimit({ namespace: "initiation-email-request", identifier: parseClientIpFromHeaders(request.headers), limit: 8, windowMs: 600_000 });
-  if (!limit.allowed) return NextResponse.json({ ok: false, error: "Trop de demandes. Réessayez dans quelques minutes." }, { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } });
+  const limit = await consumeRateLimit({ namespace: "initiation-email-request", identifier: parseClientIpFromHeaders(request.headers), limit: 8, windowMs: 600_000 });
+  if (!limit.allowed) return NextResponse.json({ ok: false, error: limit.unavailable ? "Le service est momentanément indisponible. Réessayez plus tard." : "Trop de demandes. Réessayez dans quelques minutes." }, { status: limit.unavailable ? 503 : 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } });
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ ok: false, error: "Demande invalide." }, { status: 400 }); }
   const parsed = parseInitiationRequest(body);

@@ -4,7 +4,6 @@ import test from "node:test";
 import {
   ADMIN_SESSION_COOKIE_NAME,
   createAdminSessionToken,
-  getExpectedLegacyAdminSessionToken,
   isAdminAuthenticated,
 } from "./admin-auth";
 
@@ -34,12 +33,13 @@ test("signed admin session token is accepted", async () => {
   assert.equal(authenticated, true);
 });
 
-test("legacy admin session token stays accepted during migration", async () => {
+test("legacy admin session token is rejected", async () => {
   process.env.ADMIN_PASSWORD = "phase-test-password";
   delete process.env.ADMIN_SESSION_SECRET;
 
-  const token = await getExpectedLegacyAdminSessionToken();
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("initiation-admin:phase-test-password"));
+  const token = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
   const authenticated = await isAdminAuthenticated(createCookieReader(token));
 
-  assert.equal(authenticated, true);
+  assert.equal(authenticated, false);
 });

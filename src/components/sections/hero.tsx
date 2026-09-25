@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { HeroPhotoCarousel } from "@/components/hero-photo-carousel";
+import { associationLinks } from "@/data/association";
 import type { SiteOffer } from "@/data/offers";
 import { PromoOffersModal } from "@/components/promo-offers-modal";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -29,18 +29,11 @@ export function Hero({ eyebrow, title, subtitle, primaryCta, tertiaryCta, compet
             {tertiaryCta ? <CTAButton className="min-h-12 border-emerald-900/30 bg-transparent" href={tertiaryCta.href} variant="secondary">{tertiaryCta.label}</CTAButton> : null}
             {competitionCta ? <CTAButton className="min-h-12 border-emerald-900/30 bg-transparent" href={competitionCta.href} variant="secondary">{competitionCta.label}</CTAButton> : null}
           </div>
-          <nav aria-label="Explorer le golf" className="mt-9 border-t border-emerald-950/15 pt-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-900/65">À découvrir aussi</p>
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm font-medium">
-              {[
-                { href: "/golf", label: "Les parcours" },
-                { href: "/restaurant", label: "Le restaurant" },
-                { href: "/evenements", label: "Vos événements" },
-              ].map((link) => (
-                <Link key={link.href} href={link.href} className="inline-flex min-h-10 items-center gap-2 underline decoration-emerald-900/25 underline-offset-4 hover:decoration-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800">
-                  {link.label}<span aria-hidden="true">↗</span>
-                </Link>
-              ))}
+          <nav aria-label="Informations compétition" className="mt-9 border-t border-emerald-950/15 pt-5">
+            <p className="text-sm font-semibold text-emerald-950">Vous jouez en compétition ?</p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <a className="inline-flex min-h-10 items-center text-sm font-semibold underline decoration-emerald-700/35 underline-offset-4 hover:decoration-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800" href={associationLinks.starts} rel="noreferrer" target="_blank">Consulter les départs</a>
+              <a className="inline-flex min-h-10 items-center text-sm font-semibold underline decoration-emerald-700/35 underline-offset-4 hover:decoration-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800" href={associationLinks.results} rel="noreferrer" target="_blank">Voir les résultats</a>
             </div>
           </nav>
         </div>

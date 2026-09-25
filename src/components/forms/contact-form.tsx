@@ -22,6 +22,7 @@ export function ContactForm({
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState(successMessage);
   const submittingRef = useRef(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -49,6 +50,7 @@ export function ContactForm({
       }
 
       form.reset();
+      setConfirmationMessage(payload?.queued === true ? payload.message : successMessage);
       setState("success");
     } catch {
       setErrorMessage(FORM_NETWORK_ERROR);
@@ -147,7 +149,7 @@ export function ContactForm({
 
       {state === "success" ? (
         <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          {successMessage}
+          {confirmationMessage}
         </p>
       ) : null}
 

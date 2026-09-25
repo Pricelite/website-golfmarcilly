@@ -186,7 +186,7 @@ export async function POST(request: Request) {
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
-  const rateLimit = consumeRateLimit({
+  const rateLimit = await consumeRateLimit({
     namespace: "legacy-initiation-request-form",
     identifier: requesterIp,
     limit: LEGACY_INITIATION_RATE_LIMIT_MAX_REQUESTS,
@@ -197,11 +197,11 @@ export async function POST(request: Request) {
     return buildLegacyResponse(
       {
         ok: false,
-        error: "Trop de tentatives. Merci de réessayer plus tard.",
+        error: rateLimit.unavailable ? "Le service est momentanément indisponible. Réessayez plus tard." : "Trop de tentatives. Merci de réessayer plus tard.",
         legacy: true,
         recommendedPath: RECOMMENDED_INITIATION_PATH,
       },
-      429
+      rateLimit.unavailable ? 503 : 429
     );
   }
 
@@ -315,7 +315,7 @@ export async function POST(request: Request) {
       });
 
       console.error(
-        "[legacy-initiation-reservation] message stored in local fallback queue"
+        "[legacy-initiation-reservation] message stored in durable fallback queue"
       );
 
       return buildLegacyResponse(

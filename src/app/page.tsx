@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Hero } from "@/components/sections/hero";
-import { Partners } from "@/components/sections/partners";
 import { SponsorMarquee } from "@/components/sections/sponsor-marquee";
 import { BlogCard } from "@/components/ui/blog-card";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -45,14 +44,6 @@ export default function HomePage() {
         competitionCta={{ label: "Calendrier des compétitions", href: "/association-sportive#competitions" }}
         title="45 trous aux portes d'Orléans"
       />
-
-      <nav aria-label="Informations compétition" className="border-b border-emerald-950/10 bg-white/60">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-4 sm:px-6 lg:px-8">
-          <span className="text-sm font-semibold text-emerald-950">Vous jouez en compétition ?</span>
-          <CTAButton href="https://pages.ffgolf.org/departs/golf/5824d6b19f01d21a2e53b0249f2e9656" variant="ghost">Consulter les départs</CTAButton>
-          <CTAButton href="https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656" variant="ghost">Voir les résultats</CTAButton>
-        </div>
-      </nav>
 
       <SponsorMarquee />
 
@@ -188,7 +179,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <Partners />
     </>
   );
 }

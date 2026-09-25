@@ -4,9 +4,8 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom";
 
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
-import { getRestaurantDays, parseReservationPayload } from "@/lib/restaurant/validation";
+import { getRestaurantDays, getRestaurantTimeSlots, parseReservationPayload } from "@/lib/restaurant/validation";
 
-import { generateTimeSlots } from "@/lib/restaurant/slots";
 
 type RestaurantReservationModalProps = {
   triggerLabel?: string;
@@ -108,7 +107,7 @@ export default function RestaurantReservationModal({
   const descriptionId = useId();
 
   const dayOptions = useMemo(() => isOpen ? getNextDays() : [], [isOpen]);
-  const slots = useMemo(() => generateTimeSlots("12:00", "14:30", 30), []);
+  const slots = useMemo(() => selectedDay ? getRestaurantTimeSlots(selectedDay) : [], [selectedDay]);
 
   useEffect(() => {
     setIsClient(true);
@@ -352,6 +351,7 @@ export default function RestaurantReservationModal({
                             type="button"
                             onClick={() => {
                               setSelectedDay(day.iso);
+                              setSelectedTime(null);
                               setFormError("");
                               setApiError("");
                               setSuccessMessage("");

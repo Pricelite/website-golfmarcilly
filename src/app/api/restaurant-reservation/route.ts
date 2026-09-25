@@ -135,7 +135,7 @@ export async function POST(request: Request) {
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
-  const rateLimit = consumeRateLimit({
+  const rateLimit = await consumeRateLimit({
     namespace: "restaurant-reservation",
     identifier: requesterIp,
     limit: RESERVATION_RATE_LIMIT_MAX_REQUESTS,
@@ -144,9 +144,9 @@ export async function POST(request: Request) {
 
   if (!rateLimit.allowed) {
     return NextResponse.json(
-      { ok: false, error: getFormErrorMessage(429) },
+      { ok: false, error: getFormErrorMessage(rateLimit.unavailable ? 503 : 429) },
       {
-        status: 429,
+        status: rateLimit.unavailable ? 503 : 429,
         headers: {
           "Retry-After": String(rateLimit.retryAfterSeconds),
         },

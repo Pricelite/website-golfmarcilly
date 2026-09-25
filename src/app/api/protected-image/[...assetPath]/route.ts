@@ -26,12 +26,13 @@ function isValidPathSegment(segment: string): boolean {
     segment.length > 0 &&
     segment !== "." &&
     segment !== ".." &&
+    !segment.includes("/") &&
     !segment.includes("\\") &&
     !segment.includes("\0")
   );
 }
 
-function sanitizeAssetPath(assetPath: string[] | undefined): string | null {
+export function sanitizeAssetPath(assetPath: string[] | undefined): string | null {
   if (!assetPath || assetPath.length === 0) {
     return null;
   }
@@ -88,7 +89,11 @@ export async function GET(
     );
   }
 
-  const filePath = path.join(process.cwd(), "public", sanitizedPath);
+  const publicRoot = path.resolve(process.cwd(), "public");
+  const filePath = path.resolve(publicRoot, sanitizedPath);
+  if (!filePath.startsWith(`${publicRoot}${path.sep}`)) {
+    return NextResponse.json({ error: "Invalid image source." }, { status: 400 });
+  }
 
   try {
     const buffer = await readFile(filePath);

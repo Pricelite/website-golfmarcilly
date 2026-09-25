@@ -1,5 +1,7 @@
 # Checklist Mise En Prod
 
+> Document historique. Le parcours actuel d'initiation est une demande par email avec paiement sur place. Avant tout déploiement du code récent, appliquer aussi `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` et configurer le traitement planifié décrit dans `README.md`. L'endpoint de file de secours accepte désormais uniquement `POST`.
+
 Cette checklist sert a finaliser la mise en production du site apres les phases de durcissement.
 
 ## 1. Migrations Supabase
@@ -74,8 +76,7 @@ Avec token ops :
 
 Verifier :
 
-- `GET /api/ops/fallback-queue`
-- ou `POST /api/ops/fallback-queue`
+- `POST /api/ops/fallback-queue`
 - header : `Authorization: Bearer <OPS_CRON_TOKEN>`
 
 Attendus :

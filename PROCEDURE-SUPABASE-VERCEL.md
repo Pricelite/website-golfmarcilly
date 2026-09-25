@@ -1,5 +1,7 @@
 # Procedure Supabase et Variables de Production
 
+> Document historique. Appliquer également `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` avant le code actuel. Le parcours d'initiation en service repose sur l'email et le paiement sur place ; voir `README.md` pour la file de secours persistante et son traitement planifié.
+
 Ce document sert a executer la prochaine etape apres les phases de durcissement :
 
 - appliquer la migration Supabase critique
