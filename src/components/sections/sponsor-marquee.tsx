@@ -8,8 +8,8 @@ const sponsorsWithLogos = partners.flatMap((partner) =>
 
 export function SponsorMarquee() {
   return (
-    <section aria-label="Nos sponsors et partenaires" className="border-b border-emerald-950/10 bg-white py-5">
-      <p className="mb-4 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-emerald-950/45">Ils nous accompagnent</p>
+    <section aria-label="Nos sponsors et partenaires" className="sponsor-marquee border-b border-emerald-950/10 bg-white py-5">
+      <p className="mb-4 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-emerald-950/45 underline underline-offset-4">Ils nous accompagnent</p>
       <div className="sponsor-marquee-viewport overflow-hidden" role="group" aria-label="Sponsors du Golf de Marcilly">
         <div className="sponsor-marquee-track flex w-max">
           {[false, true].map((duplicate) => (

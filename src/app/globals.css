@@ -43,7 +43,7 @@ img {
   animation: sponsor-marquee-scroll 100s linear infinite;
 }
 
-.sponsor-marquee-track:has(li:hover) {
+.sponsor-marquee:hover .sponsor-marquee-track {
   animation-play-state: paused;
 }
 
