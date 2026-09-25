@@ -37,7 +37,7 @@ export function HeroPhotoCarousel() {
         </div>
       ))}
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center rounded-full bg-emerald-950/90 px-2 text-white shadow-lg">
-        <button type="button" aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"} className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => setPaused(!isPaused)}>
+        <button type="button" aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"} className="site-button flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => setPaused(!isPaused)}>
           <span aria-hidden="true">{isPaused ? "▶" : "Ⅱ"}</span>
         </button>
         {heroPhotos.map((photo, index) => (

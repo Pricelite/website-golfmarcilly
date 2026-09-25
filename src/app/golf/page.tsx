@@ -47,7 +47,7 @@ export default function GolfPage() {
         <SectionTitle
           as="h1"
           description="Le domaine propose plusieurs façons de jouer et de progresser : grand parcours, format court, entraînement et activités groupes."
-          eyebrow="Golf Orléans"
+          eyebrow="Golf de Marcilly-Orléans"
           title="Des parcours complémentaires pour tous les niveaux"
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">

@@ -6,7 +6,7 @@ import { eventsInMonth, eventsOnDay, formatCalendarDate, isPastEvent, monthDays 
 import { siteConfig } from "@/data/site";
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-const buttonClass = "inline-flex min-h-11 items-center justify-center rounded-full border border-emerald-950/20 px-4 text-sm font-medium transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
+const buttonClass = "site-button inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
 
 function eventStyle(event: AssociationEvent, today: string) {
   if (isPastEvent(event, today)) return "border-slate-400 bg-slate-100 text-slate-600";
@@ -115,7 +115,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <div className="p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h4 className="font-serif text-xl">{selectedDay ? `Le ${formatCalendarDate(selectedDay)}` : "Les épreuves du mois"}</h4>
-          {selectedDay ? <button type="button" className="text-sm underline underline-offset-4" onClick={() => setSelectedDay(null)}>Afficher tout le mois</button> : null}
+          {selectedDay ? <button type="button" className="site-button rounded-full px-4 py-2 text-sm" onClick={() => setSelectedDay(null)}>Afficher tout le mois</button> : null}
         </div>
         {visibleEvents.length === 0 ? <p className="text-sm leading-7 text-emerald-900/70">Aucune épreuve publiée pour {selectedDay ? "cette date" : "ce mois"}.</p> : <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visibleEvents.map(event => <li key={event.id}>

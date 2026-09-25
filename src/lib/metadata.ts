@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/data/site";
 
 const defaultKeywords = [
-  "Golf Orleans",
+  "Golf de Marcilly-Orléans",
   "Golf Loiret",
   "Golf pres d'Orleans",
   "Green fee Orleans",
-  "Restaurant golf Orleans",
-  "Cours de golf Orleans",
-  "Seminaire golf Orleans",
+  "Restaurant golf de Marcilly-Orléans",
+  "Cours de golf de Marcilly-Orléans",
+  "Seminaire golf de Marcilly-Orléans",
   "Initiation golf Loiret",
 ];
 

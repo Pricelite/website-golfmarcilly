@@ -55,7 +55,7 @@ export const posts: Post[] = [
     coverImage: "/restaurant/hero.jpg",
     readingTime: "3 min",
     seoDescription:
-      "Restaurant golf Orléans : un lieu crédible pour vos déjeuners d'affaires dans le Loiret.",
+      "Restaurant golf de Marcilly-Orléans : un lieu crédible pour vos déjeuners d'affaires dans le Loiret.",
     content: [
       "Un restaurant de golf apporte une sensation immédiate d'espace, de calme et de distinction sans tomber dans le formalisme.",
       "La Bergerie permet de prolonger un rendez-vous professionnel autour d'une table élégante, avec un service adapté aux contraintes de temps.",

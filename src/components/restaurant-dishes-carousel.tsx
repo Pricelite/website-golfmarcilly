@@ -107,7 +107,7 @@ export function RestaurantDishesCarousel({
           <>
             <button
               aria-label="Image précédente"
-              className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/85 text-xl text-emerald-950 shadow-lg shadow-black/10 transition hover:-translate-y-[calc(50%+2px)] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
+              className="site-button absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-xl shadow-lg shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
               onClick={goToPrevious}
               type="button"
             >
@@ -115,7 +115,7 @@ export function RestaurantDishesCarousel({
             </button>
             <button
               aria-label="Image suivante"
-              className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/85 text-xl text-emerald-950 shadow-lg shadow-black/10 transition hover:-translate-y-[calc(50%+2px)] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
+              className="site-button absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-xl shadow-lg shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
               onClick={goToNext}
               type="button"
             >
@@ -133,7 +133,7 @@ export function RestaurantDishesCarousel({
       </div>
       {items.length > 1 ? (
         <div className="flex flex-wrap items-center justify-center gap-2 border-t border-emerald-950/8 px-5 py-4">
-          <button type="button" className="h-11 rounded-full px-3 text-sm text-emerald-950 hover:bg-stone-100" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}>{isPaused ? "Lecture" : "Pause"}</button>
+          <button type="button" className="site-button h-11 rounded-full px-3 text-sm" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}>{isPaused ? "Lecture" : "Pause"}</button>
           {items.map((item, index) => {
             const isActive = index === activeIndex;
 

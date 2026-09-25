@@ -58,9 +58,21 @@ export default function PartnersPage() {
                 <span className="text-xs font-semibold tracking-[0.2em] text-emerald-700">{String(index + 1).padStart(2, "0")}</span>
                 <div className="flex flex-1 items-center justify-center py-4 text-center">
                   {partner.logo ? (
-                    <div className="relative h-16 w-full">
-                      <Image src={partner.logo} alt={partner.name} fill sizes="240px" className="object-contain" />
-                    </div>
+                    partner.website ? (
+                      <a
+                        href={partner.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Visiter le site de ${partner.name} (nouvel onglet)`}
+                        className="relative block h-20 w-full rounded-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"
+                      >
+                        <Image src={partner.logo} alt={partner.name} fill sizes="240px" className="object-contain" />
+                      </a>
+                    ) : (
+                      <div className="relative h-20 w-full">
+                        <Image src={partner.logo} alt={partner.name} fill sizes="240px" className="object-contain" />
+                      </div>
+                    )
                   ) : (
                     <h3 className="font-serif text-2xl text-emerald-950">{partner.name}</h3>
                   )}

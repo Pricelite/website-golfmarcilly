@@ -14,7 +14,7 @@ export default function NotFound() {
         événements du Golf de Marcilly.
       </p>
       <Link
-        className="mt-8 inline-flex rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-stone-50"
+        className="site-button mt-8 inline-flex rounded-full px-5 py-3 text-sm font-semibold"
         href="/"
       >
         Retour à l&apos;accueil
