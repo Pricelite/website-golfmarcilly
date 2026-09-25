@@ -4,9 +4,8 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom";
 
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
-import { getRestaurantDays, parseReservationPayload } from "@/lib/restaurant/validation";
+import { getRestaurantDays, getRestaurantTimeSlots, parseReservationPayload } from "@/lib/restaurant/validation";
 
-import { generateTimeSlots } from "@/lib/restaurant/slots";
 
 type RestaurantReservationModalProps = {
   triggerLabel?: string;
@@ -29,7 +28,7 @@ type DayOption = {
 };
 
 const DEFAULT_TRIGGER_CLASS_NAME =
-  "inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
+  "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-900/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
 
 const SUCCESS_MESSAGE =
   "Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre réservation.";
@@ -108,7 +107,7 @@ export default function RestaurantReservationModal({
   const descriptionId = useId();
 
   const dayOptions = useMemo(() => isOpen ? getNextDays() : [], [isOpen]);
-  const slots = useMemo(() => generateTimeSlots("12:00", "14:30", 30), []);
+  const slots = useMemo(() => selectedDay ? getRestaurantTimeSlots(selectedDay) : [], [selectedDay]);
 
   useEffect(() => {
     setIsClient(true);
@@ -296,7 +295,7 @@ export default function RestaurantReservationModal({
         ref={triggerRef}
         type="button"
         onClick={openModal}
-        className={triggerClassName}
+        className={`site-button ${triggerClassName}`}
       >
         {triggerLabel}
       </button>
@@ -332,7 +331,7 @@ export default function RestaurantReservationModal({
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-emerald-900/20 text-xl text-emerald-900 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                  className="site-button inline-flex h-10 w-10 items-center justify-center rounded-full text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                   aria-label="Fermer"
                 >
                   ×
@@ -350,24 +349,18 @@ export default function RestaurantReservationModal({
                           <button
                             key={day.iso}
                             type="button"
+                            aria-pressed={isSelected}
                             onClick={() => {
                               setSelectedDay(day.iso);
+                              setSelectedTime(null);
                               setFormError("");
                               setApiError("");
                               setSuccessMessage("");
                             }}
-                            className={`rounded-xl border px-3 py-2 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${
-                              isSelected
-                                ? "border-emerald-800 bg-emerald-800 text-white"
-                                : "border-emerald-900/15 bg-white text-emerald-900 hover:bg-emerald-50"
-                            }`}
+                            className={`site-button rounded-xl px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${isSelected ? "ring-2 ring-emerald-800" : ""}`}
                           >
                             <span className="block font-semibold">{day.weekday}</span>
-                            <span
-                              className={`block text-xs ${
-                                isSelected ? "text-emerald-100" : "text-emerald-800/75"
-                              }`}
-                            >
+                            <span className="block text-xs opacity-75">
                               {day.dateLabel}
                             </span>
                             <span className="sr-only">{day.longLabel}</span>
@@ -384,17 +377,14 @@ export default function RestaurantReservationModal({
                           <button
                             key={slot}
                             type="button"
+                            aria-pressed={isSelected}
                             onClick={() => {
                               setSelectedTime(slot);
                               setFormError("");
                               setApiError("");
                               setSuccessMessage("");
                             }}
-                            className={`rounded-xl border px-3 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${
-                              isSelected
-                                ? "border-emerald-800 bg-emerald-800 text-white"
-                                : "border-emerald-900/15 bg-white text-emerald-900 hover:bg-emerald-50"
-                            }`}
+                            className={`site-button rounded-xl px-3 py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${isSelected ? "ring-2 ring-emerald-800" : ""}`}
                           >
                             {slot}
                           </button>
@@ -502,7 +492,7 @@ export default function RestaurantReservationModal({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                    className="site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                   >
                     {isSubmitting ? "Envoi..." : "Envoyer la demande"}
                   </button>
@@ -510,7 +500,7 @@ export default function RestaurantReservationModal({
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                    className="site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                   >
                     Fermer
                   </button>
@@ -525,4 +515,3 @@ export default function RestaurantReservationModal({
     </>
   );
 }
-

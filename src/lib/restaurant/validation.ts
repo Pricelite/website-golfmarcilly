@@ -20,7 +20,12 @@ const MAX_MESSAGE_LENGTH = 1200;
 const MAX_PARTY_SIZE = 30;
 const MIN_ADVANCE_MINUTES = 30;
 const PARIS_TIME_ZONE = "Europe/Paris";
-const ALLOWED_SLOTS = new Set(generateTimeSlots("12:00", "14:30", 30));
+
+export function getRestaurantTimeSlots(day: string): string[] {
+  const weekday = new Date(`${day}T12:00:00Z`).getUTCDay();
+  if (weekday === 2 || Number.isNaN(weekday)) return [];
+  return generateTimeSlots("12:00", weekday === 0 || weekday === 6 ? "14:30" : "13:30", 30);
+}
 
 function getParisDateTimeKey(date: Date): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -75,7 +80,7 @@ export function getRestaurantDays(now = new Date()): string[] {
     const date = new Date(today + "T12:00:00Z");
     date.setUTCDate(date.getUTCDate() + index);
     return date.toISOString().slice(0, 10);
-  });
+  }).filter((day) => getRestaurantTimeSlots(day).length > 0);
 }
 
 function parseString(value: unknown): string {
@@ -113,7 +118,7 @@ export function parseReservationPayload(payload: unknown, now = new Date()):
     return { ok: false, error: "La date doit être comprise dans les 7 prochains jours." };
   }
 
-  if (!TIME_PATTERN.test(time) || !ALLOWED_SLOTS.has(time)) {
+  if (!TIME_PATTERN.test(time) || !getRestaurantTimeSlots(day).includes(time)) {
     return { ok: false, error: "Créneau invalide." };
   }
 

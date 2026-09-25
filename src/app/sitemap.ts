@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { posts } from "@/data/posts";
-import { siteOffers } from "@/data/offers";
+import { getActiveSiteOffers } from "@/data/offers";
 import { legalContent } from "@/data/legal";
 import { siteConfig } from "@/data/site";
+
+export const revalidate = 60;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
@@ -34,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
-    ...siteOffers.map((offer) => ({
+    ...getActiveSiteOffers().map((offer) => ({
       url: new URL(`/offres/${offer.slug}`, siteConfig.url).toString(),
       changeFrequency: "monthly" as const,
       priority: 0.7,

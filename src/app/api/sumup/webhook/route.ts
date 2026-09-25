@@ -3,6 +3,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { logApiError } from "@/lib/api/logging";
+import { readLimitedTextBody } from "@/lib/api/request-body";
 import {
   getReservationByCheckoutId,
   setReservationStatus,
@@ -134,15 +135,14 @@ export async function POST(request: Request) {
     );
   }
 
-  let rawBody = "";
-  try {
-    rawBody = await request.text();
-  } catch {
+  const body = await readLimitedTextBody(request, 65_536);
+  if (!body.ok) {
     return NextResponse.json(
-      { ok: false, error: "Invalid webhook payload." },
-      { status: 400 }
+      { ok: false, error: body.tooLarge ? "Webhook payload too large." : "Invalid webhook payload." },
+      { status: body.tooLarge ? 413 : 400 }
     );
   }
+  const rawBody = body.text;
 
   if (!isValidWebhookSignature(rawBody, request.headers, webhookSecret)) {
     return NextResponse.json(

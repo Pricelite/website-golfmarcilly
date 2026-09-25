@@ -259,20 +259,20 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
       <button
         aria-haspopup="dialog"
         aria-expanded={isMounted}
-        className="absolute right-4 top-6 inline-flex min-h-16 items-center gap-4 overflow-hidden rounded-[1.6rem] border border-amber-50/70 bg-[linear-gradient(135deg,rgba(255,251,232,0.98),rgba(246,221,142,0.97)_52%,rgba(216,168,66,0.98))] px-7 py-3 text-left text-emerald-950 shadow-[0_22px_48px_rgba(0,0,0,0.24)] ring-1 ring-white/35 transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 sm:right-6 sm:px-8 lg:right-8"
+        className="promo-gold-button relative inline-flex min-h-16 min-w-0 w-full items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-50/70 bg-[linear-gradient(135deg,rgba(255,251,232,0.98),rgba(246,221,142,0.97)_52%,rgba(216,168,66,0.98))] px-2 py-2 text-left text-emerald-950 shadow-lg shadow-emerald-950/15 ring-1 ring-white/35 transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
         onClick={openModal}
         ref={triggerRef}
         type="button"
       >
         <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.28)_38%,transparent_62%)] opacity-70" />
-        <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-emerald-950 text-base font-bold text-amber-100 shadow-md shadow-emerald-950/25">
+        <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-sm font-bold text-amber-100 shadow-md shadow-emerald-950/25">
           %
         </span>
         <span className="relative flex flex-col">
-          <span className="text-[0.68rem] font-bold uppercase tracking-[0.26em] text-emerald-950/70">
+          <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-emerald-950/70">
             Bon plan
           </span>
-          <span className="text-base font-semibold leading-tight sm:text-lg">{label}</span>
+          <span className="text-xs font-semibold leading-tight">{label}</span>
         </span>
       </button>
 
@@ -343,7 +343,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
 
                 <button
                   aria-label="Fermer la fenêtre des offres du moment"
-                  className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-emerald-950/10 bg-white/80 text-2xl text-emerald-950 shadow-sm shadow-emerald-950/10 transition hover:rotate-90 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2"
+                  className="site-button inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl shadow-sm shadow-emerald-950/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2"
                   onClick={() => closeModal()}
                   ref={closeButtonRef}
                   type="button"
@@ -449,14 +449,14 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                             <button
                               aria-label={`Afficher ${offer.title}`}
                               aria-selected={isActive}
-                              className={`h-2.5 rounded-full transition-all duration-300 ${
-                                isActive ? "w-10 bg-emerald-950" : "w-2.5 bg-emerald-950/20 hover:bg-emerald-950/35"
-                              }`}
+                              className="site-button group flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
                               key={offer.slug}
                               onClick={() => goToSlide(index)}
                               role="tab"
                               type="button"
-                            />
+                            >
+                              <span aria-hidden="true" className={`h-2.5 rounded-full transition-all duration-300 group-hover:bg-white ${isActive ? "w-6 bg-emerald-950" : "w-2.5 bg-emerald-950/45"}`} />
+                            </button>
                           );
                         })}
                       </div>
@@ -464,7 +464,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                       <div className="flex items-center gap-3">
                         <button
                           aria-label="Offre précédente"
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-950/10 bg-white text-xl text-emerald-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2"
+                          className="site-button inline-flex h-11 w-11 items-center justify-center rounded-full text-xl shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2"
                           onClick={() => goToPrevious()}
                           type="button"
                         >
@@ -472,7 +472,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                         </button>
                         <button
                           aria-label="Offre suivante"
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-950/10 bg-white text-xl text-emerald-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2"
+                          className="site-button inline-flex h-11 w-11 items-center justify-center rounded-full text-xl shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2"
                           onClick={() => goToNext()}
                           type="button"
                         >

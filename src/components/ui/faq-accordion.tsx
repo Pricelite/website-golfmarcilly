@@ -22,12 +22,12 @@ export function FAQAccordion({
           >
             <button
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+              className="site-button group flex w-full items-center justify-between gap-4 rounded-[24px] px-5 py-4 text-left"
               onClick={() => setOpenIndex(isOpen ? null : index)}
               type="button"
             >
-              <span className="font-medium text-emerald-950">{item.question}</span>
-              <span className="text-xl text-emerald-700">{isOpen ? "−" : "+"}</span>
+              <span className="font-medium">{item.question}</span>
+              <span className="text-xl">{isOpen ? "−" : "+"}</span>
             </button>
             <AnimatePresence initial={false}>
               {isOpen ? (

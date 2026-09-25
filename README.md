@@ -1,6 +1,6 @@
 # Golf de Marcilly - site Next.js
 
-Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase, Google Calendar, SumUp et envoi d'emails transactionnels.
+Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase, Google Calendar et envoi d'emails transactionnels. Le code SumUp est conservé pour les anciennes réservations.
 
 ## Stack
 
@@ -73,10 +73,10 @@ styles/
 - formulaires `contact`, `newsletter` et `devis`
 - demande de reservation restaurant avec email au club + accuse reception client
 - page "Je debute le golf"
-- reservation d'initiation avec creneaux, disponibilites et suivi
+- demande d'initiation à partir des créneaux du calendrier, transmise par email et confirmée manuellement par l'équipe
 - integration Google Calendar pour les initiations
-- integration SumUp pour le paiement initiation
-- page admin de suivi des reservations initiation
+- integration SumUp conservée pour les anciennes réservations ; le parcours actuel prévoit un paiement sur place
+- page admin indiquant la boîte de suivi des demandes actuelles et affichant séparément les anciennes réservations Supabase
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
@@ -111,15 +111,23 @@ Les blocs principaux couvrent :
 État avant déploiement et points à fournir par le propriétaire : [CONSOLIDATION-PRODUCTION.md](CONSOLIDATION-PRODUCTION.md).
 
 - `GET /api/health`
-  Retour public minimal avec l'etat global des services.
+  Retour public léger confirmant que le processus répond ; aucun service tiers n'est sondé.
 - `GET /api/health` avec `Authorization: Bearer <OPS_CRON_TOKEN>`
   Retour detaille interne avec l'etat de configuration et la file fallback.
-- `GET /api/ops/fallback-queue` ou `POST /api/ops/fallback-queue`
-  Traitement manuel/provoque de la file de secours avec `OPS_CRON_TOKEN`.
+- `POST /api/ops/fallback-queue`
+  Traitement de la file de secours avec `OPS_CRON_TOKEN`.
 
 Notes:
 
-- la file `.contact-fallback` reste locale pour l'instant, mais elle expose maintenant un etat exploitable et une retention configurable via `FALLBACK_QUEUE_RETENTION_DAYS`
+- la file de secours est stockée dans Supabase ; appliquer `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` avant le déploiement du code
+- la même migration fournit une limitation de débit partagée en production ; si elle ou Supabase sont indisponibles, les formulaires publics et la connexion admin refusent les nouvelles tentatives
+- configurer `SITE_URL` (variable de dépôt) et `OPS_CRON_TOKEN` (secret de dépôt) pour le traitement planifié par GitHub Actions ; vérifier que la tâche s'exécute après mise en ligne
+- les anciennes données de `.contact-fallback` ne sont pas importées automatiquement : les traiter avant de retirer l'ancien stockage
+- chaque message porte une référence stable dans l'objet de l'email ; si le fournisseur accepte un envoi mais que son accusé de traitement est perdu, une reprise peut encore générer un doublon avec la même référence
+
+Ordre de mise en production pour cette évolution : appliquer la migration SQL, vérifier `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`, configurer la tâche planifiée, puis déployer le code. Vérifier ensuite la vue interne de `/api/health` et déclencher manuellement la tâche GitHub Actions une fois. En cas de retour à une ancienne version du site, conserver la nouvelle table et traiter les messages qui y seraient encore en attente avant de la retirer.
+
+Les mentions légales et la politique de confidentialité attendent encore les informations et la validation du propriétaire (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
 - `OPS_CRON_TOKEN` est reutilise pour les diagnostics internes et les operations cron
 
 ## Verification actuelle
@@ -135,7 +143,7 @@ Au 29 juillet 2026 :
 
 - Le controle `typecheck` passe via `tsconfig.typecheck.json` pour ne pas dependre des artefacts `.next` generes partiellement par `next typegen`.
 - Le build reste la verification la plus complete du projet, car Next y applique aussi ses controles de routes et de metadata.
-- Le parcours d'initiation canonique est maintenant `/initiation/reservation` avec les APIs `/api/slots` et `/api/reservations`.
+- Le parcours d'initiation canonique est `/initiation/reservation` avec les APIs `/api/initiation-options` (créneaux du flux Google privé) et `/api/reservations` (demande envoyée par email). L'équipe confirme la date au visiteur et le règlement se fait sur place. `/api/slots` appartient à l'ancien parcours.
 - L'ancien endpoint `/api/initiation-reservation` est conserve uniquement comme fallback legacy et n'est plus le parcours principal.
 - La reprise globale du projet est documentee dans [COMPTE-RENDU-REPRISE.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/COMPTE-RENDU-REPRISE.md:1).
 - La checklist de mise en production est documentee dans [CHECKLIST-MISE-EN-PROD.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/CHECKLIST-MISE-EN-PROD.md:1).

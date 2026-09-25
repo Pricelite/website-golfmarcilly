@@ -39,11 +39,50 @@ img {
   display: block;
 }
 
+.site-button {
+  border: 1px solid rgba(6, 78, 59, 0.25);
+  background: #fff;
+  color: #064e3b;
+  text-decoration: none;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, translate 180ms ease;
+}
+
+.site-button:focus-visible {
+  outline: 2px solid #047857;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .site-button:not(:disabled):hover {
+    border-color: #065f46;
+    background: #065f46;
+    color: #fff;
+    translate: 0 -2px;
+    animation: site-button-wiggle 220ms ease-in-out 1;
+  }
+
+  .promo-gold-button:hover {
+    animation: site-button-wiggle 220ms ease-in-out 1;
+  }
+}
+
+@keyframes site-button-wiggle {
+  25% { translate: -1px -2px; }
+  75% { translate: 1px -2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-button { transition: none; }
+  .site-button:not(:disabled):hover { translate: none; animation: none; }
+  .promo-gold-button:hover { animation: none; }
+}
+
 .sponsor-marquee-track {
   animation: sponsor-marquee-scroll 100s linear infinite;
 }
 
-.sponsor-marquee:hover .sponsor-marquee-track {
+.sponsor-marquee:hover .sponsor-marquee-track,
+.sponsor-marquee:focus-within .sponsor-marquee-track {
   animation-play-state: paused;
 }
 

@@ -6,7 +6,7 @@ import { processContactFallbackQueue } from "@/lib/contact/fallback-store";
 function methodNotAllowed(): NextResponse {
   return NextResponse.json(
     { ok: false, error: "Method not allowed" },
-    { status: 405, headers: { Allow: "GET, POST" } }
+    { status: 405, headers: { Allow: "POST" } }
   );
 }
 
@@ -63,8 +63,8 @@ async function handleProcessQueue(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  return handleProcessQueue(request);
+export function GET(): NextResponse {
+  return methodNotAllowed();
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

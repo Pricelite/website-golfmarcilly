@@ -142,7 +142,7 @@ export default function InitiationPaymentStatus(props: {
           {error || "Reservation introuvable."}
         </p>
         <Link
-          className="inline-flex rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"
+          className="site-button inline-flex rounded-full px-4 py-2 text-sm font-semibold"
           href="/initiation/reservation"
         >
           Retour a la reservation
@@ -189,14 +189,14 @@ export default function InitiationPaymentStatus(props: {
 
       <div className="flex flex-wrap gap-3">
         <Link
-          className="inline-flex rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"
+          className="site-button inline-flex rounded-full px-4 py-2 text-sm font-semibold"
           href="/initiation/reservation"
         >
           Nouvelle reservation
         </Link>
         {reservation.status !== "PAID" ? (
           <Link
-            className="inline-flex rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800"
+            className="site-button inline-flex rounded-full px-4 py-2 text-sm font-semibold"
             href={`/payment/cancel?reservationId=${reservation.id}`}
           >
             Reessayer
