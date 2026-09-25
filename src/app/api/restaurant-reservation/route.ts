@@ -5,6 +5,7 @@ import { MailerError, sendMail } from "@/lib/email/mailer";
 import { parseReservationPayload, type ReservationRequestBody } from "@/lib/restaurant/validation";
 import { deliverRestaurantRequest } from "@/lib/restaurant/delivery";
 import { getFormErrorMessage } from "@/lib/api/form-feedback";
+import { readJsonBody } from "@/lib/api/request-body";
 import {
   consumeRateLimit,
   hasTrustedOrigin,
@@ -154,18 +155,15 @@ export async function POST(request: Request) {
     );
   }
 
-  let payload: unknown = null;
-
-  try {
-    payload = await request.json();
-  } catch {
+  const body = await readJsonBody(request);
+  if (!body.ok) {
     return NextResponse.json(
-      { ok: false, error: getFormErrorMessage(400) },
-      { status: 400 }
+      { ok: false, error: body.tooLarge ? "Demande trop volumineuse." : getFormErrorMessage(400) },
+      { status: body.tooLarge ? 413 : 400 }
     );
   }
 
-  const parsed = parseReservationPayload(payload);
+  const parsed = parseReservationPayload(body.data);
   if (!parsed.ok) {
     return NextResponse.json({ ok: false, error: parsed.error }, { status: 400 });
   }

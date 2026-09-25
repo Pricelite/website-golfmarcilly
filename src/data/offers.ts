@@ -9,6 +9,7 @@
   originalPrice?: string;
   actionLabel: string;
   actionHref: string;
+  expiresOn?: string;
 };
 
 // Les affiches fournies sont la source des tarifs et conditions ci-dessous.
@@ -37,9 +38,17 @@ export const siteOffers: SiteOffer[] = [
     promoPrice: "Dès 10 €",
     actionLabel: "Réserver un départ",
     actionHref: "https://marcilly.reservations-golf.fr/",
+    expiresOn: "2026-09-30",
   },
 ];
 
-export function getSiteOfferBySlug(slug: string) {
-  return siteOffers.find((offer) => offer.slug === slug);
+export function getActiveSiteOffers(now = new Date()) {
+  const parisDay = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(now);
+  return siteOffers.filter((offer) => !offer.expiresOn || parisDay <= offer.expiresOn);
+}
+
+export function getSiteOfferBySlug(slug: string, now = new Date()) {
+  return getActiveSiteOffers(now).find((offer) => offer.slug === slug);
 }

@@ -10,7 +10,7 @@ import { MapEmbed } from "@/components/ui/map-embed";
 import { SectionTitle } from "@/components/ui/section-title";
 import { courses } from "@/data/courses";
 import { homeHighlights } from "@/data/home";
-import { siteOffers } from "@/data/offers";
+import { getActiveSiteOffers } from "@/data/offers";
 import { posts } from "@/data/posts";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
@@ -23,7 +23,10 @@ export const metadata = buildMetadata({
   path: "/",
 });
 
+export const revalidate = 60;
+
 export default function HomePage() {
+  const activeOffers = getActiveSiteOffers();
   const orderedCourses = [
     courses.find((course) => course.slug === "practice"),
     courses.find((course) => course.slug === "parcours-decouverte-9-trous"),
@@ -38,7 +41,7 @@ export default function HomePage() {
       <Hero
         eyebrow="Bienvenue au Golf de Marcilly"
         primaryCta={{ label: "Réserver un départ", href: siteConfig.reservationUrl }}
-        promoCta={{ label: "Offre du moment", offers: siteOffers }}
+        promoCta={activeOffers.length ? { label: "Offre du moment", offers: activeOffers } : undefined}
         subtitle="Venez jouer sur nos parcours, découvrir le golf ou déjeuner à La Bergerie. À chacun sa façon de profiter de Marcilly."
         tertiaryCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
         competitionCta={{ label: "Calendrier des compétitions", href: "/association-sportive#competitions" }}

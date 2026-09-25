@@ -73,10 +73,10 @@ styles/
 - formulaires `contact`, `newsletter` et `devis`
 - demande de reservation restaurant avec email au club + accuse reception client
 - page "Je debute le golf"
-- reservation d'initiation avec creneaux, disponibilites et suivi
+- demande d'initiation à partir des créneaux du calendrier, transmise par email et confirmée manuellement par l'équipe
 - integration Google Calendar pour les initiations
 - integration SumUp conservée pour les anciennes réservations ; le parcours actuel prévoit un paiement sur place
-- page admin de suivi des reservations initiation
+- page admin indiquant la boîte de suivi des demandes actuelles et affichant séparément les anciennes réservations Supabase
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
@@ -143,7 +143,7 @@ Au 29 juillet 2026 :
 
 - Le controle `typecheck` passe via `tsconfig.typecheck.json` pour ne pas dependre des artefacts `.next` generes partiellement par `next typegen`.
 - Le build reste la verification la plus complete du projet, car Next y applique aussi ses controles de routes et de metadata.
-- Le parcours d'initiation canonique est maintenant `/initiation/reservation` avec les APIs `/api/slots` et `/api/reservations`.
+- Le parcours d'initiation canonique est `/initiation/reservation` avec les APIs `/api/initiation-options` (créneaux du flux Google privé) et `/api/reservations` (demande envoyée par email). L'équipe confirme la date au visiteur et le règlement se fait sur place. `/api/slots` appartient à l'ancien parcours.
 - L'ancien endpoint `/api/initiation-reservation` est conserve uniquement comme fallback legacy et n'est plus le parcours principal.
 - La reprise globale du projet est documentee dans [COMPTE-RENDU-REPRISE.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/COMPTE-RENDU-REPRISE.md:1).
 - La checklist de mise en production est documentee dans [CHECKLIST-MISE-EN-PROD.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/CHECKLIST-MISE-EN-PROD.md:1).

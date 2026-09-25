@@ -4,6 +4,7 @@ import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 import { CalendarStoreError, deleteAssociationEvent, saveAssociationEvent } from "@/lib/association-events-db";
 import { parseEventInput, validEventId } from "@/lib/association-events-validation";
+import { readJsonBody } from "@/lib/api/request-body";
 
 export const runtime = "nodejs";
 
@@ -16,10 +17,9 @@ async function mutate(request: Request) {
     if (!process.env.ADMIN_PASSWORD || !(await isAdminAuthenticated(await cookies()))) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401);
     if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return response({ error: "Origine non autorisée. Rechargez la page." }, 403);
     if (!request.headers.get("content-type")?.includes("application/json")) return response({ error: "Format de demande invalide." }, 415);
-    const raw = await request.text();
-    if (raw.length > 16_000) return response({ error: "Demande trop volumineuse." }, 413);
-    let payload: unknown;
-    try { payload = JSON.parse(raw); } catch { return response({ error: "Demande invalide." }, 400); }
+    const body = await readJsonBody(request);
+    if (!body.ok) return response({ error: body.tooLarge ? "Demande trop volumineuse." : "Demande invalide." }, body.tooLarge ? 413 : 400);
+    const payload = body.data;
     const id = payload && typeof payload === "object" ? (payload as Record<string, unknown>).id : undefined;
     if (request.method !== "POST" && !validEventId(id)) return response({ error: "Identifiant de compétition invalide." }, 400);
     if (request.method === "DELETE") {

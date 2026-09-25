@@ -5,6 +5,7 @@ import {
   storeContactFallbackEntry,
 } from "@/lib/contact/fallback-store";
 import { MailerError, sendMail } from "@/lib/email/mailer";
+import { readJsonBody } from "@/lib/api/request-body";
 import {
   consumeRateLimit,
   hasTrustedOrigin,
@@ -205,23 +206,20 @@ export async function POST(request: Request) {
     );
   }
 
-  let payload: unknown;
-
-  try {
-    payload = await request.json();
-  } catch {
+  const body = await readJsonBody(request);
+  if (!body.ok) {
     return buildLegacyResponse(
       {
         ok: false,
-        error: "Impossible de lire la requête.",
+        error: body.tooLarge ? "Demande trop volumineuse." : "Impossible de lire la requête.",
         legacy: true,
         recommendedPath: RECOMMENDED_INITIATION_PATH,
       },
-      400
+      body.tooLarge ? 413 : 400
     );
   }
 
-  const parsed = parsePayload(payload);
+  const parsed = parsePayload(body.data);
   if (!parsed.ok) {
     return buildLegacyResponse(
       {

@@ -48,7 +48,8 @@ export async function POST(request: Request) {
 
   const bodyResult = await readJsonBody<Record<string, unknown>>(request);
   if (!bodyResult.ok) {
-    return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
+    const status = bodyResult.tooLarge ? 413 : 400;
+    return NextResponse.json({ error: bodyResult.tooLarge ? "Demande trop volumineuse." : getFormErrorMessage(400) }, { status });
   }
 
   const email = parseTrimmedString(bodyResult.data.email).toLowerCase();
