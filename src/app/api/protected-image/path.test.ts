@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { sanitizeAssetPath } from "./[...assetPath]/route";
+import { sanitizeAssetPath } from "@/lib/protected-image-path";
 
 test("protected image path rejects encoded traversal and accepts normal images", () => {
   assert.equal(sanitizeAssetPath(["images", "photo.png"]), "images/photo.png");
