@@ -259,7 +259,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
       <button
         aria-haspopup="dialog"
         aria-expanded={isMounted}
-        className="relative inline-flex min-h-16 min-w-0 w-full items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-50/70 bg-[linear-gradient(135deg,rgba(255,251,232,0.98),rgba(246,221,142,0.97)_52%,rgba(216,168,66,0.98))] px-2 py-2 text-left text-emerald-950 shadow-lg shadow-emerald-950/15 ring-1 ring-white/35 transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
+        className="promo-gold-button relative inline-flex min-h-16 min-w-0 w-full items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-50/70 bg-[linear-gradient(135deg,rgba(255,251,232,0.98),rgba(246,221,142,0.97)_52%,rgba(216,168,66,0.98))] px-2 py-2 text-left text-emerald-950 shadow-lg shadow-emerald-950/15 ring-1 ring-white/35 transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
         onClick={openModal}
         ref={triggerRef}
         type="button"
@@ -449,14 +449,14 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                             <button
                               aria-label={`Afficher ${offer.title}`}
                               aria-selected={isActive}
-                              className={`h-2.5 rounded-full transition-all duration-300 ${
-                                isActive ? "w-10 bg-emerald-950" : "w-2.5 bg-emerald-950/20 hover:bg-emerald-950/35"
-                              }`}
+                              className="site-button group flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
                               key={offer.slug}
                               onClick={() => goToSlide(index)}
                               role="tab"
                               type="button"
-                            />
+                            >
+                              <span aria-hidden="true" className={`h-2.5 rounded-full transition-all duration-300 group-hover:bg-white ${isActive ? "w-6 bg-emerald-950" : "w-2.5 bg-emerald-950/45"}`} />
+                            </button>
                           );
                         })}
                       </div>

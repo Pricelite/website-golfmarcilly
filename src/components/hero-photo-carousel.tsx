@@ -41,8 +41,8 @@ export function HeroPhotoCarousel() {
           <span aria-hidden="true">{isPaused ? "▶" : "Ⅱ"}</span>
         </button>
         {heroPhotos.map((photo, index) => (
-          <button key={photo.src} type="button" aria-label={`Afficher la photo ${index + 1} : ${photo.alt}`} aria-pressed={active === index} className="flex h-11 w-9 items-center justify-center rounded-full hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => { setActive(index); setPaused(true); }}>
-            <span aria-hidden="true" className={`h-2 rounded-full transition-all motion-reduce:transition-none ${active === index ? "w-5 bg-white" : "w-2 bg-white/50"}`} />
+          <button key={photo.src} type="button" aria-label={`Afficher la photo ${index + 1} : ${photo.alt}`} aria-pressed={active === index} className="site-button group flex h-11 w-9 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => { setActive(index); setPaused(true); }}>
+            <span aria-hidden="true" className={`h-2 rounded-full transition-all motion-reduce:transition-none group-hover:bg-white ${active === index ? "w-5 bg-emerald-950" : "w-2 bg-emerald-950/45"}`} />
           </button>
         ))}
       </div>

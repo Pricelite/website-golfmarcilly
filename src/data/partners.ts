@@ -13,7 +13,7 @@ export const partners: Partner[] = [
   { name: "Menuiserie GODEL", logo: "/partners/menuiserie-godel.png", website: "https://menuiseriegodel.fr/" },
   { name: "RENOV’ CENTRE" },
   { name: "WAGC", logo: "/partners/wagc.png", website: "https://wagc-france.com/" },
-  { name: "T’Libre Max", logo: "/partners/t-libre-max.webp", website: "https://www.helloasso.com/associations/t-libre-max/adhesions/adhesion-t-libre-max" },
+  { name: "T’Libre Max", logo: "/partners/t-libre-max.webp", website: "https://www.helloasso.com/associations/t-libre-max" },
   { name: "Maserati", logo: "/partners/maserati.svg", website: "https://www.maserati.com/fr/fr" },
   { name: "KIA", logo: "/partners/kia.svg", website: "https://www.kia.com/fr/" },
   { name: "Crit", logo: "/partners/crit.svg", website: "https://www.crit-job.com/" },

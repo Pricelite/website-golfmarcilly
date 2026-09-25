@@ -140,12 +140,12 @@ export function RestaurantDishesCarousel({
             return (
               <button
                 aria-label={`Afficher ${item.title}`}
-                className="flex h-11 w-6 items-center justify-center rounded-full hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-emerald-800"
+                className="site-button group flex h-11 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-emerald-800"
                 key={item.src}
                 onClick={() => { goToSlide(index); setIsPaused(true); }}
                 aria-pressed={isActive}
                 type="button"
-              ><span aria-hidden="true" className={`h-2 rounded-full ${isActive ? "w-6 bg-emerald-950" : "w-2 bg-emerald-950/25"}`} /></button>
+              ><span aria-hidden="true" className={`h-2 rounded-full group-hover:bg-white ${isActive ? "w-4 bg-emerald-950" : "w-2 bg-emerald-950/45"}`} /></button>
             );
           })}
         </div>

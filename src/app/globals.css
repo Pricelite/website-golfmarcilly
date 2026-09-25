@@ -60,6 +60,10 @@ img {
     translate: 0 -2px;
     animation: site-button-wiggle 220ms ease-in-out 1;
   }
+
+  .promo-gold-button:hover {
+    animation: site-button-wiggle 220ms ease-in-out 1;
+  }
 }
 
 @keyframes site-button-wiggle {
@@ -70,6 +74,7 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .site-button { transition: none; }
   .site-button:not(:disabled):hover { translate: none; animation: none; }
+  .promo-gold-button:hover { animation: none; }
 }
 
 .sponsor-marquee-track {
