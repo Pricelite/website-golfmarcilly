@@ -3,7 +3,7 @@ import Image from "next/image";
 import { partners } from "@/data/partners";
 
 const sponsorsWithLogos = partners.flatMap((partner) =>
-  partner.logo && partner.website
+  partner.logo && partner.website && partner.showInMarquee !== false
     ? [{ name: partner.name, logo: partner.logo, website: partner.website }]
     : [],
 );
@@ -31,7 +31,7 @@ export function SponsorMarquee() {
                       width={160}
                       height={56}
                       sizes="160px"
-                      className="h-14 w-40 object-contain"
+                      className={partner.name === "T’Libre Max" ? "h-16 w-44 object-contain" : "h-14 w-40 object-contain"}
                     />
                   </a>
                 </li>
