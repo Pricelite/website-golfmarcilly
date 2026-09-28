@@ -4,13 +4,13 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { siteConfig } from "@/data/site";
-import { juniorPrograms, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
+import { adultCollectiveCoursePosterSrc, juniorPrograms, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
   title: "Enseignement",
-  description: "École de golf de 4 à 18 ans, horaires et tarifs enfants, découverte adultes et contacts des enseignants du Golf de Marcilly près d’Orléans.",
+  description: "École de golf de 4 à 18 ans, cours collectifs et particuliers pour adultes, et contacts des enseignants du Golf de Marcilly près d’Orléans.",
   path: "/enseignement",
 });
 
@@ -65,22 +65,36 @@ export default function TeachingPage() {
       <section id="adultes" className="scroll-mt-28 bg-emerald-950">
         <div className={sectionClass}>
           <SectionTitle tone="inverse" eyebrow="Cours adultes" title="Découvrir ou aller plus loin" />
-          <div className="mt-8 grid gap-8 md:grid-cols-2">
-            <article className="flex flex-col border-t border-white/25 pt-6">
+          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:grid-rows-2">
+            <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8 lg:col-start-1 lg:row-start-1">
               <h3 className="font-serif text-2xl text-stone-50">Vous débutez ?</h3>
               <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Commencez par une journée découverte pour faire vos premiers pas dans le golf.</p>
               <CTAButton href="/initiation/reservation" variant="secondary" className="self-start">Réserver une initiation</CTAButton>
             </article>
-            <article className="flex flex-col border-t border-white/25 pt-6">
-              <h3 className="font-serif text-2xl text-stone-50">Vous jouez déjà ?</h3>
-              <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Pour vous perfectionner, échangez avec un pro diplômé. Expliquez votre niveau, vos objectifs et le temps que vous souhaitez consacrer à votre pratique.</p>
-              <CTAButton href="#enseignants" variant="secondary" className="self-start">Contacter un enseignant</CTAButton>
+            <article className="grid gap-6 rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8 md:grid-cols-[minmax(0,1fr)_minmax(170px,220px)] md:items-center lg:col-start-2 lg:row-span-2 lg:row-start-1">
+              <div className="flex flex-col items-start">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Apprendre ensemble</p>
+                <h3 className="mt-3 font-serif text-2xl text-stone-50">Cours collectifs adultes</h3>
+                <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez l’accueil pour connaître les dates et les modalités.</p>
+                <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent("Cours collectifs adultes")}`} variant="secondary" className="mt-6">Demander les dates des cours collectifs</CTAButton>
+              </div>
+              <a href={adultCollectiveCoursePosterSrc} target="_blank" rel="noopener noreferrer" aria-label="Voir l’affiche des cours collectifs en grand (nouvel onglet)" className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                <span className="relative block aspect-[2/3] overflow-hidden rounded-2xl bg-white">
+                  <Image src={adultCollectiveCoursePosterSrc} alt="Affiche des cours collectifs adultes : 20 séances d’une heure, 200 €" fill sizes="(max-width: 768px) 100vw, 220px" className="object-contain" />
+                </span>
+                <span className="mt-3 block text-sm font-semibold text-stone-50 underline underline-offset-4 group-hover:text-emerald-200">Voir l’affiche en grand <span aria-hidden="true">↗</span></span>
+              </a>
+            </article>
+            <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8 lg:col-start-1 lg:row-start-2">
+              <h3 className="font-serif text-2xl text-stone-50">Cours particuliers</h3>
+              <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Pour un accompagnement individuel, contactez directement le pro de votre choix. Ses coordonnées figurent ci-dessous ; il pourra vous préciser ses disponibilités et ses tarifs.</p>
+              <CTAButton href="#enseignants" variant="secondary" className="self-start">Contacter les pros</CTAButton>
             </article>
           </div>
         </div>
       </section>
       <section id="enseignants" className={sectionClass}>
-        <SectionTitle eyebrow="Nos pros" title="Un contact direct avec votre enseignant" description="Échangez avant votre prochain cours et consultez les formules et tarifs sur le site de chaque pro." />
+        <SectionTitle eyebrow="Nos pros" title="Un contact direct avec votre enseignant" description="Pour un cours particulier, appelez ou écrivez directement au pro de votre choix. Vous pouvez aussi consulter ses formules et tarifs sur son site." />
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {teachingPros.map((pro) => (
             <article key={pro.name} className="flex min-w-0 flex-col overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
