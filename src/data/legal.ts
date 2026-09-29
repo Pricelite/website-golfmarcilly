@@ -6,12 +6,13 @@
  */
 export const legalContent = {
   reviewed: false,
-  // TODO : identité de l'éditeur, forme juridique, siège et identifiants applicables.
-  publisherIdentity: "",
+  // Source : https://annuaire-entreprises.data.gouv.fr/entreprise/334925419
+  // Consultée le 29 septembre 2026 ; à revalider lors de la publication.
+  publisherIdentity: "GOLF DE MARCILLY - ORLEANS, société par actions simplifiée (SAS), SIREN 334 925 419, SIRET 334 925 419 00015, siège social : Domaine de la Plaine, 45240 Marcilly-en-Villette.",
   // TODO : responsable de publication confirmé par le propriétaire.
   publicationDirector: "",
-  // TODO : nom, adresse et coordonnées de l'hébergeur réellement retenu.
-  hostingDetails: "",
+  // Source : https://vercel.com/legal/privacy-notice (consultée le 29 septembre 2026).
+  hostingDetails: "Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis. Contact : privacy@vercel.com.",
   // TODO : responsable des traitements et contact confirmé.
   dataController: "",
   // TODO : finalités et bases légales validées pour chaque traitement effectivement utilisé.
