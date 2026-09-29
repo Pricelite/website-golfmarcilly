@@ -13,7 +13,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Administration du golf",
-  description: "Tableau de bord des réservations d'initiation.",
+  description: "Suivi des demandes d'initiation par email et archives des anciennes réservations.",
   alternates: { canonical: absoluteUrl("/admin") },
   robots: {
     index: false,
@@ -181,6 +181,21 @@ function AdminLogin(props: { error?: string; next?: string }) {
   );
 }
 
+function CurrentInitiationRequests() {
+  const inbox = process.env.EMAIL_TO?.trim() || "golf@marcilly.com";
+  return (
+    <section className="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-lg shadow-emerald-900/10">
+      <h2 className="font-serif text-2xl text-emerald-950">Demandes d’initiation actuelles</h2>
+      <p className="mt-3 text-sm leading-7 text-emerald-900/80">
+        Le formulaire actuel transmet les demandes à la boîte <strong>{inbox}</strong>. Consultez-y les messages dont l’objet commence par <strong>[Initiation] Demande pour le</strong>, puis répondez au visiteur pour confirmer le créneau. Aucun créneau ni paiement n’est enregistré automatiquement.
+      </p>
+      <p className="mt-3 text-sm leading-7 text-emerald-900/80">
+        Les demandes reçues par email ne figurent pas dans les archives ci-dessous. En cas d’échec d’envoi, le formulaire affiche une erreur au visiteur.
+      </p>
+    </section>
+  );
+}
+
 export default async function AdminPage(props: AdminPageProps) {
   const searchParams = await props.searchParams;
   const cookieStore = await cookies();
@@ -200,7 +215,7 @@ export default async function AdminPage(props: AdminPageProps) {
     await markExpiredPendingReservations();
     reservations = await listReservationsForAdmin();
   } catch {
-    return <div className="mx-auto max-w-5xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><Link className="mt-6 inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><p role="alert" className="mt-6">Les réservations d’initiation sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="mt-4 underline">Déconnexion</button></form></div>;
+    return <div className="mx-auto max-w-5xl space-y-6 px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><CurrentInitiationRequests /><Link className="inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><p role="alert">Les archives des anciennes réservations sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="underline">Déconnexion</button></form></div>;
   }
   const slotSummary = buildSlotSummary(reservations);
 
@@ -235,10 +250,10 @@ export default async function AdminPage(props: AdminPageProps) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="font-[var(--font-display)] text-3xl text-emerald-950">
-              Admin initiation
+              Administration du golf
             </h1>
             <p className="mt-1 text-sm text-emerald-900/70">
-              Réservations, participants et paiements.
+              Demandes actuelles par email et anciennes réservations.
             </p>
           </div>
           <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/competitions">Gérer les compétitions</Link>
@@ -251,6 +266,11 @@ export default async function AdminPage(props: AdminPageProps) {
             </button>
           </form>
         </div>
+
+        <div className="mt-6"><CurrentInitiationRequests /></div>
+
+        <h2 className="mt-8 font-serif text-2xl text-emerald-950">Archives des anciennes réservations</h2>
+        <p className="mt-2 text-sm text-emerald-900/70">Les chiffres et listes qui suivent proviennent uniquement de l’ancien parcours Supabase.</p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-4">
           <article className="rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-4">
@@ -290,7 +310,7 @@ export default async function AdminPage(props: AdminPageProps) {
 
       <section className="mt-6 rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-lg shadow-emerald-900/10">
         <h2 className="text-xl font-semibold text-emerald-950">
-          Participants par créneau
+          Participants par ancien créneau
         </h2>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/85">
@@ -348,7 +368,7 @@ export default async function AdminPage(props: AdminPageProps) {
 
       <section className="mt-6 rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-lg shadow-emerald-900/10">
         <h2 className="text-xl font-semibold text-emerald-950">
-          Liste des réservations
+          Anciennes réservations
         </h2>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-emerald-900/85">

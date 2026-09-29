@@ -4,23 +4,11 @@ import type { NextRequest } from "next/server";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 
 function isPublicAdminPath(pathname: string): boolean {
-  return (
-    pathname === "/admin" ||
-    pathname === "/admin/login" ||
-    pathname === "/admin/logout"
-  );
+  return pathname === "/admin" || pathname === "/admin/login" || pathname === "/admin/logout";
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-
-  if (
-    pathname.startsWith("/images/") ||
-    pathname.startsWith("/restaurant/") ||
-    pathname === "/sarahgratte.png"
-  ) {
-    return new NextResponse("Not found", { status: 404 });
-  }
 
   if (pathname.startsWith("/admin") && !isPublicAdminPath(pathname)) {
     const isAuthenticated = Boolean(process.env.ADMIN_PASSWORD) && await isAdminAuthenticated(request.cookies);
@@ -34,11 +22,4 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: [
-    "/images/:path*",
-    "/restaurant/:path*",
-    "/sarahgratte.png",
-    "/admin/:path*",
-  ],
-};
+export const config = { matcher: ["/admin/:path*"] };

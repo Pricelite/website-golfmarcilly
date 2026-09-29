@@ -1,5 +1,7 @@
 # Consolidation avant mise en production
 
+> État historique : la file `.contact-fallback` décrite plus bas a été remplacée dans le code actuel par une file Supabase. Voir `README.md` et `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` avant déploiement.
+
 ## Référencement
 
 - Le sitemap est généré depuis les pages publiques, les articles et les offres de `src/data/offers.ts`. Il inclut les entrées débutants et cours. Retirer une offre des données lors de son retrait commercial supprime aussi son entrée du sitemap ; aucune date d'expiration n'a été inventée.

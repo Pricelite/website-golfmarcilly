@@ -25,7 +25,7 @@ export default function HeroBackButton({ className }: HeroBackButtonProps) {
 
   return (
     <button
-      className={`inline-flex items-center gap-2 rounded-full border border-emerald-900/15 bg-emerald-50/80 px-4 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-900/25 hover:bg-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 ${
+      className={`site-button inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 ${
         className ?? ""
       }`}
       type="button"

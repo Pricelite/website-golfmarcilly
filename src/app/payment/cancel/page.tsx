@@ -33,7 +33,7 @@ export default async function PaymentCancelPage(props: PaymentCancelPageProps) {
         </div>
         <div className="mt-6">
           <Link
-            className="inline-flex rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"
+            className="site-button inline-flex rounded-full px-4 py-2 text-sm font-semibold"
             href="/initiation/reservation"
           >
             Retour à la réservation

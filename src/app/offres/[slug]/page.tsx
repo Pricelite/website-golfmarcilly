@@ -15,6 +15,8 @@ export async function generateStaticParams() {
   return siteOffers.map((offer) => ({ slug: offer.slug }));
 }
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: OfferPageProps) {
   const { slug } = await params;
   const offer = getSiteOfferBySlug(slug);

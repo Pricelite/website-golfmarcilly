@@ -30,14 +30,14 @@ export default function Error({
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button
-              className="inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/20 transition hover:-translate-y-0.5 hover:bg-emerald-800"
+              className="site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-900/20"
               type="button"
               onClick={() => reset()}
             >
               Réessayer
             </button>
             <Link
-              className="inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"
+              className="site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold"
               href="/"
             >
               Retour à l&apos;accueil

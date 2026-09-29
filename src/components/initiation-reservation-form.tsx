@@ -70,7 +70,7 @@ export default function InitiationReservationForm() {
         {loading ? <p role="status" className="mt-4 text-sm text-emerald-900">Actualisation des créneaux…</p> : null}
         {calendarError ? <p role="alert" className="mt-4 text-sm text-red-800">{calendarError}</p> : null}
         {!loading && !calendarError && slots.length === 0 ? <p role="status" className="mt-4 text-sm text-emerald-900">Aucun créneau d’initiation n’est proposé pour le moment.</p> : null}
-        <button type="button" onClick={() => { void loadSlots(); }} disabled={loading} className="mt-3 text-sm text-emerald-900 underline disabled:opacity-50">Actualiser les créneaux</button>
+        <button type="button" onClick={() => { void loadSlots(); }} disabled={loading} className="site-button mt-3 rounded-full px-4 py-2 text-sm disabled:opacity-50">Actualiser les créneaux</button>
         <div className="mt-6 space-y-5 text-sm text-emerald-900">
           <label className="block">Date souhaitée<select required disabled={dates.length === 0} value={selectedDate} onChange={e => { setDate(e.target.value); setTime(""); }} className={field}><option value="">Choisir une date</option>{dates.map(day => <option key={day} value={day}>{new Intl.DateTimeFormat("fr-FR", { dateStyle: "full", timeZone: "Europe/Paris" }).format(new Date(`${day}T12:00:00Z`))}</option>)}</select></label>
           <fieldset>
@@ -101,7 +101,7 @@ export default function InitiationReservationForm() {
           <label className="block">Téléphone<input name="phone" type="tel" autoComplete="tel" maxLength={30} required className={field} /></label>
           <label className="block">Commentaire (facultatif)<textarea name="note" rows={3} maxLength={2000} className={field} /></label>
           <p className="leading-6">Cette demande ne vaut pas réservation. Nous vous répondrons par e-mail pour confirmer la date et l’horaire.</p>
-          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} className="w-full rounded-full bg-emerald-900 px-5 py-3 font-semibold text-white disabled:opacity-60">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
+          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} className="site-button w-full rounded-full px-5 py-3 font-semibold disabled:opacity-60">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
         </fieldset>
         {error ? <p role="alert" className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
         {success ? <p role="status" className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-900">{success}</p> : null}

@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
-  const rateLimit = consumeRateLimit({
+  const rateLimit = await consumeRateLimit({
     namespace: "contact-form",
     identifier: requesterIp,
     limit: CONTACT_RATE_LIMIT_MAX_REQUESTS,
@@ -48,14 +48,15 @@ export async function POST(request: Request) {
 
   if (!rateLimit.allowed) {
     return NextResponse.json(
-      { error: getFormErrorMessage(429) },
-      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+      { error: getFormErrorMessage(rateLimit.unavailable ? 503 : 429) },
+      { status: rateLimit.unavailable ? 503 : 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
     );
   }
 
   const bodyResult = await readJsonBody<Record<string, unknown>>(request);
   if (!bodyResult.ok) {
-    return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
+    const status = bodyResult.tooLarge ? 413 : 400;
+    return NextResponse.json({ error: bodyResult.tooLarge ? "Demande trop volumineuse." : getFormErrorMessage(400) }, { status });
   }
 
   const payload = {
@@ -124,14 +125,15 @@ export async function POST(request: Request) {
         email: payload.email,
         message: [payload.subject || "-", "", payload.message].join("\n"),
       });
+      return NextResponse.json({ ok: true, queued: true, message: "Votre demande a été enregistrée. Notre équipe la traitera dès le rétablissement de la messagerie." }, { status: 202 });
     } catch {
-      // Ignore fallback storage failures and return the primary mail error.
+      // Both delivery paths failed; the caller must be told to use another channel.
     }
 
     logApiError("api/contact", "mail_failed", {
       code: error instanceof MailerError ? error.code : "send",
     });
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: 500 });
+    return NextResponse.json(buildMailApiErrorResponse(error), { status: 503 });
   }
 }
 

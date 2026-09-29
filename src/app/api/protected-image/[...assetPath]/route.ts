@@ -3,14 +3,7 @@ import path from "path";
 
 import { NextResponse } from "next/server";
 
-const ALLOWED_EXTENSIONS = new Set([
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".webp",
-  ".gif",
-  ".avif",
-]);
+import { sanitizeAssetPath } from "@/lib/protected-image-path";
 
 const MIME_BY_EXTENSION: Record<string, string> = {
   ".jpg": "image/jpeg",
@@ -20,49 +13,6 @@ const MIME_BY_EXTENSION: Record<string, string> = {
   ".gif": "image/gif",
   ".avif": "image/avif",
 };
-
-function isValidPathSegment(segment: string): boolean {
-  return (
-    segment.length > 0 &&
-    segment !== "." &&
-    segment !== ".." &&
-    !segment.includes("\\") &&
-    !segment.includes("\0")
-  );
-}
-
-function sanitizeAssetPath(assetPath: string[] | undefined): string | null {
-  if (!assetPath || assetPath.length === 0) {
-    return null;
-  }
-
-  const decodedSegments: string[] = [];
-
-  for (const segment of assetPath) {
-    let decoded = "";
-
-    try {
-      decoded = decodeURIComponent(segment.trim());
-    } catch {
-      return null;
-    }
-
-    if (!isValidPathSegment(decoded)) {
-      return null;
-    }
-
-    decodedSegments.push(decoded);
-  }
-
-  const joined = decodedSegments.join("/");
-  const extension = path.extname(joined).toLowerCase();
-
-  if (!ALLOWED_EXTENSIONS.has(extension)) {
-    return null;
-  }
-
-  return joined;
-}
 
 function getMimeType(assetPath: string): string {
   const extension = path.extname(assetPath).toLowerCase();
@@ -88,7 +38,11 @@ export async function GET(
     );
   }
 
-  const filePath = path.join(process.cwd(), "public", sanitizedPath);
+  const publicRoot = path.resolve(process.cwd(), "public");
+  const filePath = path.resolve(publicRoot, sanitizedPath);
+  if (!filePath.startsWith(`${publicRoot}${path.sep}`)) {
+    return NextResponse.json({ error: "Invalid image source." }, { status: 400 });
+  }
 
   try {
     const buffer = await readFile(filePath);

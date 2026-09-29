@@ -14,7 +14,7 @@ export function BeginnerFormulaPicker({ choices }: { choices: Choice[] }) {
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">À vous de choisir</p>
         <h2 className="mt-3 font-serif text-3xl text-emerald-950">Votre première envie ?</h2>
         <div role="group" aria-label="Choisir votre découverte du golf" className="mt-6 flex flex-col gap-3">
-          {choices.map((item, index) => <button key={item.label} type="button" aria-pressed={index === selected} onClick={() => setSelected(index)} className={`flex min-h-12 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${index === selected ? "border-emerald-900 bg-emerald-900 text-white" : "border-emerald-950/15 text-emerald-950 hover:bg-stone-50"}`}>
+          {choices.map((item, index) => <button key={item.label} type="button" aria-pressed={index === selected} onClick={() => setSelected(index)} className={`site-button flex min-h-12 items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${index === selected ? "ring-2 ring-emerald-800" : ""}`}>
             {item.label}<span aria-hidden="true">{index === selected ? "✓" : "→"}</span>
           </button>)}
         </div>

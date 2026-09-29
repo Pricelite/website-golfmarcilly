@@ -62,13 +62,13 @@ export default function RootLayout({
         <div className="fixed inset-x-0 bottom-3 z-40 px-4 lg:hidden">
           <div className="mx-auto flex max-w-md items-center gap-3 rounded-full border border-emerald-950/10 bg-white/95 p-2 shadow-lg shadow-emerald-950/15 backdrop-blur">
             <a
-              className="flex-1 rounded-full border border-emerald-950/12 px-4 py-3 text-center text-sm font-semibold text-emerald-950"
+              className="site-button flex-1 rounded-full px-4 py-3 text-center text-sm font-semibold"
               href={`tel:${siteConfig.phoneHref}`}
             >
               Appeler
             </a>
             <a
-              className="flex-1 rounded-full bg-emerald-900 px-4 py-3 text-center text-sm font-semibold text-stone-50"
+              className="site-button flex-1 rounded-full px-4 py-3 text-center text-sm font-semibold"
               href={siteConfig.reservationUrl}
             >
               Réserver

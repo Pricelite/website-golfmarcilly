@@ -1,18 +1,6 @@
 import "server-only";
 
-import { randomUUID } from "node:crypto";
-import {
-  appendFile,
-  mkdir,
-  readFile,
-  readdir,
-  rename,
-  stat,
-  unlink,
-  writeFile,
-} from "node:fs/promises";
-import path from "node:path";
-
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 
 export type ContactFallbackEntry = {
@@ -26,12 +14,11 @@ export type ContactFallbackEntry = {
   message: string;
 };
 
-type StoredFallbackEntry = ContactFallbackEntry & {
+type QueueRow = {
   id: string;
-  createdAt: string;
+  payload: ContactFallbackEntry;
   attempts: number;
-  lastAttemptAt?: string;
-  lastError?: string;
+  lock_token: string;
 };
 
 export type FallbackQueueProcessResult = {
@@ -50,408 +37,125 @@ export type FallbackQueueSnapshot = {
   oldestPendingAgeMinutes: number | null;
 };
 
-// Production requirement: writable, persistent storage shared by the app and queue worker.
-// TODO deployment: confirm this mount or migrate to durable shared storage before launch.
-// See CONSOLIDATION-PRODUCTION.md; a serverless temporary directory is not a durable queue.
-const FALLBACK_ROOT_DIR = path.join(process.cwd(), ".contact-fallback");
-const FALLBACK_PENDING_DIR = path.join(FALLBACK_ROOT_DIR, "pending");
-const FALLBACK_SENT_DIR = path.join(FALLBACK_ROOT_DIR, "sent");
-const FALLBACK_FAILED_DIR = path.join(FALLBACK_ROOT_DIR, "failed");
-const FALLBACK_LEGACY_FILE = path.join(FALLBACK_ROOT_DIR, "submissions.ndjson");
-const FALLBACK_ALERT_STATE_FILE = path.join(FALLBACK_ROOT_DIR, "alert-state.json");
-
-const FALLBACK_MAX_ATTEMPTS = 5;
-const FALLBACK_ALERT_COOLDOWN_MS = 30 * 60 * 1000;
-const FALLBACK_ALERT_PENDING_THRESHOLD = 3;
-const DEFAULT_PROCESS_MAX_ITEMS = 25;
+const MAX_ATTEMPTS = 5;
 const DEFAULT_RETENTION_DAYS = 14;
 
-function parsePositiveInt(raw: string | undefined, fallback: number): number {
-  if (!raw) {
-    return fallback;
-  }
-
-  const parsed = Number.parseInt(raw, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    return fallback;
-  }
-
-  return parsed;
+function check(error: { message: string } | null): void {
+  if (error) throw new Error(`Fallback queue unavailable: ${error.message}`);
 }
 
-function formatFallbackFileName(entry: StoredFallbackEntry): string {
-  const timestamp = entry.createdAt.replaceAll(/[:.]/g, "-");
-  return `${timestamp}-${entry.id}.json`;
+function safeError(error: unknown): string {
+  return error instanceof MailerError ? error.code : "send";
 }
 
-function extractSafeErrorCode(error: unknown): string {
-  if (error instanceof MailerError) {
-    return `${error.code}:${error.message}`;
-  }
-
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return "unknown_error";
-}
-
-function buildQueueNotification(entry: ContactFallbackEntry): {
-  subject: string;
-  text: string;
-} {
-  const subject = `[Fallback][Contact] ${entry.prenom} ${entry.nom} (${entry.reason})`;
-  const text = [
-    "Message repasse depuis la queue de secours du site",
-    "",
-    `Recu initialement: ${entry.receivedAt}`,
-    `Motif fallback: ${entry.reason}`,
-    `Nom: ${entry.nom}`,
-    `Prenom: ${entry.prenom}`,
-    `Entreprise: ${entry.entreprise || "-"}`,
-    `Telephone: ${entry.telephone || "-"}`,
-    `Email: ${entry.email}`,
-    "",
-    "Message:",
-    entry.message,
-  ].join("\n");
-
-  return { subject, text };
-}
-
-function buildAlertMessage(params: {
-  pendingCount: number;
-  failedCount: number;
-  oldestPendingAgeMinutes: number | null;
-}): { subject: string; text: string } {
-  const subject = "[Alerte] File fallback contact non vide";
-  const oldestLabel =
-    params.oldestPendingAgeMinutes === null
-      ? "n/a"
-      : `${params.oldestPendingAgeMinutes} min`;
-  const text = [
-    "Alerte automatique sur la file fallback du site.",
-    "",
-    `Messages en attente: ${params.pendingCount}`,
-    `Messages en echec definitif: ${params.failedCount}`,
-    `Age du plus ancien message en attente: ${oldestLabel}`,
-    "",
-    "Action recommandee: verifier SMTP/Brevo et traiter la file de secours.",
-  ].join("\n");
-
-  return { subject, text };
-}
-
-async function ensureFallbackDirectories(): Promise<void> {
-  await mkdir(FALLBACK_PENDING_DIR, { recursive: true });
-  await mkdir(FALLBACK_SENT_DIR, { recursive: true });
-  await mkdir(FALLBACK_FAILED_DIR, { recursive: true });
-}
-
-async function readStoredEntry(filePath: string): Promise<StoredFallbackEntry | null> {
-  try {
-    const raw = await readFile(filePath, "utf8");
-    const parsed = JSON.parse(raw) as Partial<StoredFallbackEntry>;
-
-    if (
-      !parsed ||
-      typeof parsed !== "object" ||
-      typeof parsed.id !== "string" ||
-      typeof parsed.receivedAt !== "string" ||
-      typeof parsed.reason !== "string" ||
-      typeof parsed.nom !== "string" ||
-      typeof parsed.prenom !== "string" ||
-      typeof parsed.entreprise !== "string" ||
-      typeof parsed.telephone !== "string" ||
-      typeof parsed.email !== "string" ||
-      typeof parsed.message !== "string"
-    ) {
-      return null;
-    }
-
-    return {
-      id: parsed.id,
-      createdAt:
-        typeof parsed.createdAt === "string"
-          ? parsed.createdAt
-          : new Date().toISOString(),
-      attempts:
-        typeof parsed.attempts === "number" && Number.isFinite(parsed.attempts)
-          ? parsed.attempts
-          : 0,
-      receivedAt: parsed.receivedAt,
-      reason: parsed.reason,
-      nom: parsed.nom,
-      prenom: parsed.prenom,
-      entreprise: parsed.entreprise,
-      telephone: parsed.telephone,
-      email: parsed.email,
-      message: parsed.message,
-      lastAttemptAt:
-        typeof parsed.lastAttemptAt === "string" ? parsed.lastAttemptAt : undefined,
-      lastError: typeof parsed.lastError === "string" ? parsed.lastError : undefined,
-    };
-  } catch {
-    return null;
-  }
-}
-
-async function moveFile(
-  sourcePath: string,
-  destinationDirectory: string,
-  fileName: string
-): Promise<void> {
-  const destinationPath = path.join(destinationDirectory, fileName);
-  await rename(sourcePath, destinationPath);
-}
-
-async function listQueueFiles(directory: string): Promise<string[]> {
-  try {
-    const files = await readdir(directory);
-    return files
-      .filter((fileName) => fileName.endsWith(".json"))
-      .sort((a, b) => a.localeCompare(b));
-  } catch {
-    return [];
-  }
-}
-
-async function countFailedMessages(): Promise<number> {
-  const failedFiles = await listQueueFiles(FALLBACK_FAILED_DIR);
-  return failedFiles.length;
-}
-
-async function countSentMessages(): Promise<number> {
-  const sentFiles = await listQueueFiles(FALLBACK_SENT_DIR);
-  return sentFiles.length;
-}
-
-async function getOldestPendingAgeMinutes(): Promise<number | null> {
-  const pendingFiles = await listQueueFiles(FALLBACK_PENDING_DIR);
-  if (pendingFiles.length === 0) {
-    return null;
-  }
-
-  const oldestFilePath = path.join(FALLBACK_PENDING_DIR, pendingFiles[0]);
-
-  try {
-    const info = await stat(oldestFilePath);
-    const ageMs = Date.now() - info.mtimeMs;
-    return Math.max(0, Math.floor(ageMs / (60 * 1000)));
-  } catch {
-    return null;
-  }
-}
-
-async function readLastAlertAt(): Promise<number | null> {
-  try {
-    const raw = await readFile(FALLBACK_ALERT_STATE_FILE, "utf8");
-    const parsed = JSON.parse(raw) as { lastAlertAt?: string };
-    if (!parsed.lastAlertAt) {
-      return null;
-    }
-    const timestamp = Date.parse(parsed.lastAlertAt);
-    return Number.isFinite(timestamp) ? timestamp : null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeLastAlertAt(now: Date): Promise<void> {
-  await writeFile(
-    FALLBACK_ALERT_STATE_FILE,
-    JSON.stringify({ lastAlertAt: now.toISOString() }, null, 2),
-    "utf8"
-  );
-}
-
-async function maybeSendFallbackQueueAlert(): Promise<boolean> {
-  const pendingFiles = await listQueueFiles(FALLBACK_PENDING_DIR);
-  if (pendingFiles.length < FALLBACK_ALERT_PENDING_THRESHOLD) {
-    return false;
-  }
-
-  const now = new Date();
-  const lastAlertAt = await readLastAlertAt();
-  if (lastAlertAt && now.getTime() - lastAlertAt < FALLBACK_ALERT_COOLDOWN_MS) {
-    return false;
-  }
-
-  const alertRecipient =
-    process.env.FALLBACK_QUEUE_ALERT_EMAIL?.trim() ||
-    process.env.EMAIL_TO?.trim() ||
-    "golf@marcilly.com";
-  const alertRecipientName = process.env.EMAIL_TO_NAME?.trim() || undefined;
-  const failedCount = await countFailedMessages();
-  const oldestPendingAgeMinutes = await getOldestPendingAgeMinutes();
-  const alertMessage = buildAlertMessage({
-    pendingCount: pendingFiles.length,
-    failedCount,
-    oldestPendingAgeMinutes,
-  });
-
-  try {
-    await sendMail({
-      to: alertRecipient,
-      toName: alertRecipientName,
-      subject: alertMessage.subject,
-      text: alertMessage.text,
-    });
-    await writeLastAlertAt(now);
-    return true;
-  } catch (error) {
-    console.error("[fallback-queue] alert email failed", {
-      error: extractSafeErrorCode(error),
-    });
-    return false;
-  }
-}
-
-async function purgeDirectoryOlderThan(
-  directory: string,
-  olderThanMs: number
-): Promise<number> {
-  const files = await listQueueFiles(directory);
-  let deleted = 0;
-
-  for (const fileName of files) {
-    const filePath = path.join(directory, fileName);
-
-    try {
-      const info = await stat(filePath);
-      if (Date.now() - info.mtimeMs > olderThanMs) {
-        await unlink(filePath);
-        deleted += 1;
-      }
-    } catch {
-      // Ignore per-file cleanup errors.
-    }
-  }
-
-  return deleted;
-}
-
-async function cleanupFallbackArchives(): Promise<void> {
-  const retentionDays = parsePositiveInt(
-    process.env.FALLBACK_QUEUE_RETENTION_DAYS,
-    DEFAULT_RETENTION_DAYS
-  );
-  const retentionMs = retentionDays * 24 * 60 * 60 * 1000;
-
-  await purgeDirectoryOlderThan(FALLBACK_SENT_DIR, retentionMs);
-  await purgeDirectoryOlderThan(FALLBACK_FAILED_DIR, retentionMs);
+export async function storeContactFallbackEntry(entry: ContactFallbackEntry): Promise<void> {
+  const { error } = await createSupabaseAdminClient().from("contact_fallback_queue").insert({ payload: entry });
+  check(error);
 }
 
 export async function getContactFallbackQueueSnapshot(): Promise<FallbackQueueSnapshot> {
-  await ensureFallbackDirectories();
-
-  const [pendingFiles, sentCount, failedCount, oldestPendingAgeMinutes] =
-    await Promise.all([
-      listQueueFiles(FALLBACK_PENDING_DIR),
-      countSentMessages(),
-      countFailedMessages(),
-      getOldestPendingAgeMinutes(),
-    ]);
-
+  const db = createSupabaseAdminClient();
+  const [pending, processing, sent, failed, oldest] = await Promise.all([
+    db.from("contact_fallback_queue").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    db.from("contact_fallback_queue").select("id", { count: "exact", head: true }).eq("status", "processing"),
+    db.from("contact_fallback_queue").select("id", { count: "exact", head: true }).eq("status", "sent"),
+    db.from("contact_fallback_queue").select("id", { count: "exact", head: true }).eq("status", "failed"),
+    db.from("contact_fallback_queue").select("created_at").in("status", ["pending", "processing"]).order("created_at").limit(1).maybeSingle(),
+  ]);
+  for (const result of [pending, processing, sent, failed, oldest]) check(result.error);
   return {
-    pending: pendingFiles.length,
-    sent: sentCount,
-    failed: failedCount,
-    oldestPendingAgeMinutes,
+    pending: (pending.count ?? 0) + (processing.count ?? 0),
+    sent: sent.count ?? 0,
+    failed: failed.count ?? 0,
+    oldestPendingAgeMinutes: oldest.data ? Math.max(0, Math.floor((Date.now() - Date.parse(oldest.data.created_at)) / 60_000)) : null,
   };
 }
 
-export async function storeContactFallbackEntry(
-  entry: ContactFallbackEntry
-): Promise<void> {
-  await ensureFallbackDirectories();
-
-  const storedEntry: StoredFallbackEntry = {
-    ...entry,
-    id: randomUUID(),
-    createdAt: new Date().toISOString(),
-    attempts: 0,
+function notification(row: QueueRow) {
+  const entry = row.payload;
+  return {
+    subject: `[Fallback][Contact #${row.id}] ${entry.prenom} ${entry.nom}`,
+    text: [
+      "Message repris depuis la file de secours du site.",
+      `Référence : ${row.id}`,
+      `Reçu initialement : ${entry.receivedAt}`,
+      `Motif : ${entry.reason}`,
+      `Nom : ${entry.nom}`,
+      `Prénom : ${entry.prenom}`,
+      `Entreprise : ${entry.entreprise || "-"}`,
+      `Téléphone : ${entry.telephone || "-"}`,
+      `Email : ${entry.email}`,
+      "", entry.message,
+    ].join("\n"),
   };
-  const fileName = formatFallbackFileName(storedEntry);
-  const filePath = path.join(FALLBACK_PENDING_DIR, fileName);
-
-  await writeFile(filePath, JSON.stringify(storedEntry, null, 2), "utf8");
-  await appendFile(FALLBACK_LEGACY_FILE, `${JSON.stringify(entry)}\n`, "utf8");
 }
 
-export async function processContactFallbackQueue(options?: {
-  maxItems?: number;
-}): Promise<FallbackQueueProcessResult> {
-  await ensureFallbackDirectories();
-  await cleanupFallbackArchives();
+async function updateClaim(row: QueueRow, values: Record<string, unknown>): Promise<void> {
+  const { data, error } = await createSupabaseAdminClient().from("contact_fallback_queue")
+    .update({ ...values, lock_token: null, locked_until: null, updated_at: new Date().toISOString() })
+    .eq("id", row.id).eq("lock_token", row.lock_token).eq("status", "processing")
+    .select("id").maybeSingle();
+  check(error);
+  if (!data) throw new Error("Fallback queue claim expired before acknowledgement");
+}
 
-  const result: FallbackQueueProcessResult = {
-    processed: 0,
-    sent: 0,
-    retained: 0,
-    movedToFailed: 0,
-    pending: 0,
-    alertSent: false,
-  };
+async function maybeAlert(snapshot: FallbackQueueSnapshot): Promise<boolean> {
+  if (snapshot.pending < 3) return false;
+  const db = createSupabaseAdminClient();
+  const { data, error } = await db.from("contact_fallback_alert_state").select("last_alert_at").eq("id", 1).maybeSingle();
+  check(error);
+  if (data && Date.now() - Date.parse(data.last_alert_at) < 30 * 60_000) return false;
+  try {
+    await sendMail({
+      to: process.env.FALLBACK_QUEUE_ALERT_EMAIL?.trim() || process.env.EMAIL_TO?.trim() || "golf@marcilly.com",
+      subject: "[Alerte] File de secours contact non vide",
+      text: `${snapshot.pending} demande(s) en attente ; ${snapshot.failed} en échec. Vérifiez la messagerie et traitez la file.`,
+    });
+    const saved = await db.from("contact_fallback_alert_state").upsert({ id: 1, last_alert_at: new Date().toISOString() });
+    check(saved.error);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-  const maxItems = parsePositiveInt(
-    options?.maxItems?.toString(),
-    DEFAULT_PROCESS_MAX_ITEMS
-  );
-  const pendingFiles = await listQueueFiles(FALLBACK_PENDING_DIR);
-  const processFiles = pendingFiles.slice(0, maxItems);
-  const clubEmail = process.env.EMAIL_TO?.trim() || "golf@marcilly.com";
-  const clubEmailName = process.env.EMAIL_TO_NAME?.trim() || undefined;
+export async function processContactFallbackQueue(options?: { maxItems?: number }): Promise<FallbackQueueProcessResult> {
+  const db = createSupabaseAdminClient();
+  const maxItems = Math.min(Math.max(1, options?.maxItems ?? 25), 100);
+  const { data, error } = await db.rpc("claim_contact_fallback", { p_max_items: maxItems });
+  check(error);
+  const rows = (data ?? []) as QueueRow[];
+  const result: FallbackQueueProcessResult = { processed: 0, sent: 0, retained: 0, movedToFailed: 0, pending: 0, alertSent: false };
 
-  for (const fileName of processFiles) {
-    const filePath = path.join(FALLBACK_PENDING_DIR, fileName);
+  for (const row of rows) {
     result.processed += 1;
-
-    const storedEntry = await readStoredEntry(filePath);
-    if (!storedEntry) {
-      await moveFile(filePath, FALLBACK_FAILED_DIR, fileName);
-      result.movedToFailed += 1;
-      continue;
-    }
-
-    const nextAttempt = storedEntry.attempts + 1;
-    const notification = buildQueueNotification(storedEntry);
-
+    const mail = notification(row);
     try {
       await sendMail({
-        to: clubEmail,
-        toName: clubEmailName,
-        subject: notification.subject,
-        text: notification.text,
-        replyTo: storedEntry.email,
-        replyToName: `${storedEntry.prenom} ${storedEntry.nom}`.trim(),
+        to: process.env.EMAIL_TO?.trim() || "golf@marcilly.com",
+        ...mail,
+        replyTo: row.payload.email,
+        replyToName: `${row.payload.prenom} ${row.payload.nom}`.trim(),
       });
-
-      await moveFile(filePath, FALLBACK_SENT_DIR, fileName);
-      result.sent += 1;
-    } catch (error) {
-      const updatedEntry: StoredFallbackEntry = {
-        ...storedEntry,
-        attempts: nextAttempt,
-        lastAttemptAt: new Date().toISOString(),
-        lastError: extractSafeErrorCode(error),
-      };
-
-      if (nextAttempt >= FALLBACK_MAX_ATTEMPTS) {
-        const failedPath = path.join(FALLBACK_FAILED_DIR, fileName);
-        await writeFile(failedPath, JSON.stringify(updatedEntry, null, 2), "utf8");
-        await unlink(filePath);
-        result.movedToFailed += 1;
-      } else {
-        await writeFile(filePath, JSON.stringify(updatedEntry, null, 2), "utf8");
-        result.retained += 1;
-      }
+    } catch (sendError) {
+      const failed = row.attempts >= MAX_ATTEMPTS;
+      await updateClaim(row, { status: failed ? "failed" : "pending", last_error: safeError(sendError) });
+      if (failed) result.movedToFailed += 1;
+      else result.retained += 1;
+      continue;
     }
+    await updateClaim(row, { status: "sent" });
+    result.sent += 1;
   }
 
-  const pendingAfterProcessing = await listQueueFiles(FALLBACK_PENDING_DIR);
-  result.pending = pendingAfterProcessing.length;
-  result.alertSent = await maybeSendFallbackQueueAlert();
+  const retentionDaysRaw = Number.parseInt(process.env.FALLBACK_QUEUE_RETENTION_DAYS || "", 10);
+  const retentionDays = Number.isInteger(retentionDaysRaw) && retentionDaysRaw > 0 ? retentionDaysRaw : DEFAULT_RETENTION_DAYS;
+  const cutoff = new Date(Date.now() - retentionDays * 86_400_000).toISOString();
+  const purge = await db.from("contact_fallback_queue").delete().in("status", ["sent", "failed"]).lt("updated_at", cutoff);
+  check(purge.error);
 
+  const snapshot = await getContactFallbackQueueSnapshot();
+  result.pending = snapshot.pending;
+  result.alertSent = await maybeAlert(snapshot);
   return result;
 }

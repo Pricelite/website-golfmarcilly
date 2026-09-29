@@ -43,7 +43,7 @@ export function NewsletterForm() {
         />
       </label>
       <button
-        className="rounded-full bg-stone-50 px-4 py-3 text-sm font-semibold text-emerald-950"
+        className="site-button rounded-full px-4 py-3 text-sm font-semibold"
         type="submit"
       >
         S&apos;inscrire

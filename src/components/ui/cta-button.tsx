@@ -16,14 +16,14 @@ export function CTAButton({
   className,
 }: CTAButtonProps) {
   const base =
-    "inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+    "site-button inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
   const styles = {
     primary:
-      "bg-emerald-900 text-stone-50 shadow-lg shadow-emerald-950/15 hover:-translate-y-0.5 hover:bg-emerald-800 focus-visible:ring-emerald-700",
+      "shadow-lg shadow-emerald-950/15 focus-visible:ring-emerald-700",
     secondary:
-      "border border-emerald-950/15 bg-white/85 text-emerald-950 hover:bg-white focus-visible:ring-emerald-700",
+      "focus-visible:ring-emerald-700",
     ghost:
-      "text-emerald-950 underline decoration-emerald-700/35 underline-offset-4 hover:decoration-emerald-950",
+      "focus-visible:ring-emerald-700",
   } as const;
 
   const isExternal = href.startsWith("http");

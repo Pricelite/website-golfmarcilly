@@ -28,10 +28,6 @@ function getAdminSessionSecret(): string {
   );
 }
 
-function bytesToHex(value: Uint8Array): string {
-  return Array.from(value, (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
 function base64UrlEncodeBytes(value: Uint8Array): string {
   const binary = Array.from(value, (byte) => String.fromCharCode(byte)).join("");
 
@@ -58,19 +54,6 @@ function toArrayBuffer(value: Uint8Array): ArrayBuffer {
     value.byteOffset,
     value.byteOffset + value.byteLength
   ) as ArrayBuffer;
-}
-
-async function createLegacyAdminSessionToken(password: string): Promise<string> {
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    textEncoder.encode(`initiation-admin:${password}`)
-  );
-
-  return bytesToHex(new Uint8Array(digest));
-}
-
-export async function getExpectedLegacyAdminSessionToken(): Promise<string> {
-  return createLegacyAdminSessionToken(getAdminPasswordOrThrow());
 }
 
 async function importAdminSessionKey(
@@ -184,7 +167,7 @@ export async function isAdminAuthenticated(
     return true;
   }
 
-  return currentToken === (await getExpectedLegacyAdminSessionToken());
+  return false;
 }
 
 export function getAdminSessionMaxAgeSeconds(): number {

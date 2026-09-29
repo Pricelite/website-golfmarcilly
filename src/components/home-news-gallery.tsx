@@ -372,7 +372,7 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
                     ref={closeButtonRef}
                     type="button"
                     onClick={handleClose}
-                    className="absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 bg-white/95 text-xl font-semibold text-zinc-900 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2"
+                    className="site-button absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full text-xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2"
                     aria-label="Fermer la modale"
                   >
                     &times;

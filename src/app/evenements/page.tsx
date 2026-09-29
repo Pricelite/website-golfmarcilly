@@ -52,7 +52,7 @@ export default function EventsPage() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <CTAButton href="#devis" variant="secondary">Parlons de votre projet <span aria-hidden="true" className="ml-2">↗</span></CTAButton>
-              <Link href="#formats" className="inline-flex items-center justify-center rounded-full border border-white/50 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950">Découvrir les formats</Link>
+              <Link href="#formats" className="site-button inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950">Découvrir les formats</Link>
             </div>
             <p className="mt-10 border-t border-white/25 pt-5 text-sm tracking-wide text-stone-100/85">
               Séminaires <span className="mx-3 text-[#dbe9b4]">·</span> Team building <span className="mx-3 text-[#dbe9b4]">·</span> Réceptions

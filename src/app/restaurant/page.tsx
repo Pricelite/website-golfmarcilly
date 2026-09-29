@@ -15,7 +15,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "Restaurant La Bergerie",
   description:
-    "Restaurant golf Orléans : présentation, carte, menus, groupes, séminaires, privatisation et réservation pour La Bergerie au Golf de Marcilly.",
+    "Restaurant golf de Marcilly-Orléans : présentation, carte, menus, groupes, séminaires, privatisation et réservation pour La Bergerie au Golf de Marcilly.",
   path: "/restaurant",
   image: "/restaurant/hero.jpg",
 });
@@ -35,7 +35,7 @@ export default function RestaurantPage() {
         <div className="relative mx-auto max-w-7xl px-4 py-18 sm:px-6 lg:px-8 lg:py-24">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-stone-200/80">
-              Restaurant golf Orléans
+              Restaurant golf de Marcilly-Orléans
             </p>
             <h1 className="mt-5 font-serif text-5xl leading-[0.95] sm:text-6xl">
               Restaurant La Bergerie
@@ -47,7 +47,7 @@ export default function RestaurantPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href="#menus" variant="secondary">Découvrir les menus</CTAButton>
-              <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full border border-emerald-950/15 bg-white/85 px-5 py-3 text-sm font-semibold text-emerald-950 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2" />
+              <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2" />
               <CTAButton href="tel:+33238761173" variant="secondary">
                 Appeler le restaurant
               </CTAButton>

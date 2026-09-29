@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   }
 
   const requesterIp = parseClientIpFromHeaders(request.headers);
-  const rateLimit = consumeRateLimit({
+  const rateLimit = await consumeRateLimit({
     namespace: "admin-login",
     identifier: requesterIp,
     limit: ADMIN_LOGIN_RATE_LIMIT_MAX_REQUESTS,
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   });
 
   if (!rateLimit.allowed) {
-    return redirectToAdmin(request.url, { error: "rate_limited" });
+    return redirectToAdmin(request.url, { error: rateLimit.unavailable ? "unavailable" : "rate_limited" });
   }
 
   if (!process.env.ADMIN_PASSWORD?.trim()) {

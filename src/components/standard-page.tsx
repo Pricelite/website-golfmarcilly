@@ -39,8 +39,8 @@ function CtaButton({
 }) {
   const className =
     variant === "primary"
-      ? "inline-flex items-center justify-center rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-emerald-50 shadow-lg shadow-emerald-900/20 transition hover:-translate-y-0.5 hover:bg-emerald-800"
-      : "inline-flex items-center justify-center rounded-full border border-emerald-900/20 bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50";
+      ? "site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-900/20"
+      : "site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold";
 
   if (isExternalLink(cta.href, cta.external)) {
     return (

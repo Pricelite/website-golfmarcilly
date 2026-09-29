@@ -119,7 +119,7 @@ export function QuoteForm() {
           Date, restauration, activité golf : partagez ce qui compte pour vous dans votre message.
         </p>
         <button
-          className="rounded-full bg-emerald-900 px-6 py-3 text-sm font-semibold text-stone-50 shadow-lg shadow-emerald-950/15 transition hover:-translate-y-0.5 hover:bg-emerald-800"
+          className="site-button rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-950/15"
           type="submit"
         >
           {state === "loading" ? "Envoi..." : "Demander mon devis"}

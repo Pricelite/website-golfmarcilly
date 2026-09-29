@@ -53,7 +53,7 @@ export function Header() {
         <div className="ml-auto flex items-center gap-2 xl:hidden">
           <a
             aria-label="Appeler le Golf de Marcilly"
-            className="inline-flex rounded-full border border-emerald-950/12 px-3 py-2 text-sm font-semibold text-emerald-950 lg:hidden"
+            className="site-button inline-flex rounded-full px-3 py-2 text-sm font-semibold lg:hidden"
             href={`tel:${siteConfig.phoneHref}`}
           >
             Appeler
@@ -62,7 +62,7 @@ export function Header() {
             aria-expanded={open}
             aria-controls="mobile-navigation"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-            className="inline-flex rounded-full border border-emerald-950/12 px-3 py-2 text-sm font-semibold text-emerald-950"
+            className="site-button inline-flex rounded-full px-3 py-2 text-sm font-semibold"
             onClick={() => setOpen((current) => !current)}
             type="button"
           >
@@ -83,7 +83,7 @@ export function Header() {
             {navigationItems.map((item) => (
               <li key={item.href}>
                 <Link
-                  className="block rounded-2xl border border-emerald-950/8 bg-white/70 px-4 py-3 text-sm font-medium text-emerald-950"
+                  className="site-button block rounded-2xl px-4 py-3 text-sm font-medium"
                   href={item.href}
                   onClick={() => setOpen(false)}
                 >

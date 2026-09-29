@@ -1,0 +1,32 @@
+name: Process contact fallback queue
+
+permissions: {}
+concurrency:
+  group: contact-fallback-queue
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check configuration
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          OPS_CRON_TOKEN: ${{ secrets.OPS_CRON_TOKEN }}
+        run: |
+          test -n "$SITE_URL"
+          test -n "$OPS_CRON_TOKEN"
+      - name: Process queue
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          OPS_CRON_TOKEN: ${{ secrets.OPS_CRON_TOKEN }}
+        run: |
+          curl --fail-with-body --show-error --silent --retry 2 \
+            --request POST \
+            --header "Authorization: Bearer $OPS_CRON_TOKEN" \
+            "${SITE_URL%/}/api/ops/fallback-queue?maxItems=25"
