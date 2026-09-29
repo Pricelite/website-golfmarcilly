@@ -1,9 +1,9 @@
 import Image from "next/image";
 
+import { PartnerCarousel } from "@/components/sections/partner-carousel";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { partners } from "@/data/partners";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
@@ -52,34 +52,7 @@ export default function PartnersPage() {
             title="Nos sponsors et partenaires"
             description="Chacun de ces noms compte dans la vie du golf et de son association sportive. Merci d’être à nos côtés."
           />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {partners.map((partner, index) => (
-              <li key={partner.name} className="flex min-h-40 flex-col rounded-[24px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5">
-                <span className="text-xs font-semibold tracking-[0.2em] text-emerald-700">{String(index + 1).padStart(2, "0")}</span>
-                <div className="flex flex-1 items-center justify-center py-4 text-center">
-                  {partner.logo ? (
-                    partner.website ? (
-                      <a
-                        href={partner.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Visiter le site de ${partner.name} (nouvel onglet)`}
-                        className="relative block h-20 w-full rounded-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"
-                      >
-                        <Image src={partner.logo} alt={partner.name} fill sizes="240px" className="object-contain" />
-                      </a>
-                    ) : (
-                      <div className="relative h-20 w-full">
-                        <Image src={partner.logo} alt={partner.name} fill sizes="240px" className="object-contain" />
-                      </div>
-                    )
-                  ) : (
-                    <h3 className="font-serif text-2xl text-emerald-950">{partner.name}</h3>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <PartnerCarousel />
         </div>
       </section>
 

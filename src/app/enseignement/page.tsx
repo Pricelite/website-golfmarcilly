@@ -4,7 +4,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { siteConfig } from "@/data/site";
-import { adultCollectiveCoursePosterSrc, juniorPrograms, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
+import { adultCollectiveCoursePosterSrc, juniorPrograms, juniorSchoolPosterSrc, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
@@ -46,21 +46,29 @@ export default function TeachingPage() {
         </div>
       </nav>
       <section id="ecole-de-golf" className={sectionClass}>
-        <SectionTitle eyebrow="De 4 à 18 ans" title="Grandir avec le golf" description="Un apprentissage ludique, encadré par des enseignants diplômés, avec un accès aux parcours adapté au niveau de chacun." />
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {juniorPrograms.map((program) => (
-            <article key={program.title} className="rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5 sm:p-8">
-              <h3 className="font-serif text-3xl text-emerald-950">{program.title}</h3>
-              <p className="mt-5 text-emerald-950"><span className="font-serif text-5xl">{program.price}</span><span className="ml-2 text-sm">/ mois</span></p>
-              <p className="mt-3 font-semibold text-emerald-800">{program.duration}</p>
-              <ul className="my-6 space-y-2 border-y border-emerald-950/10 py-5 text-sm text-emerald-950/80">
-                {program.slots.map((slot) => <li key={slot}>{slot}</li>)}
-              </ul>
-              <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(`École de golf — ${program.title}`)}`} variant="secondary">Renseignements et inscription</CTAButton>
-            </article>
-          ))}
+        <SectionTitle eyebrow="Dès 4 ans · Saison 2026–2027" title="Grandir avec le golf" description="Deux groupes pour découvrir le golf et progresser : 35 séances et une séance d’essai avant de s’engager." />
+        <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)]">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+            {juniorPrograms.map((program) => (
+              <article key={program.title} className="rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5 sm:p-8">
+                <h3 className="font-serif text-3xl text-emerald-950">{program.title}</h3>
+                <p className="mt-5 text-emerald-950"><span className="font-serif text-5xl">{program.price}</span><span className="ml-2 text-sm">/ saison</span></p>
+                <p className="mt-3 font-semibold text-emerald-800">{program.duration}</p>
+                <ul className="my-6 space-y-2 border-y border-emerald-950/10 py-5 text-sm text-emerald-950/80">
+                  {program.slots.map((slot) => <li key={slot}>{slot}</li>)}
+                </ul>
+                <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(`École de golf — ${program.title}`)}`} variant="secondary">Renseignements et inscription</CTAButton>
+              </article>
+            ))}
+          </div>
+          <a href={juniorSchoolPosterSrc} target="_blank" rel="noopener noreferrer" aria-label="Voir l’affiche de l’école de golf 2026–2027 en grand (nouvel onglet)" className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+            <span className="relative block aspect-[2/3] overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
+              <Image src={juniorSchoolPosterSrc} alt="Affiche de l’école de golf 2026–2027 : groupes Baby Évolution et Loisir, 35 séances, 235 €" fill sizes="(max-width: 1024px) 100vw, 420px" className="object-contain" />
+            </span>
+            <span className="mt-3 block text-sm font-semibold text-emerald-950 underline underline-offset-4 group-hover:text-emerald-700">Voir l’affiche et tous les tarifs en grand <span aria-hidden="true">↗</span></span>
+          </a>
         </div>
-        <p className="mt-5 max-w-3xl text-sm leading-7 text-emerald-950/70">Créneaux publiés par le club : le groupe, le jour de participation, les périodes de cours et les conditions tarifaires sont à confirmer auprès de l’accueil.</p>
+        <p className="mt-5 max-w-3xl text-sm leading-7 text-emerald-950/70">La cotisation à l’association sportive et les autres tarifs figurent sur l’affiche. Contactez l’accueil pour confirmer le groupe, le calendrier et les modalités d’inscription.</p>
       </section>
       <section id="adultes" className="scroll-mt-28 bg-emerald-950">
         <div className={sectionClass}>

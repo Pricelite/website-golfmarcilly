@@ -162,7 +162,7 @@ export default function HomePage() {
           title="Un accès simple depuis Orléans"
         />
         <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <MapEmbed src={siteConfig.mapEmbedUrl} title="Accès Golf de Marcilly" />
+          <MapEmbed src={siteConfig.mapImageUrl} href={siteConfig.mapExternalUrl} title="Accès Golf de Marcilly" />
           <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
             <h2 className="font-serif text-3xl text-emerald-950">Nous contacter</h2>
             <div className="mt-6 space-y-3 text-sm leading-7 text-emerald-950/76">
