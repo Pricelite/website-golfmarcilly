@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { readJsonBody } from "@/lib/api/request-body";
@@ -35,13 +36,21 @@ async function mutate(request: Request) {
   if (request.method === "DELETE") {
     const date = body.data.date;
     if (!validDailyMenuDate(date)) return response({ error: "Date invalide." }, 400);
-    try { return response({ deleted: await deleteDailyMenu(date) }); }
+    try {
+      const deleted = await deleteDailyMenu(date);
+      revalidatePath("/restaurant");
+      return response({ deleted });
+    }
     catch { return response({ error: "Suppression impossible. Réessayez." }, 503); }
   }
 
   const parsed = parseDailyMenu(body.data);
   if (!parsed.ok) return response({ error: parsed.error }, 400);
-  try { return response({ menu: await saveDailyMenu(parsed.menu) }); }
+  try {
+    const menu = await saveDailyMenu(parsed.menu);
+    revalidatePath("/restaurant");
+    return response({ menu });
+  }
   catch { return response({ error: "Enregistrement impossible. Vérifiez la configuration de la carte du jour, puis réessayez." }, 503); }
 }
 

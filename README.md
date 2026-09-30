@@ -111,7 +111,7 @@ Les blocs principaux couvrent :
 État avant déploiement et points à fournir par le propriétaire : [CONSOLIDATION-PRODUCTION.md](CONSOLIDATION-PRODUCTION.md).
 
 - `GET /api/health`
-  Retour public avec l'état des services et un statut HTTP 503 en cas de dégradation.
+  Sonde publique de disponibilité du site, sans appel aux services externes.
 - `GET /api/health` avec `Authorization: Bearer <OPS_CRON_TOKEN>`
   Retour detaille interne avec l'etat de configuration et la file fallback.
 - `POST /api/ops/fallback-queue`
@@ -130,7 +130,7 @@ Notes:
 
 - Appliquer `supabase/migrations/20260930110000_restaurant_daily_menu.sql` avant de publier cette version. La migration crée une table datée accessible uniquement via la clé de service côté serveur ; elle ne modifie pas les anciennes cartes ni les réservations.
 - Se connecter à `/admin`, ouvrir « Modifier la carte du jour », choisir la date, puis renseigner trois entrées, trois plats et trois desserts avec leurs prix. « Publier la carte » enregistre les choix ; « Retirer cette carte » supprime la publication de cette date.
-- Seule la carte enregistrée pour la date courante en heure de Paris est présentée comme confirmée dans le bandeau de `/restaurant`. Sans publication ou si Supabase est indisponible, le site affiche un exemple explicitement non confirmé. Les prix de cet exemple proviennent de la carte éditoriale existante.
+- Seule la carte enregistrée pour la date courante en heure de Paris apparaît dans le bandeau de `/restaurant`. Sans publication ou si Supabase est indisponible, le site n'affiche aucun plat ni tarif du jour ; l'exemple prérempli reste disponible dans l'administration. La lecture publique est limitée à quatre secondes et le cache est renouvelé toutes les trente secondes, avec invalidation lors d'une modification.
 - En cas de retour à une ancienne version, conserver la table et ses données ; l'ancien code l'ignore. Ne supprimer la table qu'après export ou suppression volontaire des cartes enregistrées.
 
 Ordre de mise en production pour cette évolution : suspendre le traitement planifié de la file, attendre la fin des traitements en cours, appliquer les deux migrations SQL dans l'ordre, vérifier `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`, puis déployer le code et réactiver la tâche planifiée. Vérifier ensuite la vue interne de `/api/health` et déclencher manuellement la tâche GitHub Actions une fois. Si la première migration a déjà été appliquée, appliquer seulement la seconde. En cas de retour à une ancienne version du site, suspendre de nouveau la tâche planifiée, conserver la table et traiter les messages encore en attente avant de la retirer.

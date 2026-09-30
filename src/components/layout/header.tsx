@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
+import { HeaderMarcillyClock } from "@/components/layout/header-marcilly-clock";
 import { navigationItems, siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -12,15 +13,18 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-stone-50/88 backdrop-blur-lg">
-      <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-4 px-4 py-4 sm:flex-nowrap sm:px-6 lg:px-8">
-        <Link className="shrink-0" href="/">
-          <span className="block font-serif text-2xl text-emerald-950">
-            Golf de Marcilly
-          </span>
-          <span className="block text-xs uppercase tracking-[0.28em] text-emerald-700">
-            Orléans | Loiret
-          </span>
-        </Link>
+      <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+        <div className="shrink-0">
+          <Link className="block" href="/">
+            <span className="block font-serif text-xl text-emerald-950 sm:text-2xl">
+              Golf de Marcilly
+            </span>
+            <span className="block text-xs uppercase tracking-[0.28em] text-emerald-700">
+              Orléans | Loiret
+            </span>
+          </Link>
+          <span className="mt-1 block xl:hidden"><HeaderMarcillyClock /></span>
+        </div>
 
         <nav
           aria-label="Navigation principale"
@@ -41,12 +45,15 @@ export function Header() {
         </nav>
 
         <div className="hidden shrink-0 items-center gap-4 xl:flex">
-          <a
-            className="whitespace-nowrap text-sm font-medium text-emerald-950"
-            href={`tel:${siteConfig.phoneHref}`}
-          >
-            {siteConfig.phoneDisplay}
-          </a>
+          <div className="flex flex-col items-end gap-1">
+            <a
+              className="whitespace-nowrap text-sm font-medium text-emerald-950"
+              href={`tel:${siteConfig.phoneHref}`}
+            >
+              {siteConfig.phoneDisplay}
+            </a>
+            <HeaderMarcillyClock />
+          </div>
           <CTAButton href={siteConfig.reservationUrl}>Réserver un départ</CTAButton>
         </div>
 

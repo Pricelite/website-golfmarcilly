@@ -61,7 +61,7 @@ Optionnels utiles :
 Sans token :
 
 - `GET /api/health`
-- attendu : statut `200` ou `503` avec vue publique minimale
+- attendu : statut `200` avec une vue publique minimale de disponibilité, sans dépendance aux services externes
 
 Avec token ops :
 

@@ -16,9 +16,11 @@ function fromRow(row: DailyMenuRow): DailyMenu {
   return { date: row.menu_date, starters: row.starters, mains: row.mains, desserts: row.desserts };
 }
 
-export async function getDailyMenu(date: string): Promise<DailyMenu | null> {
-  const { data, error } = await createSupabaseAdminClient()
-    .from("restaurant_daily_menus").select(columns).eq("menu_date", date).maybeSingle();
+export async function getDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {
+  let query = createSupabaseAdminClient()
+    .from("restaurant_daily_menus").select(columns).eq("menu_date", date);
+  if (options?.timeoutMs) query = query.abortSignal(AbortSignal.timeout(options.timeoutMs));
+  const { data, error } = await query.maybeSingle();
   if (error) throw error;
   return data ? fromRow(data as DailyMenuRow) : null;
 }

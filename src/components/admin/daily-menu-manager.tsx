@@ -85,7 +85,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
       setPublished(false);
       setChoices(dailyMenuExample);
       setConfirmDelete(false);
-      setMessage("Carte retirée. Le site affiche de nouveau un exemple identifié comme tel.");
+      setMessage("Carte retirée. Aucun plat ni tarif du jour n’est affiché sur le site pour cette date.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Suppression impossible. Réessayez."); }
     finally { setBusy(false); }
   }
