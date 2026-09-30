@@ -159,7 +159,7 @@ function AdminLogin(props: { error?: string; next?: string }) {
         ) : null}
 
         <form action="/admin/login" method="post" className="mt-4 space-y-4">
-          <input type="hidden" name="next" value={props.next === "/admin/competitions" ? props.next : "/admin"} />
+          <input type="hidden" name="next" value={props.next === "/admin/competitions" || props.next === "/admin/restaurant" ? props.next : "/admin"} />
           <label className="block text-sm text-emerald-900/80">
             Mot de passe
             <input
@@ -208,14 +208,14 @@ export default async function AdminPage(props: AdminPageProps) {
     return <AdminLogin error={searchParams.error} next={searchParams.next} />;
   }
 
-  if (searchParams.next === "/admin/competitions") redirect("/admin/competitions");
+  if (searchParams.next === "/admin/competitions" || searchParams.next === "/admin/restaurant") redirect(searchParams.next);
 
   let reservations: InitiationReservationWithSlot[];
   try {
     await markExpiredPendingReservations();
     reservations = await listReservationsForAdmin();
   } catch {
-    return <div className="mx-auto max-w-5xl space-y-6 px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><CurrentInitiationRequests /><Link className="inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><p role="alert">Les archives des anciennes réservations sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="underline">Déconnexion</button></form></div>;
+    return <div className="mx-auto max-w-5xl space-y-6 px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><CurrentInitiationRequests /><div className="flex flex-wrap gap-3"><Link className="inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/competitions">Gérer les compétitions</Link><Link className="inline-block rounded-full bg-emerald-900 px-5 py-3 text-white" href="/admin/restaurant">Modifier la carte du jour</Link></div><p role="alert">Les archives des anciennes réservations sont momentanément indisponibles.</p><form action="/admin/logout" method="post"><button type="submit" className="underline">Déconnexion</button></form></div>;
   }
   const slotSummary = buildSlotSummary(reservations);
 
@@ -256,7 +256,7 @@ export default async function AdminPage(props: AdminPageProps) {
               Demandes actuelles par email et anciennes réservations.
             </p>
           </div>
-          <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/competitions">Gérer les compétitions</Link>
+          <div className="flex flex-wrap gap-2"><Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/competitions">Gérer les compétitions</Link><Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/restaurant">Modifier la carte du jour</Link></div>
           <form action="/admin/logout" method="post">
             <button
               className="inline-flex rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"

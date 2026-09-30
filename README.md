@@ -111,7 +111,7 @@ Les blocs principaux couvrent :
 État avant déploiement et points à fournir par le propriétaire : [CONSOLIDATION-PRODUCTION.md](CONSOLIDATION-PRODUCTION.md).
 
 - `GET /api/health`
-  Retour public léger confirmant que le processus répond ; aucun service tiers n'est sondé.
+  Retour public avec l'état des services et un statut HTTP 503 en cas de dégradation.
 - `GET /api/health` avec `Authorization: Bearer <OPS_CRON_TOKEN>`
   Retour detaille interne avec l'etat de configuration et la file fallback.
 - `POST /api/ops/fallback-queue`
@@ -119,13 +119,21 @@ Les blocs principaux couvrent :
 
 Notes:
 
-- la file de secours est stockée dans Supabase ; appliquer `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` avant le déploiement du code
+- la file de secours est stockée dans Supabase ; appliquer `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` puis `supabase/migrations/20260930100000_contact_queue_attempt_start.sql` avant le déploiement du code
 - la même migration fournit une limitation de débit partagée en production ; si elle ou Supabase sont indisponibles, les formulaires publics et la connexion admin refusent les nouvelles tentatives
 - configurer `SITE_URL` (variable de dépôt) et `OPS_CRON_TOKEN` (secret de dépôt) pour le traitement planifié par GitHub Actions ; vérifier que la tâche s'exécute après mise en ligne
+- le traitement planifié échoue avec HTTP 503 dès qu'une demande est en échec définitif, même si l'email d'alerte ne peut pas partir ; surveiller les échecs de cette tâche. Les demandes en échec ne sont pas purgées automatiquement : les traiter puis les supprimer selon la politique de conservation des données
 - les anciennes données de `.contact-fallback` ne sont pas importées automatiquement : les traiter avant de retirer l'ancien stockage
 - chaque message porte une référence stable dans l'objet de l'email ; si le fournisseur accepte un envoi mais que son accusé de traitement est perdu, une reprise peut encore générer un doublon avec la même référence
 
-Ordre de mise en production pour cette évolution : appliquer la migration SQL, vérifier `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`, configurer la tâche planifiée, puis déployer le code. Vérifier ensuite la vue interne de `/api/health` et déclencher manuellement la tâche GitHub Actions une fois. En cas de retour à une ancienne version du site, conserver la nouvelle table et traiter les messages qui y seraient encore en attente avant de la retirer.
+### Carte du jour du restaurant
+
+- Appliquer `supabase/migrations/20260930110000_restaurant_daily_menu.sql` avant de publier cette version. La migration crée une table datée accessible uniquement via la clé de service côté serveur ; elle ne modifie pas les anciennes cartes ni les réservations.
+- Se connecter à `/admin`, ouvrir « Modifier la carte du jour », choisir la date, puis renseigner trois entrées, trois plats et trois desserts avec leurs prix. « Publier la carte » enregistre les choix ; « Retirer cette carte » supprime la publication de cette date.
+- Seule la carte enregistrée pour la date courante en heure de Paris est présentée comme confirmée dans le bandeau de `/restaurant`. Sans publication ou si Supabase est indisponible, le site affiche un exemple explicitement non confirmé. Les prix de cet exemple proviennent de la carte éditoriale existante.
+- En cas de retour à une ancienne version, conserver la table et ses données ; l'ancien code l'ignore. Ne supprimer la table qu'après export ou suppression volontaire des cartes enregistrées.
+
+Ordre de mise en production pour cette évolution : suspendre le traitement planifié de la file, attendre la fin des traitements en cours, appliquer les deux migrations SQL dans l'ordre, vérifier `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`, puis déployer le code et réactiver la tâche planifiée. Vérifier ensuite la vue interne de `/api/health` et déclencher manuellement la tâche GitHub Actions une fois. Si la première migration a déjà été appliquée, appliquer seulement la seconde. En cas de retour à une ancienne version du site, suspendre de nouveau la tâche planifiée, conserver la table et traiter les messages encore en attente avant de la retirer.
 
 Les mentions légales et la politique de confidentialité attendent encore les informations et la validation du propriétaire (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
 - `OPS_CRON_TOKEN` est reutilise pour les diagnostics internes et les operations cron

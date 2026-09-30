@@ -44,11 +44,10 @@ async function handleProcessQueue(request: NextRequest): Promise<NextResponse> {
     const maxItems = parseMaxItems(request);
     const result = await processContactFallbackQueue({ maxItems });
 
-    return NextResponse.json({
-      ok: true,
-      maxItems,
-      ...result,
-    });
+    return NextResponse.json(
+      { ok: result.failed === 0, maxItems, ...result },
+      { status: result.failed === 0 ? 200 : 503 }
+    );
   } catch (error) {
     return NextResponse.json(
       {

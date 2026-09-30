@@ -81,15 +81,6 @@ img {
   animation: sponsor-marquee-scroll 100s linear infinite;
 }
 
-.partner-carousel-track {
-  animation: sponsor-marquee-scroll 80s linear infinite;
-}
-
-.partner-carousel:hover .partner-carousel-track,
-.partner-carousel:focus-within .partner-carousel-track {
-  animation-play-state: paused;
-}
-
 .sponsor-marquee:hover .sponsor-marquee-track,
 .sponsor-marquee:focus-within .sponsor-marquee-track {
   animation-play-state: paused;
@@ -108,18 +99,6 @@ img {
 
   .sponsor-marquee-track {
     animation: none;
-  }
-
-  .partner-carousel {
-    overflow-x: auto;
-  }
-
-  .partner-carousel-track {
-    animation: none;
-  }
-
-  .partner-carousel-copy {
-    display: none;
   }
 
   .sponsor-marquee-copy {

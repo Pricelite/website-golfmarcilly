@@ -14,7 +14,7 @@ export async function proxy(request: NextRequest) {
     const isAuthenticated = Boolean(process.env.ADMIN_PASSWORD) && await isAdminAuthenticated(request.cookies);
     if (!isAuthenticated) {
       const target = new URL("/admin", request.url);
-      if (pathname === "/admin/competitions") target.searchParams.set("next", pathname);
+      if (pathname === "/admin/competitions" || pathname === "/admin/restaurant") target.searchParams.set("next", pathname);
       return NextResponse.redirect(target);
     }
   }

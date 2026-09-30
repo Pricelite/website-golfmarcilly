@@ -1,6 +1,6 @@
 # Checklist Mise En Prod
 
-> Document historique. Le parcours actuel d'initiation est une demande par email avec paiement sur place. Avant tout déploiement du code récent, appliquer aussi `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` et configurer le traitement planifié décrit dans `README.md`. L'endpoint de file de secours accepte désormais uniquement `POST`.
+> Document historique. Le parcours actuel d'initiation est une demande par email avec paiement sur place. Avant tout déploiement du code récent, appliquer dans l'ordre `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql`, `supabase/migrations/20260930100000_contact_queue_attempt_start.sql` et `supabase/migrations/20260930110000_restaurant_daily_menu.sql`, puis configurer le traitement planifié décrit dans `README.md`. L'endpoint de file de secours accepte désormais uniquement `POST`.
 
 Cette checklist sert a finaliser la mise en production du site apres les phases de durcissement.
 

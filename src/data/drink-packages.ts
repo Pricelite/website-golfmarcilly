@@ -5,7 +5,7 @@ export const drinkPackages = [
     { label: "Apéritif", value: "Non inclus" },
     { label: "Petits fours", value: "4 pièces / personne" },
     { label: "Eau", value: "Incluse" },
-    { label: "Café", value: "Non inclus" },
+    { label: "Café", value: "Inclus" },
   ] },
   { name: "Formule Gourmande", price: "22 €", items: [
     { label: "Vin", value: "1 bouteille / 3 personnes" },

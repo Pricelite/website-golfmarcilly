@@ -7,21 +7,24 @@ import { getServiceHealth } from "@/lib/ops/health";
 
 export async function GET(request: Request) {
   const isInternalView = hasValidOpsToken(request, process.env.OPS_CRON_TOKEN);
+  const publicStatus = await getServiceHealth();
 
   if (!isInternalView) {
     return NextResponse.json(
       {
-        status: "ok",
-        scope: "liveness",
+        status: publicStatus.status,
+        services: publicStatus.services,
+        checkedAt: publicStatus.checkedAt,
+        scope: publicStatus.scope,
       },
       {
+        status: publicStatus.status === "ok" ? 200 : 503,
         headers: { "Cache-Control": "no-store" },
       }
     );
   }
 
   const overview = getEnvironmentOverview();
-  const publicStatus = await getServiceHealth();
   let fallbackQueue;
   try {
     fallbackQueue = await getContactFallbackQueueSnapshot();

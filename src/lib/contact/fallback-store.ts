@@ -17,7 +17,6 @@ export type ContactFallbackEntry = {
 type QueueRow = {
   id: string;
   payload: ContactFallbackEntry;
-  attempts: number;
   lock_token: string;
 };
 
@@ -27,6 +26,7 @@ export type FallbackQueueProcessResult = {
   retained: number;
   movedToFailed: number;
   pending: number;
+  failed: number;
   alertSent: boolean;
 };
 
@@ -99,8 +99,20 @@ async function updateClaim(row: QueueRow, values: Record<string, unknown>): Prom
   if (!data) throw new Error("Fallback queue claim expired before acknowledgement");
 }
 
+async function beginAttempt(row: QueueRow): Promise<number> {
+  const { data, error } = await createSupabaseAdminClient().rpc("begin_contact_fallback_attempt", {
+    p_id: row.id,
+    p_lock_token: row.lock_token,
+  });
+  check(error);
+  if (typeof data !== "number" || !Number.isInteger(data) || data < 1) {
+    throw new Error("Fallback queue attempt could not be started");
+  }
+  return data;
+}
+
 async function maybeAlert(snapshot: FallbackQueueSnapshot): Promise<boolean> {
-  if (snapshot.pending < 3) return false;
+  if (snapshot.pending < 3 && snapshot.failed === 0) return false;
   const db = createSupabaseAdminClient();
   const { data, error } = await db.from("contact_fallback_alert_state").select("last_alert_at").eq("id", 1).maybeSingle();
   check(error);
@@ -125,9 +137,10 @@ export async function processContactFallbackQueue(options?: { maxItems?: number 
   const { data, error } = await db.rpc("claim_contact_fallback", { p_max_items: maxItems });
   check(error);
   const rows = (data ?? []) as QueueRow[];
-  const result: FallbackQueueProcessResult = { processed: 0, sent: 0, retained: 0, movedToFailed: 0, pending: 0, alertSent: false };
+  const result: FallbackQueueProcessResult = { processed: 0, sent: 0, retained: 0, movedToFailed: 0, pending: 0, failed: 0, alertSent: false };
 
   for (const row of rows) {
+    const attempts = await beginAttempt(row);
     result.processed += 1;
     const mail = notification(row);
     try {
@@ -138,7 +151,7 @@ export async function processContactFallbackQueue(options?: { maxItems?: number 
         replyToName: `${row.payload.prenom} ${row.payload.nom}`.trim(),
       });
     } catch (sendError) {
-      const failed = row.attempts >= MAX_ATTEMPTS;
+      const failed = attempts >= MAX_ATTEMPTS;
       await updateClaim(row, { status: failed ? "failed" : "pending", last_error: safeError(sendError) });
       if (failed) result.movedToFailed += 1;
       else result.retained += 1;
@@ -151,11 +164,12 @@ export async function processContactFallbackQueue(options?: { maxItems?: number 
   const retentionDaysRaw = Number.parseInt(process.env.FALLBACK_QUEUE_RETENTION_DAYS || "", 10);
   const retentionDays = Number.isInteger(retentionDaysRaw) && retentionDaysRaw > 0 ? retentionDaysRaw : DEFAULT_RETENTION_DAYS;
   const cutoff = new Date(Date.now() - retentionDays * 86_400_000).toISOString();
-  const purge = await db.from("contact_fallback_queue").delete().in("status", ["sent", "failed"]).lt("updated_at", cutoff);
+  const purge = await db.from("contact_fallback_queue").delete().eq("status", "sent").lt("updated_at", cutoff);
   check(purge.error);
 
   const snapshot = await getContactFallbackQueueSnapshot();
   result.pending = snapshot.pending;
+  result.failed = snapshot.failed;
   result.alertSent = await maybeAlert(snapshot);
   return result;
 }

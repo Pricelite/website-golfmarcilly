@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { PartnerCarousel } from "@/components/sections/partner-carousel";
+import { PartnerDirectory } from "@/components/sections/partner-directory";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
@@ -52,7 +52,7 @@ export default function PartnersPage() {
             title="Nos sponsors et partenaires"
             description="Chacun de ces noms compte dans la vie du golf et de son association sportive. Merci d’être à nos côtés."
           />
-          <PartnerCarousel />
+          <PartnerDirectory />
         </div>
       </section>
 
