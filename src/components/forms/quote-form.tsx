@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 
 type FormState = "idle" | "loading" | "success" | "error";
 type ApiErrorPayload = {
@@ -57,6 +58,8 @@ export function QuoteForm() {
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="company"
+            autoComplete="organization"
+            maxLength={160}
             placeholder="Nom de l'entreprise ou du porteur de projet"
             required
             type="text"
@@ -69,6 +72,8 @@ export function QuoteForm() {
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="email"
+            autoComplete="email"
+            maxLength={160}
             placeholder="vous@entreprise.fr"
             required
             type="email"
@@ -84,6 +89,7 @@ export function QuoteForm() {
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="eventType"
+            maxLength={120}
             placeholder="Séminaire, mariage, team building..."
             required
             type="text"
@@ -96,6 +102,7 @@ export function QuoteForm() {
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="participants"
+            min={1}
             required
             type="number"
           />
@@ -109,10 +116,13 @@ export function QuoteForm() {
         <textarea
           className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="details"
+          maxLength={4000}
           placeholder="Date souhaitée, ambiance, restauration, objectifs..."
           required
         />
       </label>
+
+      <FormPrivacyNotice purpose="étudier votre projet et vous répondre au sujet du devis demandé" />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-md text-xs leading-6 text-emerald-950/55">

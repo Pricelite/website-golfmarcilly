@@ -38,6 +38,24 @@ export default function LegalPage() {
           {legalContent.hostingDetails && (
             <section><h2>Hébergement</h2><p>{legalContent.hostingDetails}</p></section>
           )}
+          <section>
+            <h2>Propriété intellectuelle</h2>
+            <p>
+              Les textes, photographies, illustrations, marques et autres éléments
+              présentés sur ce site sont protégés par les droits de propriété
+              intellectuelle applicables. Toute réutilisation doit respecter les
+              droits de leurs titulaires.
+            </p>
+          </section>
+          <section>
+            <h2>Services externes</h2>
+            <p>
+              Certains liens conduisent vers des services exploités par des tiers,
+              notamment la plateforme de réservation de départs et le service
+              d’itinéraire. Leurs propres conditions et politiques s’appliquent dès
+              que vous quittez ce site.
+            </p>
+          </section>
         </div>
       </section>
     </>

@@ -22,7 +22,7 @@ export const metadata = buildMetadata({
   image: "/restaurant/hero.jpg",
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export default function RestaurantPage() {
   return (

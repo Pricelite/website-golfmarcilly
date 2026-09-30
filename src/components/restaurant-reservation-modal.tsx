@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
 import { getRestaurantDays, getRestaurantTimeSlots, parseReservationPayload } from "@/lib/restaurant/validation";
@@ -402,6 +403,7 @@ export default function RestaurantReservationModal({
                         <input
                           id="reservation-name"
                           type="text"
+                          autoComplete="name"
                           required
                           maxLength={120}
                           value={form.name}
@@ -417,6 +419,7 @@ export default function RestaurantReservationModal({
                         <input
                           id="reservation-email"
                           type="email"
+                          autoComplete="email"
                           required
                           maxLength={160}
                           value={form.email}
@@ -434,6 +437,7 @@ export default function RestaurantReservationModal({
                         <input
                           id="reservation-phone"
                           type="tel"
+                          autoComplete="tel"
                           maxLength={30}
                           value={form.phone}
                           onChange={(event) => updateField("phone", event.target.value)}
@@ -487,6 +491,10 @@ export default function RestaurantReservationModal({
                     {successMessage}
                   </p>
                 ) : null}
+
+                <div className="mt-4">
+                  <FormPrivacyNotice purpose="traiter votre demande de table et vous répondre" />
+                </div>
 
                 <div className="mt-5 flex flex-wrap gap-3">
                   <button

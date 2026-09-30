@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { INITIATION_PRICE_PER_PERSON_CENTS } from "@/lib/initiation/constants";
 import type { InitiationOption } from "@/lib/initiation/calendar-options";
 
@@ -101,6 +102,7 @@ export default function InitiationReservationForm() {
           <label className="block">Téléphone<input name="phone" type="tel" autoComplete="tel" maxLength={30} required className={field} /></label>
           <label className="block">Commentaire (facultatif)<textarea name="note" rows={3} maxLength={2000} className={field} /></label>
           <p className="leading-6">Cette demande ne vaut pas réservation. Nous vous répondrons par e-mail pour confirmer la date et l’horaire.</p>
+          <FormPrivacyNotice purpose="traiter votre demande d’initiation et vous répondre" />
           <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} className="site-button w-full rounded-full px-5 py-3 font-semibold disabled:opacity-60">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
         </fieldset>
         {error ? <p role="alert" className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
