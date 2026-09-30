@@ -10,18 +10,15 @@ export async function GET(request: Request) {
 
   if (!isInternalView) {
     return NextResponse.json(
-      {
-        status: "ok",
-        scope: "liveness",
-      },
+      { status: "ok", scope: "liveness" },
       {
         headers: { "Cache-Control": "no-store" },
       }
     );
   }
 
-  const overview = getEnvironmentOverview();
   const publicStatus = await getServiceHealth();
+  const overview = getEnvironmentOverview();
   let fallbackQueue;
   try {
     fallbackQueue = await getContactFallbackQueueSnapshot();

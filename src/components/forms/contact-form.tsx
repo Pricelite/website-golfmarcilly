@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
 
 type FormState = "idle" | "loading" | "success" | "error";
@@ -76,6 +77,8 @@ export function ContactForm({
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="firstName"
+            autoComplete="given-name"
+            maxLength={80}
             placeholder="Votre prénom"
             required
             type="text"
@@ -86,6 +89,8 @@ export function ContactForm({
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="lastName"
+            autoComplete="family-name"
+            maxLength={80}
             placeholder="Votre nom"
             required
             type="text"
@@ -101,6 +106,8 @@ export function ContactForm({
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="phone"
+            autoComplete="tel"
+            maxLength={30}
             placeholder="06 00 00 00 00"
             type="tel"
           />
@@ -110,6 +117,8 @@ export function ContactForm({
           <input
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="email"
+            autoComplete="email"
+            maxLength={160}
             placeholder="vous@exemple.fr"
             required
             type="email"
@@ -122,6 +131,7 @@ export function ContactForm({
         <input
           className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="subject"
+          maxLength={160}
           placeholder={subjectPlaceholder}
           type="text"
         />
@@ -132,10 +142,13 @@ export function ContactForm({
         <textarea
           className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="message"
+          maxLength={4000}
           placeholder={messagePlaceholder}
           required
         />
       </label>
+
+      <FormPrivacyNotice purpose="traiter et répondre à votre demande" />
 
       <div className="flex justify-end">
         <button

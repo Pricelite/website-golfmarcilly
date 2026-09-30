@@ -61,7 +61,8 @@ export async function POST(request: Request) {
   let formData: FormData;
   try { formData = await request.formData(); }
   catch { return redirectToAdmin(request.url, { error: "missing_password" }); }
-  const next = formData.get("next") === "/admin/competitions" ? "/admin/competitions" : "/admin";
+  const requestedNext = formData.get("next");
+  const next = requestedNext === "/admin/competitions" || requestedNext === "/admin/restaurant" ? requestedNext : "/admin";
   const passwordValue = formData.get("password");
   const password = typeof passwordValue === "string" ? passwordValue : "";
 
