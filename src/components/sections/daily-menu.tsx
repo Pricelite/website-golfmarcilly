@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 
 import { formatDailyMenuDate, parisDateKey, type DailyMenu } from "@/data/daily-menu";
 import { getDailyMenu } from "@/lib/restaurant/daily-menu-store";
+import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility";
 
 const categories = [
   { key: "starters", title: "Entrées" },
@@ -31,18 +32,20 @@ export async function DailyMenuSection() {
         </div>
         <p className="text-xs text-emerald-900/75">{formatDailyMenuDate(today)}</p>
       </div>
-      {closedTuesday ? <p className="px-5 py-5 text-sm leading-6 sm:px-6">Le restaurant est fermé le mardi. Le bar reste ouvert.</p> : null}
-      {!published && !closedTuesday ? <p className="px-5 py-5 text-sm leading-6 sm:px-6">La carte du jour n’est pas disponible pour le moment. Contactez le restaurant pour connaître les propositions du jour.</p> : null}
-      {published ? <div className="divide-y divide-emerald-950/10">
-        {categories.map(({ key, title }) => (
-          <div key={key} className="px-5 py-3 sm:px-6">
-            <h3 className="font-serif text-lg text-emerald-950">{title}</h3>
-            <ul className="mt-1 space-y-0.5 text-xs leading-5 text-emerald-950/85 sm:text-sm">
-              {published[key].map((choice) => <li key={choice.name} className="flex items-baseline justify-between gap-3 pl-2 before:mr-1 before:text-emerald-700 before:content-['•']"><span className="min-w-0 flex-1">{choice.name}</span><span className="shrink-0 font-semibold tabular-nums">{choice.price}</span></li>)}
-            </ul>
-          </div>
-        ))}
-      </div> : null}
+      <DailyMenuVisibility>
+        {closedTuesday ? <p className="px-5 py-5 text-sm leading-6 sm:px-6">Le restaurant est fermé le mardi. Le bar reste ouvert.</p> : null}
+        {!published && !closedTuesday ? <p className="px-5 py-5 text-sm leading-6 sm:px-6">La carte du jour n’est pas disponible pour le moment. Contactez le restaurant pour connaître les propositions du jour.</p> : null}
+        {published ? <div className="divide-y divide-emerald-950/10">
+          {categories.map(({ key, title }) => (
+            <div key={key} className="px-5 py-3 sm:px-6">
+              <h3 className="font-serif text-lg text-emerald-950">{title}</h3>
+              <ul className="mt-1 space-y-0.5 text-xs leading-5 text-emerald-950/85 sm:text-sm">
+                {published[key].map((choice) => <li key={choice.name} className="flex items-baseline justify-between gap-3 pl-2 before:mr-1 before:text-emerald-700 before:content-['•']"><span className="min-w-0 flex-1">{choice.name}</span><span className="shrink-0 font-semibold tabular-nums">{choice.price}</span></li>)}
+              </ul>
+            </div>
+          ))}
+        </div> : null}
+      </DailyMenuVisibility>
     </section>
   );
 }
