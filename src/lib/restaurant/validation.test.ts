@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getRestaurantDays, getRestaurantTimeSlots, parseReservationPayload } from "./validation";
+import { getAvailableRestaurantTimeSlots, getRestaurantDays, getRestaurantTimeSlots, parseReservationPayload } from "./validation";
 
 const now = new Date("2026-09-16T09:00:00Z");
 const valid = { day: "2026-09-16", time: "12:00", name: "Client test", email: "test@example.com", partySize: 2 };
@@ -20,6 +20,10 @@ test("restaurant accepts a complete request and rejects invalid input", () => {
 test("restaurant enforces thirty minutes notice in Paris", () => {
   assert.equal(parseReservationPayload(valid, new Date("2026-09-16T09:30:00Z")).ok, true);
   assert.equal(parseReservationPayload(valid, new Date("2026-09-16T09:31:00Z")).ok, false);
+  assert.equal(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T09:30:00Z")).includes("12:00"), true);
+  assert.equal(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T09:31:00Z")).includes("12:00"), false);
+  assert.deepEqual(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T11:26:00Z")), []);
+  assert.deepEqual(getAvailableRestaurantTimeSlots("2026-09-17", new Date("2026-09-16T11:26:00Z")), getRestaurantTimeSlots("2026-09-17"));
 });
 
 test("restaurant dates follow Paris midnight and daylight saving changes", () => {
