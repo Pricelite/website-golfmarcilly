@@ -35,13 +35,17 @@ test("multi-day events appear on each day inclusively but count once per month",
   assert.equal(eventsInMonth(associationEvents, 2026, 8).length, 5);
 });
 
-test("published programme has valid unique dates and preserves private and provisional notices", () => {
+test("published programme has valid unique dates and preserves private notices", () => {
   assert.equal(new Set(associationEvents.map(event => event.id)).size, associationEvents.length);
   for (const event of associationEvents) {
     assert.equal(new Date(`${event.start}T12:00:00Z`).toISOString().slice(0, 10), event.start);
     if (event.end) assert.ok(event.end >= event.start);
   }
   assert.equal(eventsOnDay(associationEvents, "2026-09-11")[0].status, "private");
-  assert.equal(eventsOnDay(associationEvents, "2026-10-18")[0].status, "provisional");
+  assert.equal(eventsOnDay(associationEvents, "2026-10-10")[0].title, "Triangulaire Jeunes");
+  assert.equal(eventsOnDay(associationEvents, "2026-10-15")[0].title, "Finale Amicale Séniors");
+  assert.equal(eventsOnDay(associationEvents, "2026-10-17")[0].title, "Compétition Chic");
+  assert.equal(eventsOnDay(associationEvents, "2026-10-18")[0].title, "Coupe de Classement");
+  assert.equal(eventsOnDay(associationEvents, "2026-10-25")[0].title, "Coupe de Classement");
   assert.equal(eventsInMonth(associationEvents, 2026, 7).length, 0);
 });

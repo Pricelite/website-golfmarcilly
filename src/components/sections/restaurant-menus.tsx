@@ -1,7 +1,6 @@
 import { CTAButton } from "@/components/ui/cta-button";
 import { SectionTitle } from "@/components/ui/section-title";
 import { restaurantData } from "@/lib/restaurant-data";
-import { DrinkPackages } from "@/components/sections/drink-packages";
 
 export function RestaurantMenus() {
   const seminar = restaurantData.seminarMenu;
@@ -35,8 +34,6 @@ export function RestaurantMenus() {
           ))}
         </div>
       </section>
-
-      <DrinkPackages />
 
       <section id="menu-seminaire" className="mt-12 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#f7f4e9]">
         <div className="flex flex-wrap items-center justify-between gap-5 border-b border-emerald-950/15 px-6 py-7 sm:px-8">

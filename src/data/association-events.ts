@@ -11,7 +11,7 @@ export type AssociationEvent = {
 // Source: https://www.marcilly.com/l-association, consulted 2026-09-15.
 // Calendar year 2026 confirmed by the owner in the conversation.
 // Numeric dates take precedence over inconsistent weekday labels (12-13 September).
-// Omitted unnamed entries: July 5, August 31, September 6/27, October 25.
+// Omitted unnamed entries: July 5, August 31, September 6/27.
 // Initial programme / fallback before Supabase setup. Once configured, use /admin/competitions.
 const entries: Omit<AssociationEvent, "id">[] = [
   { start: "2026-03-15", title: "Coupe SweetSpot", note: "Scramble à 2" },
@@ -63,9 +63,12 @@ const entries: Omit<AssociationEvent, "id">[] = [
   { start: "2026-09-26", title: "Coupe Chic" },
   { start: "2026-10-03", title: "Compétition Golf Entreprise" },
   { start: "2026-10-04", title: "Coupe Octobre Rose" },
+  { start: "2026-10-10", title: "Triangulaire Jeunes" },
   { start: "2026-10-11", title: "Coupe Equip Jardin" },
-  { start: "2026-10-15", title: "Compétition Amicale Séniors" },
-  { start: "2026-10-18", title: "Coupe Soditra", status: "provisional", note: "Épreuve indiquée en option dans le programme." },
+  { start: "2026-10-15", title: "Finale Amicale Séniors" },
+  { start: "2026-10-17", title: "Compétition Chic" },
+  { start: "2026-10-18", title: "Coupe de Classement" },
+  { start: "2026-10-25", title: "Coupe de Classement" },
   { start: "2026-11-08", title: "Bregent / Bergerie" },
   { start: "2026-11-22", title: "Coupe Beaujolais" },
 ];
