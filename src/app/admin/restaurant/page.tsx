@@ -28,7 +28,7 @@ export default async function AdminRestaurantPage() {
       <Link className="underline underline-offset-4" href="/admin">Administration</Link>
       <Link className="underline underline-offset-4" href="/restaurant#carte-du-jour" target="_blank" rel="noreferrer">Voir la carte publique ↗</Link>
     </nav>
-    <p className="mt-7 max-w-3xl text-sm leading-7 text-emerald-900/80">Choisissez une date, renseignez trois entrées, trois plats et trois desserts, puis publiez. Seule la carte de la date du jour, selon l’heure de Paris, apparaît comme carte confirmée sur le site.</p>
+    <p className="mt-7 max-w-3xl text-sm leading-7 text-emerald-900/80">Publiez une carte uniquement lorsque les plats ou les prix changent. La dernière carte publiée reste automatiquement active les jours suivants et apparaît sur le site de 10 h à 15 h, selon l’heure de Paris.</p>
     <DailyMenuManager initialDate={today} initialMenu={menu} initialError={unavailable} />
   </div>;
 }

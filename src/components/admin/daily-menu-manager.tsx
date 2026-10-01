@@ -72,7 +72,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
       const data = await request("PUT", { date, ...choices });
       if (data.menu) setChoices(data.menu);
       setPublished(true);
-      setMessage(`Carte du ${formatDailyMenuDate(date)} publiée. Elle est visible sur le site à cette date.`);
+      setMessage(`Carte du ${formatDailyMenuDate(date)} publiée. Elle devient la carte active et le reste jusqu’à la prochaine modification.`);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Enregistrement impossible. Réessayez."); }
     finally { setBusy(false); }
   }

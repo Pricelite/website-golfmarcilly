@@ -25,6 +25,19 @@ export async function getDailyMenu(date: string, options?: { timeoutMs?: number 
   return data ? fromRow(data as DailyMenuRow) : null;
 }
 
+export async function getLatestDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {
+  let query = createSupabaseAdminClient()
+    .from("restaurant_daily_menus")
+    .select(columns)
+    .lte("menu_date", date)
+    .order("menu_date", { ascending: false })
+    .limit(1);
+  if (options?.timeoutMs) query = query.abortSignal(AbortSignal.timeout(options.timeoutMs));
+  const { data, error } = await query.maybeSingle();
+  if (error) throw error;
+  return data ? fromRow(data as DailyMenuRow) : null;
+}
+
 export async function saveDailyMenu(menu: DailyMenu): Promise<DailyMenu> {
   const { data, error } = await createSupabaseAdminClient().from("restaurant_daily_menus")
     .upsert({ menu_date: menu.date, starters: menu.starters, mains: menu.mains, desserts: menu.desserts, updated_at: new Date().toISOString() }, { onConflict: "menu_date" })
