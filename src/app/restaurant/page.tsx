@@ -140,13 +140,13 @@ export default function RestaurantPage() {
             <SectionTitle
               eyebrow="Groupes & privatisation"
               title="Votre demande de devis global"
-              description="Précisez la date, le nombre de personnes, le menu et le forfait boissons souhaités. Ajoutez vos besoins pour la salle ou le séminaire, le cas échéant."
+              description="Précisez la date, le nombre de personnes, le menu et les boissons souhaitées. Ajoutez vos besoins pour la salle ou le séminaire, le cas échéant."
             />
             <div className="mt-8">
               <ContactForm
                 context="restaurant"
                 subjectPlaceholder="Devis global : repas, boissons, réception..."
-                messagePlaceholder="Date souhaitée, nombre de personnes, menu choisi, forfait boissons et besoins complémentaires..."
+                messagePlaceholder="Date souhaitée, nombre de personnes, menu choisi, boissons souhaitées et besoins complémentaires..."
                 submitLabel="Envoyer ma demande de devis global"
                 successMessage="Votre demande restaurant a bien été reçue par le site."
               />

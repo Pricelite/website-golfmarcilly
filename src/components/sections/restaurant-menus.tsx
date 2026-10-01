@@ -72,7 +72,7 @@ export function RestaurantMenus() {
       <div className="mt-8 flex flex-col items-start gap-5 rounded-2xl bg-emerald-950 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h2 className="font-serif text-2xl text-stone-50">Votre repas, un seul devis</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-100/85">Menu, forfait boissons, séminaire ou location de salle : regroupez vos envies dans une seule demande.</p>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-100/85">Menu, boissons, séminaire ou location de salle : regroupez vos envies dans une seule demande.</p>
         </div>
         <CTAButton href="#devis-restaurant" variant="secondary" className="shrink-0">Demander un devis global</CTAButton>
       </div>
