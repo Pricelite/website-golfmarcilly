@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
-import { getRestaurantDays, getRestaurantTimeSlots, parseReservationPayload } from "@/lib/restaurant/validation";
+import { getAvailableRestaurantTimeSlots, getRestaurantDays, parseReservationPayload } from "@/lib/restaurant/validation";
 
 
 type RestaurantReservationModalProps = {
@@ -53,8 +53,8 @@ function normalizeWeekdayLabel(rawWeekday: string): string {
   return capitalize(rawWeekday.replace(".", "").trim());
 }
 
-function getNextDays(): DayOption[] {
-  return getRestaurantDays().map((iso) => {
+function getNextDays(now: Date): DayOption[] {
+  return getRestaurantDays(now).filter((iso) => getAvailableRestaurantTimeSlots(iso, now).length > 0).map((iso) => {
     const date = new Date(iso + "T12:00:00Z");
     return {
       iso,
@@ -98,6 +98,7 @@ export default function RestaurantReservationModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSubmittedFingerprint, setLastSubmittedFingerprint] = useState<string>("");
   const [isClient, setIsClient] = useState(false);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
 
   const submittingRef = useRef(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -107,18 +108,31 @@ export default function RestaurantReservationModal({
   const titleId = useId();
   const descriptionId = useId();
 
-  const dayOptions = useMemo(() => isOpen ? getNextDays() : [], [isOpen]);
-  const slots = useMemo(() => selectedDay ? getRestaurantTimeSlots(selectedDay) : [], [selectedDay]);
+  const dayOptions = useMemo(() => isOpen ? getNextDays(currentTime) : [], [currentTime, isOpen]);
+  const slots = useMemo(() => selectedDay ? getAvailableRestaurantTimeSlots(selectedDay, currentTime) : [], [currentTime, selectedDay]);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   useEffect(() => {
+    if (!isOpen) return;
+    const update = () => setCurrentTime(new Date());
+    update();
+    const timer = window.setInterval(update, 30_000);
+    return () => window.clearInterval(timer);
+  }, [isOpen]);
+
+  useEffect(() => {
     if (dayOptions.length > 0 && !dayOptions.some((day) => day.iso === selectedDay)) {
       setSelectedDay(dayOptions[0].iso);
+      setSelectedTime(null);
     }
   }, [dayOptions, selectedDay]);
+
+  useEffect(() => {
+    if (selectedTime && !slots.includes(selectedTime)) setSelectedTime(null);
+  }, [selectedTime, slots]);
 
   const closeModal = useCallback(() => {
     setIsOpen(false);
@@ -129,6 +143,7 @@ export default function RestaurantReservationModal({
 
   const openModal = useCallback(() => {
     previouslyFocusedElementRef.current = document.activeElement as HTMLElement | null;
+    setCurrentTime(new Date());
     setIsOpen(true);
   }, []);
 

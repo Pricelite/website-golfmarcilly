@@ -56,6 +56,12 @@ function isSlotAtLeastThirtyMinutesAhead(day: string, time: string, now: Date): 
   return selectedDateTimeKey >= minAllowedDateTimeKey;
 }
 
+export function getAvailableRestaurantTimeSlots(day: string, now = new Date()): string[] {
+  return getRestaurantTimeSlots(day).filter((time) =>
+    isSlotAtLeastThirtyMinutesAhead(day, time, now)
+  );
+}
+
 function isValidIsoDate(day: string): boolean {
   if (!DAY_PATTERN.test(day)) {
     return false;
