@@ -7,8 +7,8 @@ export function validDailyMenuDate(value: unknown): value is string {
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }
 
-function choices(value: unknown): [DailyMenuChoice, DailyMenuChoice, DailyMenuChoice] | null {
-  if (!Array.isArray(value) || value.length !== 3) return null;
+function choices(value: unknown): DailyMenuChoice[] | null {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 12) return null;
   const cleaned = value.map((item) => {
     if (!item || typeof item !== "object" || Array.isArray(item)) return null;
     const choice = item as Record<string, unknown>;
@@ -16,8 +16,8 @@ function choices(value: unknown): [DailyMenuChoice, DailyMenuChoice, DailyMenuCh
     return { name: choice.name.trim(), price: choice.price.trim() };
   });
   if (cleaned.some((item) => !item || !item.name || item.name.length > 120 || /[\u0000-\u001f\u007f]/.test(item.name) || !/^(?:0|[1-9]\d{0,3})(?:,\d{2})?\s?€$/.test(item.price))) return null;
-  const result = cleaned as [DailyMenuChoice, DailyMenuChoice, DailyMenuChoice];
-  if (new Set(result.map((item) => item.name.toLocaleLowerCase("fr"))).size !== 3) return null;
+  const result = cleaned as DailyMenuChoice[];
+  if (new Set(result.map((item) => item.name.toLocaleLowerCase("fr"))).size !== result.length) return null;
   return result;
 }
 
@@ -28,6 +28,6 @@ export function parseDailyMenu(value: unknown): { ok: true; menu: DailyMenu } | 
   const starters = choices(input.starters);
   const mains = choices(input.mains);
   const desserts = choices(input.desserts);
-  if (!starters || !mains || !desserts) return { ok: false, error: "Saisissez trois choix distincts avec un prix en euros pour chaque catégorie." };
+  if (!starters || !mains || !desserts) return { ok: false, error: "Saisissez entre 1 et 12 choix distincts avec un prix en euros pour chaque catégorie." };
   return { ok: true, menu: { date: input.date, starters, mains, desserts } };
 }

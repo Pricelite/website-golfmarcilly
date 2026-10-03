@@ -5,7 +5,7 @@ import { AssociationCalendar } from "@/components/association-calendar";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { associationFaqs, associationLinks, associationRoles } from "@/data/association";
+import { associationFaqs, associationGroups, associationLinks, associationRoles } from "@/data/association";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -47,6 +47,7 @@ export default async function AssociationPage() {
         <div className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 px-4 py-3 sm:px-6 lg:px-8">
           {[
             ["#role", "Le rôle de l’AS"],
+            ["#groupes", "Équipes, seniors et académie"],
             ["#competitions", "Compétitions et résultats"],
             ["#equipe", "L’équipe de l’AS"],
             ["#rejoindre", "Participer"],
@@ -66,6 +67,25 @@ export default async function AssociationPage() {
               <p className="mt-3 text-sm leading-7 text-emerald-950/75">{item.description}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section id="groupes" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="À chacun son parcours" title="Vivre le golf à tous les âges" description="Équipes du club, rendez-vous seniors et apprentissage des jeunes : choisissez l’espace qui vous correspond." />
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {associationGroups.map((group, index) => (
+              <article key={group.title} className="flex min-h-80 flex-col rounded-[28px] border border-emerald-950/10 bg-white p-7 shadow-sm shadow-emerald-950/5 sm:p-8">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">{group.eyebrow}</p>
+                  <span aria-hidden="true" className="font-serif text-3xl text-emerald-950/20">0{index + 1}</span>
+                </div>
+                <h2 className="mt-8 font-serif text-3xl text-emerald-950">{group.title}</h2>
+                <p className="mt-4 flex-1 text-sm leading-7 text-emerald-950/75">{group.description}</p>
+                <div className="mt-7"><CTAButton href={group.href} variant="ghost">{group.cta}</CTAButton></div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

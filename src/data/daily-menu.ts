@@ -2,27 +2,34 @@ export type DailyMenuChoice = { name: string; price: string };
 
 export type DailyMenu = {
   date: string;
-  starters: [DailyMenuChoice, DailyMenuChoice, DailyMenuChoice];
-  mains: [DailyMenuChoice, DailyMenuChoice, DailyMenuChoice];
-  desserts: [DailyMenuChoice, DailyMenuChoice, DailyMenuChoice];
+  starters: DailyMenuChoice[];
+  mains: DailyMenuChoice[];
+  desserts: DailyMenuChoice[];
 };
 
-// Intitulés repris de la carte éditoriale existante. Ce modèle n'est pas une offre publiée.
+// Carte transmise par le propriétaire le 3 octobre 2026. Elle sert de repli tant
+// qu'aucune carte plus récente n'a été publiée dans Supabase.
+export const dailyMenuExampleDate = "2026-10-03";
 export const dailyMenuExample: Omit<DailyMenu, "date"> = {
   starters: [
-    { name: "Poireaux revisités à la vinaigrette", price: "9 €" },
-    { name: "Œuf cocotte", price: "10 €" },
-    { name: "Saumon gravlax", price: "10 €" },
+    { name: "Terrine maison", price: "8 €" },
+    { name: "Croustillant de reblochon façon tartiflette", price: "8 €" },
+    { name: "Saucisson brioché", price: "9 €" },
   ],
   mains: [
-    { name: "Araignée de porc en persillade", price: "17 €" },
+    { name: "Faux-filet, sauce échalote", price: "23 €" },
     { name: "Burger de la Bergerie", price: "17 €" },
-    { name: "Parmentier de canard sauce foie gras", price: "20 €" },
+    { name: "Entrecôte", price: "25 €" },
+    { name: "Souris d’agneau confite et son jus", price: "21 €" },
+    { name: "Pavé de mahi-mahi, sauce aux fruits de mer safranée", price: "19 €" },
+    { name: "Cuisse de canard confite, sauce au poivre vert", price: "17 €" },
+    { name: "Jambon grillé", price: "12 €" },
   ],
   desserts: [
-    { name: "Cookie crème choco–caramel", price: "9,50 €" },
-    { name: "Cheesecake fruits rouges, pistaches", price: "9,50 €" },
-    { name: "Nuage de riz au lait caramélisé", price: "9,50 €" },
+    { name: "Tarte fine aux mirabelles", price: "7,50 €" },
+    { name: "Île flottante", price: "7 €" },
+    { name: "Profiterole de la Bergerie", price: "8 €" },
+    { name: "Omelette norvégienne", price: "9 €" },
   ],
 };
 

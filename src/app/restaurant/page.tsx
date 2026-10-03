@@ -92,27 +92,27 @@ export default function RestaurantPage() {
           </div>
         </section>
 
-        <section id="horaires-restaurant" aria-labelledby="horaires-restaurant-title" className="scroll-mt-28 bg-emerald-950 py-16 text-stone-50 sm:py-20">
+        <section id="horaires-restaurant" aria-labelledby="horaires-restaurant-title" className="scroll-mt-28 bg-emerald-950 py-10 text-stone-50 sm:py-12">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-stretch lg:gap-0 lg:px-8">
-            <div className="flex flex-col rounded-t-[28px] bg-[#123f35] p-7 sm:p-9 lg:rounded-l-[28px] lg:rounded-tr-none">
+            <div className="flex flex-col rounded-t-[28px] bg-[#123f35] p-6 sm:p-7 lg:rounded-l-[28px] lg:rounded-tr-none">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#dbe9b4]">Informations pratiques</p>
-              <h2 id="horaires-restaurant-title" className="mt-4 font-serif text-4xl">Horaires d’ouverture</h2>
-              <p className="mt-5 max-w-md text-sm leading-7 text-stone-100/80">Le restaurant vous accueille pour le service du midi, sauf le mardi. Le bar reste ouvert tous les jours.</p>
+              <h2 id="horaires-restaurant-title" className="mt-3 font-serif text-3xl sm:text-4xl">Horaires d’ouverture</h2>
+              <p className="mt-3 max-w-md text-sm leading-6 text-stone-100/80">Le restaurant vous accueille pour le service du midi, sauf le mardi. Le bar reste ouvert tous les jours.</p>
               <RestaurantLiveClock />
             </div>
-            <div className="rounded-b-[28px] bg-[#f7f4e9] px-6 py-3 text-emerald-950 sm:px-9 lg:rounded-r-[28px] lg:rounded-bl-none">
+            <div className="rounded-b-[28px] bg-[#f7f4e9] px-5 py-2 text-emerald-950 sm:px-7 lg:rounded-r-[28px] lg:rounded-bl-none">
               <dl className="divide-y divide-emerald-950/15">
                 {restaurantData.hours.map((day) => (
-                  <div key={day.label} className="grid grid-cols-[5rem_minmax(0,1fr)] gap-4 py-4 text-sm leading-6 sm:grid-cols-[8rem_minmax(0,1fr)]">
+                  <div key={day.label} className="grid grid-cols-[5rem_minmax(0,1fr)] gap-4 py-2.5 text-sm leading-5 sm:grid-cols-[7rem_minmax(0,1fr)]">
                     <dt className="font-semibold">{day.label}</dt>
-                    <dd className="grid gap-1 sm:grid-cols-2 sm:gap-5">
+                    <dd className="grid gap-1">
                       <div className="flex justify-between gap-3"><span className="text-emerald-950/65">Restaurant</span><span className="whitespace-nowrap font-semibold">{day.hours}</span></div>
                       <div className="flex justify-between gap-3 text-emerald-800"><span className="text-emerald-950/65">Bar</span><span className="whitespace-nowrap font-semibold">{day.barHours}</span></div>
                     </dd>
                   </div>
                 ))}
               </dl>
-              <div className="border-t border-emerald-950/15 py-6">
+              <div className="border-t border-emerald-950/15 py-4">
                 <p className="text-sm font-semibold">Restaurant ouvert aux golfeurs et aux visiteurs extérieurs.</p>
                 <div className="mt-4"><RestaurantReservationModal /></div>
               </div>
