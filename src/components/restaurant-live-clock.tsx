@@ -19,8 +19,8 @@ export function RestaurantLiveClock() {
   const seconds = time ? time.seconds * 6 : 0;
 
   return (
-    <div className="mt-5 flex flex-col items-center lg:mt-auto" role="group" aria-label="Heure actuelle à Marcilly-en-Villette">
-      <svg viewBox="0 0 240 240" className="h-40 w-40 sm:h-44 sm:w-44" aria-hidden="true" focusable="false">
+    <div className="mt-4 flex flex-col items-center" role="group" aria-label="Heure actuelle à Marcilly-en-Villette">
+      <svg viewBox="0 0 240 240" className="h-32 w-32 sm:h-36 sm:w-36" aria-hidden="true" focusable="false">
         <circle cx="120" cy="120" r="114" fill="#DCE9C7" fillOpacity="0.08" />
         <circle cx="120" cy="120" r="104" fill="#113D34" stroke="#DCE9C7" strokeOpacity="0.3" strokeWidth="2" />
         <circle cx="120" cy="120" r="94" fill="#0A332B" stroke="#F3E7C5" strokeWidth="3" />

@@ -23,6 +23,30 @@ export const associationRoles = [
   },
 ];
 
+export const associationGroups = [
+  {
+    eyebrow: "Jouer ensemble",
+    title: "Nos équipes",
+    description: "Découvrez la vie collective du club et les rendez-vous joués sous les couleurs de Marcilly. L’accueil vous renseignera sur les équipes, les capitaines et les modalités de participation.",
+    href: "/contact",
+    cta: "Se renseigner sur les équipes",
+  },
+  {
+    eyebrow: "Partager l’expérience",
+    title: "Les seniors",
+    description: "Les joueuses et joueurs seniors se retrouvent lors des compétitions amicales et des rendez-vous inscrits au calendrier sportif du club.",
+    href: "#competitions",
+    cta: "Voir les rendez-vous seniors",
+  },
+  {
+    eyebrow: "Grandir par le golf",
+    title: "L’académie",
+    description: "L’académie accompagne les jeunes dans leur découverte et leur progression. Retrouvez les informations de l’école de golf et les possibilités d’inscription.",
+    href: "/enseignement#ecole-de-golf",
+    cta: "Découvrir l’école de golf",
+  },
+] as const;
+
 export const associationFaqs = [
   {
     question: "Comment rejoindre l’association ?",
