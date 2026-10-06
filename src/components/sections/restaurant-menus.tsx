@@ -7,7 +7,7 @@ export function RestaurantMenus() {
   return (
     <>
       <section id="menus" className="mt-16 scroll-mt-28">
-        <SectionTitle eyebrow="À partager à La Bergerie" title="Nos menus de groupes" description="Retrouvez les entrées, plats et desserts de chaque formule, puis contactez-nous pour préparer votre repas." />
+        <SectionTitle eyebrow="À partager à La Bergerie" title="Nos menus de groupes" description="Retrouvez les entrées, plats et desserts de chaque formule, puis contactez-nous pour préparer votre repas, sur devis uniquement." />
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {restaurantData.groupMenus.items.map((menu) => (
             <article key={menu.name} className="flex flex-col overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#faf8f0]">
