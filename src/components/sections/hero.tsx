@@ -68,7 +68,7 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, ap
               <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={associationLinks.results} variant="secondary">Voir les résultats</CTAButton>
             </div>
           </nav>
-          <nav aria-label="Réseaux sociaux du Golf de Marcilly" className="mt-6 flex items-center gap-3">
+          <nav aria-label="Réseaux sociaux du Golf de Marcilly" className="mt-6 flex items-center justify-center gap-3">
             {siteConfig.socialLinks.map((social) => (
               <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`Golf de Marcilly sur ${social.label} (nouvel onglet)`} className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-sm transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${socialButtonColors[social.label]}`}>
                 <SocialIcon label={social.label} />
