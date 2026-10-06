@@ -48,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" data-scroll-behavior="smooth">
-      <body className="bg-stone-50 text-emerald-950 antialiased">
+      <body className="text-emerald-950 antialiased">
         <JsonLd data={buildOrganizationSchema()} />
         <a
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-emerald-950 focus:px-4 focus:py-2 focus:text-stone-50"

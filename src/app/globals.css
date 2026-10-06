@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f4ee;
+  --background: #f7f4e9;
   --foreground: #102a24;
   --color-panel: rgba(255, 255, 255, 0.8);
 }
@@ -11,9 +11,7 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(circle at top, rgba(180, 205, 183, 0.18), transparent 28%),
-    linear-gradient(180deg, #f7f4ee 0%, #f3efe7 100%);
+  background: var(--background);
   color: var(--foreground);
   font-family:
     Inter, "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;

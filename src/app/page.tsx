@@ -80,7 +80,7 @@ export default function HomePage() {
         <div className="mt-6"><CTAButton href="/golf" variant="ghost">Explorer les parcours et leurs caractéristiques</CTAButton></div>
       </section>
 
-      <section id="restaurant" className="bg-white/60 py-10 sm:py-14">
+      <section id="restaurant" className="bg-[#efeadd] py-10 sm:py-14">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:aspect-[3/2]">
             <Image src="/images/cuisine.png" alt="Des plats préparés en cuisine" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
@@ -104,7 +104,7 @@ export default function HomePage() {
       <section id="enseignement" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:order-2 lg:aspect-[3/2]">
-            <Image src="/images/practice-enseignement-vue-aerienne.png" alt="Vue aérienne du practice et des espaces d’entraînement du Golf de Marcilly" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
+            <Image src="/images/practice-enseignement-vue-aerienne-sans-sacs.png" alt="Vue aérienne du practice et des espaces d’entraînement du Golf de Marcilly" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
           </div>
           <div>
             <SectionTitle
@@ -142,7 +142,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white/60 py-16">
+      <section className="bg-[#efeadd] py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Actualités"
@@ -176,8 +176,9 @@ export default function HomePage() {
                 <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
               </p>
             </div>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href="/contact">Voir la page contact</CTAButton>
+              <CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler le golf</CTAButton>
             </div>
           </div>
         </div>

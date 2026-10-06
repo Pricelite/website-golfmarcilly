@@ -12,7 +12,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-stone-50/88 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-[#f7f4e9]/95 backdrop-blur-lg">
       <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
         <div className="shrink-0">
           <Link className="block" href="/">
@@ -81,7 +81,7 @@ export function Header() {
       <div
         id="mobile-navigation"
         className={cn(
-          "min-h-0 overflow-y-auto overscroll-contain border-t border-emerald-950/10 bg-stone-50 xl:hidden",
+          "min-h-0 overflow-y-auto overscroll-contain border-t border-emerald-950/10 bg-[#f7f4e9] xl:hidden",
           open ? "block" : "hidden",
         )}
       >
