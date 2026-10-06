@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import type { PricingSection } from "@/data/pricing";
@@ -14,6 +15,7 @@ type CourseCardProps = {
   showMeta?: boolean;
   sizes?: string;
   pricing?: PricingSection;
+  action?: ReactNode;
 };
 
 export function CourseCard({
@@ -26,6 +28,7 @@ export function CourseCard({
   image,
   showMeta = true,
   pricing,
+  action,
   sizes = "(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 88px) / 2), 596px",
 }: CourseCardProps) {
   return (
@@ -81,6 +84,7 @@ export function CourseCard({
             {ctaLabel}
           </CTAButton>
         ) : null}
+        {action ? <div className="mt-auto">{action}</div> : null}
       </div>
     </article>
   );

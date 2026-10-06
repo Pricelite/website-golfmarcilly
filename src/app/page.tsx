@@ -41,6 +41,7 @@ export default function HomePage() {
       <Hero
         eyebrow="Bienvenue au Golf de Marcilly"
         beginnerCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
+        appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
         promoCta={activeOffers.length ? { label: "Offre du moment", offers: activeOffers } : undefined}
         subtitle="Venez jouer sur nos parcours, découvrir le golf ou déjeuner à La Bergerie. À chacun sa façon de profiter de Marcilly."
         competitionCta={{ label: "Calendrier des compétitions", href: "/association-sportive#competitions" }}

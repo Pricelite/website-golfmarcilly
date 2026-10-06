@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { HeroPhotoCarousel } from "@/components/hero-photo-carousel";
 import { associationLinks } from "@/data/association";
 import type { SiteOffer } from "@/data/offers";
@@ -10,10 +12,11 @@ type HeroProps = {
   subtitle: string;
   beginnerCta: { label: string; href: string };
   competitionCta: { label: string; href: string };
+  appCta?: { label: string; href: string };
   promoCta?: { label: string; offers: SiteOffer[] };
 };
 
-export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, promoCta }: HeroProps) {
+export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, appCta, promoCta }: HeroProps) {
   return (
     <section aria-label="Bienvenue au Golf de Marcilly" className="overflow-hidden bg-[#f7f4e9] text-emerald-950">
       <div className="mx-auto grid max-w-[1600px] lg:grid-cols-2">
@@ -26,6 +29,17 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, pr
           <div className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
             <CTAButton className="min-h-16 min-w-0 w-full px-2 py-2 text-center leading-4" href={beginnerCta.href}>{beginnerCta.label}</CTAButton>
             {promoCta ? <PromoOffersModal label={promoCta.label} offers={promoCta.offers} /> : null}
+            {appCta ? (
+              <a
+                href={appCta.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={appCta.label}
+                className="flex min-h-24 items-center justify-center px-4 py-2 transition hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+              >
+                <Image src="/images/flashgolf-logo.png" alt="" width={256} height={308} className="h-20 w-auto object-contain" />
+              </a>
+            ) : null}
           </div>
           <nav aria-label="Informations compétition" className="mt-9 border-t border-emerald-950/15 pt-5">
             <p className="text-sm font-semibold text-emerald-950">Vous jouez en compétition ?</p>
