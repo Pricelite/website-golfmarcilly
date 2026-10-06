@@ -1,4 +1,5 @@
 import { CourseCard } from "@/components/ui/course-card";
+import { CourseFlyoverModal } from "@/components/course-flyover-modal";
 import { CTAButton } from "@/components/ui/cta-button";
 import { siteConfig } from "@/data/site";
 import { JsonLd } from "@/components/ui/json-ld";
@@ -52,7 +53,12 @@ export default function GolfPage() {
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           {orderedCourses.map((course) => (
-            <CourseCard key={course.slug} {...course} pricing={pricingByCourse[course.slug]} />
+            <CourseCard
+              key={course.slug}
+              {...course}
+              pricing={pricingByCourse[course.slug]}
+              action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}
+            />
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">

@@ -1,0 +1,21 @@
+export const marcillyFlyoverHoles = [
+  { number: 1, par: 5, hcp: 8, embedUrl: "https://www.flyovergreen.com/embed/rpffnsgxyadt" },
+  { number: 2, par: 3, hcp: 18, embedUrl: "https://www.flyovergreen.com/embed/iluqtyczs4cj" },
+  { number: 3, par: 4, hcp: 6, embedUrl: "https://www.flyovergreen.com/embed/ksi2p56rpxfx" },
+  { number: 4, par: 4, hcp: 4, embedUrl: "https://www.flyovergreen.com/embed/pimcfzpqfi9c" },
+  { number: 5, par: 3, hcp: 14, embedUrl: "https://www.flyovergreen.com/embed/1s8tdqgtaguk" },
+  { number: 6, par: 4, hcp: 12, embedUrl: "https://www.flyovergreen.com/embed/6vbnvilqkchq" },
+  { number: 7, par: 4, hcp: 10, embedUrl: "https://www.flyovergreen.com/embed/x9lkls6iuyna" },
+  { number: 8, par: 4, hcp: 2, embedUrl: "https://www.flyovergreen.com/embed/3ixknafmzloc" },
+  { number: 9, par: 5, hcp: 16, embedUrl: "https://www.flyovergreen.com/embed/pwqkdmfz3kcs" },
+  { number: 10, par: 4, hcp: 17, embedUrl: "https://www.flyovergreen.com/embed/iig5gj56keet" },
+  { number: 11, par: 4, hcp: 5, embedUrl: "https://www.flyovergreen.com/embed/sw9r2zfb2iaa" },
+  { number: 12, par: 5, hcp: 11, embedUrl: "https://www.flyovergreen.com/embed/nqyfdapi3ct1" },
+  { number: 13, par: 4, hcp: 1, embedUrl: "https://www.flyovergreen.com/embed/tk6cgzv1jn8t" },
+  { number: 14, par: 3, hcp: 15, embedUrl: "https://www.flyovergreen.com/embed/i8ijjheyzby0" },
+  { number: 15, par: 4, hcp: 3, embedUrl: "https://www.flyovergreen.com/embed/46zhnc53qcnp" },
+  { number: 16, par: 4, hcp: 7, embedUrl: "https://www.flyovergreen.com/embed/pqt2xu6mgvjo" },
+  { number: 17, par: 3, hcp: 9, embedUrl: "https://www.flyovergreen.com/embed/yjawiy0woajd" },
+  { number: 18, par: 5, hcp: 13, embedUrl: "https://www.flyovergreen.com/embed/2oe7hfgoow9t" },
+] as const;
+

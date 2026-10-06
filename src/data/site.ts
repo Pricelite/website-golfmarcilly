@@ -15,6 +15,7 @@ export const siteConfig = {
   countryCode: "FR",
   postalCode: "45240",
   reservationUrl: "https://marcilly.reservations-golf.fr/",
+  flashGolfUrl: "https://www.flashgolf.app/",
   mapImageUrl:
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=2.005,47.777,2.031,47.787&bboxSR=4326&imageSR=4326&size=1280,840&format=jpg&f=image",
   mapExternalUrl: "https://www.google.com/maps?q=Golf%20de%20Marcilly&t=k&z=16",
