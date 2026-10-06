@@ -59,6 +59,16 @@ export default function PrivacyPage() {
             consultation des pages publiques.
           </p>
           <p>{legalContent.thirdPartyDetails}</p>
+          <p>
+            Consultez la{" "}
+            <a href="https://www.flyovergreen.com/pdfs/data_protection_policy_en.pdf" rel="noreferrer" target="_blank">
+              politique de protection des données de FlyOverGreen
+            </a>{" "}
+            et la{" "}
+            <a href="https://policies.google.com/privacy?hl=fr" rel="noreferrer" target="_blank">
+              politique de confidentialité de Google et YouTube
+            </a>.
+          </p>
           <h2>Vos droits</h2>
           <p>{legalContent.rightsDetails}</p>
           <h2>Nous contacter au sujet de vos données</h2>

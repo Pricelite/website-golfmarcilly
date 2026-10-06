@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { marcillyFlyoverHoles } from "@/data/flyovergreen";
 
@@ -9,14 +10,15 @@ export function CourseFlyoverModal() {
   const [selectedHole, setSelectedHole] = useState(1);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const hole = marcillyFlyoverHoles[selectedHole - 1];
 
-  function close() {
+  const close = useCallback(() => {
     setOpen(false);
     setVideoEnabled(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
-  }
+  }, []);
 
   function chooseHole(number: number) {
     setSelectedHole(number);
@@ -27,16 +29,50 @@ export function CourseFlyoverModal() {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const modalRoot = document.querySelector<HTMLElement>("[data-course-flyover-root]");
+    const pageElements = Array.from(document.body.children)
+      .filter((element): element is HTMLElement => element instanceof HTMLElement && element !== modalRoot)
+      .map((element) => ({
+        element,
+        ariaHidden: element.getAttribute("aria-hidden"),
+        inert: element.hasAttribute("inert"),
+      }));
+    pageElements.forEach(({ element }) => {
+      element.setAttribute("aria-hidden", "true");
+      element.setAttribute("inert", "");
+    });
     closeButtonRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
+      if (event.key === "Escape") {
+        close();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], iframe, [tabindex]:not([tabindex="-1"])',
+      ) ?? []).filter((element) => element.getClientRects().length > 0);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      pageElements.forEach(({ element, ariaHidden, inert }) => {
+        if (ariaHidden === null) element.removeAttribute("aria-hidden");
+        else element.setAttribute("aria-hidden", ariaHidden);
+        if (!inert) element.removeAttribute("inert");
+      });
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [close, open]);
 
   return (
     <>
@@ -49,9 +85,9 @@ export function CourseFlyoverModal() {
         Voir les 18 trous en vidéo
       </button>
 
-      {open ? (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-emerald-950/75 p-3 backdrop-blur-sm sm:p-6" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="flyover-title" className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-[28px] bg-[#f7f4e9] text-emerald-950 shadow-2xl sm:max-h-[calc(100dvh-3rem)]">
+      {open ? createPortal(
+        <div data-course-flyover-root className="fixed inset-0 z-[80] flex items-center justify-center bg-emerald-950/75 p-3 backdrop-blur-sm sm:p-6" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="flyover-title" className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-[28px] bg-[#f7f4e9] text-emerald-950 shadow-2xl sm:max-h-[calc(100dvh-3rem)]">
             <div className="flex items-start justify-between gap-5 border-b border-emerald-950/10 px-5 py-4 sm:px-7">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Parcours compétitions</p>
@@ -105,9 +141,9 @@ export function CourseFlyoverModal() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </>
   );
 }
-
