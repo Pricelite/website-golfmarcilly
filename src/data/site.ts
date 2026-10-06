@@ -22,6 +22,7 @@ export const siteConfig = {
   socialLinks: [
     { label: "Facebook", href: "https://www.facebook.com/golfdemarcilly/" },
     { label: "Instagram", href: "https://www.instagram.com/golf_marcilly/" },
+    { label: "LinkedIn", href: "https://fr.linkedin.com/company/golf-de-marcilly" },
   ],
   hours: [
     { label: "Accueil", value: "Tous les jours, 8h00 - 19h00" },
