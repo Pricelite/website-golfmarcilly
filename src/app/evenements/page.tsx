@@ -5,7 +5,7 @@ import { QuoteForm } from "@/components/forms/quote-form";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { eventFormats } from "@/data/events";
+import { eventFormats, eventIdeas } from "@/data/events";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -97,6 +97,27 @@ export default function EventsPage() {
               </article>
             ))}
           </div>
+          <div className="mt-16 border-t border-emerald-950/15 pt-12">
+            <SectionTitle eyebrow="Des idées à adapter" title="Quatre propositions pour votre événement" description="Ces exemples associent les espaces, les activités et la restauration du golf. Décrivez-nous votre groupe et votre objectif : l’équipe confirmera les possibilités et construira le programme avec vous." />
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {eventIdeas.map((idea, index) => (
+                <article key={idea.title} className="flex h-full flex-col rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5 sm:p-8">
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Idée 0{index + 1}</span>
+                  <h3 className="mt-3 font-serif text-3xl text-emerald-950">{idea.title}</h3>
+                  <p className="mt-3 text-sm font-medium leading-6 text-emerald-800">{idea.audience}</p>
+                  <ol className="my-6 space-y-4 border-t border-emerald-950/10 pt-6">
+                    {idea.steps.map((step, stepIndex) => (
+                      <li key={step} className="flex gap-4 text-sm leading-7 text-emerald-950/75">
+                        <span aria-hidden="true" className="font-serif text-xl text-emerald-700">0{stepIndex + 1}</span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  <CTAButton href="#devis" variant="secondary" className="mt-auto self-start">Imaginer cet événement</CTAButton>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -143,7 +164,7 @@ export default function EventsPage() {
         </div>
       </section>
 
-      <section id="devis" className="scroll-mt-28 bg-[#e8eee3] px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+      <section id="devis" className="scroll-mt-28 bg-[#efeadd] px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           <div>
             <SectionTitle
