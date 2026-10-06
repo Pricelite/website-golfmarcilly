@@ -33,7 +33,7 @@ export default function AcademyPage() {
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]">
-            <Image src={academy.heroImage} alt="Une jeune golfeuse accompagnée pendant une leçon en plein air" fill priority sizes="(max-width: 1024px) calc(100vw - 32px), 588px" className="object-cover" />
+            <Image src={academy.heroImage} alt="Visuel Acadomia associant accompagnement scolaire et golf" fill priority sizes="(max-width: 1024px) calc(100vw - 32px), 588px" className="object-cover" />
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 // Contenu et portraits repris de https://www.marcilly.com/about-1.
 export const academy = {
   introduction: "Un enseignant choisi selon les besoins et le profil de votre enfant.",
-  heroImage: "/images/academie-lecon.avif",
+  heroImage: "/images/acadomia.png",
   acadomiaUrl: "https://www.acadomia.fr/",
   youngGolfers: [
     {
