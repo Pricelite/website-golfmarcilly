@@ -42,7 +42,7 @@ export const associationGroups = [
     eyebrow: "Grandir par le golf",
     title: "L’académie",
     description: "L’académie accompagne les jeunes dans leur découverte et leur progression. Retrouvez les informations de l’école de golf et les possibilités d’inscription.",
-    href: "/enseignement#ecole-de-golf",
+    href: "/academie",
     cta: "L’académie du golf",
   },
 ] as const;

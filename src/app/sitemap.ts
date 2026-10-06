@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/actualites",
     "/contact",
     "/association-sportive",
+    "/academie",
     "/partenaires",
     "/je-debute-le-golf",
     "/reserver-un-cours",
