@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { PartnerDirectory } from "@/components/sections/partner-directory";
+import { SponsorMarquee } from "@/components/sections/sponsor-marquee";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
@@ -45,14 +45,16 @@ export default function PartnersPage() {
         </div>
       </section>
 
-      <section className="bg-[#f7f4e9] px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className="bg-[#f7f4e9] py-16 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Avec toute notre reconnaissance"
             title="Nos sponsors et partenaires"
             description="Chacun de ces noms compte dans la vie du golf et de son association sportive. Merci d’être à nos côtés."
           />
-          <PartnerDirectory />
+        </div>
+        <div className="mt-10">
+          <SponsorMarquee />
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 
-import { dailyMenuExample, formatDailyMenuDate, parisDateKey, type DailyMenu } from "@/data/daily-menu";
+import { dailyMenuExample, dailyMenuExampleDate, formatDailyMenuDate, parisDateKey, type DailyMenu } from "@/data/daily-menu";
 import { getLatestDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility";
 
@@ -9,6 +9,10 @@ const categories = [
   { key: "mains", title: "Plats" },
   { key: "desserts", title: "Desserts" },
 ] as const;
+
+function priceValue(price: string): number {
+  return Number(price.replace("€", "").replace(",", ".").trim());
+}
 
 const getPublishedMenu = unstable_cache(
   (date: string) => getLatestDailyMenu(date, { timeoutMs: 4_000 }),
@@ -21,7 +25,9 @@ export async function DailyMenuSection() {
   let published: DailyMenu | null = null;
   try { published = await getPublishedMenu(today); }
   catch { /* Le restaurant reste accessible si la carte est indisponible. */ }
-  const activeMenu: DailyMenu = published ?? { date: today, ...dailyMenuExample };
+  const activeMenu: DailyMenu = published && published.date >= dailyMenuExampleDate
+    ? published
+    : { date: dailyMenuExampleDate, ...dailyMenuExample };
 
   return (
     <section id="carte-du-jour" className="scroll-mt-28 overflow-hidden rounded-[24px] border border-stone-50/25 bg-[#faf8f0] text-emerald-950 shadow-xl shadow-black/15">
@@ -30,7 +36,7 @@ export async function DailyMenuSection() {
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-emerald-700">La Bergerie au quotidien</p>
           <h2 className="mt-1 font-serif text-3xl">Carte du jour</h2>
         </div>
-        <p className="text-xs text-emerald-900/75">{formatDailyMenuDate(today)}</p>
+        <p className="text-xs text-emerald-900/75">{formatDailyMenuDate(activeMenu.date)}</p>
       </div>
       <DailyMenuVisibility>
         <div className="divide-y divide-emerald-950/10">
@@ -38,7 +44,7 @@ export async function DailyMenuSection() {
             <div key={key} className="px-5 py-3 sm:px-6">
               <h3 className="font-serif text-lg text-emerald-950">{title}</h3>
               <ul className="mt-1 space-y-0.5 text-xs leading-5 text-emerald-950/85 sm:text-sm">
-                {activeMenu[key].map((choice) => <li key={choice.name} className="flex items-baseline justify-between gap-3 pl-2 before:mr-1 before:text-emerald-700 before:content-['•']"><span className="min-w-0 flex-1">{choice.name}</span><span className="shrink-0 font-semibold tabular-nums">{choice.price}</span></li>)}
+                {[...activeMenu[key]].sort((left, right) => priceValue(left.price) - priceValue(right.price)).map((choice) => <li key={choice.name} className="flex items-baseline justify-between gap-3 pl-2 before:mr-1 before:text-emerald-700 before:content-['•']"><span className="min-w-0 flex-1">{choice.name}</span><span className="shrink-0 font-semibold tabular-nums">{choice.price}</span></li>)}
               </ul>
             </div>
           ))}

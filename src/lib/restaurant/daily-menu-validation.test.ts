@@ -6,9 +6,11 @@ import { parseDailyMenu, validDailyMenuDate } from "./daily-menu-validation";
 const choice = (name: string, price = "9 €") => ({ name, price });
 const valid = { date: "2026-09-30", starters: [choice("Œuf"), choice("Poireaux"), choice("Saumon")], mains: [choice("Burger"), choice("Poisson"), choice("Volaille")], desserts: [choice("Cookie"), choice("Tarte"), choice("Riz au lait")] };
 
-test("daily menu accepts exactly three distinct choices in each category", () => {
+test("daily menu accepts between one and twelve distinct choices in each category", () => {
   assert.deepEqual(parseDailyMenu(valid), { ok: true, menu: valid });
-  assert.equal(parseDailyMenu({ ...valid, mains: [choice("Burger"), choice("Poisson")] }).ok, false);
+  assert.equal(parseDailyMenu({ ...valid, mains: [choice("Burger"), choice("Poisson")] }).ok, true);
+  assert.equal(parseDailyMenu({ ...valid, mains: [] }).ok, false);
+  assert.equal(parseDailyMenu({ ...valid, mains: Array.from({ length: 13 }, (_, index) => choice(`Plat ${index}`)) }).ok, false);
   assert.equal(parseDailyMenu({ ...valid, starters: [choice("Œuf"), choice(" œuf "), choice("Saumon")] }).ok, false);
   assert.equal(parseDailyMenu({ ...valid, desserts: [choice("Cookie"), choice("Tarte"), choice("x".repeat(121))] }).ok, false);
   assert.equal(parseDailyMenu({ ...valid, desserts: [choice("Cookie"), choice("Tarte"), choice("Riz", "prix libre")] }).ok, false);

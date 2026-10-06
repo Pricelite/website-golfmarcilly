@@ -58,9 +58,23 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
 
   function updateChoice(group: keyof Choices, index: number, field: "name" | "price", value: string) {
     setChoices((current) => {
-      const updated = [...current[group]] as [DailyMenuChoice, DailyMenuChoice, DailyMenuChoice];
+      const updated = [...current[group]];
       updated[index] = { ...current[group][index], [field]: value };
       return { ...current, [group]: updated };
+    });
+  }
+
+  function addChoice(group: keyof Choices) {
+    setChoices((current) => current[group].length >= 12 ? current : {
+      ...current,
+      [group]: [...current[group], { name: "", price: "" } satisfies DailyMenuChoice],
+    });
+  }
+
+  function removeChoice(group: keyof Choices, index: number) {
+    setChoices((current) => current[group].length <= 1 ? current : {
+      ...current,
+      [group]: current[group].filter((_, choiceIndex) => choiceIndex !== index),
     });
   }
 
@@ -104,15 +118,17 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
             <fieldset key={key} className="rounded-2xl border border-emerald-950/15 bg-white p-5">
               <legend className="px-2 font-serif text-xl">{title}</legend>
               {choices[key].map((choice, index) => (
-                <div key={`${key}-${index}`} className="mt-4 grid grid-cols-[minmax(0,1fr)_6.5rem] gap-2">
+                <div key={`${key}-${index}`} className="mt-4 grid grid-cols-[minmax(0,1fr)_6.5rem_auto] items-end gap-2">
                   <label className="block text-sm">Choix {index + 1}
                     <input className={inputClass} value={choice.name} onChange={(event) => updateChoice(key, index, "name", event.target.value)} required maxLength={120} autoComplete="off" />
                   </label>
                   <label className="block text-sm">Prix {index + 1}
                     <input className={inputClass} value={choice.price} onChange={(event) => updateChoice(key, index, "price", event.target.value)} required maxLength={10} pattern="[0-9]{1,4}(,[0-9]{2})? ?€" title="Exemple : 9 € ou 9,50 €" inputMode="decimal" autoComplete="off" />
                   </label>
+                  <button type="button" disabled={choices[key].length <= 1} onClick={() => removeChoice(key, index)} aria-label={`Supprimer le choix ${index + 1} des ${title.toLocaleLowerCase("fr")}`} className="mb-0.5 h-10 w-10 rounded-full border border-red-700/25 text-lg text-red-800 disabled:cursor-not-allowed disabled:opacity-30">×</button>
                 </div>
               ))}
+              <button type="button" disabled={choices[key].length >= 12} onClick={() => addChoice(key)} className="mt-5 rounded-full border border-emerald-950/20 px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40">Ajouter un choix</button>
             </fieldset>
           ))}
           <div className="flex flex-wrap gap-3 md:col-span-3">
