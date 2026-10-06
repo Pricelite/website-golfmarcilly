@@ -35,7 +35,7 @@ export const associationGroups = [
     eyebrow: "Partager l’expérience",
     title: "Les seniors",
     description: "Les joueuses et joueurs seniors se retrouvent lors des compétitions amicales et des rendez-vous inscrits au calendrier sportif du club.",
-    href: "#competitions",
+    href: "https://www.amicale-golf-seniors-45.com/",
     cta: "Voir les rendez-vous seniors",
   },
   {
@@ -43,7 +43,7 @@ export const associationGroups = [
     title: "L’académie",
     description: "L’académie accompagne les jeunes dans leur découverte et leur progression. Retrouvez les informations de l’école de golf et les possibilités d’inscription.",
     href: "/enseignement#ecole-de-golf",
-    cta: "Découvrir l’école de golf",
+    cta: "L’académie du golf",
   },
 ] as const;
 

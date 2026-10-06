@@ -5,6 +5,19 @@ import { associationLinks } from "@/data/association";
 import type { SiteOffer } from "@/data/offers";
 import { PromoOffersModal } from "@/components/promo-offers-modal";
 import { CTAButton } from "@/components/ui/cta-button";
+import { siteConfig } from "@/data/site";
+
+function SocialIcon({ label }: { label: "Facebook" | "Instagram" | "LinkedIn" }) {
+  if (label === "Facebook") {
+    return <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M13.6 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5H17V3.9c-.3 0-1.1-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8V10H8.7v3h2.4v8h2.5Z" /></svg>;
+  }
+
+  if (label === "Instagram") {
+    return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>;
+  }
+
+  return <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M5.2 8.5H2.5V21h2.7V8.5ZM3.9 3a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2ZM21.5 13.7c0-3.3-1.8-5.1-4.3-5.1-1.9 0-2.8 1-3.3 1.7V8.5h-2.7V21h2.7v-6.7c0-1.8.4-3 2.2-3 1.7 0 2.1 1.4 2.1 3.1V21h3.3v-7.3Z" /></svg>;
+}
 
 type HeroProps = {
   eyebrow: string;
@@ -48,6 +61,13 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, ap
               <CTAButton className="min-h-16 min-w-0 w-full px-2 py-2 text-center leading-4" href={associationLinks.starts} variant="secondary">Consulter les départs</CTAButton>
               <CTAButton className="min-h-16 min-w-0 w-full px-2 py-2 text-center leading-4" href={associationLinks.results} variant="secondary">Voir les résultats</CTAButton>
             </div>
+          </nav>
+          <nav aria-label="Réseaux sociaux du Golf de Marcilly" className="mt-6 flex items-center gap-3">
+            {siteConfig.socialLinks.map((social) => (
+              <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`Golf de Marcilly sur ${social.label} (nouvel onglet)`} className="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-950/20 bg-white text-emerald-950 transition-colors hover:border-emerald-800 hover:bg-emerald-950 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">
+                <SocialIcon label={social.label} />
+              </a>
+            ))}
           </nav>
         </div>
         <div className="relative min-h-[320px] sm:min-h-[420px] lg:min-h-[640px]">
