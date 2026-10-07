@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isTrustedRequestOrigin } from "./trusted-origin";
+import { isTrustedRequestOrigin, vercelPreviewOrigins } from "./trusted-origin";
 
 const siteUrl = "https://golf.example";
 const headers = (origin: string) => new Headers({ origin, referer: `${origin}/restaurant` });
@@ -28,4 +28,17 @@ test("forms reject foreign, missing, malformed, downgraded and mismatched origin
   assert.equal(isTrustedRequestOrigin(new Headers(), { siteUrl }), false);
   assert.equal(isTrustedRequestOrigin(headers(siteUrl), {}), false);
   assert.equal(isTrustedRequestOrigin(new Headers({ origin: siteUrl, referer: "https://attacker.example" }), { siteUrl }), false);
+});
+
+test("chat preview origins use only Vercel-provided preview hosts", () => {
+  const preview = "golf-git-chat-team.vercel.app";
+  assert.deepEqual(vercelPreviewOrigins("preview", [preview, undefined]), [`https://${preview}`]);
+  assert.deepEqual(vercelPreviewOrigins("production", [preview]), []);
+  assert.deepEqual(vercelPreviewOrigins("preview", ["attacker.example/path", "https://attacker.example"]), []);
+  assert.equal(isTrustedRequestOrigin(headers(`https://${preview}`), {
+    siteUrl, additionalOrigins: vercelPreviewOrigins("preview", [preview]).join(","),
+  }), true);
+  assert.equal(isTrustedRequestOrigin(headers("https://attacker.example"), {
+    siteUrl, additionalOrigins: vercelPreviewOrigins("preview", [preview]).join(","),
+  }), false);
 });

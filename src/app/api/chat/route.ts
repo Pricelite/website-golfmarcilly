@@ -21,7 +21,7 @@ export function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) {
+  if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host, allowVercelPreview: true })) {
     return NextResponse.json({ error: "Cette demande ne provient pas du site du golf." }, { status: 403 });
   }
 
