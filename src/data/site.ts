@@ -20,9 +20,9 @@ export const siteConfig = {
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=2.005,47.777,2.031,47.787&bboxSR=4326&imageSR=4326&size=1280,840&format=jpg&f=image",
   mapExternalUrl: "https://www.google.com/maps?q=Golf%20de%20Marcilly&t=k&z=16",
   socialLinks: [
-    { label: "Instagram", href: "https://www.instagram.com/" },
-    { label: "Facebook", href: "https://www.facebook.com/" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
+    { label: "Facebook", href: "https://www.facebook.com/golfdemarcilly/" },
+    { label: "Instagram", href: "https://www.instagram.com/golf_marcilly/" },
+    { label: "LinkedIn", href: "https://fr.linkedin.com/company/golf-de-marcilly" },
   ],
   hours: [
     { label: "Accueil", value: "Tous les jours, 8h00 - 19h00" },
