@@ -84,7 +84,6 @@ export function GolfChatWidget() {
   const [error, setError] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const launcherRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -284,16 +283,6 @@ export function GolfChatWidget() {
     void send(draft);
   }
 
-  function handlePanelKeys(event: KeyboardEvent<HTMLElement>) {
-    if (event.key !== "Tab") return;
-    const focusable = panelRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], textarea:not([disabled])");
-    if (!focusable?.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-  }
-
   function openChat() {
     solicitedRef.current = true;
     writeFlag("session", PROMPT_KEY, true);
@@ -423,11 +412,8 @@ export function GolfChatWidget() {
       {open && (
         <section
           id="golf-chat-panel"
-          ref={panelRef}
           role="dialog"
-          aria-modal="true"
           aria-labelledby="golf-chat-title"
-          onKeyDown={handlePanelKeys}
           className="fixed bottom-[calc(7rem+env(safe-area-inset-bottom))] right-3 z-[69] flex h-[min(440px,calc(100dvh-12rem))] w-[min(340px,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-[24px] border border-emerald-950/15 bg-[#f7f4e9] shadow-2xl shadow-emerald-950/25 sm:bottom-24 sm:right-6 sm:h-[min(480px,calc(100dvh-7rem))]"
         >
           <div className="flex items-center gap-1 bg-emerald-950 px-3 py-3 text-white">

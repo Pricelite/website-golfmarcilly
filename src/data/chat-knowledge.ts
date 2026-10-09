@@ -4,6 +4,7 @@ import { courses } from "@/data/courses";
 import { eventFormats, eventIdeas } from "@/data/events";
 import { pricingSections } from "@/data/pricing";
 import { restaurantFaqs } from "@/data/restaurant";
+import { restaurantData } from "@/lib/restaurant-data";
 import { siteConfig } from "@/data/site";
 import { juniorPrograms, teachingFaqs } from "@/data/teaching";
 
@@ -66,6 +67,13 @@ export const chatKnowledge: ChatKnowledgeEntry[] = [
     facts: `${siteConfig.hours.find((hour) => hour.label === "Restaurant")?.value ?? ""}\n${restaurantFaqs.map((faq) => `${faq.question} ${faq.answer}`).join("\n")}`,
     keywords: "restaurant bergerie déjeuner manger repas menu groupe réservation mardi horaires privatiser",
   },
+  ...restaurantData.groupMenus.items.map((menu) => ({
+    title: menu.name,
+    path: "/restaurant",
+    summary: `${menu.name} : les entrées, plats et desserts sont présentés sur la page du restaurant. Contactez La Bergerie pour établir un devis.`,
+    facts: menu.sections.map((section) => `${section.title} : ${section.items.join(" ou ")}`).join("\n"),
+    keywords: `restaurant bergerie menu groupe ${menu.name}`,
+  })),
   {
     title: "Événements et séminaires",
     path: "/evenements",

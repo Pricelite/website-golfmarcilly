@@ -82,7 +82,7 @@ styles/
 
 ## Assistant IA Welix
 
-Welix, le petit robot golfeur fourni pour le site, est présent sur toutes les pages sans fond rond autour de sa silhouette. Un clic ouvre une discussion compacte. Sans `OPENAI_API_KEY`, le widget affiche **mode démo** et répond uniquement avec des résumés prédéfinis du site. Pour activer les réponses conversationnelles, configurer `OPENAI_API_KEY` côté serveur et, si souhaité, `OPENAI_MODEL` (par défaut `gpt-6-luna`) puis redémarrer le serveur. La clé n'est jamais envoyée au navigateur. Le backend utilise l'API Responses avec `store: false` ; les échanges restent dans `sessionStorage` pendant la visite et ne sont pas enregistrés dans la base du site.
+Welix, le petit robot golfeur fourni pour le site, est présent sur toutes les pages sans fond rond autour de sa silhouette. Un clic ouvre une discussion compacte. Sans `OPENAI_API_KEY`, le widget affiche **mode démo** et répond avec les données éditoriales du site, dont les plats des menus de groupes. Pour activer les réponses conversationnelles, configurer `OPENAI_API_KEY` côté serveur et, si souhaité, `OPENAI_MODEL` (par défaut `gpt-6-luna`) puis redémarrer le serveur. La clé n'est jamais envoyée au navigateur. Le backend utilise l'API Responses avec `store: false` ; les échanges restent dans `sessionStorage` pendant la visite et ne sont pas enregistrés dans la base du site.
 
 - Apparence et avatar : `src/components/chat/golf-chat-widget.tsx`, `src/components/chat/welix-avatar.tsx` et les trois poses `public/welix-golfer.png`, `public/welix-walk.png`, `public/welix-swing.png`. Welix reste visible pendant le défilement et la navigation ; ses animations se règlent dans `src/app/globals.css` et s’arrêtent si l’utilisateur préfère moins d’animation.
 - Salutation et questions proposées : `src/data/chatbot.ts` ; personnalité et règles de réponse : `src/lib/chat/core.ts` (`buildChatInstructions`).
@@ -90,7 +90,7 @@ Welix, le petit robot golfeur fourni pour le site, est présent sur toutes les p
 - Connaissances : `src/data/chat-knowledge.ts`, alimenté par les données éditoriales existantes. Ajouter ou ajuster une entrée après chaque changement important de page ; les liens sont limités aux chemins de `src/lib/chat/shared.ts`.
 - API : `src/app/api/chat/route.ts`. Elle limite le corps à 12 Ko, la conversation à 10 messages, chaque message à 800 caractères, la sortie à 450 tokens et le débit à 12 requêtes par 10 minutes et par IP. En production, elle utilise le limiteur partagé Supabase existant et refuse les appels si celui-ci est indisponible.
 
-Le chatbot ne connaît pas les créneaux de réservation en direct. Il renvoie vers le golf quand une réponse n'est pas dans ses sources. Après changement de fournisseur ou de clé, vérifier le mode affiché, les réponses et les erreurs en environnement de prévisualisation. Le retrait du widget se fait en supprimant `<GolfChatWidget />` de `src/app/layout.tsx` ; aucune migration de données n'est nécessaire.
+Le chatbot ne connaît pas les créneaux de réservation en direct. Les réponses libres du modèle qui contiennent des montants, horaires ou affirmations de disponibilité sont remplacées par une réponse fondée sur les données du site avec un lien vers la page concernée. Après changement de fournisseur ou de clé, vérifier le mode affiché, les réponses et les erreurs en environnement de prévisualisation. Le retrait du widget se fait en supprimant `<GolfChatWidget />` de `src/app/layout.tsx` ; aucune migration de données n'est nécessaire.
 
 ## Fichiers de contenu
 

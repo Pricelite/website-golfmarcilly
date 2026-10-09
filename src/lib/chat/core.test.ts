@@ -20,14 +20,25 @@ test("knowledge and demo answer stay on real pages", () => {
   assert.equal(buildDemoReply("Question introuvable xyzxyz").links[0]?.href, "/contact");
 });
 
-test("model output cannot create arbitrary navigation links or unsourced prices", () => {
-  const entries = selectChatKnowledge("Parcours de golf");
-  const reply = parseModelReply(JSON.stringify({ answer: "Découvrez nos parcours.", links: ["https://evil.example", "/golf", "/golf"] }), entries);
+test("model output cannot create arbitrary links or unverifiable commercial facts", () => {
+  const reply = parseModelReply(JSON.stringify({ answer: "Découvrez nos parcours.", links: ["https://evil.example", "/golf", "/golf"] }));
   assert.deepEqual(reply?.links.map((link) => link.href), ["/golf"]);
-  assert.equal(parseModelReply(JSON.stringify({ answer: "Ce parcours coûte 999 €.", links: [] }), entries), null);
-  assert.equal(parseModelReply(JSON.stringify({ answer: "Ce parcours coûte 999 euros.", links: [] }), entries), null);
-  assert.equal(parseModelReply(JSON.stringify({ answer: "Visitez https://evil.example", links: [] }), entries), null);
-  assert.equal(parseModelReply(JSON.stringify({ answer: "La demi-journée découverte est à 25 €.", links: ["/tarifs"] }), selectChatKnowledge("tarif découverte"))?.links[0]?.href, "/tarifs");
+  assert.equal(parseModelReply(JSON.stringify({ answer: "Ce parcours coûte 999 €.", links: [] })), null);
+  assert.equal(parseModelReply(JSON.stringify({ answer: "Les cours adultes coûtent 25 €, prix figurant pour une autre offre.", links: [] })), null);
+  assert.equal(parseModelReply(JSON.stringify({ answer: "Le restaurant ferme à 23 h.", links: [] })), null);
+  assert.equal(parseModelReply(JSON.stringify({ answer: "Le restaurant ferme à minuit.", links: [] })), null);
+  assert.equal(parseModelReply(JSON.stringify({ answer: "Il reste des places disponibles demain.", links: [] })), null);
+  assert.equal(parseModelReply(JSON.stringify({ answer: "Visitez https://evil.example", links: [] })), null);
+});
+
+test("restaurant menu knowledge includes dishes from the page", () => {
+  const entries = selectChatKnowledge("Quels plats propose le Menu Gourmand ?");
+  assert.equal(entries[0]?.title, "Menu Gourmand");
+  assert.match(entries[0]?.facts ?? "", /Dos de cabillaud/);
+  assert.match(entries[0]?.facts ?? "", /Médaillon de filet mignon/);
+  const reply = buildDemoReply("Quels plats propose le Menu Gourmand ?");
+  assert.match(reply.answer, /Dos de cabillaud/);
+  assert.equal(reply.links[0]?.href, "/restaurant");
 });
 
 test("incomplete model responses are not displayed", () => {

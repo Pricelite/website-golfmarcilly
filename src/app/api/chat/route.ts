@@ -89,11 +89,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "L’assistant IA ne peut pas répondre pour le moment. Contactez le golf ou réessayez plus tard." }, { status: 503 });
     }
     const text = extractOpenAIText(await upstream.json());
-    const reply = text ? parseModelReply(text, entries) : null;
-    if (!reply) {
-      return NextResponse.json({ error: "Je n’ai pas pu vérifier cette réponse. Reformulez votre question ou contactez le golf." }, { status: 502 });
-    }
-    return NextResponse.json(reply, { headers: { "Cache-Control": "no-store" } });
+    const reply = text ? parseModelReply(text) : null;
+    return NextResponse.json(reply ?? buildDemoReply(question), { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "La connexion à l’assistant IA a échoué. Réessayez dans un instant." }, { status: 503 });
   }
