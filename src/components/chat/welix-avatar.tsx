@@ -1,9 +1,17 @@
 import Image from "next/image";
 
-export function WelixAvatar({ className = "" }: { className?: string }) {
+export type WelixPose = "idle" | "walk" | "swing";
+
+const poseImages: Record<WelixPose, string> = {
+  idle: "/welix-golfer.png",
+  walk: "/welix-walk.png",
+  swing: "/welix-swing.png",
+};
+
+export function WelixAvatar({ className = "", pose = "idle" }: { className?: string; pose?: WelixPose }) {
   return (
     <Image
-      src="/welix-golfer.png"
+      src={poseImages[pose]}
       alt=""
       aria-hidden="true"
       width={96}

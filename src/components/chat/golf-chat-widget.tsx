@@ -6,15 +6,15 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Form
 
 import { chatbotContent, welixBehavior } from "@/data/chatbot";
 import { chatAllowedPaths, MAX_CHAT_MESSAGE_LENGTH, MAX_CHAT_HISTORY, type ChatLink, type ChatTurn } from "@/lib/chat/shared";
-import { WelixAvatar } from "./welix-avatar";
+import { WelixAvatar, type WelixPose } from "./welix-avatar";
 
 type Message = ChatTurn & { id: string; links?: ChatLink[] };
 type Mode = "ai" | "demo" | "loading";
-type Offer = "welcome" | "context" | null;
+type Offer = "welcome" | null;
 type Point = { x: number; y: number };
+type DragSession = { pointerId: number; startX: number; startY: number; offsetX: number; offsetY: number; moved: boolean };
 const STORAGE_KEY = "golf-marcilly-welix-visit";
-const PROMPT_KEY = "golf-marcilly-welix-prompted-v2";
-const SEEN_KEY = "golf-marcilly-welix-seen-v2";
+const PROMPT_KEY = "golf-marcilly-welix-prompted-v3";
 const HIDDEN_KEY = "golf-marcilly-welix-hidden";
 const MOTION_KEY = "golf-marcilly-welix-motion-off";
 const POSITION_KEY = "golf-marcilly-welix-position";
@@ -73,6 +73,10 @@ export function GolfChatWidget() {
   const [position, setPosition] = useState<Point | null>(null);
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
   const [dragging, setDragging] = useState(false);
+  const [pose, setPose] = useState<WelixPose>("idle");
+  const [walkFrame, setWalkFrame] = useState(false);
+  const [roamOffset, setRoamOffset] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [mode, setMode] = useState<Mode>("loading");
   const [messages, setMessages] = useState<Message[]>([greeting("loading")]);
   const [draft, setDraft] = useState("");
@@ -86,19 +90,20 @@ export function GolfChatWidget() {
   const endRef = useRef<HTMLDivElement>(null);
   const hadOpenRef = useRef(false);
   const solicitedRef = useRef(false);
-  const seenRef = useRef(false);
   const movedRef = useRef(false);
-  const dragRef = useRef<{ pointerId: number; offsetX: number; offsetY: number } | null>(null);
+  const dragRef = useRef<DragSession | null>(null);
+  const previousPathRef = useRef<string | null>(null);
+  const swingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     try {
       const stored = validStoredMessages(JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "null"));
       if (stored) setMessages(stored);
     } catch { /* Stockage désactivé par le navigateur : la visite fonctionne en mémoire. */ }
-    seenRef.current = readFlag("local", SEEN_KEY);
     solicitedRef.current = readFlag("session", PROMPT_KEY);
     setHidden(readFlag("local", HIDDEN_KEY));
     setMotionOff(readFlag("local", MOTION_KEY));
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     let storedPosition: Point | null = null;
     try {
       const parsed: unknown = JSON.parse(sessionStorage.getItem(POSITION_KEY) || "null");
@@ -119,6 +124,59 @@ export function GolfChatWidget() {
       .catch(() => setMode("demo"));
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(preference.matches);
+    update();
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || previousPathRef.current === pathname) return;
+    previousPathRef.current = pathname;
+    if (swingTimerRef.current) clearTimeout(swingTimerRef.current);
+    setRoamOffset(0);
+    if (hidden || open || motionOff || reducedMotion) {
+      setPose("idle");
+      return;
+    }
+    setPose("swing");
+    swingTimerRef.current = setTimeout(() => setPose("idle"), welixBehavior.swingDurationMs);
+  }, [pathname, hydrated, hidden, open, motionOff, reducedMotion]);
+
+  useEffect(() => () => {
+    if (swingTimerRef.current) clearTimeout(swingTimerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!open && !hidden && !motionOff && !reducedMotion && !dragging) return;
+    setPose("idle");
+    setRoamOffset(0);
+  }, [open, hidden, motionOff, reducedMotion, dragging]);
+
+  useEffect(() => {
+    if (!hydrated || hidden || open || offer || dragging || motionOff || reducedMotion || pose !== "idle" || !position) return;
+    const timer = setInterval(() => {
+      if (pageHasActiveInputOrDialog() || document.visibilityState !== "visible") return;
+      const direction = position.x > viewport.width / 2 ? -1 : 1;
+      const destination = clampPosition({ x: position.x + direction * welixBehavior.idleWalkDistancePx, y: position.y }, innerWidth, innerHeight);
+      const offset = destination.x - position.x;
+      if (!offset) return;
+      setRoamOffset(offset);
+      setPose("walk");
+    }, welixBehavior.idleWalkDelayMs);
+    return () => clearInterval(timer);
+  }, [hydrated, hidden, open, offer, dragging, motionOff, reducedMotion, pose, position, viewport.width]);
+
+  useEffect(() => {
+    if (pose !== "walk") return;
+    const frame = setInterval(() => setWalkFrame((current) => !current), 280);
+    const returnTimer = setTimeout(() => setRoamOffset(0), welixBehavior.walkOutDurationMs);
+    const finishTimer = setTimeout(() => { setPose("idle"); setWalkFrame(false); }, welixBehavior.walkTotalDurationMs);
+    return () => { clearInterval(frame); clearTimeout(returnTimer); clearTimeout(finishTimer); };
+  }, [pose]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -147,7 +205,6 @@ export function GolfChatWidget() {
   useEffect(() => {
     if (!hydrated || hidden || open || offer || dragging || solicitedRef.current) return;
     let timer: ReturnType<typeof setTimeout>;
-    const isReturning = seenRef.current;
     const schedule = (delay: number) => { clearTimeout(timer); timer = setTimeout(attempt, delay); };
     const attempt = () => {
       if (pageHasActiveInputOrDialog() || document.visibilityState !== "visible") {
@@ -155,20 +212,11 @@ export function GolfChatWidget() {
         return;
       }
       solicitedRef.current = true;
-      seenRef.current = true;
       writeFlag("session", PROMPT_KEY, true);
-      writeFlag("local", SEEN_KEY, true);
-      setOffer(isReturning ? "context" : "welcome");
+      setOffer("welcome");
     };
-    const onActivity = () => { if (isReturning) schedule(welixBehavior.idleHelpDelayMs); };
-    schedule(isReturning ? welixBehavior.idleHelpDelayMs : welixBehavior.firstWelcomeDelayMs);
-    if (isReturning) {
-      for (const event of ["pointerdown", "keydown", "scroll", "touchstart"]) document.addEventListener(event, onActivity, { passive: true });
-    }
-    return () => {
-      clearTimeout(timer);
-      if (isReturning) for (const event of ["pointerdown", "keydown", "scroll", "touchstart"]) document.removeEventListener(event, onActivity);
-    };
+    schedule(welixBehavior.firstWelcomeDelayMs);
+    return () => clearTimeout(timer);
   }, [hydrated, hidden, open, offer, dragging]);
 
   useEffect(() => {
@@ -248,10 +296,10 @@ export function GolfChatWidget() {
 
   function openChat() {
     solicitedRef.current = true;
-    seenRef.current = true;
     writeFlag("session", PROMPT_KEY, true);
-    writeFlag("local", SEEN_KEY, true);
     setOffer(null);
+    setPose("idle");
+    setRoamOffset(0);
     setOpen(true);
   }
 
@@ -270,22 +318,30 @@ export function GolfChatWidget() {
     if (!position || (event.pointerType === "mouse" && event.button !== 0)) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = { pointerId: event.pointerId, offsetX: event.clientX - position.x, offsetY: event.clientY - position.y };
-    setDragging(true);
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const visualPosition = clampPosition({ x: bounds.left, y: bounds.top }, innerWidth, innerHeight);
+    setPosition(visualPosition);
+    setRoamOffset(0);
+    setPose("idle");
+    dragRef.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, offsetX: event.clientX - visualPosition.x, offsetY: event.clientY - visualPosition.y, moved: false };
     setOffer(null);
   }
 
   function drag(event: PointerEvent<HTMLButtonElement>) {
     const current = dragRef.current;
     if (!current || current.pointerId !== event.pointerId) return;
+    if (!current.moved && Math.hypot(event.clientX - current.startX, event.clientY - current.startY) < welixBehavior.dragThresholdPx) return;
+    if (!current.moved) { current.moved = true; setDragging(true); }
     moveTo({ x: event.clientX - current.offsetX, y: event.clientY - current.offsetY });
   }
 
-  function stopDrag(event: PointerEvent<HTMLButtonElement>) {
-    if (dragRef.current?.pointerId !== event.pointerId) return;
+  function stopDrag(event: PointerEvent<HTMLButtonElement>, cancelled = false) {
+    const current = dragRef.current;
+    if (current?.pointerId !== event.pointerId) return;
     dragRef.current = null;
     setDragging(false);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (!cancelled && !current.moved) openChat();
   }
 
   function handleDragKeys(event: KeyboardEvent<HTMLButtonElement>) {
@@ -300,7 +356,7 @@ export function GolfChatWidget() {
     if (event.key === "Home") { event.preventDefault(); movedRef.current = false; setPosition(initialPosition(innerWidth, innerHeight)); }
   }
 
-  const presenceState = hidden ? "hidden" : open ? pending ? "responding" : "conversation" : offer === "welcome" ? "greeting" : offer ? "offer" : "idle";
+  const presenceState = hidden ? "hidden" : open ? pending ? "responding" : "conversation" : pose === "swing" ? "swing" : pose === "walk" ? "walking" : offer === "welcome" ? "greeting" : offer ? "offer" : "idle";
   const offerWidth = Math.min(310, Math.max(240, viewport.width - 16));
   const offerTop = position ? position.y > 250 ? position.y - 218 : position.y + (viewport.width < 640 ? welixBehavior.mobileSizePx : welixBehavior.desktopSizePx) + 8 : 80;
   const offerStyle = position ? {
@@ -324,33 +380,27 @@ export function GolfChatWidget() {
       ) : (
         <div
           data-welix-state={presenceState}
-          style={position ? { left: position.x, top: position.y, "--welix-nudge": `${welixBehavior.maxAutomaticMovePx / 2}px` } as CSSProperties : undefined}
-          className={`welix-appear fixed z-[70] h-20 w-20 sm:h-24 sm:w-24 ${open ? "invisible pointer-events-none" : ""} ${motionOff || dragging ? "welix-no-motion" : ""}`}
+          style={position ? { left: position.x + roamOffset, top: position.y, "--welix-nudge": `${welixBehavior.maxAutomaticMovePx / 2}px` } as CSSProperties : undefined}
+          className={`welix-appear fixed z-[70] h-20 w-20 sm:h-24 sm:w-24 ${open ? "invisible pointer-events-none" : ""} ${pose === "walk" ? "welix-walking" : ""} ${motionOff || reducedMotion || dragging ? "welix-no-motion" : ""}`}
         >
           <button
             ref={launcherRef}
             type="button"
-            aria-label="Poser une question à Welix, assistant IA"
+            aria-label="Parler à Welix, assistant IA. Faire glisser ou utiliser les flèches pour le déplacer. Touche Début pour le remettre à sa place."
             aria-expanded={open}
             aria-controls="golf-chat-panel"
             aria-hidden={open}
             tabIndex={open ? -1 : 0}
-            onClick={openChat}
-            className={`welix-robot flex h-full w-full items-center justify-center bg-transparent focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${offer === "welcome" ? "welix-greeting" : offer ? "welix-offering" : "welix-idle"}`}
-          >
-            <WelixAvatar className="h-20 w-20 drop-shadow-[0_8px_8px_rgba(0,35,27,0.35)] sm:h-24 sm:w-24" />
-          </button>
-          <button
-            type="button"
-            aria-label="Déplacer Welix avec la souris, le toucher ou les flèches du clavier. Touche Début pour réinitialiser sa position."
-            title="Déplacer Welix"
+            onClick={(event) => { if (event.detail === 0) openChat(); }}
             onPointerDown={startDrag}
             onPointerMove={drag}
             onPointerUp={stopDrag}
-            onPointerCancel={stopDrag}
+            onPointerCancel={(event) => stopDrag(event, true)}
             onKeyDown={handleDragKeys}
-            className="absolute -left-2 -top-2 flex h-8 w-8 touch-none items-center justify-center rounded-full border border-emerald-950/20 bg-[#f7f4e9] text-sm font-bold text-emerald-950 shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
-          >✥</button>
+            className={`welix-robot flex h-full w-full touch-none items-center justify-center bg-transparent focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${pose === "walk" ? "welix-walking" : pose === "swing" ? "welix-swinging" : offer === "welcome" ? "welix-greeting" : offer ? "welix-offering" : "welix-idle"}`}
+          >
+            <WelixAvatar pose={pose === "walk" && !walkFrame ? "idle" : pose} className="h-20 w-20 drop-shadow-[0_8px_8px_rgba(0,35,27,0.35)] sm:h-24 sm:w-24" />
+          </button>
         </div>
       )}
 
@@ -361,7 +411,7 @@ export function GolfChatWidget() {
           className="fixed z-[69] rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-4 text-sm text-emerald-950 shadow-xl"
         >
           <button type="button" onClick={() => setOffer(null)} aria-label="Fermer la proposition de Welix" className="absolute right-2 top-2 rounded-full px-2 text-xl leading-6 hover:bg-emerald-950/10 focus-visible:outline-2 focus-visible:outline-emerald-700">×</button>
-          <p className="pr-5 leading-5" aria-live="polite">{offer === "welcome" ? chatbotContent.welcomeOffer : chatbotContent.contextOffer[pathname] || chatbotContent.defaultContextOffer}</p>
+          <p className="pr-5 leading-5" aria-live="polite">{chatbotContent.welcomeOffer}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button type="button" onClick={openChat} className="rounded-full bg-emerald-800 px-3 py-2 text-xs font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">Oui, guidez-moi</button>
             <button type="button" onClick={openChat} className="rounded-full border border-emerald-800/25 bg-white px-3 py-2 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-emerald-700">J’ai une question</button>
