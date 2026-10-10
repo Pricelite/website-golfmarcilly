@@ -8,6 +8,13 @@ export const associationLinks = {
   results: "https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656",
 };
 
+export const associationPartner = {
+  name: "SwingFlow",
+  href: "https://swingflow.fr/",
+  logo: "/images/swingflow-logo.png",
+  description: "SwingFlow accompagne l’Association Sportive du Golf de Marcilly dans le suivi des joueurs, l’organisation et la communication. Ensemble, nous mettons les outils numériques au service de la vie sportive du club et de celles et ceux qui la font vivre.",
+} as const;
+
 export const associationRoles = [
   {
     title: "Partager la vie du club",
