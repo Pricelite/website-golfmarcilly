@@ -3,21 +3,26 @@ import test from "node:test";
 import { parseEventInput, validEventId } from "./association-events-validation";
 
 test("competition input accepts multi-day events and clears optional fields", () => {
-  const result = parseEventInput({ title: "  Coupe du club  ", start: "2026-12-31", end: "2027-01-02", time: "09:30", note: "Scramble", status: "private" });
+  const result = parseEventInput({ title: "  Coupe du club  ", start: "2027-12-31", end: "2028-01-02", time: "09:30", note: "Scramble", status: "private" });
   assert.ok(result.ok);
   assert.equal(result.event.title, "Coupe du club");
-  assert.equal(result.event.end, "2027-01-02");
+  assert.equal(result.event.end, "2028-01-02");
   const cleared = parseEventInput({ title: "Coupe", start: "2028-02-29", end: "", time: "", note: " ", status: "" });
   assert.ok(cleared.ok);
   assert.equal(cleared.event.status, undefined);
   assert.equal(cleared.event.end, undefined);
+  for (const status of ["confirmed", "unconfirmed", "provisional", "private"]) {
+    const parsed = parseEventInput({ title: "Coupe", start: "2027-03-18", status });
+    assert.ok(parsed.ok);
+    assert.equal(parsed.event.status, status);
+  }
 });
 
 test("competition input rejects invalid dates, reversed ranges and invalid fields", () => {
-  const base = { title: "Coupe", start: "2026-09-16" };
+  const base = { title: "Coupe", start: "2027-09-16" };
   for (const input of [null, [], { ...base, title: " " }, { ...base, title: "x".repeat(161) },
-    { ...base, start: "2026-02-29" }, { ...base, start: "2026-04-31" }, { ...base, start: "2026-9-16" },
-    { ...base, end: "2026-09-15" }, { ...base, time: "24:00" }, { ...base, status: "published" },
+    { ...base, start: "2027-02-29" }, { ...base, start: "2027-04-31" }, { ...base, start: "2027-9-16" },
+    { ...base, start: "2026-09-16" }, { ...base, end: "2027-09-15" }, { ...base, time: "24:00" }, { ...base, status: "published" },
     { ...base, note: "x".repeat(2001) }, { ...base, time: 930 }, { ...base, note: { text: "test" } },
   ]) assert.equal(parseEventInput(input).ok, false, JSON.stringify(input));
 });
