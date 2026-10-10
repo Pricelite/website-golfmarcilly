@@ -103,8 +103,8 @@ export default async function AssociationPage() {
             <Image
               src={associationPartner.logo}
               alt="Logo de SwingFlow"
-              width={601}
-              height={405}
+              width={600}
+              height={407}
               sizes="(max-width: 640px) 160px, 168px"
               className="h-auto w-40 object-contain"
             />
