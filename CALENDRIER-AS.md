@@ -18,6 +18,13 @@ sans redéploiement. Il n'y a pas de connexion à RMS9.
    `supabase/migrations/20260916_association_events.sql` dans son intégralité.
    Il crée la table et importe les 54 épreuves du programme actuel dans une
    transaction. Une réexécution ne réimporte pas les événements supprimés.
+   Exécuter ensuite `supabase/migrations/20261009_association_events_2027.sql`.
+   Cette migration ajoute les statuts 2027 et importe les 47 compétitions
+   nommées du fichier fourni par le propriétaire. Ne pas la lancer sur la
+   production sans validation explicite. Elle conserve les données existantes ;
+   en cas de retour arrière, retirer les entrées `agenda-2027-source-*` après
+   sauvegarde, puis rétablir l'ancienne contrainte de statut seulement si les
+   statuts `confirmed` et `unconfirmed` ne sont plus utilisés.
 3. Redémarrer le serveur local après configuration, ou déployer le code et
    les variables pour la première activation en production.
 4. Ouvrir `/admin/competitions`, se connecter avec le mot de passe administrateur,
@@ -26,7 +33,7 @@ sans redéploiement. Il n'y a pas de connexion à RMS9.
 La table utilise RLS et n'autorise que le rôle serveur `service_role`.
 Les mutations vérifient la session administrateur, l'origine de la requête,
 les dates, l'horaire et les limites des champs côté serveur.
-Les statuts « privée » et « en option » restent des mentions publiques,
+Les statuts « privée », « en option », « à confirmer » et « confirmée » restent des mentions publiques,
 pas des restrictions d'accès aux événements.
 
 Sans configuration ou avant création de la table, le programme local reste
@@ -35,6 +42,17 @@ configurée mais indisponible affiche un message temporaire. Une table vide
 reste vide : les épreuves supprimées ne sont pas réimportées automatiquement.
 
 ## Programme repris
+
+Le programme 2027 provient du fichier `Agenda_competitions_2027.html` fourni
+par le propriétaire. Seules les 47 lignes intitulées « Compétition » avec un
+nom ont été importées : 4 confirmées, 7 en option et 36 à confirmer. Les
+créneaux libres, vacances, fêtes et jours fériés ne sont pas présentés comme
+des épreuves. Les compétitions sur deux jours restent deux entrées si leur
+statut diffère dans la source. Les modifications ultérieures se font dans
+`/admin/competitions` ; la migration n'écrase pas les éditions et son marqueur
+empêche qu'une réexécution restaure les entrées supprimées.
+
+### Programme 2026
 
 Source : https://www.marcilly.com/l-association, consultée le 15 septembre 2026.
 L'année 2026 a été confirmée par le propriétaire dans la conversation.
@@ -56,10 +74,10 @@ Après activation de Supabase, modifier les compétitions dans l'administration.
 - `end` : dernier jour inclus, facultatif.
 - `title` : nom de l'épreuve.
 - `time` et `note` : précisions fournies par l'organisateur, facultatives.
-- `status` : `private` ou `provisional` si nécessaire.
+- `status` : `private`, `provisional`, `unconfirmed` ou `confirmed` si nécessaire.
 
 Une épreuve sur plusieurs jours apparaît chaque jour et n'est comptée qu'une fois
 dans la liste mensuelle. Le calendrier commence le lundi, s'ouvre au mois courant
-à Paris et permet de naviguer entre les mois et les années.
+à Paris et permet de naviguer entre les mois ou de choisir directement 2027.
 Les cases deviennent grises dès le lendemain du dernier jour de l'épreuve,
 selon la date à Paris ; les détails restent consultables.

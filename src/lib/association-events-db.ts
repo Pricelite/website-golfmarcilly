@@ -11,7 +11,7 @@ export class CalendarStoreError extends Error {
 
 type EventRow = {
   id: string; title: string; start_date: string; end_date: string | null;
-  start_time: string | null; note: string | null; status: "private" | "provisional" | null;
+  start_time: string | null; note: string | null; status: AssociationEvent["status"] | null;
 };
 const columns = "id,title,start_date,end_date,start_time,note,status";
 

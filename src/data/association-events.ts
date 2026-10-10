@@ -1,3 +1,5 @@
+import agenda2027 from "./association-events-2027.json";
+
 export type AssociationEvent = {
   id: string;
   title: string;
@@ -5,14 +7,15 @@ export type AssociationEvent = {
   end?: string; // Inclusive final day, YYYY-MM-DD.
   time?: string;
   note?: string;
-  status?: "private" | "provisional";
+  status?: "private" | "provisional" | "unconfirmed" | "confirmed";
 };
 
 // Source: https://www.marcilly.com/l-association, consulted 2026-09-15.
 // Calendar year 2026 confirmed by the owner in the conversation.
 // Numeric dates take precedence over inconsistent weekday labels (12-13 September).
 // Omitted unnamed entries: July 5, August 31, September 6/27.
-// Initial programme / fallback before Supabase setup. Once configured, use /admin/competitions.
+// Programme 2026 initial ; the 2027 owner-supplied agenda is imported below.
+// These entries are a fallback before Supabase setup. Once configured, use /admin/competitions.
 const entries: Omit<AssociationEvent, "id">[] = [
   { start: "2026-03-15", title: "Coupe SweetSpot", note: "Scramble à 2" },
   { start: "2026-03-22", title: "Coupe de Classement" },
@@ -83,6 +86,8 @@ const thursdayRankingCups: AssociationEvent[] = [
 ].filter(start => !entries.some(event => event.start <= start && (event.end ?? event.start) >= start))
   .map(start => ({ id: `coupe-classement-${start}`, start, title: "Coupe de Classement" }));
 
+export const associationEvents2027: AssociationEvent[] = agenda2027 as AssociationEvent[];
+
 export const associationEvents: AssociationEvent[] = [...entries.map((event, index) => ({
   ...event, id: `${event.start}-${index}`,
-})), ...thursdayRankingCups].sort((a, b) => a.start.localeCompare(b.start));
+})), ...thursdayRankingCups, ...associationEvents2027].sort((a, b) => a.start.localeCompare(b.start));

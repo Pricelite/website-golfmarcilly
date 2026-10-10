@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { monthDays, eventsOnDay, eventsInMonth, isPastEvent } from "./association-calendar";
-import { associationEvents } from "../data/association-events";
+import { associationEvents, associationEvents2027 } from "../data/association-events";
 
 test("events become past only after their inclusive final day", () => {
   const single = { id: "single", title: "Coupe", start: "2026-09-16" };
@@ -48,4 +48,19 @@ test("published programme has valid unique dates and preserves private notices",
   assert.equal(eventsOnDay(associationEvents, "2026-10-18")[0].title, "Coupe de Classement");
   assert.equal(eventsOnDay(associationEvents, "2026-10-25")[0].title, "Coupe de Classement");
   assert.equal(eventsInMonth(associationEvents, 2026, 7).length, 0);
+});
+
+test("2027 owner agenda keeps only named competitions and their publication statuses", () => {
+  assert.equal(associationEvents2027.length, 47);
+  assert.deepEqual(
+    associationEvents2027.reduce<Record<string, number>>((counts, event) => {
+      const status = event.status ?? "missing";
+      counts[status] = (counts[status] ?? 0) + 1;
+      return counts;
+    }, {}),
+    { unconfirmed: 36, provisional: 7, confirmed: 4 },
+  );
+  assert.ok(associationEvents2027.every(event => event.start.startsWith("2027-") && event.title !== "Créneau libre"));
+  assert.equal(new Set(associationEvents2027.map(event => event.id)).size, 47);
+  assert.equal(eventsOnDay(associationEvents, "2027-10-03")[0].title, "Coupe Octobre Rose");
 });

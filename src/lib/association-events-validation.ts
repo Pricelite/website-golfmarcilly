@@ -25,8 +25,8 @@ export function parseEventInput(value: unknown): { ok: true; event: EventInput }
   if (end && end < start) return { ok: false, error: "La date de fin doit être égale ou postérieure à la date de début." };
   if (time && !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return { ok: false, error: "Indiquez un horaire valide." };
   if (note && note.length > 2000) return { ok: false, error: "La description est limitée à 2 000 caractères." };
-  if (status !== undefined && status !== "private" && status !== "provisional") return { ok: false, error: "Choisissez un statut valide." };
-  return { ok: true, event: { title, start, end, time, note, status } };
+  if (status !== undefined && !["private", "provisional", "unconfirmed", "confirmed"].includes(status)) return { ok: false, error: "Choisissez un statut valide." };
+  return { ok: true, event: { title, start, end, time, note, status: status as EventInput["status"] } };
 }
 
 export function validEventId(value: unknown): value is string {

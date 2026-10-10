@@ -11,6 +11,11 @@ test("competition input accepts multi-day events and clears optional fields", ()
   assert.ok(cleared.ok);
   assert.equal(cleared.event.status, undefined);
   assert.equal(cleared.event.end, undefined);
+  for (const status of ["confirmed", "unconfirmed", "provisional", "private"]) {
+    const parsed = parseEventInput({ title: "Coupe", start: "2027-03-18", status });
+    assert.ok(parsed.ok);
+    assert.equal(parsed.event.status, status);
+  }
 });
 
 test("competition input rejects invalid dates, reversed ranges and invalid fields", () => {

@@ -10,14 +10,15 @@ const buttonClass = "site-button inline-flex min-h-11 items-center justify-cente
 
 function eventStyle(event: AssociationEvent, today: string) {
   if (isPastEvent(event, today)) return "border-slate-400 bg-slate-100 text-slate-600";
-  return event.status === "private" ? "border-stone-400 bg-stone-100 text-stone-700" : event.status === "provisional" ? "border-amber-500 bg-amber-50 text-amber-900" : "border-emerald-600 bg-emerald-50 text-emerald-950";
+  return event.status === "private" ? "border-stone-400 bg-stone-100 text-stone-700" : event.status === "unconfirmed" ? "border-orange-400 bg-orange-50 text-orange-950" : event.status === "provisional" ? "border-amber-500 bg-amber-50 text-amber-900" : "border-emerald-600 bg-emerald-50 text-emerald-950";
 }
 
 function eventStatus(event: AssociationEvent, today: string) {
+  const status = event.status === "private" ? "Épreuve privée" : event.status === "unconfirmed" ? "À confirmer" : event.status === "provisional" ? "En option" : event.status === "confirmed" ? "Confirmée" : "Au programme";
   if (isPastEvent(event, today)) {
-    return event.status === "provisional" ? "Date passée · En option" : event.status === "private" ? "Terminée · Épreuve privée" : "Terminée";
+    return `Date passée · ${status}`;
   }
-  return event.status === "private" ? "Épreuve privée" : event.status === "provisional" ? "En option" : "Au programme";
+  return status;
 }
 
 function currentParisDate() {
@@ -38,6 +39,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const detailRef = useRef<HTMLDivElement>(null);
+  const years = Array.from(new Set([year, Number(today.slice(0, 4)), ...associationEvents.flatMap(event => [Number(event.start.slice(0, 4)), Number((event.end ?? event.start).slice(0, 4))])])).sort((a, b) => a - b);
 
   useEffect(() => {
     if (selected) detailRef.current?.focus();
@@ -68,12 +70,15 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
           <select id="as-calendar-month" className="min-h-11 max-w-full rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={month} onChange={event => { setView({ year, month: Number(event.target.value) }); setSelected(null); setSelectedDay(null); }}>
             {months.map((label, index) => <option key={label} value={index}>{label}</option>)}
           </select>
+          <label className="sr-only" htmlFor="as-calendar-year">Choisir une année</label>
+          <select id="as-calendar-year" className="min-h-11 rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={year} onChange={event => { setView({ year: Number(event.target.value), month }); setSelected(null); setSelectedDay(null); }}>
+            {years.map(value => <option key={value} value={value}>{value}</option>)}
+          </select>
         </div>
       </div>
 
-      <p className="flex items-center gap-2 px-4 pb-4 text-xs text-slate-600 sm:px-6">
-        <span aria-hidden="true" className="h-3 w-3 rounded-sm border border-slate-400 bg-slate-100" />
-        En gris : les compétitions dont la date de fin est passée.
+      <p className="px-4 pb-4 text-xs leading-5 text-slate-600 sm:px-6">
+        Statuts : vert, au programme ou confirmé ; jaune, en option ; orange, à confirmer ; gris, date passée.
       </p>
       <div className="grid grid-cols-7 border-y border-emerald-950/10 bg-stone-50 text-center text-xs font-semibold text-emerald-800">
         {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map(day => <div key={day} className="py-3">{day}</div>)}
@@ -126,7 +131,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
             </button>
           </li>)}
         </ul>}
-        <p className="mt-5 border-t border-emerald-950/10 pt-4 text-xs leading-6 text-emerald-900/70">Les épreuves et leurs modalités peuvent évoluer. Contactez l’accueil avant toute inscription. Les rendez-vous privés et en option sont signalés.</p>
+        <p className="mt-5 border-t border-emerald-950/10 pt-4 text-xs leading-6 text-emerald-900/70">Les épreuves et leurs modalités peuvent évoluer. Contactez l’accueil avant toute inscription. Les dates en option ou à confirmer restent susceptibles de changer.</p>
       </div>
     </div>
   );

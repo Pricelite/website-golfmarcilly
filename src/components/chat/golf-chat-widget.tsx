@@ -296,6 +296,7 @@ export function GolfChatWidget() {
     setOffer(null);
     setOpen(false);
     setHidden(true);
+    window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
 
   function moveTo(point: Point) {
@@ -389,6 +390,15 @@ export function GolfChatWidget() {
             className={`welix-robot flex h-full w-full touch-none items-center justify-center bg-transparent focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${pose === "walk" ? "welix-walking" : pose === "swing" ? "welix-swinging" : offer === "welcome" ? "welix-greeting" : offer ? "welix-offering" : "welix-idle"}`}
           >
             <WelixAvatar pose={pose === "walk" && !walkFrame ? "idle" : pose} className="h-20 w-20 drop-shadow-[0_8px_8px_rgba(0,35,27,0.35)] sm:h-24 sm:w-24" />
+          </button>
+          <button
+            type="button"
+            onClick={hideWelix}
+            aria-label="Masquer Welix"
+            title="Fermer Welix"
+            className="absolute right-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-emerald-950/20 bg-[#f7f4e9] text-xl leading-none text-emerald-950 shadow-md hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+          >
+            <span aria-hidden="true">×</span>
           </button>
         </div>
       )}
