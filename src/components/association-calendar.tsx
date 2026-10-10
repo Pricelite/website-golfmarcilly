@@ -34,12 +34,14 @@ function subscribeToDate(callback: () => void) {
 export function AssociationCalendar({ initialDate, events: associationEvents }: { initialDate: string; events: AssociationEvent[] }) {
   const today = useSyncExternalStore(subscribeToDate, currentParisDate, () => initialDate);
   const [view, setView] = useState<{ year: number; month: number } | null>(null);
-  const year = view?.year ?? Number(today.slice(0, 4));
-  const month = view?.month ?? Number(today.slice(5, 7)) - 1;
+  const firstEventDate = associationEvents.reduce<string | null>((first, event) => !first || event.start < first ? event.start : first, null);
+  const defaultDate = today < "2027-01-01" ? firstEventDate ?? "2027-01-01" : today;
+  const year = view?.year ?? Number(defaultDate.slice(0, 4));
+  const month = view?.month ?? Number(defaultDate.slice(5, 7)) - 1;
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const detailRef = useRef<HTMLDivElement>(null);
-  const years = Array.from(new Set([year, Number(today.slice(0, 4)), ...associationEvents.flatMap(event => [Number(event.start.slice(0, 4)), Number((event.end ?? event.start).slice(0, 4))])])).sort((a, b) => a - b);
+  const years = Array.from(new Set([year, ...associationEvents.flatMap(event => [Number(event.start.slice(0, 4)), Number((event.end ?? event.start).slice(0, 4))])])).sort((a, b) => a - b);
 
   useEffect(() => {
     if (selected) detailRef.current?.focus();
@@ -63,7 +65,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
           <p className="mt-1 text-sm text-emerald-900/70">{events.length} épreuve{events.length > 1 ? "s" : ""} au programme</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button" className={buttonClass} onClick={() => { setView(null); setSelected(null); setSelectedDay(null); }}>Ce mois-ci</button>
+          <button type="button" className={buttonClass} onClick={() => { setView(null); setSelected(null); setSelectedDay(null); }}>{today < "2027-01-01" ? "Début du programme" : "Ce mois-ci"}</button>
           <button type="button" aria-label="Mois précédent" className={buttonClass} onClick={() => changeMonth(-1)}>←</button>
           <button type="button" aria-label="Mois suivant" className={buttonClass} onClick={() => changeMonth(1)}>→</button>
           <label className="sr-only" htmlFor="as-calendar-month">Choisir un mois</label>

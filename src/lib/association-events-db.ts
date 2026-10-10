@@ -37,9 +37,10 @@ function toRow(event: EventInput) {
 export async function listAssociationEvents(): Promise<AssociationEvent[]> {
   const db = client();
   const events: AssociationEvent[] = [];
-  // Supabase limite les réponses : parcourir toutes les pages, y compris les archives.
+  // Supabase limite les réponses : parcourir toutes les pages du programme actif.
   for (let offset = 0; ; offset += 500) {
     const { data, error } = await db.from("association_events").select(columns)
+      .gte("start_date", "2027-01-01")
       .order("start_date").order("id").range(offset, offset + 499);
     checkError(error);
     const rows = (data ?? []) as EventRow[];

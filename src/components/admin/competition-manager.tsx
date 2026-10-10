@@ -72,8 +72,8 @@ export function CompetitionManager({ initialEvents }: { initialEvents: Associati
         <h2 className="font-serif text-2xl">{editing ? "Modifier la compétition" : "Ajouter une compétition"}</h2>
         <fieldset disabled={busy || Boolean(deleting)} className="mt-5 grid gap-4 sm:grid-cols-2 disabled:opacity-60">
           <label className="text-sm sm:col-span-2">Nom de la compétition *<input autoComplete="off" className={inputClass} name="title" required maxLength={160} defaultValue={editing?.title ?? ""} /></label>
-          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min="1900-01-01" max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
-          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min="1900-01-01" max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
+          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min="2027-01-01" max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
+          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min="2027-01-01" max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
           <label className="text-sm">Horaire (facultatif)<input className={inputClass} type="time" name="time" defaultValue={editing?.time ?? ""} /></label>
           <label className="text-sm">Statut<select className={inputClass} name="status" defaultValue={editing?.status ?? ""}><option value="">Au programme</option><option value="confirmed">Confirmée</option><option value="unconfirmed">À confirmer</option><option value="provisional">En option</option><option value="private">Épreuve privée</option></select></label>
           <label className="text-sm sm:col-span-2">Description / précisions<textarea className={inputClass} name="note" rows={3} maxLength={2000} defaultValue={editing?.note ?? ""} /></label>
