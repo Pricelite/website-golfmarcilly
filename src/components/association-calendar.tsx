@@ -49,6 +49,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
 
   function changeMonth(delta: number) {
     const date = new Date(Date.UTC(year, month + delta, 1));
+    if (date.getUTCFullYear() < 2027) return;
     setView({ year: date.getUTCFullYear(), month: date.getUTCMonth() });
     setSelected(null);
     setSelectedDay(null);
@@ -66,7 +67,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" className={buttonClass} onClick={() => { setView(null); setSelected(null); setSelectedDay(null); }}>{today < "2027-01-01" ? "Début du programme" : "Ce mois-ci"}</button>
-          <button type="button" aria-label="Mois précédent" className={buttonClass} onClick={() => changeMonth(-1)}>←</button>
+          <button type="button" aria-label="Mois précédent" disabled={year === 2027 && month === 0} className={`${buttonClass} disabled:cursor-not-allowed disabled:opacity-40`} onClick={() => changeMonth(-1)}>←</button>
           <button type="button" aria-label="Mois suivant" className={buttonClass} onClick={() => changeMonth(1)}>→</button>
           <label className="sr-only" htmlFor="as-calendar-month">Choisir un mois</label>
           <select id="as-calendar-month" className="min-h-11 max-w-full rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={month} onChange={event => { setView({ year, month: Number(event.target.value) }); setSelected(null); setSelectedDay(null); }}>
