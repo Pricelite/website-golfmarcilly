@@ -5,7 +5,7 @@ import { AssociationCalendar } from "@/components/association-calendar";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { associationFaqs, associationGroups, associationLinks, associationRoles } from "@/data/association";
+import { associationFaqs, associationGroups, associationLinks, associationPartner, associationRoles } from "@/data/association";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -48,6 +48,7 @@ export default async function AssociationPage() {
           {[
             ["#role", "Le rôle de l’AS"],
             ["#groupes", "Équipes, seniors et académie"],
+            ["#partenaire", "Notre partenaire"],
             ["#competitions", "Compétitions et résultats"],
             ["#equipe", "L’équipe de l’AS"],
             ["#rejoindre", "Participer"],
@@ -85,6 +86,40 @@ export default async function AssociationPage() {
                 <div className="mt-7"><CTAButton href={group.href} variant="ghost">{group.cta}</CTAButton></div>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="partenaire" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <SectionTitle eyebrow="À nos côtés" title="Partenaire de l’association sportive" />
+        <div className="mt-8 flex flex-col items-center gap-6 rounded-[28px] border border-emerald-950/10 bg-[#f7f4e9] p-6 sm:flex-row sm:gap-10 sm:p-8">
+          <a
+            href={associationPartner.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Découvrir SwingFlow (nouvel onglet)"
+            className="flex w-full shrink-0 items-center justify-center rounded-2xl bg-white p-5 transition hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700 sm:w-52"
+          >
+            <Image
+              src={associationPartner.logo}
+              alt="Logo de SwingFlow"
+              width={600}
+              height={407}
+              sizes="(max-width: 640px) 160px, 168px"
+              className="h-auto w-40 object-contain"
+            />
+          </a>
+          <div>
+            <h3 className="font-serif text-2xl text-emerald-950">SwingFlow</h3>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-950/75">{associationPartner.description}</p>
+            <a
+              href={associationPartner.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex min-h-11 items-center font-semibold text-emerald-800 underline decoration-emerald-800/40 underline-offset-4 hover:decoration-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
+              Découvrir SwingFlow <span aria-hidden="true" className="ml-1">↗</span><span className="sr-only"> (nouvel onglet)</span>
+            </a>
           </div>
         </div>
       </section>
