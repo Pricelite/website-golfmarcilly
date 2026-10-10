@@ -1,5 +1,11 @@
 [
   {
+    "id": "agenda-2027-source-4",
+    "start": "2027-03-14",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-5",
     "start": "2027-03-18",
     "title": "Coupe de Classement",
@@ -30,9 +36,21 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-10",
+    "start": "2027-04-04",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-11",
     "start": "2027-04-08",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-12",
+    "start": "2027-04-11",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -42,9 +60,21 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-14",
+    "start": "2027-04-18",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-15",
     "start": "2027-04-22",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-16",
+    "start": "2027-04-25",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -72,9 +102,21 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-21",
+    "start": "2027-05-09",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-22",
     "start": "2027-05-13",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-23",
+    "start": "2027-05-16",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -84,15 +126,39 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-25",
+    "start": "2027-05-22",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-26",
+    "start": "2027-05-23",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-27",
     "start": "2027-05-27",
     "title": "Coupe de Classement",
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-28",
+    "start": "2027-05-30",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-29",
     "start": "2027-06-03",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-30",
+    "start": "2027-06-05",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -108,9 +174,39 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-33",
+    "start": "2027-06-13",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-34",
+    "start": "2027-06-15",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-35",
     "start": "2027-06-17",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-36",
+    "start": "2027-06-19",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-37",
+    "start": "2027-06-20",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-38",
+    "start": "2027-06-23",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -120,9 +216,21 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-40",
+    "start": "2027-06-27",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-41",
     "start": "2027-07-01",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-42",
+    "start": "2027-07-03",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -204,6 +312,24 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-56",
+    "start": "2027-09-10",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-57",
+    "start": "2027-09-11",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-58",
+    "start": "2027-09-12",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-59",
     "start": "2027-09-16",
     "title": "Coupe de Classement",
@@ -234,9 +360,27 @@
     "status": "confirmed"
   },
   {
+    "id": "agenda-2027-source-64",
+    "start": "2027-09-26",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-65",
+    "start": "2027-09-28",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-66",
     "start": "2027-09-30",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-67",
+    "start": "2027-10-02",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {
@@ -253,15 +397,33 @@
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-70",
+    "start": "2027-10-10",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-71",
     "start": "2027-10-14",
     "title": "Coupe de Classement",
     "status": "unconfirmed"
   },
   {
+    "id": "agenda-2027-source-72",
+    "start": "2027-10-17",
+    "title": "Créneau à définir",
+    "status": "unconfirmed"
+  },
+  {
     "id": "agenda-2027-source-73",
     "start": "2027-10-21",
     "title": "Coupe de Classement",
+    "status": "unconfirmed"
+  },
+  {
+    "id": "agenda-2027-source-74",
+    "start": "2027-10-24",
+    "title": "Créneau à définir",
     "status": "unconfirmed"
   },
   {

@@ -23,7 +23,9 @@ sans redéploiement. Il n'y a pas de connexion à RMS9.
    nommées du fichier fourni par le propriétaire. Ne pas la lancer sur la
    production sans validation explicite. Elle conserve les données de 2026
    en archive dans la table, mais le calendrier public et l'administration
-   n'affichent que les événements à partir de 2027. En cas de retour au code
+   n'affichent que les événements à partir de 2027. Exécuter enfin
+   `supabase/migrations/20261010_association_2027_open_slots.sql` pour ajouter
+   les 27 créneaux dont le nom reste à définir. En cas de retour au code
    précédent, les données 2026 restent disponibles. Après sauvegarde, les
    entrées `agenda-2027-source-*` peuvent être retirées si nécessaire ; ne
    rétablir l'ancienne contrainte de statut que si `confirmed` et `unconfirmed`
@@ -47,13 +49,14 @@ reste vide : les épreuves supprimées ne sont pas réimportées automatiquement
 ## Programme repris
 
 Le programme 2027 provient du fichier `Agenda_competitions_2027.html` fourni
-par le propriétaire. Seules les 47 lignes intitulées « Compétition » avec un
-nom ont été importées : 4 confirmées, 7 en option et 36 à confirmer. Les
-créneaux libres, vacances, fêtes et jours fériés ne sont pas présentés comme
-des épreuves. Les compétitions sur deux jours restent deux entrées si leur
-statut diffère dans la source. Les modifications ultérieures se font dans
-`/admin/competitions` ; la migration n'écrase pas les éditions et son marqueur
-empêche qu'une réexécution restaure les entrées supprimées.
+par le propriétaire. Il comprend 47 compétitions nommées (4 confirmées,
+7 en option et 36 à confirmer) et 27 « créneaux à définir » modifiables dans
+l'administration. Les noms 2026 et les notes de préparation associés à ces
+créneaux ne sont pas publiés. Les vacances, fêtes et jours fériés ne sont pas
+présentés comme des compétitions. Les compétitions sur deux jours restent deux
+entrées si leur statut diffère dans la source. Les modifications ultérieures se
+font dans `/admin/competitions` ; les migrations n'écrasent pas les éditions et
+leurs marqueurs empêchent qu'une réexécution restaure les entrées supprimées.
 
 ## Données du programme initial
 
@@ -71,7 +74,7 @@ Après activation de Supabase, modifier les compétitions dans l'administration.
 
 Une épreuve sur plusieurs jours apparaît chaque jour et n'est comptée qu'une fois
 dans la liste mensuelle. Le calendrier commence le lundi et s'ouvre sur la
-première compétition 2027 tant que l'année n'a pas commencé, puis sur le mois
+première date du programme 2027 tant que l'année n'a pas commencé, puis sur le mois
 courant à Paris. La navigation entre les mois reste disponible.
 Les cases deviennent grises dès le lendemain du dernier jour de l'épreuve,
 selon la date à Paris ; les détails restent consultables.

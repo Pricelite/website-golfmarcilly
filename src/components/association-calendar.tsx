@@ -62,7 +62,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div aria-live="polite" aria-atomic="true">
           <h3 className="font-serif text-3xl">{months[month]} {year}</h3>
-          <p className="mt-1 text-sm text-emerald-900/70">{events.length} épreuve{events.length > 1 ? "s" : ""} au programme</p>
+          <p className="mt-1 text-sm text-emerald-900/70">{events.length} date{events.length > 1 ? "s" : ""} au programme</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" className={buttonClass} onClick={() => { setView(null); setSelected(null); setSelectedDay(null); }}>{today < "2027-01-01" ? "Début du programme" : "Ce mois-ci"}</button>
@@ -92,7 +92,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
           return (
             <div key={day ?? `blank-${index}`} className={`min-w-0 ${pastDayEvents ? "bg-slate-100" : day ? "bg-white" : "bg-stone-50"} min-h-16 p-1 sm:min-h-20 md:min-h-32 md:p-2`}>
               {day ? <>
-                <button type="button" aria-label={`${formatCalendarDate(day)}, ${dayEvents.length} épreuve${dayEvents.length > 1 ? "s" : ""}`} aria-pressed={selectedDay === day} aria-current={day === today ? "date" : undefined} onClick={() => { setSelectedDay(selectedDay === day ? null : day); setSelected(null); }} className={`site-button mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 md:mx-0 ${day === today ? "font-bold ring-2 ring-emerald-800" : selectedDay === day ? "font-bold ring-2 ring-amber-500" : ""}`}>
+                <button type="button" aria-label={`${formatCalendarDate(day)}, ${dayEvents.length} date${dayEvents.length > 1 ? "s" : ""} au programme`} aria-pressed={selectedDay === day} aria-current={day === today ? "date" : undefined} onClick={() => { setSelectedDay(selectedDay === day ? null : day); setSelected(null); }} className={`site-button mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 md:mx-0 ${day === today ? "font-bold ring-2 ring-emerald-800" : selectedDay === day ? "font-bold ring-2 ring-amber-500" : ""}`}>
                   {Number(day.slice(-2))}
                 </button>
                 <div aria-hidden="true" className="mt-1 flex justify-center gap-1 md:hidden">{dayEvents.length > 0 ? <span className={`h-1.5 w-1.5 rounded-full ${pastDayEvents ? "bg-slate-500" : "bg-emerald-700"}`} /> : null}</div>
@@ -108,7 +108,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
         })}
       </div>
 
-      {selected ? <div ref={detailRef} tabIndex={-1} role="region" aria-label="Détails de l’épreuve" className="m-4 scroll-mt-28 rounded-xl border border-emerald-800/20 bg-[#f7f4e9] p-5 focus:outline-2 focus:outline-emerald-700 sm:m-6">
+      {selected ? <div ref={detailRef} tabIndex={-1} role="region" aria-label="Détails de la date" className="m-4 scroll-mt-28 rounded-xl border border-emerald-800/20 bg-[#f7f4e9] p-5 focus:outline-2 focus:outline-emerald-700 sm:m-6">
         <div className="flex items-start justify-between gap-3">
           <div><p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">{eventStatus(selected, today)}</p><h4 className="mt-2 font-serif text-2xl">{selected.title}</h4></div>
           <button className={buttonClass} type="button" onClick={() => setSelected(null)}>Fermer</button>
@@ -121,10 +121,10 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
 
       <div className="p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h4 className="font-serif text-xl">{selectedDay ? `Le ${formatCalendarDate(selectedDay)}` : "Les épreuves du mois"}</h4>
+          <h4 className="font-serif text-xl">{selectedDay ? `Le ${formatCalendarDate(selectedDay)}` : "Les dates du mois"}</h4>
           {selectedDay ? <button type="button" className="site-button rounded-full px-4 py-2 text-sm" onClick={() => setSelectedDay(null)}>Afficher tout le mois</button> : null}
         </div>
-        {visibleEvents.length === 0 ? <p className="text-sm leading-7 text-emerald-900/70">Aucune épreuve publiée pour {selectedDay ? "cette date" : "ce mois"}.</p> : <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {visibleEvents.length === 0 ? <p className="text-sm leading-7 text-emerald-900/70">Aucune date publiée pour {selectedDay ? "ce jour" : "ce mois"}.</p> : <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visibleEvents.map(event => <li key={event.id}>
             <button type="button" onClick={() => setSelected(event)} className={`h-full w-full rounded-lg border-l-3 p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 ${eventStyle(event, today)}`}>
               <span className="block text-xs">{formatCalendarDate(event.start)}{event.end ? ` → ${formatCalendarDate(event.end)}` : ""}</span>

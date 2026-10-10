@@ -39,20 +39,21 @@ test("published programme contains only valid unique 2027 dates", () => {
     assert.ok(event.start.startsWith("2027-"));
     if (event.end) assert.ok(event.end >= event.start);
   }
-  assert.equal(associationEvents.length, 47);
+  assert.equal(associationEvents.length, 74);
 });
 
-test("2027 owner agenda keeps only named competitions and their publication statuses", () => {
-  assert.equal(associationEvents2027.length, 47);
+test("2027 owner agenda keeps named competitions, open dates and their publication statuses", () => {
+  assert.equal(associationEvents2027.length, 74);
   assert.deepEqual(
     associationEvents2027.reduce<Record<string, number>>((counts, event) => {
       const status = event.status ?? "missing";
       counts[status] = (counts[status] ?? 0) + 1;
       return counts;
     }, {}),
-    { unconfirmed: 36, provisional: 7, confirmed: 4 },
+    { unconfirmed: 63, provisional: 7, confirmed: 4 },
   );
-  assert.ok(associationEvents2027.every(event => event.start.startsWith("2027-") && event.title !== "Créneau libre"));
-  assert.equal(new Set(associationEvents2027.map(event => event.id)).size, 47);
+  assert.ok(associationEvents2027.every(event => event.start.startsWith("2027-") && !event.note?.includes("Référence 2026")));
+  assert.equal(associationEvents2027.filter(event => event.title === "Créneau à définir").length, 27);
+  assert.equal(new Set(associationEvents2027.map(event => event.id)).size, 74);
   assert.equal(eventsOnDay(associationEvents, "2027-10-03")[0].title, "Coupe Octobre Rose");
 });
