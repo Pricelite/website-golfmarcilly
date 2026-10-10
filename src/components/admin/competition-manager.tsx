@@ -69,13 +69,13 @@ export function CompetitionManager({ initialEvents }: { initialEvents: Associati
       <div aria-live="polite" role="status">{message ? <p className="rounded-xl bg-emerald-50 p-4">{message}</p> : null}</div>
       {error ? <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-800">{error}</p> : null}
       <form key={formKey} ref={formRef} onSubmit={save} className="rounded-3xl border border-emerald-950/15 bg-white p-6">
-        <h2 className="font-serif text-2xl">{editing ? "Modifier la compétition" : "Ajouter une compétition"}</h2>
+        <h2 className="font-serif text-2xl">{editing ? "Modifier la date du programme" : "Ajouter une compétition ou un créneau"}</h2>
         <fieldset disabled={busy || Boolean(deleting)} className="mt-5 grid gap-4 sm:grid-cols-2 disabled:opacity-60">
-          <label className="text-sm sm:col-span-2">Nom de la compétition *<input autoComplete="off" className={inputClass} name="title" required maxLength={160} defaultValue={editing?.title ?? ""} /></label>
-          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min="1900-01-01" max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
-          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min="1900-01-01" max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
+          <label className="text-sm sm:col-span-2">Nom de la compétition ou du créneau *<input autoComplete="off" className={inputClass} name="title" required maxLength={160} defaultValue={editing?.title ?? ""} /></label>
+          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min="2027-01-01" max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
+          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min="2027-01-01" max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
           <label className="text-sm">Horaire (facultatif)<input className={inputClass} type="time" name="time" defaultValue={editing?.time ?? ""} /></label>
-          <label className="text-sm">Statut<select className={inputClass} name="status" defaultValue={editing?.status ?? ""}><option value="">Au programme</option><option value="private">Épreuve privée</option><option value="provisional">En option</option></select></label>
+          <label className="text-sm">Statut<select className={inputClass} name="status" defaultValue={editing?.status ?? ""}><option value="">Au programme</option><option value="confirmed">Confirmée</option><option value="unconfirmed">À confirmer</option><option value="provisional">En option</option><option value="private">Épreuve privée</option></select></label>
           <label className="text-sm sm:col-span-2">Description / précisions<textarea className={inputClass} name="note" rows={3} maxLength={2000} defaultValue={editing?.note ?? ""} /></label>
           <p className="text-xs leading-6 text-emerald-950/70 sm:col-span-2">* Champs obligatoires. Les précisions et les épreuves privées sont visibles sur le calendrier public. Une compétition devient grise après son dernier jour.</p>
           <div className="flex flex-wrap gap-3 sm:col-span-2">
@@ -85,7 +85,7 @@ export function CompetitionManager({ initialEvents }: { initialEvents: Associati
         </fieldset>
       </form>
       <section>
-        <h2 className="font-serif text-2xl">Les compétitions ({events.length})</h2>
+        <h2 className="font-serif text-2xl">Les dates du programme ({events.length})</h2>
         <label className="mt-4 block max-w-md text-sm">Rechercher par nom<input type="search" className={inputClass} value={filter} onChange={event => setFilter(event.target.value)} /></label>
         {deleting ? <div ref={deleteRef} tabIndex={-1} role="alert" className="my-5 scroll-mt-28 rounded-2xl border border-red-200 bg-red-50 p-5 focus:outline-2 focus:outline-red-800">
           <p className="font-semibold">Supprimer « {deleting.title} » du {formatCalendarDate(deleting.start)} ?</p>
@@ -94,7 +94,7 @@ export function CompetitionManager({ initialEvents }: { initialEvents: Associati
         </div> : null}
         <ul className="mt-5 space-y-3">
           {visible.map(event => <li key={event.id} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-emerald-950/15 bg-white p-4">
-            <div className="min-w-0"><h3 className="break-words font-semibold">{event.title}</h3><p className="mt-1 text-sm">{formatCalendarDate(event.start)}{event.end ? ` au ${formatCalendarDate(event.end)}` : ""}{event.time ? ` · ${event.time}` : ""}</p><p className="mt-1 text-xs">{event.status === "private" ? "Épreuve privée" : event.status === "provisional" ? "En option" : "Au programme"}</p></div>
+            <div className="min-w-0"><h3 className="break-words font-semibold">{event.title}</h3><p className="mt-1 text-sm">{formatCalendarDate(event.start)}{event.end ? ` au ${formatCalendarDate(event.end)}` : ""}{event.time ? ` · ${event.time}` : ""}</p><p className="mt-1 text-xs">{event.status === "private" ? "Épreuve privée" : event.status === "provisional" ? "En option" : event.status === "unconfirmed" ? "À confirmer" : event.status === "confirmed" ? "Confirmée" : "Au programme"}</p></div>
             <div className="flex gap-2"><button type="button" disabled={busy || Boolean(deleting)} aria-label={`Modifier ${event.title}`} className={buttonClass} onClick={() => { setEditing(event); setFormKey(key => key + 1); setError(""); setMessage(""); requestAnimationFrame(() => { formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); formRef.current?.querySelector<HTMLInputElement>('input[name="title"]')?.focus({ preventScroll: true }); }); }}>Modifier</button><button type="button" disabled={busy || Boolean(deleting)} aria-label={`Supprimer ${event.title}`} className={`${buttonClass} text-red-800`} onClick={() => { setDeleting(event); setError(""); setMessage(""); }}>Supprimer</button></div>
           </li>)}
         </ul>
