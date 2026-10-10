@@ -11,7 +11,7 @@ export class CalendarStoreError extends Error {
 
 type EventRow = {
   id: string; title: string; start_date: string; end_date: string | null;
-  start_time: string | null; note: string | null; status: "private" | "provisional" | null;
+  start_time: string | null; note: string | null; status: AssociationEvent["status"] | null;
 };
 const columns = "id,title,start_date,end_date,start_time,note,status";
 
@@ -37,9 +37,10 @@ function toRow(event: EventInput) {
 export async function listAssociationEvents(): Promise<AssociationEvent[]> {
   const db = client();
   const events: AssociationEvent[] = [];
-  // Supabase limite les réponses : parcourir toutes les pages, y compris les archives.
+  // Supabase limite les réponses : parcourir toutes les pages du programme actif.
   for (let offset = 0; ; offset += 500) {
     const { data, error } = await db.from("association_events").select(columns)
+      .gte("start_date", "2027-01-01")
       .order("start_date").order("id").range(offset, offset + 499);
     checkError(error);
     const rows = (data ?? []) as EventRow[];

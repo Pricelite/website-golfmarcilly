@@ -14,6 +14,15 @@ function parseOrigin(value: string): string | null {
   }
 }
 
+export function vercelPreviewOrigins(environment: string | undefined, hosts: Array<string | undefined>): string[] {
+  if (environment !== "preview") return [];
+  return hosts.flatMap((host) => {
+    if (!host) return [];
+    const origin = parseOrigin(`https://${host}`);
+    return origin && new URL(origin).host === host ? [origin] : [];
+  });
+}
+
 export function isTrustedRequestOrigin(headers: Headers, options: OriginOptions): boolean {
   const allowed = new Set(
     [options.siteUrl ?? "", ...(options.additionalOrigins ?? "").split(",")]

@@ -103,3 +103,52 @@ img {
     display: none;
   }
 }
+
+.welix-appear { animation: welix-appear 600ms ease-out both; }
+.welix-idle img { animation: welix-breathe 3.8s ease-in-out infinite; }
+.welix-greeting img { animation: welix-greet 950ms ease-in-out 1; }
+.welix-offering img { animation: welix-offer 1.15s ease-in-out 1; }
+.welix-walking { transition: left 1.1s ease-in-out; }
+.welix-walking img { animation: welix-step 280ms ease-in-out infinite; }
+.welix-swinging img { animation: welix-swing 1.15s ease-in-out 1; }
+.welix-robot img { transition: transform 180ms ease; }
+.welix-robot:hover img { animation: none; transform: rotate(4deg) scale(1.05); }
+.welix-robot:active img { animation: none; transform: scale(0.96); }
+
+@keyframes welix-appear {
+  from { opacity: 0; transform: translateY(14px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes welix-breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.025); }
+}
+@keyframes welix-greet {
+  0%, 100% { transform: rotate(0) translateX(0); }
+  30% { transform: rotate(-8deg) translateX(-9px); }
+  65% { transform: rotate(6deg) translateX(10px); }
+}
+@keyframes welix-offer {
+  0%, 100% { transform: translateX(0); }
+  35% { transform: translateX(calc(var(--welix-nudge) * -1)); }
+  70% { transform: translateX(var(--welix-nudge)); }
+}
+
+@keyframes welix-step {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes welix-swing {
+  0% { opacity: 0.7; transform: rotate(-12deg) scale(0.96); }
+  40% { opacity: 1; transform: rotate(8deg) scale(1.04); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+.welix-no-motion, .welix-no-motion * { animation: none !important; transition: none !important; }
+.welix-no-motion .welix-robot:hover img, .welix-no-motion .welix-robot:active img { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .welix-appear, .welix-robot img { animation: none !important; transition: none !important; }
+  .welix-robot:hover img, .welix-robot:active img { transform: none; }
+}

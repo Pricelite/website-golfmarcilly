@@ -59,6 +59,7 @@ export default function CookieConsent() {
   return (
     <aside
       aria-live="polite"
+      data-cookie-consent
       className="fixed inset-x-4 bottom-4 z-[130] mx-auto w-full max-w-3xl rounded-2xl border border-emerald-900/20 bg-white/95 p-4 shadow-2xl shadow-emerald-900/15 backdrop-blur"
     >
       <p className="text-sm font-semibold text-emerald-950">

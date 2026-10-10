@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { GolfChatWidget } from "@/components/chat/golf-chat-widget";
 import { JsonLd } from "@/components/ui/json-ld";
 import { siteConfig } from "@/data/site";
 import { absoluteUrl } from "@/lib/metadata";
@@ -59,6 +60,7 @@ export default function RootLayout({
         <Header />
         <main id="main-content">{children}</main>
         <Footer />
+        <GolfChatWidget />
         <div className="fixed inset-x-0 bottom-3 z-40 px-4 lg:hidden">
           <div className="mx-auto flex max-w-md items-center gap-3 rounded-full border border-emerald-950/10 bg-white/95 p-2 shadow-lg shadow-emerald-950/15 backdrop-blur">
             <a
