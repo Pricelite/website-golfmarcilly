@@ -49,7 +49,7 @@ export default function InitiationReservationForm() {
     try {
       const response = await fetch("/api/reservations", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date, startTime: time, participantsCount: participants, mealOption: meal, fullName: form.get("fullName"), email: form.get("email"), phone: form.get("phone"), note: form.get("note") }),
+        body: JSON.stringify({ date, startTime: time, participantsCount: participants, mealOption: meal, firstName: form.get("firstName"), lastName: form.get("lastName"), email: form.get("email"), phone: form.get("phone"), note: form.get("note") }),
       });
       const result = await response.json();
       if (!response.ok || !result.ok) {
@@ -62,7 +62,7 @@ export default function InitiationReservationForm() {
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-8 lg:grid-cols-2">
+    <form onSubmit={submit} className="grid items-start gap-8 lg:grid-cols-2">
       <fieldset disabled={sending || Boolean(success)} className="min-w-0 rounded-[32px] border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10 sm:p-8">
         <legend className="sr-only">Date et horaire souhaités</legend>
         <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">Étape 1</p>
@@ -86,24 +86,27 @@ export default function InitiationReservationForm() {
                 ))}
               </div>
             )}
+            {selectedDate && !selectedTime ? <p className="mt-2 text-sm text-emerald-900/70">Sélectionnez un horaire pour pouvoir envoyer votre demande.</p> : null}
           </fieldset>
           <label className="block">Participants<select value={participants} onChange={e => setParticipants(Number(e.target.value))} className={field}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}</select></label>
           <label className="block">Formule<select value={meal} onChange={e => setMeal(e.target.value as typeof meal)} className={field}><option value="WITHOUT_MEAL">Sans repas — 25 € / personne</option><option value="WITH_MEAL">Avec repas — 48 € / personne</option></select></label>
           <p className="rounded-2xl bg-emerald-50 p-4">Total estimé : <strong>{participants * INITIATION_PRICE_PER_PERSON_CENTS[meal] / 100} €</strong><br />Paiement sur place, après confirmation par notre équipe.</p>
         </div>
       </fieldset>
-      <section className="min-w-0 rounded-[32px] border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10 sm:p-8">
+      <section className="min-w-0 rounded-[32px] border border-emerald-900/10 bg-white/90 p-5 shadow-xl shadow-emerald-900/10 sm:p-6">
         <p className="text-xs uppercase tracking-[0.25em] text-emerald-700">Étape 2</p>
-        <h2 className="mt-4 font-serif text-3xl text-emerald-950">Envoyer votre demande</h2>
-        <fieldset disabled={sending || Boolean(success)} className="mt-6 space-y-4 text-sm text-emerald-900">
+        <h2 className="mt-3 font-serif text-3xl text-emerald-950">Envoyer votre demande</h2>
+        <fieldset disabled={sending || Boolean(success)} className="mt-5 grid gap-3 text-sm text-emerald-900 sm:grid-cols-2">
           <legend className="sr-only">Vos coordonnées</legend>
-          <label className="block">Nom et prénom<input name="fullName" autoComplete="name" maxLength={120} required className={field} /></label>
+          <label className="block">Nom *<input name="lastName" autoComplete="family-name" maxLength={60} required className={field} /></label>
+          <label className="block">Prénom *<input name="firstName" autoComplete="given-name" maxLength={60} required className={field} /></label>
           <label className="block">E-mail<input name="email" type="email" autoComplete="email" maxLength={160} required className={field} /></label>
           <label className="block">Téléphone<input name="phone" type="tel" autoComplete="tel" maxLength={30} required className={field} /></label>
-          <label className="block">Commentaire (facultatif)<textarea name="note" rows={3} maxLength={2000} className={field} /></label>
-          <p className="leading-6">Cette demande ne vaut pas réservation. Nous vous répondrons par e-mail pour confirmer la date et l’horaire.</p>
-          <FormPrivacyNotice purpose="traiter votre demande d’initiation et vous répondre" />
-          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} className="site-button w-full rounded-full px-5 py-3 font-semibold disabled:opacity-60">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
+          <label className="block sm:col-span-2">Commentaire (facultatif)<textarea name="note" rows={2} maxLength={2000} className={field} /></label>
+          <p className="leading-6 sm:col-span-2">Cette demande ne vaut pas réservation. Nous vous répondrons par e-mail pour confirmer la date et l’horaire.</p>
+          <div className="sm:col-span-2"><FormPrivacyNotice purpose="traiter votre demande d’initiation et vous répondre" /></div>
+          {!loading && !calendarError && (!selectedDate || !selectedTime) ? <p id="initiation-submit-hint" className="text-sm text-emerald-900/70 sm:col-span-2">Choisissez une date et un horaire à l’étape 1 pour activer l’envoi.</p> : null}
+          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} aria-describedby={!loading && !calendarError && (!selectedDate || !selectedTime) ? "initiation-submit-hint" : undefined} className="site-button w-full rounded-full px-5 py-3 font-semibold disabled:opacity-60 sm:col-span-2">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
         </fieldset>
         {error ? <p role="alert" className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
         {success ? <p role="status" className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-900">{success}</p> : null}

@@ -1,7 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { isTrustedRequestOrigin } from "./trusted-origin";
+import { isTrustedRequestOrigin, vercelPreviewOrigins } from "./trusted-origin";
 
 type RateLimitBucket = {
   count: number;
@@ -63,11 +63,14 @@ export function parseClientIpFromHeaders(headers: Headers): string {
 
 export function hasTrustedOrigin(
   headers: Headers,
-  options?: { fallbackHost?: string }
+  options?: { fallbackHost?: string; allowVercelPreview?: boolean }
 ): boolean {
+  const previewOrigins = options?.allowVercelPreview
+    ? vercelPreviewOrigins(process.env.VERCEL_ENV, [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL])
+    : [];
   return isTrustedRequestOrigin(headers, {
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
-    additionalOrigins: process.env.FORM_ALLOWED_ORIGINS,
+    additionalOrigins: [process.env.FORM_ALLOWED_ORIGINS, ...previewOrigins].filter(Boolean).join(","),
     fallbackHost: options?.fallbackHost,
     development: process.env.NODE_ENV === "development",
   });

@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { cookies } from "next/headers";
 import { Hero } from "@/components/sections/hero";
 import { SponsorMarquee } from "@/components/sections/sponsor-marquee";
+import { SiteConditions } from "@/components/sections/site-conditions";
 import { BlogCard } from "@/components/ui/blog-card";
 import { CTAButton } from "@/components/ui/cta-button";
 import { CourseCard } from "@/components/ui/course-card";
@@ -15,6 +17,9 @@ import { posts } from "@/data/posts";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
+import { listSiteConditions } from "@/lib/site-conditions-store";
+import { emptyConditions } from "@/data/site-conditions";
+import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 
 export const metadata = buildMetadata({
   title: "45 trous aux portes d'Orléans",
@@ -23,10 +28,18 @@ export const metadata = buildMetadata({
   path: "/",
 });
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
-export default function HomePage() {
+export default async function HomePage() {
   const activeOffers = getActiveSiteOffers();
+  let conditions = emptyConditions();
+  let conditionsUnavailable = false;
+  try { conditions = await listSiteConditions(); }
+  catch {
+    conditionsUnavailable = true;
+    conditions = conditions.map(condition => ({ ...condition, status: "unknown" }));
+  }
+  const canEditConditions = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
   const orderedCourses = [
     courses.find((course) => course.slug === "practice"),
     courses.find((course) => course.slug === "parcours-decouverte-9-trous"),
@@ -48,6 +61,7 @@ export default function HomePage() {
         title="45 trous aux portes d'Orléans"
       />
 
+      <SiteConditions conditions={conditions} editable={canEditConditions} unavailable={conditionsUnavailable} />
       <SponsorMarquee />
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">

@@ -14,6 +14,15 @@ function parseOrigin(value: string): string | null {
   }
 }
 
+export function vercelPreviewOrigins(environment: string | undefined, hosts: Array<string | undefined>): string[] {
+  if (environment !== "preview") return [];
+  return hosts.flatMap((host) => {
+    if (!host) return [];
+    const origin = parseOrigin(`https://${host}`);
+    return origin && new URL(origin).host === host ? [origin] : [];
+  });
+}
+
 export function isTrustedRequestOrigin(headers: Headers, options: OriginOptions): boolean {
   const allowed = new Set(
     [options.siteUrl ?? "", ...(options.additionalOrigins ?? "").split(",")]
@@ -32,6 +41,11 @@ export function isTrustedRequestOrigin(headers: Headers, options: OriginOptions)
   if (allowed.size === 0) return false;
   const origin = headers.get("origin");
   const referer = headers.get("referer");
+  // Some embedded browsers send an opaque Origin for a same-origin form post.
+  // Fetch Metadata is set by the browser and cannot be forged by page script.
+  if (origin === "null" && !referer && headers.get("sec-fetch-site") === "same-origin" && options.fallbackHost) {
+    return [...allowed].some((value) => new URL(value).host === options.fallbackHost);
+  }
   if (!origin && !referer) return false;
   return [origin, referer].every((value) =>
     value === null || allowed.has(parseOrigin(value) ?? ""),
