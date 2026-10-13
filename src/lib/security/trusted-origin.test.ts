@@ -30,6 +30,14 @@ test("forms reject foreign, missing, malformed, downgraded and mismatched origin
   assert.equal(isTrustedRequestOrigin(new Headers({ origin: siteUrl, referer: "https://attacker.example" }), { siteUrl }), false);
 });
 
+test("embedded same-origin form posts with opaque origin remain restricted to the allowed host", () => {
+  const embedded = new Headers({ origin: "null", "sec-fetch-site": "same-origin" });
+  assert.equal(isTrustedRequestOrigin(embedded, { siteUrl, fallbackHost: "golf.example" }), true);
+  assert.equal(isTrustedRequestOrigin(embedded, { siteUrl, fallbackHost: "other.example" }), false);
+  assert.equal(isTrustedRequestOrigin(new Headers({ origin: "null", "sec-fetch-site": "cross-site" }), { siteUrl, fallbackHost: "golf.example" }), false);
+  assert.equal(isTrustedRequestOrigin(new Headers({ origin: "null", "sec-fetch-site": "same-origin", referer: "https://attacker.example" }), { siteUrl, fallbackHost: "golf.example" }), false);
+});
+
 test("chat preview origins use only Vercel-provided preview hosts", () => {
   const preview = "golf-git-chat-team.vercel.app";
   assert.deepEqual(vercelPreviewOrigins("preview", [preview, undefined]), [`https://${preview}`]);

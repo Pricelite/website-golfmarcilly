@@ -18,12 +18,22 @@ test("competition input accepts multi-day events and clears optional fields", ()
   }
 });
 
+test("calendar markers accept their category and school zone", () => {
+  const parsed = parseEventInput({ title: "Vacances scolaires", start: "2027-04-10", end: "2027-04-25", category: "vacation", zone: "A", internalNote: "Préparation locale" });
+  assert.ok(parsed.ok);
+  assert.equal(parsed.event.category, "vacation");
+  assert.equal(parsed.event.zone, "A");
+  assert.equal(parsed.event.internalNote, "Préparation locale");
+});
+
 test("competition input rejects invalid dates, reversed ranges and invalid fields", () => {
   const base = { title: "Coupe", start: "2027-09-16" };
   for (const input of [null, [], { ...base, title: " " }, { ...base, title: "x".repeat(161) },
     { ...base, start: "2027-02-29" }, { ...base, start: "2027-04-31" }, { ...base, start: "2027-9-16" },
     { ...base, start: "2026-09-16" }, { ...base, end: "2027-09-15" }, { ...base, time: "24:00" }, { ...base, status: "published" },
-    { ...base, note: "x".repeat(2001) }, { ...base, time: 930 }, { ...base, note: { text: "test" } },
+    { ...base, note: "x".repeat(2001) }, { ...base, internalNote: "x".repeat(2001) },
+    { ...base, category: "unknown" }, { ...base, zone: "D" },
+    { ...base, time: 930 }, { ...base, note: { text: "test" } },
   ]) assert.equal(parseEventInput(input).ok, false, JSON.stringify(input));
 });
 

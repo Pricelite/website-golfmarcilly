@@ -29,6 +29,9 @@
 .contact-fallback/
 .vscode/
 .pnpm-store/
+.local-association-events-2027.json
+.local-site-conditions.json
+.data/
 
 # debug
 npm-debug.log*

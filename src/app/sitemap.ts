@@ -4,10 +4,19 @@ import { posts } from "@/data/posts";
 import { getActiveSiteOffers } from "@/data/offers";
 import { legalContent } from "@/data/legal";
 import { siteConfig } from "@/data/site";
+import { listPages, openDb } from "@/lib/backoffice/db";
 
 export const revalidate = 60;
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  let managedPages: { slug: string; updated_at: string }[] = [];
+  if (process.env.NODE_ENV !== "production" || process.env.BACKOFFICE_DB_PATH) {
+    try {
+      const db = openDb();
+      try { managedPages = listPages(db).filter(page => Boolean(page.published_json)); }
+      finally { db.close(); }
+    } catch { /* The existing sitemap remains available if the optional content store is unavailable. */ }
+  }
   const staticPages = [
     "/",
     "/golf",
@@ -41,6 +50,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: new URL(`/offres/${offer.slug}`, siteConfig.url).toString(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...managedPages.map((page) => ({
+      url: new URL(`/pages/${page.slug}`, siteConfig.url).toString(),
+      lastModified: page.updated_at,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
     })),
   ];
 }

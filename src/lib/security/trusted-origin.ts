@@ -41,6 +41,11 @@ export function isTrustedRequestOrigin(headers: Headers, options: OriginOptions)
   if (allowed.size === 0) return false;
   const origin = headers.get("origin");
   const referer = headers.get("referer");
+  // Some embedded browsers send an opaque Origin for a same-origin form post.
+  // Fetch Metadata is set by the browser and cannot be forged by page script.
+  if (origin === "null" && !referer && headers.get("sec-fetch-site") === "same-origin" && options.fallbackHost) {
+    return [...allowed].some((value) => new URL(value).host === options.fallbackHost);
+  }
   if (!origin && !referer) return false;
   return [origin, referer].every((value) =>
     value === null || allowed.has(parseOrigin(value) ?? ""),
