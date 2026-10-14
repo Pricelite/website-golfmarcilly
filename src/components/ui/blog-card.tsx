@@ -9,7 +9,7 @@ export function BlogCard({ post }: { post: Post }) {
     <article className="flex h-full flex-col overflow-hidden rounded-[30px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
       <div className="relative aspect-[16/10]">
         <Image
-          alt={post.title}
+          alt={post.coverImageAlt ?? post.title}
           className="object-cover"
           fill
           sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 3), 389px"

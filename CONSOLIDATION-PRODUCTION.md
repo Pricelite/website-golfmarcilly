@@ -1,6 +1,6 @@
 # Consolidation avant mise en production
 
-> État historique : la file `.contact-fallback` décrite plus bas a été remplacée dans le code actuel par une file Supabase. Voir `README.md` et `supabase/migrations/20260925100000_contact_queue_and_rate_limit.sql` avant déploiement.
+> Compte rendu historique, non utilisable comme procédure de déploiement. Plusieurs sections décrivent un ancien état du projet. Suivre [CHECKLIST-MISE-EN-PROD.md](CHECKLIST-MISE-EN-PROD.md) et le code actuel pour la mise en ligne. La file `.contact-fallback` décrite plus bas a été remplacée par une file Supabase.
 
 ## Référencement
 
@@ -85,4 +85,4 @@ Le diagnostic public `/api/health` décrit la présence de configuration, pas la
 
 Contrôles locaux : lint, TypeScript, tous les tests, build de production, routes principales, sitemap/canonical/robots, métadonnées des pages non indexables, JSON-LD et variantes d'images. Les tests des formulaires restent interceptés : aucun email, paiement ou réservation réelle n'est déclenché.
 
-Restent à vérifier dans l'environnement cible : déploiement et domaine, emails réels, intégrations Google Calendar/Supabase/SumUp, stockage et reprise de la file, informations légales validées. Le build réussi ne valide pas ces services externes.
+Restent à vérifier dans l'environnement cible : déploiement et domaine, emails réels, flux privé Google Calendar, Supabase, stockage et reprise de la file, informations légales validées. Le build réussi ne valide pas ces services externes.

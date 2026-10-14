@@ -1,8 +1,3 @@
-export type SupabaseEnv = {
-  url: string;
-  anonKey: string;
-};
-
 export type RestaurantReservationEnv = {
   restaurantReservationTo: string;
   restaurantReservationToName?: string;
@@ -18,19 +13,6 @@ function getOptionalEnv(name: string): string | undefined {
   }
 
   return value;
-}
-
-export function getSupabaseEnv(): SupabaseEnv {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !anonKey) {
-    throw new Error(
-      "Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
-    );
-  }
-
-  return { url, anonKey };
 }
 
 export function getRestaurantReservationEnv(): RestaurantReservationEnv {

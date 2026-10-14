@@ -22,8 +22,8 @@ test("sitemap includes editorial entry points and current offers, without transa
 });
 
 test("canonical, social URL and robots point to the same public site", () => {
-  const meta = buildMetadata({ title: "Test", description: "Test", path: "/payment/success", indexable: false });
-  assert.equal(meta.alternates?.canonical, new URL("/payment/success", siteConfig.url).href);
+  const meta = buildMetadata({ title: "Test", description: "Test", path: "/initiation/reservation", indexable: false });
+  assert.equal(meta.alternates?.canonical, new URL("/initiation/reservation", siteConfig.url).href);
   assert.equal(meta.openGraph?.url, meta.alternates?.canonical);
   assert.deepEqual(meta.robots, { index: false, follow: true });
   assert.equal(robots().sitemap, new URL("/sitemap.xml", siteConfig.url).href);

@@ -40,8 +40,15 @@ export type FallbackQueueSnapshot = {
 const MAX_ATTEMPTS = 5;
 const DEFAULT_RETENTION_DAYS = 14;
 
-function check(error: { message: string } | null): void {
-  if (error) throw new Error(`Fallback queue unavailable: ${error.message}`);
+export class FallbackQueueStoreError extends Error {
+  constructor(readonly code: string) {
+    super("Fallback queue unavailable");
+    this.name = "FallbackQueueStoreError";
+  }
+}
+
+function check(error: { message: string; code?: string } | null): void {
+  if (error) throw new FallbackQueueStoreError(error.code ?? "unknown");
 }
 
 function safeError(error: unknown): string {

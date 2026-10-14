@@ -1,6 +1,6 @@
 # Golf de Marcilly - site Next.js
 
-Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase, Google Calendar et envoi d'emails transactionnels. Le code SumUp est conservé pour les anciennes réservations.
+Site du Golf de Marcilly construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase et envoi d'e-mails transactionnels. Les demandes d'initiation sont confirmées par l'équipe et réglées sur place.
 
 ## Stack
 
@@ -11,7 +11,6 @@ Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec N
 - Framer Motion
 - Supabase
 - Google Calendar
-- SumUp
 - Nodemailer / SMTP ou Brevo
 
 ## Installation
@@ -28,6 +27,7 @@ pnpm.cmd lint
 pnpm.cmd typecheck
 pnpm.cmd test
 pnpm.cmd build
+pnpm.cmd preflight
 pnpm.cmd start
 ```
 
@@ -74,9 +74,8 @@ styles/
 - demande de reservation restaurant avec email au club + accuse reception client
 - page "Je debute le golf"
 - demande d'initiation à partir des créneaux du calendrier, transmise par email et confirmée manuellement par l'équipe
-- integration Google Calendar pour les initiations
-- integration SumUp conservée pour les anciennes réservations ; le parcours actuel prévoit un paiement sur place
-- page admin indiquant la boîte de suivi des demandes actuelles et affichant séparément les anciennes réservations Supabase
+- lecture du flux privé Google Calendar pour les créneaux d'initiation
+- page admin indiquant la boîte de suivi des demandes actuelles et donnant accès, en lecture seule, aux anciennes réservations Supabase
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
@@ -107,7 +106,6 @@ Les blocs principaux couvrent :
 
 - Supabase public et admin
 - Google Calendar
-- SumUp
 - email SMTP / Brevo
 - analytics
 - operations / monitoring
@@ -146,20 +144,15 @@ Ordre de mise en production pour cette évolution : suspendre le traitement plan
 Les mentions légales indiquent Anthony Welh comme directeur de publication, conformément à la confirmation du propriétaire le 14 octobre 2026. L'identité de l'hébergeur effectif et la validation finale des deux pages restent attendues (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
 - `OPS_CRON_TOKEN` est reutilise pour les diagnostics internes et les operations cron
 
-## Verification actuelle
+## Vérification locale
 
-Au 29 juillet 2026 :
-
-- `pnpm.cmd lint` : OK
-- `pnpm.cmd typecheck` : OK
-- `pnpm.cmd test` : OK
-- `pnpm.cmd build` : OK
+Au 14 octobre 2026, après retrait de l'ancien paiement : contrôle TypeScript, lint des fichiers modifiés, dix tests ciblés et build de production réussis. `node scripts/preflight.mjs` signale encore les paramètres à fournir pour l'environnement cible. La CI exécute les contrôles complets sur push et pull request.
 
 ## Notes de reprise
 
 - Le controle `typecheck` passe via `tsconfig.typecheck.json` pour ne pas dependre des artefacts `.next` generes partiellement par `next typegen`.
 - Le build reste la verification la plus complete du projet, car Next y applique aussi ses controles de routes et de metadata.
-- Le parcours d'initiation canonique est `/initiation/reservation` avec les APIs `/api/initiation-options` (créneaux du flux Google privé) et `/api/reservations` (demande envoyée par email). L'équipe confirme la date au visiteur et le règlement se fait sur place. `/api/slots` appartient à l'ancien parcours.
+- Le parcours d'initiation canonique est `/initiation/reservation` avec les APIs `/api/initiation-options` (créneaux du flux Google privé) et `/api/reservations` (demande envoyée par email). L'équipe confirme la date au visiteur et le règlement se fait sur place.
 - L'ancien endpoint `/api/initiation-reservation` est conserve uniquement comme fallback legacy et n'est plus le parcours principal.
 - La reprise globale du projet est documentee dans [COMPTE-RENDU-REPRISE.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/COMPTE-RENDU-REPRISE.md:1).
 - La checklist de mise en production est documentee dans [CHECKLIST-MISE-EN-PROD.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/CHECKLIST-MISE-EN-PROD.md:1).

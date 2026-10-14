@@ -92,6 +92,19 @@ export default async function HomePage() {
               key={course.slug}
               sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 768px) calc(100vw - 48px), (max-width: 1024px) calc((100vw - 72px) / 2), (max-width: 1280px) calc((100vw - 88px) / 2), 286px"
               {...course}
+              image={course.slug === "practice"
+                ? "/images/practice-golf.png"
+                : course.slug === "parcours-decouverte-9-trous"
+                  ? "/images/parcours-decouverte-9-trous.png"
+                : course.slug === "parcours-competitions-18-trous"
+                  ? "/images/parcours-18t-competition.jpg"
+                  : course.image}
+              imageFit="cover"
+              imageAlt={course.slug === "parcours-decouverte-9-trous"
+                ? "Vue du parcours découverte du Golf de Marcilly"
+                : course.slug === "parcours-competitions-18-trous"
+                  ? "Green du parcours de compétition du Golf de Marcilly"
+                  : course.title}
               title={course.slug === "pitch-putt-kaleka-18-trous" ? "Pitch & Putt / Kaleka" : course.title}
               description={course.slug === "pitch-putt-kaleka-18-trous" ? "Deux façons de jouer et de travailler le petit jeu à Marcilly." : course.description}
             />
@@ -103,7 +116,7 @@ export default async function HomePage() {
       <section id="restaurant" className="bg-[#efeadd] py-10 sm:py-14">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] lg:aspect-[3/2]">
-            <Image src="/images/cuisine.png" alt="Des plats préparés en cuisine" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
+            <Image src="/restaurant/gallery/bar.webp" alt="Le bar et la salle du restaurant La Bergerie" fill sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 112px) / 2), 584px" className="object-cover" />
           </div>
           <div>
             <SectionTitle
@@ -116,7 +129,7 @@ export default async function HomePage() {
               <li>Menus pour les déjeuners, les groupes et les séminaires.</li>
               <li>Demande de table en ligne, à confirmer par le restaurant.</li>
             </ul>
-            <div className="mt-6"><CTAButton href="/restaurant">Voir les menus et demander une table</CTAButton></div>
+            <div className="mt-6"><CTAButton href="/restaurant">Voir la carte et demander une table</CTAButton></div>
           </div>
         </div>
       </section>

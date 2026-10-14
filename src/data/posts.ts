@@ -5,6 +5,7 @@ export type Post = {
   publishedAt: string;
   category: string;
   coverImage: string;
+  coverImageAlt?: string;
   readingTime: string;
   seoDescription: string;
   content: string[];
@@ -18,7 +19,9 @@ export const posts: Post[] = [
       "Nos conseils pour reprendre le jeu, régler son entraînement et profiter d'un green fee à Marcilly dès les premiers beaux jours.",
     publishedAt: "2026-03-18",
     category: "Conseils",
-    coverImage: "/images/grandparcours.png",
+    // Photo d'illustration : Toa Heftiba, Unsplash (https://unsplash.com/photos/Wi7sPskmZhE).
+    coverImage: "/images/article-saison-golf-toa-heftiba.jpg",
+    coverImageAlt: "Parcours de golf arboré au printemps, photo d'illustration",
     readingTime: "4 min",
     seoDescription:
       "Conseils pour bien débuter la saison au Golf de Marcilly, golf près d'Orléans dans le Loiret.",

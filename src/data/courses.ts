@@ -6,7 +6,8 @@ export const courses = [
     distance: "Postes couverts et extérieurs",
     description:
       "Zones d'entraînement pour le long jeu, les approches et le putting, pensées pour des séances efficaces toute l'année.",
-    image: "/images/practice-golf.png",
+    image: "/images/practice-vue-aerienne.png",
+    imageAlt: "Vue aérienne du practice et du club-house du Golf de Marcilly",
   },
   {
     slug: "parcours-decouverte-9-trous",
@@ -15,9 +16,8 @@ export const courses = [
     distance: "1 278 m",
     description:
       "Une boucle de 9 trous pour découvrir le golf et progresser à son rythme.",
-    image: "/images/plan-parcours-decouverte.png",
-    imageAlt: "Plan du parcours découverte de 9 trous du Golf de Marcilly",
-    imageFit: "contain",
+    image: "/images/decouverte-photo.png",
+    imageAlt: "Green du parcours découverte du Golf de Marcilly entre deux arbres",
   },
   {
     slug: "footgolf",
