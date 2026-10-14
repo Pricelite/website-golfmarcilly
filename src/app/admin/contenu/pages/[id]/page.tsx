@@ -22,7 +22,8 @@ export default async function EditPage({ params }: { params: Promise<{ id: strin
     if (!page) notFound();
     const content = parsePageContent(JSON.parse(page.draft_json));
     if (!content) notFound();
-    const history = db.prepare("SELECT r.revision,r.action,u.name AS author,r.created_at FROM revisions r JOIN users u ON u.id=r.actor_id WHERE r.page_id=? ORDER BY r.revision DESC LIMIT 50").all(id) as { revision: number; action: string; author: string; created_at: string }[];
+    const history = (db.prepare("SELECT r.revision,r.action,u.name AS author,r.created_at FROM revisions r JOIN users u ON u.id=r.actor_id WHERE r.page_id=? ORDER BY r.revision DESC LIMIT 50").all(id) as { revision: number; action: string; author: string; created_at: string }[])
+      .map(({ revision, action, author, created_at }) => ({ revision, action, author, created_at }));
     return <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <nav className="mb-6 text-sm"><Link className="underline" href="/admin/contenu">← Toutes les pages</Link></nav>
       <PageEditor id={id} slug={page.slug} initialContent={content} initialRevision={page.draft_revision} initialPublishedRevision={page.published_revision} initialReviewRequested={Boolean(page.review_requested)} history={history} permissions={{ edit: can(grants, actor.role, "edit", `page:${id}`), submit: can(grants, actor.role, "submit", `page:${id}`), publish: can(grants, actor.role, "publish", `page:${id}`), restore: can(grants, actor.role, "restore", `page:${id}`), delete: can(grants, actor.role, "delete", `page:${id}`), media: can(grants, actor.role, "view", "media") }} />

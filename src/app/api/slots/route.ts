@@ -55,19 +55,9 @@ export async function GET() {
     const fallbackMissingEnv = !missingEnvMatch && !hasGoogleCalendarEnv()
       ? getMissingGoogleCalendarEnv()
       : [];
-    const publicError = missingEnvMatch
-      ? `Server configuration is incomplete. ${
-          missingEnvMatch[1]
-            ? `Missing env var: ${missingEnvMatch[1]}.`
-            : `Missing Supabase env vars: ${missingEnvMatch[2]}.`
-        }`
-      : fallbackMissingEnv.length > 0
-        ? `Server configuration is incomplete. Missing env var: ${fallbackMissingEnv.join(", ")}.`
-      : "Unable to list slots.";
-
     console.error("[api/slots] failed", { message });
     return NextResponse.json(
-      { ok: false, error: publicError },
+      { ok: false, error: "Le service des créneaux est momentanément indisponible. Réessayez plus tard." },
       { status: missingEnvMatch || fallbackMissingEnv.length > 0 ? 503 : 500 }
     );
   }

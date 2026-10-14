@@ -80,17 +80,11 @@ styles/
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
-## Assistant IA Welix
+## Assistant IA
 
-Welix, le petit robot golfeur fourni pour le site, est présent sur toutes les pages sans fond rond autour de sa silhouette. Un clic ouvre une discussion compacte ; la croix sur l’avatar le masque et le bouton « W » permet de le réafficher. Sans `OPENAI_API_KEY`, le widget affiche **mode démo** et répond avec les données éditoriales du site, dont les plats des menus de groupes. Pour activer les réponses conversationnelles, configurer `OPENAI_API_KEY` côté serveur et, si souhaité, `OPENAI_MODEL` (par défaut `gpt-6-luna`) puis redémarrer le serveur. La clé n'est jamais envoyée au navigateur. Le backend utilise l'API Responses avec `store: false` ; les échanges restent dans `sessionStorage` pendant la visite et ne sont pas enregistrés dans la base du site.
+L'assistant Welix et sa route `/api/chat` ont été retirés du site pour l'instant.
 
-- Apparence et avatar : `src/components/chat/golf-chat-widget.tsx`, `src/components/chat/welix-avatar.tsx` et les trois poses `public/welix-golfer.png`, `public/welix-walk.png`, `public/welix-swing.png`. Welix reste visible pendant le défilement et la navigation ; ses animations se règlent dans `src/app/globals.css` et s’arrêtent si l’utilisateur préfère moins d’animation.
-- Salutation et questions proposées : `src/data/chatbot.ts` ; personnalité et règles de réponse : `src/lib/chat/core.ts` (`buildChatInstructions`).
-- Accueil et mouvements : `src/data/chatbot.ts` centralise les textes, le délai de présentation de 2,5 secondes, la durée d’affichage de 20 secondes, la marche et les limites de déplacement. Welix se présente une seule fois par visite et demande s’il peut aider ; « Plus tard » ferme cette proposition. Un clic sur Welix ouvre le dialogue ; glisser directement le robot le déplace à la souris ou au toucher. Les flèches du clavier déplacent aussi le robot et Début rétablit sa place. Il fait un swing lors d’une navigation et quelques pas pendant l’attente. Masquage et arrêt des animations sont conservés localement ; l’historique du chat reste limité à la session.
-- Connaissances : `src/data/chat-knowledge.ts`, alimenté par les données éditoriales existantes. Ajouter ou ajuster une entrée après chaque changement important de page ; les liens sont limités aux chemins de `src/lib/chat/shared.ts`.
-- API : `src/app/api/chat/route.ts`. Elle limite le corps à 12 Ko, la conversation à 10 messages, chaque message à 800 caractères, la sortie à 450 tokens et le débit à 12 requêtes par 10 minutes et par IP. En production, elle utilise le limiteur partagé Supabase existant et refuse les appels si celui-ci est indisponible.
-
-Le chatbot ne connaît pas les créneaux de réservation en direct. Les réponses libres du modèle qui contiennent des montants, horaires ou affirmations de disponibilité sont remplacées par une réponse fondée sur les données du site avec un lien vers la page concernée. Après changement de fournisseur ou de clé, vérifier le mode affiché, les réponses et les erreurs en environnement de prévisualisation. Le retrait du widget se fait en supprimant `<GolfChatWidget />` de `src/app/layout.tsx` ; aucune migration de données n'est nécessaire.
+Le site ne charge pas de mesure d'audience GA4 ; aucun bandeau de consentement GA4 n'est affiché.
 
 ## Fichiers de contenu
 
@@ -137,6 +131,8 @@ Notes:
 - le traitement planifié échoue avec HTTP 503 dès qu'une demande est en échec définitif, même si l'email d'alerte ne peut pas partir ; surveiller les échecs de cette tâche. Les demandes en échec ne sont pas purgées automatiquement : les traiter puis les supprimer selon la politique de conservation des données
 - les anciennes données de `.contact-fallback` ne sont pas importées automatiquement : les traiter avant de retirer l'ancien stockage
 - chaque message porte une référence stable dans l'objet de l'email ; si le fournisseur accepte un envoi mais que son accusé de traitement est perdu, une reprise peut encore générer un doublon avec la même référence
+- les demandes d'initiation identiques sont limitées à un envoi pendant dix minutes, via la table `public_rate_limits` existante ; un échec d'envoi libère la tentative pour permettre de réessayer. Un fournisseur qui accepte l'email puis perd sa réponse peut encore entraîner un doublon lors d'une nouvelle tentative.
+- ce contrôle requiert la migration `20260925100000_contact_queue_and_rate_limit.sql` déjà utilisée par les formulaires publics. Pour revenir à l'ancien comportement, redéployer la version précédente du code ; conserver la table et ses données, également utilisées par les autres limitations de débit.
 
 ### Carte du jour du restaurant
 
@@ -147,7 +143,7 @@ Notes:
 
 Ordre de mise en production pour cette évolution : suspendre le traitement planifié de la file, attendre la fin des traitements en cours, appliquer les deux migrations SQL dans l'ordre, vérifier `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`, puis déployer le code et réactiver la tâche planifiée. Vérifier ensuite la vue interne de `/api/health` et déclencher manuellement la tâche GitHub Actions une fois. Si la première migration a déjà été appliquée, appliquer seulement la seconde. En cas de retour à une ancienne version du site, suspendre de nouveau la tâche planifiée, conserver la table et traiter les messages encore en attente avant de la retirer.
 
-Les mentions légales et la politique de confidentialité attendent encore les informations et la validation du propriétaire (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
+Les mentions légales indiquent Anthony Welh comme directeur de publication, conformément à la confirmation du propriétaire le 14 octobre 2026. L'identité de l'hébergeur effectif et la validation finale des deux pages restent attendues (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
 - `OPS_CRON_TOKEN` est reutilise pour les diagnostics internes et les operations cron
 
 ## Verification actuelle

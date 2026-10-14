@@ -17,7 +17,8 @@ export default async function MediaPage() {
     if (!actor) redirect("/admin/contenu/connexion");
     const grants = parseUserGrants(actor);
     if (!can(grants, actor.role, "view", "media")) notFound();
-    const media = db.prepare("SELECT id,filename,mime,size,created_at FROM media ORDER BY created_at DESC LIMIT 200").all() as MediaRow[];
+    const media = (db.prepare("SELECT id,filename,mime,size,created_at FROM media ORDER BY created_at DESC LIMIT 200").all() as MediaRow[])
+      .map(({ id, filename, mime, size, created_at }) => ({ id, filename, mime, size, created_at }));
     return <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6"><Link className="text-sm underline" href="/admin/contenu">← Back-office</Link><h1 className="mt-5 font-serif text-4xl">Médiathèque</h1><p className="mt-3 text-sm text-emerald-900/70">Images JPEG, PNG ou WebP, 5 Mo maximum. Une image de brouillon reste privée.</p><MediaManager initialMedia={media} mayCreate={can(grants, actor.role, "create", "media")} mayDelete={can(grants, actor.role, "delete", "media")} /></section>;
   } finally { db.close(); }
 }

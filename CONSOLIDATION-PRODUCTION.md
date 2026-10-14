@@ -15,12 +15,11 @@
 
 ## Informations légales — validation du propriétaire indispensable
 
-Le fichier `src/data/legal.ts` centralise les champs manquants et leurs TODO. Les valeurs vides ne sont pas rendues. Les coordonnées connues du golf restent accessibles ; aucun hébergeur, responsable de publication ou nom de société n'a été déduit des outils utilisés.
+Le fichier `src/data/legal.ts` centralise les champs encore à valider. Les valeurs vides ne sont pas rendues. Le propriétaire a confirmé Anthony Welh comme directeur de publication le 14 octobre 2026 ; l'hébergeur effectif reste inconnu.
 
 À fournir et faire valider :
 
 - identité juridique de l'éditeur et identifiants applicables ;
-- responsable de publication ;
 - nom, adresse et coordonnées de l'hébergeur effectif ;
 - responsable des traitements, finalités, bases légales, destinataires et éventuels transferts ;
 - durées de conservation pour chaque traitement, modalités des droits et recours ;

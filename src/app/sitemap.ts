@@ -4,14 +4,14 @@ import { posts } from "@/data/posts";
 import { getActiveSiteOffers } from "@/data/offers";
 import { legalContent } from "@/data/legal";
 import { siteConfig } from "@/data/site";
-import { listPages, openDb } from "@/lib/backoffice/db";
 
 export const revalidate = 60;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let managedPages: { slug: string; updated_at: string }[] = [];
-  if (process.env.NODE_ENV !== "production" || process.env.BACKOFFICE_DB_PATH) {
+  if (process.env.NODE_ENV === "development" || process.env.BACKOFFICE_DB_PATH) {
     try {
+      const { listPages, openDb } = await import("@/lib/backoffice/db");
       const db = openDb();
       try { managedPages = listPages(db).filter(page => Boolean(page.published_json)); }
       finally { db.close(); }
@@ -27,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/actualites",
     "/contact",
     "/association-sportive",
+    "/association-sportive/equipes",
     "/academie",
     "/partenaires",
     "/je-debute-le-golf",

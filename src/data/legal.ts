@@ -9,8 +9,9 @@ export const legalContent = {
   // Source : https://annuaire-entreprises.data.gouv.fr/entreprise/334925419
   // Consultée le 29 septembre 2026 ; à revalider lors de la publication.
   publisherIdentity: "GOLF DE MARCILLY - ORLEANS, société par actions simplifiée (SAS), SIREN 334 925 419, SIRET 334 925 419 00015, siège social : Domaine de la Plaine, 45240 Marcilly-en-Villette.",
-  // TODO : responsable de publication confirmé par le propriétaire.
-  publicationDirector: "",
+  siteCredit: "Conception et gestion du site : Anthony Welh.",
+  // Confirmation du propriétaire du site le 14 octobre 2026.
+  publicationDirector: "Anthony Welh",
   // TODO : raison sociale, adresse postale et numéro de téléphone de l'hébergeur de production.
   hostingDetails: "",
   dataController: "GOLF DE MARCILLY - ORLEANS, Domaine de la Plaine, 45240 Marcilly-en-Villette.",

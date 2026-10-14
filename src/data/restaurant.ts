@@ -37,6 +37,30 @@ export const restaurantGallery = [
     "description": "Le comptoir et les tables du restaurant."
   },
   {
+    "src": "/restaurant/gallery/buffet-cocktail.jpg",
+    "alt": "Plateaux de bouchées salées disposés sur une table de réception",
+    "title": "Un buffet à partager",
+    "description": "Des plateaux de bouchées salées préparés pour une réception."
+  },
+  {
+    "src": "/restaurant/gallery/bouchees-cocktail.jpg",
+    "alt": "Assortiment de bouchées salées présenté sur une ardoise",
+    "title": "Des bouchées pour se retrouver",
+    "description": "Un assortiment de pièces salées présenté sur ardoise."
+  },
+  {
+    "src": "/restaurant/gallery/gateau-fruits-rouges.jpg",
+    "alt": "Grand gâteau aux fruits rouges décoré de fraises, framboises et crème",
+    "title": "Un dessert à partager",
+    "description": "Un grand gâteau aux fruits rouges, photographié en cuisine."
+  },
+  {
+    "src": "/restaurant/gallery/dessert-brioche-glace.jpg",
+    "alt": "Brioche dorée avec glace, caramel et crème fouettée sur une ardoise",
+    "title": "Une touche gourmande",
+    "description": "Un dessert dressé sur ardoise avec glace et crème fouettée."
+  },
+  {
     "src": "/restaurant/gallery/salade.webp",
     "alt": "Salade avec crevettes, concombre, tomates et œufs",
     "title": "De la couleur dans l’assiette",

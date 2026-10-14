@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { INITIATION_PRICE_PER_PERSON_CENTS } from "./constants";
 
 export function parisDate(now = new Date()) {
@@ -40,4 +41,11 @@ export function buildInitiationRequestEmail(data: Extract<ReturnType<typeof pars
     replyToName: data.fullName,
     text: ["Nouvelle demande de réservation d’initiation", "", "À confirmer par votre équipe : aucune place n’est réservée automatiquement.", "Répondez à ce mail pour confirmer la disponibilité au visiteur.", "", `Date souhaitée : ${date}`, `Horaire souhaité : ${data.startTime}`, `Nom et prénom : ${data.fullName}`, `E-mail : ${data.email}`, `Téléphone : ${data.phone}`, `Participants : ${data.participantsCount}`, `Formule : ${data.mealOption === "WITH_MEAL" ? "Avec repas" : "Sans repas"}`, `Total estimé : ${total}`, "Règlement sur place, après confirmation de la réservation.", "", `Commentaire : ${data.note || "Aucun"}`].join("\n"),
   };
+}
+
+export function initiationRequestFingerprint(data: Extract<ReturnType<typeof parseInitiationRequest>, { ok: true }>["data"]): string {
+  return createHash("sha256").update(JSON.stringify([
+    data.date, data.startTime, data.fullName.toLowerCase(), data.email,
+    data.phone, data.participantsCount, data.mealOption,
+  ])).digest("hex");
 }

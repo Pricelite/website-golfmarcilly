@@ -3,7 +3,7 @@ import "server-only";
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import type { Grant, PageContent, Role } from "./model";
+import { grantCreatedPage, type Grant, type PageContent, type Role } from "./model";
 
 type Statement = { get(...params: unknown[]): unknown; all(...params: unknown[]): unknown[]; run(...params: unknown[]): { changes: number } };
 export type Db = { exec(sql: string): void; prepare(sql: string): Statement; close(): void };
@@ -44,6 +44,12 @@ export function createPage(db: Db, slug: string, content: PageContent, actor: st
   db.exec("BEGIN IMMEDIATE");
   try {
     db.prepare("INSERT INTO pages(id,slug,draft_json,created_at,updated_at) VALUES(?,?,?,?,?)").run(id, slug, JSON.stringify(content), now, now);
+    const creator = getUser(db, actor)!;
+    const previousGrants = parseUserGrants(creator);
+    const grants = grantCreatedPage(previousGrants, creator.role, id);
+    if (grants !== previousGrants) {
+      db.prepare("UPDATE users SET grants_json=?,updated_at=? WHERE id=?").run(JSON.stringify(grants), now, actor);
+    }
     db.prepare("INSERT INTO revisions(id,page_id,revision,content_json,action,actor_id,created_at) VALUES(?,?,?,?,?,?,?)").run(crypto.randomUUID(), id, 1, JSON.stringify(content), "create", actor, now);
     audit(db, actor, "page.create", id);
     db.exec("COMMIT");

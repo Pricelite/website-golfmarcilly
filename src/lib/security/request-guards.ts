@@ -127,3 +127,14 @@ export async function consumeRateLimit(options: RateLimitOptions): Promise<RateL
     return { allowed: false, retryAfterSeconds: 60, unavailable: true };
   }
 }
+
+/** Release a deduplication claim after its protected operation fails. */
+export async function releaseRateLimit(namespace: string, identifier: string): Promise<void> {
+  if (process.env.NODE_ENV !== "production") {
+    rateLimitStore.delete(`${namespace}:${identifier}`);
+    return;
+  }
+  const key = createHash("sha256").update(`${namespace}:${identifier}`).digest("hex");
+  const { error } = await createSupabaseAdminClient().from("public_rate_limits").delete().eq("key", key);
+  if (error) throw error;
+}

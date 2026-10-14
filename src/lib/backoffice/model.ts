@@ -23,6 +23,13 @@ export function can(grants: Grant[], role: Role, action: ContentAction, resource
     (grant.resource === "pages" && resource.startsWith("page:"))) && grant.actions.includes(action));
 }
 
+export function grantCreatedPage(grants: Grant[], role: Role, id: string): Grant[] {
+  if (role === "admin") return grants;
+  const resource = `page:${id}`;
+  const missing = (["view", "edit"] as const).filter(action => !can(grants, role, action, resource));
+  return missing.length ? [...grants, { resource, actions: missing }] : grants;
+}
+
 export function parseGrants(input: unknown): Grant[] | null {
   if (!Array.isArray(input) || input.length > 100) return null;
   const grants: Grant[] = [];

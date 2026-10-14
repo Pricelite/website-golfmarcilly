@@ -45,7 +45,7 @@ export default async function HomePage() {
     courses.find((course) => course.slug === "parcours-decouverte-9-trous"),
     courses.find((course) => course.slug === "pitch-putt-kaleka-18-trous"),
     courses.find((course) => course.slug === "parcours-competitions-18-trous"),
-  ].filter((course): course is (typeof courses)[number] => Boolean(course));
+  ].filter((course): course is NonNullable<typeof course> => Boolean(course));
 
   return (
     <>
@@ -88,7 +88,13 @@ export default async function HomePage() {
         />
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {orderedCourses.map((course) => (
-            <CourseCard key={course.slug} sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 768px) calc(100vw - 48px), (max-width: 1024px) calc((100vw - 72px) / 2), (max-width: 1280px) calc((100vw - 88px) / 2), 286px" {...course} />
+            <CourseCard
+              key={course.slug}
+              sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 768px) calc(100vw - 48px), (max-width: 1024px) calc((100vw - 72px) / 2), (max-width: 1280px) calc((100vw - 88px) / 2), 286px"
+              {...course}
+              title={course.slug === "pitch-putt-kaleka-18-trous" ? "Pitch & Putt / Kaleka" : course.title}
+              description={course.slug === "pitch-putt-kaleka-18-trous" ? "Deux façons de jouer et de travailler le petit jeu à Marcilly." : course.description}
+            />
           ))}
         </div>
         <div className="mt-6"><CTAButton href="/golf" variant="ghost">Explorer les parcours et leurs caractéristiques</CTAButton></div>

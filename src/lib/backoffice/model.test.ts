@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { can, parseGrants, parsePageContent } from "./model";
+import { can, grantCreatedPage, parseGrants, parsePageContent } from "./model";
 
 test("permissions deny by default and scope actions to assigned pages", () => {
   const pageId = "00000000-0000-0000-0000-000000000001";
@@ -12,6 +12,16 @@ test("permissions deny by default and scope actions to assigned pages", () => {
   assert.equal(can(grants, "contributor", "view", `page:${otherId}`), false);
   assert.equal(can([], "editor", "view", `page:${pageId}`), false);
   assert.equal(can([], "admin", "publish", `page:${otherId}`), true);
+});
+
+test("a contributor who creates a page can then view and edit that page only", () => {
+  const ownId = "00000000-0000-0000-0000-000000000003";
+  const otherId = "00000000-0000-0000-0000-000000000004";
+  const grants = grantCreatedPage([{ resource: "pages", actions: ["create"] }], "contributor", ownId);
+  assert.equal(can(grants, "contributor", "view", `page:${ownId}`), true);
+  assert.equal(can(grants, "contributor", "edit", `page:${ownId}`), true);
+  assert.equal(can(grants, "contributor", "view", `page:${otherId}`), false);
+  assert.equal(can(grants, "contributor", "publish", `page:${ownId}`), false);
 });
 
 test("page content accepts known blocks and rejects scriptable links", () => {

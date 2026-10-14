@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseInitiationRequest, buildInitiationRequestEmail } from "./initiation/request";
+import { parseInitiationRequest, buildInitiationRequestEmail, initiationRequestFingerprint } from "./initiation/request";
 
 const now = new Date("2026-09-21T10:00:00Z");
 const valid = { date: "2026-10-24", startTime: "15:00", firstName: "Jean", lastName: "Test", email: "jean@example.test", phone: "0600000000", participantsCount: 3, mealOption: "WITH_MEAL", note: "Débutants" };
@@ -16,6 +16,15 @@ test("initiation requests accept desired dates beyond seven days and calculate p
   assert.ok(mail.text.includes("15:00"));
   assert.ok(mail.text.includes("Participants : 3"));
   assert.ok(mail.text.includes("aucune place n’est réservée automatiquement"));
+});
+
+test("repeat initiation requests use the same deduplication key", () => {
+  const first = parseInitiationRequest(valid, now);
+  const repeated = parseInitiationRequest({ ...valid, note: "Autre précision" }, now);
+  const different = parseInitiationRequest({ ...valid, startTime: "16:00" }, now);
+  assert.ok(first.ok && repeated.ok && different.ok);
+  assert.equal(initiationRequestFingerprint(first.data), initiationRequestFingerprint(repeated.data));
+  assert.notEqual(initiationRequestFingerprint(first.data), initiationRequestFingerprint(different.data));
 });
 
 test("older initiation forms can still send a full name", () => {
