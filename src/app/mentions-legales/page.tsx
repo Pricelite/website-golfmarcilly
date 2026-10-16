@@ -32,6 +32,7 @@ export default function LegalPage() {
           {legalContent.publisherIdentity && (
             <section><h2>Éditeur</h2><p>{legalContent.publisherIdentity}</p></section>
           )}
+          <section><h2>Création et gestion du site</h2><p>{legalContent.siteCredit}</p></section>
           {legalContent.publicationDirector && (
             <section><h2>Direction de la publication</h2><p>{legalContent.publicationDirector}</p></section>
           )}

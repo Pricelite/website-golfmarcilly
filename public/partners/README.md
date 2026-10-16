@@ -13,6 +13,9 @@ du carrousel des sponsors publié sur le site du Golf de Marcilly.
 Les logos SAFTI, ACE TRANS, Menuiserie GODEL, WAGC, KIA, Crit et AVC Sécurité
 proviennent de leurs sites officiels ou de leurs supports professionnels.
 Le logo Maserati provient de Wikimedia Commons (version 2020).
+Le logo Audilab provient du site officiel d’Audilab.
+Le logo SwingFlow a été fourni par le propriétaire du Golf de Marcilly.
+Le logo Loir & Flip provient du site officiel de Loir & Flip.
 
 Les logos de RENOV’ CENTRE, TLM et La Bergerie restent à fournir : ils ne
 sont pas affichés dans le bandeau pour éviter d'utiliser une mauvaise identité.

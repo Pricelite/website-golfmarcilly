@@ -1,53 +1,11 @@
 import "server-only";
 
-export type InitiationPaymentEnv = {
-  sumupApiKey: string;
-  sumupMerchantCode: string;
-  appBaseUrl: string;
-  sumupApiBaseUrl: string;
-  sumupWebhookSecret?: string;
-};
-
 function getRequiredEnv(name: string): string {
   const value = process.env[name]?.trim();
   if (!value) {
     throw new Error(`Missing required env var: ${name}`);
   }
   return value;
-}
-
-function getOptionalEnv(name: string): string | undefined {
-  const value = process.env[name]?.trim();
-
-  if (!value) {
-    return undefined;
-  }
-
-  return value;
-}
-
-export function hasInitiationPaymentEnv(): boolean {
-  return Boolean(
-    getOptionalEnv("SUMUP_API_KEY") &&
-      getOptionalEnv("SUMUP_MERCHANT_CODE") &&
-      getOptionalEnv("APP_BASE_URL")
-  );
-}
-
-export function isOnSitePayment(): boolean {
-  return process.env.INITIATION_PAYMENT_MODE !== "online";
-}
-
-export function getInitiationPaymentEnv(): InitiationPaymentEnv {
-  return {
-    sumupApiKey: getRequiredEnv("SUMUP_API_KEY"),
-    sumupMerchantCode: getRequiredEnv("SUMUP_MERCHANT_CODE"),
-    appBaseUrl: getRequiredEnv("APP_BASE_URL").replace(/\/+$/, ""),
-    sumupApiBaseUrl:
-      process.env.SUMUP_API_BASE_URL?.trim().replace(/\/+$/, "") ||
-      "https://api.sumup.com",
-    sumupWebhookSecret: process.env.SUMUP_WEBHOOK_SECRET?.trim() || undefined,
-  };
 }
 
 export function getAdminPassword(): string {

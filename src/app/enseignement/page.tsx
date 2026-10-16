@@ -31,6 +31,7 @@ export default function TeachingPage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <CTAButton href="#ecole-de-golf">L’école de golf</CTAButton>
               <CTAButton href="#adultes" variant="secondary">Les cours adultes</CTAButton>
+              <CTAButton href="/initiation/reservation" variant="secondary">Réserver une initiation</CTAButton>
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]">

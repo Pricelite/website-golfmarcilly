@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { INITIATION_PRICE_PER_PERSON_CENTS } from "./constants";
 
 export function parisDate(now = new Date()) {
@@ -8,7 +9,7 @@ export function parseInitiationRequest(value: unknown, now = new Date()) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false as const, error: "Demande invalide." };
   const input = value as Record<string, unknown>;
   const str = (key: string) => typeof input[key] === "string" ? input[key].trim() : "";
-  const date = str("date"), startTime = str("startTime"), fullName = str("fullName");
+  const date = str("date"), startTime = str("startTime"), firstName = str("firstName"), lastName = str("lastName"), legacyFullName = str("fullName");
   const email = str("email").toLowerCase(), phone = str("phone"), note = str("note");
   const mealOption = str("mealOption");
   const participantsCount = input.participantsCount;
@@ -17,13 +18,18 @@ export function parseInitiationRequest(value: unknown, now = new Date()) {
   if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(startTime)) return { ok: false as const, error: "Indiquez l’horaire souhaité." };
   const parisTime = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hour12: false }).format(now);
   if (date === parisDate(now) && startTime <= parisTime) return { ok: false as const, error: "Choisissez un horaire à venir." };
-  if (!fullName || fullName.length > 120 || /[\r\n]/.test(fullName)) return { ok: false as const, error: "Indiquez votre nom et prénom." };
+  if (firstName || lastName || !legacyFullName) {
+    if (!lastName || lastName.length > 60 || /[\r\n]/.test(lastName)) return { ok: false as const, error: "Indiquez votre nom." };
+    if (!firstName || firstName.length > 60 || /[\r\n]/.test(firstName)) return { ok: false as const, error: "Indiquez votre prénom." };
+  } else if (legacyFullName.length > 120 || /[\r\n]/.test(legacyFullName)) {
+    return { ok: false as const, error: "Indiquez votre nom et prénom." };
+  }
   if (email.length > 160 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false as const, error: "Indiquez une adresse e-mail valide." };
   if (!/^[+()\d .-]{6,30}$/.test(phone)) return { ok: false as const, error: "Indiquez un numéro de téléphone valide." };
   if (typeof participantsCount !== "number" || !Number.isInteger(participantsCount) || participantsCount < 1 || participantsCount > 12) return { ok: false as const, error: "Choisissez entre 1 et 12 participants." };
   if (mealOption !== "WITH_MEAL" && mealOption !== "WITHOUT_MEAL") return { ok: false as const, error: "Choisissez une formule." };
   if (note.length > 2000) return { ok: false as const, error: "Votre commentaire est limité à 2 000 caractères." };
-  return { ok: true as const, data: { date, startTime, fullName, email, phone, participantsCount, mealOption, note, totalPriceCents: participantsCount * INITIATION_PRICE_PER_PERSON_CENTS[mealOption] } };
+  return { ok: true as const, data: { date, startTime, fullName: firstName && lastName ? `${firstName} ${lastName}` : legacyFullName, email, phone, participantsCount, mealOption, note, totalPriceCents: participantsCount * INITIATION_PRICE_PER_PERSON_CENTS[mealOption] } };
 }
 
 export function buildInitiationRequestEmail(data: Extract<ReturnType<typeof parseInitiationRequest>, { ok: true }>['data']) {
@@ -35,4 +41,11 @@ export function buildInitiationRequestEmail(data: Extract<ReturnType<typeof pars
     replyToName: data.fullName,
     text: ["Nouvelle demande de réservation d’initiation", "", "À confirmer par votre équipe : aucune place n’est réservée automatiquement.", "Répondez à ce mail pour confirmer la disponibilité au visiteur.", "", `Date souhaitée : ${date}`, `Horaire souhaité : ${data.startTime}`, `Nom et prénom : ${data.fullName}`, `E-mail : ${data.email}`, `Téléphone : ${data.phone}`, `Participants : ${data.participantsCount}`, `Formule : ${data.mealOption === "WITH_MEAL" ? "Avec repas" : "Sans repas"}`, `Total estimé : ${total}`, "Règlement sur place, après confirmation de la réservation.", "", `Commentaire : ${data.note || "Aucun"}`].join("\n"),
   };
+}
+
+export function initiationRequestFingerprint(data: Extract<ReturnType<typeof parseInitiationRequest>, { ok: true }>["data"]): string {
+  return createHash("sha256").update(JSON.stringify([
+    data.date, data.startTime, data.fullName.toLowerCase(), data.email,
+    data.phone, data.participantsCount, data.mealOption,
+  ])).digest("hex");
 }

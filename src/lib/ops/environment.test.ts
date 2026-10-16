@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { getEnvironmentOverview, getPublicEnvironmentStatus } from "./environment";
 
-test("email initiation requires the private feed, without legacy Google, SumUp or public Supabase keys", () => {
+test("email initiation requires the private feed and email provider", () => {
   const saved = { ...process.env };
   try {
     for (const key of Object.keys(process.env)) {
-      if (/^(GOOGLE_|SUMUP_|SMTP_|BREVO_|EMAIL_|NEXT_PUBLIC_|INITIATION_|SUPABASE_|ADMIN_|OPS_)/.test(key)) delete process.env[key];
+      if (/^(GOOGLE_|SMTP_|BREVO_|EMAIL_|NEXT_PUBLIC_|INITIATION_|SUPABASE_|ADMIN_|OPS_)/.test(key)) delete process.env[key];
     }
     Object.assign(process.env, {
       NEXT_PUBLIC_SITE_URL: "https://example.com", NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",

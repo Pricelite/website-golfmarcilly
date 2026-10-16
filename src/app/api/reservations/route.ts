@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { sendMail } from "@/lib/email/mailer";
 import { buildMailApiErrorResponse } from "@/lib/email/api-response";
-import { parseInitiationRequest, buildInitiationRequestEmail } from "@/lib/initiation/request";
-import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders } from "@/lib/security/request-guards";
+import { parseInitiationRequest, buildInitiationRequestEmail, initiationRequestFingerprint } from "@/lib/initiation/request";
+import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders, releaseRateLimit } from "@/lib/security/request-guards";
 import { getInitiationOptions } from "@/lib/initiation/calendar-options-server";
 import { readJsonBody } from "@/lib/api/request-body";
 
@@ -24,10 +24,19 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json({ ok: false, error: (error as Error).message }, { status: 503 });
   }
+  const fingerprint = initiationRequestFingerprint(parsed.data);
+  const claim = await consumeRateLimit({ namespace: "initiation-email-dedupe", identifier: fingerprint, limit: 1, windowMs: 600_000 });
+  if (!claim.allowed) {
+    return NextResponse.json({ ok: false, error: claim.unavailable
+      ? "Le service est momentanément indisponible. Réessayez plus tard."
+      : "Cette demande est déjà en cours ou vient d’être envoyée. Vérifiez votre messagerie avant de réessayer." },
+    { status: claim.unavailable ? 503 : 409, headers: { "Retry-After": String(claim.retryAfterSeconds) } });
+  }
   try {
     await sendMail({ to: process.env.EMAIL_TO?.trim() || "golf@marcilly.com", toName: process.env.EMAIL_TO_NAME?.trim(), ...buildInitiationRequestEmail(parsed.data) });
     return NextResponse.json({ ok: true, message: "Votre demande a été envoyée au golf. Votre réservation sera confirmée uniquement après réception d’un e-mail de notre équipe. Le règlement se fera sur place." });
   } catch (error) {
+    await releaseRateLimit("initiation-email-dedupe", fingerprint).catch(() => {});
     return NextResponse.json({ ok: false, ...buildMailApiErrorResponse(error) }, { status: 503 });
   }
 }

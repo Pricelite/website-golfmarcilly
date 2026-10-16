@@ -11,7 +11,7 @@ function validDate(value: string) {
 export function parseEventInput(value: unknown): { ok: true; event: EventInput } | { ok: false; error: string } {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false, error: "Compétition invalide." };
   const input = value as Record<string, unknown>;
-  for (const key of ["title", "start", "end", "time", "note", "status"]) {
+  for (const key of ["title", "start", "end", "time", "note", "internalNote", "status", "category", "zone"]) {
     if (input[key] !== undefined && typeof input[key] !== "string") return { ok: false, error: "Les champs doivent contenir du texte." };
   }
   const title = (input.title as string | undefined)?.trim() ?? "";
@@ -19,14 +19,21 @@ export function parseEventInput(value: unknown): { ok: true; event: EventInput }
   const end = (input.end as string | undefined) || undefined;
   const time = (input.time as string | undefined) || undefined;
   const note = (input.note as string | undefined)?.trim() || undefined;
+  const internalNote = (input.internalNote as string | undefined)?.trim() || undefined;
   const status = (input.status as string | undefined) || undefined;
+  const category = (input.category as string | undefined) || undefined;
+  const zone = (input.zone as string | undefined) || undefined;
   if (!title || title.length > 160) return { ok: false, error: "Indiquez un nom de 1 à 160 caractères." };
   if (!validDate(start) || (end && !validDate(end))) return { ok: false, error: "Indiquez des dates valides entre 1900 et 2199." };
+  if (start < "2027-01-01") return { ok: false, error: "Le calendrier des compétitions commence en 2027." };
   if (end && end < start) return { ok: false, error: "La date de fin doit être égale ou postérieure à la date de début." };
   if (time && !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return { ok: false, error: "Indiquez un horaire valide." };
   if (note && note.length > 2000) return { ok: false, error: "La description est limitée à 2 000 caractères." };
-  if (status !== undefined && status !== "private" && status !== "provisional") return { ok: false, error: "Choisissez un statut valide." };
-  return { ok: true, event: { title, start, end, time, note, status } };
+  if (internalNote && internalNote.length > 2000) return { ok: false, error: "La note interne est limitée à 2 000 caractères." };
+  if (status !== undefined && !["private", "provisional", "unconfirmed", "confirmed"].includes(status)) return { ok: false, error: "Choisissez un statut valide." };
+  if (category !== undefined && !["competition", "open_slot", "holiday", "vacation", "celebration"].includes(category)) return { ok: false, error: "Choisissez une catégorie valide." };
+  if (zone !== undefined && !["all", "A", "B", "C"].includes(zone)) return { ok: false, error: "Choisissez une zone valide." };
+  return { ok: true, event: { title, start, end, time, note, internalNote, status: status as EventInput["status"], category: category as EventInput["category"], zone: zone as EventInput["zone"] } };
 }
 
 export function validEventId(value: unknown): value is string {
