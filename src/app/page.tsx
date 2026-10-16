@@ -95,7 +95,7 @@ export default async function HomePage() {
               image={course.slug === "practice"
                 ? "/images/practice-golf.png"
                 : course.slug === "parcours-decouverte-9-trous"
-                  ? "/images/parcours-decouverte-9-trous.png"
+                  ? "/images/decouverte-photo.png"
                 : course.slug === "parcours-competitions-18-trous"
                   ? "/images/parcours-18t-competition.jpg"
                   : course.image}

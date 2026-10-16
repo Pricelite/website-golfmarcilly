@@ -19,6 +19,7 @@ type CourseCardProps = {
   pricing?: PricingSection;
   action?: ReactNode;
   switcher?: ReactNode;
+  headingLevel?: "h2" | "h3";
 };
 
 export function CourseCard({
@@ -35,8 +36,11 @@ export function CourseCard({
   pricing,
   action,
   switcher,
+  headingLevel = "h3",
   sizes = "(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 88px) / 2), 596px",
 }: CourseCardProps) {
+  const Heading = headingLevel;
+
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-[32px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
       <div className="relative aspect-[4/3] bg-[#f7f4e9]">
@@ -57,7 +61,7 @@ export function CourseCard({
             <span>{distance}</span>
           </div>
         ) : null}
-        <h3 className="font-serif text-2xl text-emerald-950">{title}</h3>
+        <Heading className="font-serif text-2xl text-emerald-950">{title}</Heading>
         <p className="flex-1 text-sm leading-7 text-emerald-950/76">
           {description}
         </p>

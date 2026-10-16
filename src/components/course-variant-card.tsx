@@ -7,19 +7,21 @@ import { courses } from "@/data/courses";
 
 type Course = (typeof courses)[number];
 
-export function CourseVariantCard({ first, second, firstLabel, secondLabel, firstPricing, secondPricing }: {
+export function CourseVariantCard({ first, second, firstLabel, secondLabel, firstPricing, secondPricing, headingLevel = "h3" }: {
   first: Course;
   second: Course;
   firstLabel: string;
   secondLabel: string;
   firstPricing?: PricingSection;
   secondPricing?: PricingSection;
+  headingLevel?: "h2" | "h3";
 }) {
   const [selected, setSelected] = useState<"first" | "second">("first");
   const course = selected === "first" ? first : second;
 
   return <CourseCard
     {...course}
+    headingLevel={headingLevel}
     pricing={selected === "first" ? firstPricing : secondPricing}
     switcher={<div role="group" aria-label="Choisir un parcours" className="flex flex-wrap gap-2">
       {(["first", "second"] as const).map(value => <button

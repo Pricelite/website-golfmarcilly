@@ -67,6 +67,7 @@ export default function GolfPage() {
                 secondLabel="Footgolf"
                 firstPricing={pricingByCourse[course.slug]}
                 secondPricing={pricingByCourse.footgolf}
+                headingLevel="h2"
               />
             : course.slug === "pitch-putt-kaleka-18-trous" && kaleka
             ? <CourseVariantCard
@@ -77,10 +78,12 @@ export default function GolfPage() {
                 secondLabel="Kaleka course"
                 firstPricing={pricingByCourse[course.slug]}
                 secondPricing={pricingByCourse["kaleka-course"]}
+                headingLevel="h2"
               />
             : <CourseCard
                 key={course.slug}
                 {...course}
+                headingLevel="h2"
                 pricing={pricingByCourse[course.slug]}
                 action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}
               />)}

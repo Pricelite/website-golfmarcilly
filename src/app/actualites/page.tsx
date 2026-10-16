@@ -30,7 +30,7 @@ export default function NewsPage() {
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {posts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
+            <BlogCard key={post.slug} post={post} headingLevel="h2" />
           ))}
         </div>
       </section>
