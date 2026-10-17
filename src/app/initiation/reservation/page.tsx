@@ -3,6 +3,7 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
+import { initiationExperience } from "@/data/initiation-experience";
 
 export const metadata = buildMetadata({
   title: "Réserver une initiation",
@@ -50,6 +51,16 @@ export default function InitiationReservationPage() {
         <div className="mt-10">
           <InitiationReservationForm />
         </div>
+        <aside aria-labelledby="first-visit-title" className="mt-8 rounded-3xl border border-emerald-950/15 bg-emerald-50/60 p-6">
+          <h2 id="first-visit-title" className="font-serif text-2xl">Préparer votre première visite</h2>
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/85">
+            <li>Prévoyez une tenue confortable et des chaussures plates et stables, adaptées à la météo.</li>
+            <li>{initiationExperience.lesson}, puis {initiationExperience.course}.</li>
+            <li>{initiationExperience.equipment}. Avec la formule repas, prévoyez aussi 1 h à La Bergerie.</li>
+            <li>L’équipe vous précisera le point de rendez-vous et les modalités en cas de mauvais temps lors de la confirmation.</li>
+          </ul>
+          <p className="mt-4 text-sm leading-7">La demande ne vaut pas réservation. L’équipe confirme la disponibilité par e-mail ; le paiement s’effectue sur place.</p>
+        </aside>
       </section>
 
     </>

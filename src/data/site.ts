@@ -1,9 +1,12 @@
+const golfOpeningHours = "Du lundi au dimanche, de 8 h 30 à 19 h";
+
 export const siteConfig = {
+  golfOpeningHours,
   name: "Golf de Marcilly",
   legalName: "Golf de Marcilly-Orléans",
   url: "https://www.marcilly.com",
   description:
-    "Golf de Marcilly : 45 trous d'exception, restaurant La Bergerie, enseignement et événements premium aux portes d'Orléans.",
+    "Golf de Marcilly près d’Orléans : 45 trous, practice, initiations, cours, restaurant La Bergerie et événements à Marcilly-en-Villette.",
   phoneDisplay: "02 38 76 11 73",
   phoneHref: "+33238761173",
   email: "golf@marcilly.com",
@@ -25,7 +28,7 @@ export const siteConfig = {
     { label: "LinkedIn", href: "https://fr.linkedin.com/company/golf-de-marcilly" },
   ],
   hours: [
-    { label: "Accueil", value: "Tous les jours, 8h00 - 19h00" },
+    { label: "Accueil", value: golfOpeningHours },
     { label: "Restaurant", value: "Lundi et mercredi à vendredi : 12 h – 14 h. Samedi et dimanche : 12 h – 15 h. Fermé le mardi." },
     { label: "Practice", value: "Tous les jours, 7h30 - 20h00" },
   ],

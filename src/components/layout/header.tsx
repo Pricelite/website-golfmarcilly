@@ -8,6 +8,8 @@ import { HeaderMarcillyClock } from "@/components/layout/header-marcilly-clock";
 import { navigationItems, siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
 
+const headerNavigation = navigationItems.filter(item => item.href !== "/contact" && item.href !== "/je-debute-le-golf");
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -34,8 +36,8 @@ export function Header() {
           aria-label="Navigation principale"
           className="hidden min-w-0 flex-1 xl:block"
         >
-          <ul className="grid grid-cols-5 items-center gap-x-3 gap-y-1 text-center text-sm text-emerald-950">
-            {navigationItems.map((item) => (
+          <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-emerald-950">
+            {headerNavigation.map((item) => (
               <li key={item.href}>
                 <Link
                   className="block whitespace-nowrap rounded-lg py-2 transition hover:text-emerald-700"
@@ -92,7 +94,7 @@ export function Header() {
       >
         <nav aria-label="Navigation mobile" className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <ul className="space-y-3">
-            {navigationItems.map((item) => (
+            {headerNavigation.map((item) => (
               <li key={item.href}>
                 <Link
                   className="site-button block rounded-2xl px-4 py-3 text-sm font-medium"

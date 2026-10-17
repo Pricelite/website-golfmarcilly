@@ -88,6 +88,11 @@ export default function GolfPage() {
                 action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}
               />)}
         </div>
+        <aside className="mt-8 rounded-3xl border border-emerald-950/15 bg-emerald-50/60 p-6">
+          <h2 className="font-serif text-2xl">Avant de choisir votre départ</h2>
+          <p className="mt-3 text-sm leading-7 text-emerald-950/85">Vous venez pour la première fois ? Contactez l’accueil pour vérifier les conditions d’accès au parcours choisi, le niveau requis et les possibilités de location de matériel.</p>
+          <div className="mt-4"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton></div>
+        </aside>
         <div className="mt-8 flex flex-wrap gap-3">
           <CTAButton href="/tarifs">Consulter les tarifs</CTAButton>
           <CTAButton href={siteConfig.reservationUrl} variant="secondary">Réserver un départ</CTAButton>

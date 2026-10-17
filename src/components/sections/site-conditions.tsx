@@ -37,21 +37,26 @@ export function SiteConditions({ conditions, editable, unavailable = false }: { 
   return <section aria-labelledby="conditions-title" className="border-y border-emerald-950/10 bg-[#efeadd]/50 py-8 sm:py-10">
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="rounded-[28px] border border-emerald-950/10 bg-white p-5 shadow-sm shadow-emerald-950/5 sm:p-7">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-emerald-950/10 pb-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Préparer votre venue</p>
             <h2 id="conditions-title" className="mt-2 font-serif text-3xl text-emerald-950">Conditions du jour</h2>
             <time dateTime={today} className="mt-2 block text-sm capitalize text-emerald-950/75">{dateLabel}</time>
+            <p className="mt-3 text-sm leading-6 text-emerald-950"><span className="font-semibold">Ouverture du golf :</span> {siteConfig.golfOpeningHours}.</p>
           </div>
           <p className={`rounded-2xl border px-4 py-3 text-sm font-semibold ${closedCount || unknownCount ? "border-stone-200 bg-stone-50 text-emerald-950" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}>
             {openCount === displayed.length ? "✓ Tous les espaces sont ouverts" : `${openCount} ouverts${closedCount ? ` · ${closedCount} fermé${closedCount > 1 ? "s" : ""}` : ""}${unknownCount ? ` · ${unknownCount} à confirmer` : ""}`}
           </p>
         </div>
         {unavailable ? <p role="status" className="mt-4 text-sm text-stone-700">Informations momentanément indisponibles. Contactez l’accueil pour vérifier les conditions.</p> : null}
-        <div className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
+        <details open={editable || closedCount > 0 || unknownCount > 0} className="mt-4 border-t border-emerald-950/10 pt-2">
+          <summary className="cursor-pointer rounded-lg py-3 text-sm font-semibold text-emerald-800">Détail des parcours et services</summary>
+        <div className="mt-4 grid gap-6 lg:grid-cols-[2fr_1fr]">
           <div><h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Parcours et practice</h3><ul className="grid gap-3 sm:grid-cols-2">{conditionItems.filter(item => item.group === "courses").map(row)}</ul></div>
           <div><h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Services sur place</h3><ul className="grid gap-3">{conditionItems.filter(item => item.group === "services").map(row)}</ul></div>
         </div>
+        <p className="mt-4 text-xs leading-6 text-emerald-950/75">Les états indiquent les conditions d’accès. Pour le restaurant, consultez également les <Link href="/restaurant#horaires-restaurant" className="underline underline-offset-4">horaires de service</Link>.</p>
+        </details>
         {unknownCount ? <p className="mt-5 text-sm leading-6 text-emerald-950/80">Un renseignement ? Appelez le <a className="font-semibold underline underline-offset-2" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p> : null}
       </div>
     </div>

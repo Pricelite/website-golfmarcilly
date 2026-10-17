@@ -7,13 +7,15 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { pricingSections } from "@/data/pricing";
 import { siteConfig } from "@/data/site";
+import { initiationExperience } from "@/data/initiation-experience";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/schema";
 
 const beginnerFaqs = [
   { question: "Je n’ai jamais tenu un club : je peux venir ?", answer: "Oui ! L’initiation est faite pour découvrir les premiers gestes avec un enseignant. Vous commencez par les bases, sans avoir besoin de savoir jouer." },
   { question: "Practice ou initiation : quelle différence ?", answer: "Au practice, vous frappez des balles depuis un poste d’entraînement. L’achat de seaux ne comprend pas un cours. L’initiation comprend un encadrement et un parcours découverte de 9 trous, avec ou sans repas selon la formule." },
-  { question: "Faut-il acheter du matériel ?", answer: "Pour le practice, le tarif prévoit le prêt d’un club par seau et par personne. Pour une initiation, renseignez-vous auprès de l’accueil sur le matériel mis à disposition avant votre venue." },
+  { question: "Faut-il acheter du matériel ?", answer: "Non : le matériel est fourni pour l’initiation. Pour une séance au practice sans cours, le tarif prévoit le prêt d’un club par seau et par personne." },
+  { question: "Combien de temps dure une initiation ?", answer: `Prévoyez ${initiationExperience.withoutMealDuration} sans repas : ${initiationExperience.lesson}, puis ${initiationExperience.course}. La formule avec repas dure ${initiationExperience.withMealDuration}, dont 1 h à La Bergerie. Le matériel est fourni dans les deux formules.` },
   { question: "Quelle tenue prévoir ?", answer: "Choisissez une tenue confortable qui vous laisse bouger, des chaussures plates et stables, et adaptez-vous à la météo. Pensez à prendre de l’eau et une casquette lorsqu’il fait soleil." },
   { question: "Comment réserver une initiation ?", answer: "Consultez les créneaux proposés dans l’agenda du golf sur la page de réservation. Si aucun créneau ne s’affiche ou si vous avez une question, appelez l’accueil pour organiser votre venue." },
   { question: "Et pour les enfants ?", answer: "L’école de golf accueille les jeunes de 4 à 18 ans. Retrouvez les groupes, horaires et formules sur la page Enseignement, puis contactez l’accueil pour l’inscription." },
@@ -108,11 +110,12 @@ export default function BeginnerGolfPage() {
         </div>
       </section>
       <section id="initiations" className={sectionClass}>
-        <SectionTitle eyebrow="Un enseignant pour vous guider" title="Votre première vraie découverte du golf" description="Apprenez les premiers gestes, puis découvrez le jeu sur un parcours de 9 trous. Deux formules pour choisir le moment qui vous ressemble." />
+        <SectionTitle eyebrow="Matériel fourni" title="Un premier swing, puis à vous de jouer" description="Une heure avec un pro pour apprendre les premiers gestes, puis 1 h 30 sur le parcours 9 trous en autonomie. Avec la formule repas, ajoutez 1 h à La Bergerie." />
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           {discovery.rows.map((formula, index) => <article key={formula.label} className="flex flex-col rounded-[28px] border border-emerald-950/15 bg-white p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">{index === 0 ? "Les premiers swings" : "Le plaisir se prolonge à table"}</p>
             <h3 className="mt-3 font-serif text-3xl text-emerald-950">{formula.label}</h3>
+            <p className="mt-2 text-sm font-semibold text-emerald-800">{formula.note}</p>
             <p className="mt-5 text-emerald-950"><span className="font-serif text-6xl">{formula.values[1]}</span><span className="ml-2 text-sm">/ personne</span></p>
             <ul className="my-7 flex-1 space-y-3 text-sm leading-7 text-emerald-950/80">{formula.values[0].split(" + ").map(item => <li key={item} className="flex gap-3"><span aria-hidden="true" className="text-emerald-700">✓</span>{item}</li>)}</ul>
             <CTAButton href="/initiation/reservation" className="self-start">{index === 0 ? "Réserver ma découverte" : "Réserver ma journée"}</CTAButton>

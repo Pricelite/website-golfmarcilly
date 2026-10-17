@@ -3,12 +3,12 @@ import { CTAButton } from "@/components/ui/cta-button";
 
 export function PricingTable({ section, id }: { section: PricingSection; id?: string }) {
   return (
-    <section id={id} className="scroll-mt-28 overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
+    <section id={id ?? section.id} className="scroll-mt-28 overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
       <div className="border-b border-emerald-950/8 bg-stone-50/80 px-6 py-5">
         <h2 className="font-serif text-2xl text-emerald-950">{section.title}</h2>
         <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p>
       </div>
-      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{row.values[1]} <span className="text-sm font-normal">/ personne</span></p><p className="my-3 text-sm leading-6">{row.values[0]}</p><CTAButton href="/initiation/reservation">Choisir une initiation</CTAButton></article>)}</div> : null}
+      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{row.values[1]} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{row.note}</p> : null}<p className="my-3 text-sm leading-6">{row.values[0]}</p><CTAButton href="/initiation/reservation">Choisir une initiation</CTAButton></article>)}</div> : null}
       <div className={section.title === "Découverte" ? "hidden overflow-x-auto sm:block" : "overflow-x-auto"}>
         <table className="min-w-full text-left text-sm">
           <caption className="sr-only">{section.title} — tarifs 2026</caption>
@@ -40,6 +40,7 @@ export function PricingTable({ section, id }: { section: PricingSection; id?: st
           </tbody>
         </table>
       </div>
+      {section.cta ? <div className="border-t border-emerald-950/10 px-5 py-5"><CTAButton href={section.cta.href}>{section.cta.label}</CTAButton></div> : null}
       {section.footnotes?.length ? (
         <div className="border-t border-emerald-950/8 bg-stone-50/70 px-6 py-4">
           <ul className="space-y-1 text-xs text-emerald-950/68">

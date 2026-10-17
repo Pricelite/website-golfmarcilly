@@ -16,7 +16,7 @@ export const courses = [
     distance: "1 278 m",
     description:
       "Une boucle de 9 trous pour découvrir le golf et progresser à son rythme.",
-    image: "/images/decouverte-photo.png",
+    image: "/images/decouverte-photo.webp",
     imageAlt: "Green du parcours découverte du Golf de Marcilly entre deux arbres",
   },
   {

@@ -5,6 +5,7 @@ import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { INITIATION_PRICE_PER_PERSON_CENTS } from "@/lib/initiation/constants";
 import type { InitiationOption } from "@/lib/initiation/calendar-options";
 import { InitiationDatePicker } from "@/components/initiation-date-picker";
+import { InitiationProgram } from "@/components/initiation-program";
 import { siteConfig } from "@/data/site";
 
 const field = "mt-2 w-full min-w-0 rounded-2xl border border-emerald-900/15 bg-white px-4 py-3 text-emerald-950 outline-none focus-visible:ring-2 focus-visible:ring-emerald-300";
@@ -92,6 +93,7 @@ export default function InitiationReservationForm() {
           </fieldset>
           <label className="block">Participants<select value={participants} onChange={e => setParticipants(Number(e.target.value))} className={field}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}</select></label>
           <label className="block">Formule<select value={meal} onChange={e => setMeal(e.target.value as typeof meal)} className={field}><option value="WITHOUT_MEAL">Sans repas — 25 € / personne</option><option value="WITH_MEAL">Avec repas — 48 € / personne</option></select></label>
+          <InitiationProgram withMeal={meal === "WITH_MEAL"} />
           <p className="rounded-2xl bg-emerald-50 p-4">Total estimé : <strong>{participants * INITIATION_PRICE_PER_PERSON_CENTS[meal] / 100} €</strong><br />Paiement sur place, après confirmation par notre équipe.</p>
         </div>
       </fieldset>
@@ -108,7 +110,7 @@ export default function InitiationReservationForm() {
           <p className="leading-6 sm:col-span-2">Cette demande ne vaut pas réservation. Nous vous répondrons par e-mail pour confirmer la date et l’horaire.</p>
           <div className="sm:col-span-2"><FormPrivacyNotice purpose="traiter votre demande d’initiation et vous répondre" /></div>
           {!loading && !calendarError && (!selectedDate || !selectedTime) ? <p id="initiation-submit-hint" className="text-sm text-emerald-900/70 sm:col-span-2">Choisissez une date et un horaire à l’étape 1 pour activer l’envoi.</p> : null}
-          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} aria-describedby={!loading && !calendarError && (!selectedDate || !selectedTime) ? "initiation-submit-hint" : undefined} className="site-button w-full rounded-full px-5 py-3 font-semibold disabled:opacity-60 sm:col-span-2">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
+          <button type="submit" disabled={loading || !selectedDate || !selectedTime || Boolean(calendarError)} aria-describedby={!loading && !calendarError && (!selectedDate || !selectedTime) ? "initiation-submit-hint" : undefined} className="site-button site-button-primary w-full rounded-full px-5 py-3 font-semibold disabled:opacity-60 sm:col-span-2">{sending ? "Envoi en cours…" : success ? "Demande envoyée" : "Envoyer ma demande de réservation"}</button>
         </fieldset>
         {error ? <p role="alert" className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
         {success ? <p role="status" className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-900">{success}</p> : null}

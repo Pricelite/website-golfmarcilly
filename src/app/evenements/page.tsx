@@ -11,7 +11,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
-  title: "Événements & séminaires d’entreprise",
+  title: "Séminaires et événements près d’Orléans",
   description:
     "Organisez un séminaire, un team building ou une réception au Golf de Marcilly, près d’Orléans. Découvrez les espaces, les activités et demandez un devis.",
   path: "/evenements",

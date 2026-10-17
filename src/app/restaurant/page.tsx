@@ -15,7 +15,7 @@ import { restaurantData } from "@/lib/restaurant-data";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
-  title: "Restaurant La Bergerie",
+  title: "La Bergerie, restaurant à Marcilly-en-Villette",
   description: "Restaurant golf de Marcilly-Orléans : carte du jour, menus, groupes, séminaires, privatisation et réservation pour La Bergerie au Golf de Marcilly.",
   path: "/restaurant",
   image: "/restaurant/hero.jpg",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { parisDateKey } from "@/lib/site-conditions";
 
@@ -12,9 +12,14 @@ type ApiErrorPayload = {
 export function QuoteForm() {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const submitting = useRef(false);
 
-  async function handleSubmit(formData: FormData) {
-    if (state === "loading" || state === "success") return;
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submitting.current || state === "success") return;
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    submitting.current = true;
     setState("loading");
     setErrorMessage("");
 
@@ -36,16 +41,19 @@ export function QuoteForm() {
         return;
       }
 
+      form.reset();
       setState("success");
     } catch {
       setErrorMessage("Une erreur est survenue. Merci de réessayer.");
       setState("error");
+    } finally {
+      submitting.current = false;
     }
   }
 
   return (
     <form
-      action={handleSubmit}
+      onSubmit={handleSubmit}
       className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
     >
       <div className="rounded-[24px] border border-emerald-950/8 bg-stone-50 px-4 py-4 text-sm leading-7 text-emerald-950/72">
@@ -136,7 +144,7 @@ export function QuoteForm() {
         </p>
         <button
           disabled={state === "loading" || state === "success"}
-          className="site-button rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-950/15"
+          className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm"
           type="submit"
         >
           {state === "loading" ? "Envoi..." : "Demander mon devis"}

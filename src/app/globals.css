@@ -49,8 +49,26 @@ img {
   background: #fff;
   color: #064e3b;
   text-decoration: none;
-  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, translate 180ms ease;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
 }
+
+.site-button-primary {
+  border-color: #064e3b;
+  background: #064e3b;
+  color: #fff;
+}
+
+.site-button-secondary { box-shadow: none; }
+
+.site-button-ghost {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.site-button:disabled { cursor: not-allowed; opacity: 0.6; }
 
 .site-button:focus-visible {
   outline: 2px solid #047857;
@@ -62,18 +80,11 @@ img {
     border-color: #065f46;
     background: #065f46;
     color: #fff;
-    translate: 0 -2px;
-    animation: site-button-wiggle 220ms ease-in-out 1;
   }
-
-  .promo-gold-button:hover {
-    animation: site-button-wiggle 220ms ease-in-out 1;
+  .site-button-primary:not(:disabled):hover {
+    background: #043d2f;
+    border-color: #043d2f;
   }
-}
-
-@keyframes site-button-wiggle {
-  25% { translate: -1px -2px; }
-  75% { translate: 1px -2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
