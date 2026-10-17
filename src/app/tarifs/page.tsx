@@ -7,7 +7,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
-  title: "Tarifs",
+  title: "Tarifs golf près d’Orléans : green fees et initiations",
   description:
     "Tarifs 2026 du Golf de Marcilly : découverte, practice, green fees, location et abonnements.",
   path: "/tarifs",
@@ -29,11 +29,14 @@ export default function PricingPage() {
             eyebrow="Tarifs 2026"
             title="Des tarifs lisibles pour jouer, apprendre et recevoir"
           />
-          <CTAButton href="/contact#reservation">Demander une offre</CTAButton>
+          <CTAButton href="/contact#reservation" variant="secondary">Besoin d’un conseil ?</CTAButton>
         </div>
+        <nav aria-label="Catégories de tarifs" className="mt-8 flex flex-wrap gap-2">
+          {[["decouverte", "Découverte"], ["practice", "Practice"], ["green-fees", "Green fees"], ["abonnements", "Abonnements"], ["location", "Location"]].map(([id, label]) => <a key={id} href={`#${id}`} className="site-button rounded-full px-4 py-3 text-sm font-semibold">{label}</a>)}
+        </nav>
         <div className="mt-10 grid gap-6 xl:grid-cols-2">
           {pricingSections.map((section) => (
-            <PricingTable key={section.title} section={section} />
+            <PricingTable key={section.id} section={section} />
           ))}
         </div>
       </section>

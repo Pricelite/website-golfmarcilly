@@ -29,7 +29,7 @@ type DayOption = {
 };
 
 const DEFAULT_TRIGGER_CLASS_NAME =
-  "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-900/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
+  "site-button-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
 
 const SUCCESS_MESSAGE =
   "Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre réservation.";

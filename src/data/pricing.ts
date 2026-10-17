@@ -1,3 +1,7 @@
+import { INITIATION_PRICE_PER_PERSON_CENTS } from "@/lib/initiation/constants";
+import { siteConfig } from "./site";
+import { initiationExperience, initiationInclusions } from "./initiation-experience";
+
 export type PricingRow = {
   label: string;
   values: [string, string];
@@ -5,6 +9,8 @@ export type PricingRow = {
 };
 
 export type PricingSection = {
+  id?: string;
+  cta?: { href: string; label: string };
   title: string;
   description: string;
   columns: [string, string];
@@ -15,21 +21,27 @@ export type PricingSection = {
 export const pricingSections: PricingSection[] = [
   {
     title: "Découverte",
+    id: "decouverte",
+    cta: { href: "/initiation/reservation", label: "Voir les dates d’initiation" },
     description: "Tarifs 2026 officiels pour découvrir le golf à Marcilly.",
     columns: ["Formule", "Tarif"],
     rows: [
       {
         label: "Demi-journée découverte",
-        values: ["Initiation encadrée + parcours 9 trous", "25 €"],
+        values: [initiationInclusions(false).join(" + "), `${INITIATION_PRICE_PER_PERSON_CENTS.WITHOUT_MEAL / 100} €`],
+        note: `Durée totale : ${initiationExperience.withoutMealDuration}`,
       },
       {
         label: "Journée découverte",
-        values: ["Initiation encadrée + repas + parcours 9 trous", "48 €"],
+        values: [initiationInclusions(true).join(" + "), `${INITIATION_PRICE_PER_PERSON_CENTS.WITH_MEAL / 100} €`],
+        note: `Durée totale : ${initiationExperience.withMealDuration}`,
       },
     ],
   },
   {
     title: "Practice",
+    id: "practice",
+    cta: { href: "/golf", label: "Découvrir le practice" },
     description: "Accès practice et cartes de seaux.",
     columns: ["Extérieurs", "Abonnés"],
     rows: [
@@ -46,6 +58,8 @@ export const pricingSections: PricingSection[] = [
   },
   {
     title: "Green fees",
+    id: "green-fees",
+    cta: { href: siteConfig.reservationUrl, label: "Réserver un départ" },
     description: "Tarifs 2026 officiels pour les parcours.",
     columns: ["Non licencié", "Licencié"],
     rows: [
@@ -73,6 +87,8 @@ export const pricingSections: PricingSection[] = [
   },
   {
     title: "Location",
+    id: "location",
+    cta: { href: "/contact#reservation", label: "Se renseigner sur le matériel" },
     description: "Matériel et équipements sur place.",
     columns: ["Extérieurs", "Abonnés"],
     rows: [
@@ -92,6 +108,8 @@ export const pricingSections: PricingSection[] = [
   },
   {
     title: "27 trous temps plein 7j/7",
+    id: "abonnements",
+    cta: { href: "/contact#reservation", label: "Se renseigner sur cet abonnement" },
     description: "Abonnements 2026 officiels.",
     columns: ["Profil", "Tarif"],
     rows: [
@@ -103,6 +121,8 @@ export const pricingSections: PricingSection[] = [
   },
   {
     title: "45 trous semainier 5j/7",
+    id: "abonnements-semaine",
+    cta: { href: "/contact#reservation", label: "Se renseigner sur cet abonnement" },
     description: "Abonnements semaine.",
     columns: ["Profil", "Tarif"],
     rows: [
@@ -115,6 +135,8 @@ export const pricingSections: PricingSection[] = [
   },
   {
     title: "45 trous temps plein 7j/7",
+    id: "abonnements-temps-plein",
+    cta: { href: "/contact#reservation", label: "Choisir un abonnement" },
     description: "Abonnements temps plein et offres entreprise.",
     columns: ["Profil", "Tarif"],
     rows: [

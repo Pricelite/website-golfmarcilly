@@ -6,13 +6,14 @@ import { readJsonBody } from "@/lib/api/request-body";
 import {
   isNonEmptyWithinLength,
   isValidEmail,
-  isWithinLength,
   parseTrimmedString,
 } from "@/lib/api/public-form-validation";
 import { methodNotAllowed } from "@/lib/api/responses";
 import { buildMailApiErrorResponse } from "@/lib/email/api-response";
 import { sendMail } from "@/lib/email/mailer";
 import { buildQuoteEmail } from "@/lib/form-emails";
+import { parseQuoteDate } from "@/lib/api/quote-date";
+import { isValidQuoteParticipants } from "@/lib/api/quote-participants";
 import {
   consumeRateLimit,
   hasTrustedOrigin,
@@ -24,7 +25,6 @@ const QUOTE_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const MAX_COMPANY_LENGTH = 160;
 const MAX_EMAIL_LENGTH = 160;
 const MAX_EVENT_TYPE_LENGTH = 120;
-const MAX_PARTICIPANTS_LENGTH = 40;
 const MAX_DETAILS_LENGTH = 4000;
 
 function buildMethodNotAllowed() {
@@ -58,7 +58,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: bodyResult.tooLarge ? "Demande trop volumineuse." : getFormErrorMessage(400) }, { status });
   }
 
+  const desiredDate = parseQuoteDate(bodyResult.data.desiredDate);
+  if (!desiredDate.ok) return NextResponse.json({ error: "Indiquez une date souhaitée valide, aujourd’hui ou à venir." }, { status: 400 });
   const payload = {
+    desiredDate: desiredDate.date,
     company: parseTrimmedString(bodyResult.data.company),
     email: parseTrimmedString(bodyResult.data.email).toLowerCase(),
     eventType: parseTrimmedString(bodyResult.data.eventType),
@@ -72,7 +75,7 @@ export async function POST(request: Request) {
     !isValidEmail(payload.email) ||
     !isNonEmptyWithinLength(payload.eventType, MAX_EVENT_TYPE_LENGTH) ||
     !isNonEmptyWithinLength(payload.details, MAX_DETAILS_LENGTH) ||
-    !isWithinLength(payload.participants, MAX_PARTICIPANTS_LENGTH)
+    !isValidQuoteParticipants(payload.participants)
   ) {
     return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
   }

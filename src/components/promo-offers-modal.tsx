@@ -259,13 +259,13 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
       <button
         aria-haspopup="dialog"
         aria-expanded={isMounted}
-        className="promo-gold-button relative inline-flex min-h-12 min-w-0 w-full max-w-40 self-center justify-self-center items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-50/70 bg-[linear-gradient(135deg,rgba(255,251,232,0.98),rgba(246,221,142,0.97)_52%,rgba(216,168,66,0.98))] px-2 py-2 text-left text-emerald-950 shadow-lg shadow-emerald-950/15 ring-1 ring-white/35 transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100 focus-visible:ring-offset-emerald-950"
+        className="relative inline-flex min-h-11 min-w-0 max-w-44 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
         onClick={openModal}
         ref={triggerRef}
         type="button"
       >
         <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.28)_38%,transparent_62%)] opacity-70" />
-        <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-sm font-bold text-amber-100 shadow-md shadow-emerald-950/25">
+        <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-sm font-bold text-amber-100 ">
           %
         </span>
         <span className="relative flex flex-col">

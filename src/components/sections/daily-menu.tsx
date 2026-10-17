@@ -1,8 +1,9 @@
 import { unstable_cache } from "next/cache";
 
-import { dailyMenuExample, dailyMenuExampleDate, formatDailyMenuDate, parisDateKey, type DailyMenu } from "@/data/daily-menu";
+import { dailyMenuExample, dailyMenuExampleDate, parisDateKey, type DailyMenu } from "@/data/daily-menu";
 import { getLatestDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility";
+import { DailyMenuDate } from "@/components/sections/daily-menu-date";
 
 const categories = [
   { key: "starters", title: "Entrées" },
@@ -36,8 +37,9 @@ export async function DailyMenuSection() {
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-emerald-700">La Bergerie au quotidien</p>
           <h2 className="mt-1 font-serif text-3xl">Carte du jour</h2>
         </div>
-        <p className="text-xs text-emerald-900/75">{formatDailyMenuDate(activeMenu.date)}</p>
+        <DailyMenuDate initialDate={today} />
       </div>
+      <p className="px-5 pt-4 text-sm leading-6 sm:px-6">Notre carte reste valable jusqu’à sa prochaine mise à jour. Les plats sont proposés selon disponibilité.</p>
       <DailyMenuVisibility>
         <div className="divide-y divide-emerald-950/10">
           {categories.map(({ key, title }) => (

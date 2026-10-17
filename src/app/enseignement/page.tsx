@@ -9,7 +9,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata({
-  title: "Enseignement",
+  title: "Cours et école de golf près d’Orléans",
   description: "École de golf de 4 à 18 ans, cours collectifs et particuliers pour adultes, et contacts des enseignants du Golf de Marcilly près d’Orléans.",
   path: "/enseignement",
 });
@@ -31,7 +31,7 @@ export default function TeachingPage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <CTAButton href="#ecole-de-golf">L’école de golf</CTAButton>
               <CTAButton href="#adultes" variant="secondary">Les cours adultes</CTAButton>
-              <CTAButton href="/initiation/reservation" variant="secondary">Réserver une initiation</CTAButton>
+              <CTAButton href="/initiation/reservation" variant="secondary">Voir les dates d’initiation</CTAButton>
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]">
@@ -70,7 +70,7 @@ export default function TeachingPage() {
             <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
               <h3 className="font-serif text-2xl text-stone-50">Vous débutez ?</h3>
               <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Commencez par une journée découverte pour faire vos premiers pas dans le golf.</p>
-              <CTAButton href="/initiation/reservation" variant="secondary" className="self-start">Réserver une initiation</CTAButton>
+              <CTAButton href="/initiation/reservation" variant="secondary" className="self-start">Voir les dates d’initiation</CTAButton>
             </article>
             <article className="flex flex-col items-start rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Apprendre ensemble</p>

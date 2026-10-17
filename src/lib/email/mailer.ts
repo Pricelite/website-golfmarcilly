@@ -268,15 +268,13 @@ async function sendViaSmtp({
   const config = getSmtpConfig();
   const mailPayload = {
     from: config.from,
-    to: toName ? `"${toName}" <${to}>` : to,
+    to: { address: to, name: toName ?? "" },
     subject,
     text,
     ...(html ? { html } : {}),
     ...(replyTo
       ? {
-          replyTo: replyToName
-            ? `"${replyToName}" <${replyTo}>`
-            : replyTo,
+          replyTo: { address: replyTo, name: replyToName ?? "" },
         }
       : {}),
   };
