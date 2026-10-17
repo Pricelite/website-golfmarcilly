@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { MobileActions } from "@/components/layout/mobile-actions";
 import { JsonLd } from "@/components/ui/json-ld";
 import { siteConfig } from "@/data/site";
 import { absoluteUrl } from "@/lib/metadata";
@@ -48,7 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" data-scroll-behavior="smooth">
-      <body className="text-emerald-950 antialiased">
+      <body className="pb-[calc(6rem+env(safe-area-inset-bottom))] text-emerald-950 antialiased lg:pb-0">
         <JsonLd data={buildOrganizationSchema()} />
         <a
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-emerald-950 focus:px-4 focus:py-2 focus:text-stone-50"
@@ -59,22 +60,7 @@ export default function RootLayout({
         <Header />
         <main id="main-content">{children}</main>
         <Footer />
-        <div className="fixed inset-x-0 bottom-3 z-40 px-4 lg:hidden">
-          <div className="mx-auto flex max-w-md items-center gap-3 rounded-full border border-emerald-950/10 bg-white/95 p-2 shadow-lg shadow-emerald-950/15 backdrop-blur">
-            <a
-              className="site-button flex-1 rounded-full px-4 py-3 text-center text-sm font-semibold"
-              href={`tel:${siteConfig.phoneHref}`}
-            >
-              Appeler
-            </a>
-            <a
-              className="site-button flex-1 rounded-full px-4 py-3 text-center text-sm font-semibold"
-              href={siteConfig.reservationUrl}
-            >
-              Réserver
-            </a>
-          </div>
-        </div>
+        <MobileActions />
       </body>
     </html>
   );

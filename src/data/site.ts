@@ -36,14 +36,16 @@ export const navigationItems = [
   { label: "Golf / Parcours", href: "/golf" },
   { label: "Tarifs", href: "/tarifs" },
   { label: "Enseignement", href: "/enseignement" },
+  { label: "Je débute le golf", href: "/je-debute-le-golf" },
   { label: "Restaurant", href: "/restaurant" },
   { label: "Événements", href: "/evenements" },
   { label: "Association sportive", href: "/association-sportive" },
   { label: "Partenaires", href: "/partenaires" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 export const footerNavigation = {
-  visiter: [...navigationItems, { label: "Contact", href: "/contact" }],
+  visiter: [...navigationItems],
   infos: [
     { label: "Mentions légales", href: "/mentions-legales" },
     { label: "Politique de confidentialité", href: "/politique-de-confidentialite" },

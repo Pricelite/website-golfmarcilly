@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import { HeaderMarcillyClock } from "@/components/layout/header-marcilly-clock";
@@ -10,9 +10,13 @@ import { cn } from "@/lib/utils";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   return (
-    <header className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-[#f7f4e9]/95 backdrop-blur-lg">
+    <header onKeyDown={event => {
+      if (event.key !== "Escape") return;
+      if (open) { setOpen(false); menuButton.current?.focus(); }
+    }} className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-[#f7f4e9]/95 backdrop-blur-lg">
       <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
         <div className="shrink-0">
           <Link className="block" href="/">
@@ -30,11 +34,11 @@ export function Header() {
           aria-label="Navigation principale"
           className="hidden min-w-0 flex-1 xl:block"
         >
-          <ul className="flex items-center justify-center gap-3 text-sm text-emerald-950">
+          <ul className="grid grid-cols-5 items-center gap-x-3 gap-y-1 text-center text-sm text-emerald-950">
             {navigationItems.map((item) => (
               <li key={item.href}>
                 <Link
-                  className="whitespace-nowrap transition hover:text-emerald-700"
+                  className="block whitespace-nowrap rounded-lg py-2 transition hover:text-emerald-700"
                   href={item.href}
                 >
                   {item.label}
@@ -45,7 +49,7 @@ export function Header() {
         </nav>
 
         <div className="hidden shrink-0 items-center gap-4 xl:flex">
-          <div className="flex flex-col items-end gap-1">
+          <div className="hidden flex-col items-end gap-1 2xl:flex">
             <a
               className="whitespace-nowrap text-sm font-medium text-emerald-950"
               href={`tel:${siteConfig.phoneHref}`}
@@ -66,6 +70,7 @@ export function Header() {
             Appeler
           </a>
           <button
+            ref={menuButton}
             aria-expanded={open}
             aria-controls="mobile-navigation"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}

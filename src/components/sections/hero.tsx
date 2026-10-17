@@ -39,14 +39,34 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, ap
   return (
     <section aria-label="Bienvenue au Golf de Marcilly" className="overflow-hidden bg-[#f7f4e9] text-emerald-950">
       <div className="mx-auto grid max-w-[1600px] lg:grid-cols-2">
-        <div className="flex min-w-0 flex-col justify-center px-5 py-12 sm:px-10 sm:py-16 lg:px-12 lg:py-20 xl:px-20">
+        <div className="flex min-w-0 flex-col justify-center px-5 py-6 sm:px-10 sm:py-10 lg:px-12 lg:py-20 xl:px-20">
           <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-800">
             <span aria-hidden="true" className="h-px w-8 shrink-0 bg-emerald-800/40" />{eyebrow}
           </p>
-          <h1 className="mt-6 max-w-xl text-balance font-serif text-[2.75rem] leading-[1.08] tracking-[-0.035em] sm:text-6xl xl:text-7xl">{title}</h1>
-          <p className="mt-6 max-w-lg text-base leading-7 text-emerald-950/75 sm:text-lg sm:leading-8">{subtitle}</p>
-          <div className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
-            <CTAButton className="min-h-12 min-w-0 w-full max-w-40 self-center justify-self-center px-2 py-2 text-center leading-4" href={beginnerCta.href}>{beginnerCta.label}</CTAButton>
+          <h1 className="mt-3 max-w-xl text-balance font-serif text-[2.25rem] leading-[1.08] tracking-[-0.035em] sm:text-6xl xl:text-7xl">{title}</h1>
+          <p className="mt-3 max-w-lg text-base leading-7 text-emerald-950/75 sm:text-lg sm:leading-8">{subtitle}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <CTAButton href={siteConfig.reservationUrl}>Jouer au golf</CTAButton>
+            <CTAButton href={beginnerCta.href}>Découvrir le golf</CTAButton>
+            <CTAButton href="/restaurant">Déjeuner à La Bergerie</CTAButton>
+          </div>
+        </div>
+        <div className="relative h-[220px] sm:h-[340px] lg:h-auto lg:min-h-[520px]">
+          <HeroPhotoCarousel />
+        </div>
+      </div>
+      <div className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
+          <nav aria-label="Informations compétition" className="border-t border-emerald-950/15 py-5">
+            <p className="text-sm font-semibold text-emerald-950">Vous jouez en compétition ?</p>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={competitionCta.href} variant="secondary">{competitionCta.label}</CTAButton>
+              <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={associationLinks.starts} variant="secondary">Consulter les départs</CTAButton>
+              <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={associationLinks.results} variant="secondary">Voir les résultats</CTAButton>
+            </div>
+          </nav>
+
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-emerald-950/15 pt-4">
+          <div className="flex items-center gap-4">
             {promoCta ? <PromoOffersModal label={promoCta.label} offers={promoCta.offers} /> : null}
             {appCta ? (
               <a
@@ -60,24 +80,13 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, competitionCta, ap
               </a>
             ) : null}
           </div>
-          <nav aria-label="Informations compétition" className="mt-9 border-t border-emerald-950/15 pt-5">
-            <p className="text-sm font-semibold text-emerald-950">Vous jouez en compétition ?</p>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={competitionCta.href} variant="secondary">{competitionCta.label}</CTAButton>
-              <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={associationLinks.starts} variant="secondary">Consulter les départs</CTAButton>
-              <CTAButton className="min-h-12 min-w-0 w-full max-w-40 justify-self-center px-2 py-2 text-center leading-4" href={associationLinks.results} variant="secondary">Voir les résultats</CTAButton>
-            </div>
-          </nav>
-          <nav aria-label="Réseaux sociaux du Golf de Marcilly" className="mt-6 flex items-center justify-center gap-3">
+          <nav aria-label="Réseaux sociaux du Golf de Marcilly" className="flex items-center justify-center gap-3">
             {siteConfig.socialLinks.map((social) => (
               <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={`Golf de Marcilly sur ${social.label} (nouvel onglet)`} className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-sm transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${socialButtonColors[social.label]}`}>
                 <SocialIcon label={social.label} />
               </a>
             ))}
           </nav>
-        </div>
-        <div className="relative min-h-[320px] sm:min-h-[420px] lg:min-h-[640px]">
-          <HeroPhotoCarousel />
         </div>
       </div>
     </section>

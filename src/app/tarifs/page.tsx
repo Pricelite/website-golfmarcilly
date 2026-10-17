@@ -31,9 +31,12 @@ export default function PricingPage() {
           />
           <CTAButton href="/contact#reservation">Demander une offre</CTAButton>
         </div>
+        <nav aria-label="Catégories de tarifs" className="mt-8 flex flex-wrap gap-2">
+          {[["decouverte", "Découverte"], ["practice", "Practice"], ["green-fees", "Green fees"], ["abonnements", "Abonnements"], ["location", "Location"]].map(([id, label]) => <a key={id} href={`#${id}`} className="site-button rounded-full px-4 py-3 text-sm font-semibold">{label}</a>)}
+        </nav>
         <div className="mt-10 grid gap-6 xl:grid-cols-2">
-          {pricingSections.map((section) => (
-            <PricingTable key={section.title} section={section} />
+          {pricingSections.map((section, index) => (
+            <PricingTable key={section.title} section={section} id={["decouverte", "practice", "green-fees", "location", "abonnements", "abonnements-semaine", "abonnements-temps-plein"][index]} />
           ))}
         </div>
       </section>

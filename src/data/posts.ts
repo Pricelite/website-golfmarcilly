@@ -1,3 +1,5 @@
+import { readingTime } from "@/lib/reading-time";
+
 export type Post = {
   slug: string;
   title: string;
@@ -11,7 +13,7 @@ export type Post = {
   content: string[];
 };
 
-export const posts: Post[] = [
+const articleContent: Omit<Post, "readingTime">[] = [
   {
     slug: "ouvrir-la-saison-de-golf-pres-orleans",
     title: "Ouvrir la saison de golf près d'Orléans dans les meilleures conditions",
@@ -22,7 +24,6 @@ export const posts: Post[] = [
     // Photo d'illustration : Toa Heftiba, Unsplash (https://unsplash.com/photos/Wi7sPskmZhE).
     coverImage: "/images/article-saison-golf-toa-heftiba.jpg",
     coverImageAlt: "Parcours de golf arboré au printemps, photo d'illustration",
-    readingTime: "4 min",
     seoDescription:
       "Conseils pour bien débuter la saison au Golf de Marcilly, golf près d'Orléans dans le Loiret.",
     content: [
@@ -39,7 +40,6 @@ export const posts: Post[] = [
     publishedAt: "2026-02-06",
     category: "Entreprise",
     coverImage: "/images/bar-la-bergerie-seminaire.jpeg",
-    readingTime: "5 min",
     seoDescription:
       "Pourquoi choisir un séminaire golf près d'Orléans pour vos équipes et vos clients.",
     content: [
@@ -56,7 +56,6 @@ export const posts: Post[] = [
     publishedAt: "2026-01-22",
     category: "Restaurant",
     coverImage: "/restaurant/hero.jpg",
-    readingTime: "3 min",
     seoDescription:
       "Restaurant golf de Marcilly-Orléans : un lieu crédible pour vos déjeuners d'affaires dans le Loiret.",
     content: [
@@ -66,3 +65,5 @@ export const posts: Post[] = [
     ],
   },
 ];
+
+export const posts: Post[] = articleContent.map(post => ({ ...post, readingTime: readingTime(post.title, post.excerpt, post.content) })).sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));

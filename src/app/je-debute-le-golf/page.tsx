@@ -15,7 +15,7 @@ const beginnerFaqs = [
   { question: "Practice ou initiation : quelle différence ?", answer: "Au practice, vous frappez des balles depuis un poste d’entraînement. L’achat de seaux ne comprend pas un cours. L’initiation comprend un encadrement et un parcours découverte de 9 trous, avec ou sans repas selon la formule." },
   { question: "Faut-il acheter du matériel ?", answer: "Pour le practice, le tarif prévoit le prêt d’un club par seau et par personne. Pour une initiation, renseignez-vous auprès de l’accueil sur le matériel mis à disposition avant votre venue." },
   { question: "Quelle tenue prévoir ?", answer: "Choisissez une tenue confortable qui vous laisse bouger, des chaussures plates et stables, et adaptez-vous à la météo. Pensez à prendre de l’eau et une casquette lorsqu’il fait soleil." },
-  { question: "Comment réserver une initiation ?", answer: "Consultez les créneaux proposés le week-end sur la page de réservation. Si aucun créneau ne s’affiche ou si vous avez une question, appelez l’accueil pour organiser votre venue." },
+  { question: "Comment réserver une initiation ?", answer: "Consultez les créneaux proposés dans l’agenda du golf sur la page de réservation. Si aucun créneau ne s’affiche ou si vous avez une question, appelez l’accueil pour organiser votre venue." },
   { question: "Et pour les enfants ?", answer: "L’école de golf accueille les jeunes de 4 à 18 ans. Retrouvez les groupes, horaires et formules sur la page Enseignement, puis contactez l’accueil pour l’inscription." },
 ] as const;
 
@@ -118,7 +118,7 @@ export default function BeginnerGolfPage() {
             <CTAButton href="/initiation/reservation" className="self-start">{index === 0 ? "Réserver ma découverte" : "Réserver ma journée"}</CTAButton>
           </article>)}
         </div>
-        <p className="mt-5 text-sm leading-7 text-emerald-950/70">Initiations proposées le week-end, selon les créneaux disponibles. Une question ou aucun créneau affiché ? Appelez-nous au <a className="font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p>
+        <p className="mt-5 text-sm leading-7 text-emerald-950/70">Initiations proposées selon les dates et horaires publiés dans l’agenda du golf. Une question ou aucun créneau affiché ? Appelez-nous au <a className="font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p>
       </section>
       <section className="bg-[#f7f4e9]">
         <div className={sectionClass}>

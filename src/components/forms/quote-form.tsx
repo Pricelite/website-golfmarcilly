@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
+import { parisDateKey } from "@/lib/site-conditions";
 
 type FormState = "idle" | "loading" | "success" | "error";
 type ApiErrorPayload = {
@@ -13,6 +14,7 @@ export function QuoteForm() {
   const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(formData: FormData) {
+    if (state === "loading" || state === "success") return;
     setState("loading");
     setErrorMessage("");
 
@@ -109,6 +111,10 @@ export function QuoteForm() {
         </label>
       </div>
 
+      <label className="block text-sm font-medium text-emerald-950">Date souhaitée (facultatif)
+        <input type="date" name="desiredDate" min={parisDateKey(new Date())} className="mt-2 block min-h-12 w-full min-w-0 rounded-2xl border border-emerald-950/20 bg-stone-50 px-4 py-3" />
+        <span className="mt-1 block text-xs text-emerald-950/75">Laissez vide si votre date reste à définir.</span>
+      </label>
       <label className="block text-sm font-medium text-emerald-950">
         <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
           Besoin détaillé
@@ -129,6 +135,7 @@ export function QuoteForm() {
           Date, restauration, activité golf : partagez ce qui compte pour vous dans votre message.
         </p>
         <button
+          disabled={state === "loading" || state === "success"}
           className="site-button rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-950/15"
           type="submit"
         >
@@ -137,13 +144,13 @@ export function QuoteForm() {
       </div>
 
       {state === "success" ? (
-        <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
           Votre demande de devis a bien été reçue par le site.
         </p>
       ) : null}
 
       {state === "error" ? (
-        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {errorMessage || "Une erreur est survenue. Merci de réessayer."}
         </p>
       ) : null}

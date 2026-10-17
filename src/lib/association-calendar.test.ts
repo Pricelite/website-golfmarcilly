@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { calendarDefaultDate, monthDays, eventsOnDay, eventsInMonth, isPastEvent } from "./association-calendar";
+import { calendarDefaultDate, monthDays, eventsOnDay, eventsInMonth, isPastEvent, upcomingCompetitions } from "./association-calendar";
 import { associationEvents, associationEvents2027 } from "../data/association-events";
 
 test("events become past only after their inclusive final day", () => {
@@ -14,8 +14,16 @@ test("events become past only after their inclusive final day", () => {
   assert.equal(isPastEvent(multiple, "2027-01-03"), true);
 });
 
-test("2027 calendar opens in January then follows the current date", () => {
-  assert.equal(calendarDefaultDate("2026-10-10"), "2027-01-01");
+test("calendar opens on the next competition or the current month, ignoring context and empty slots", () => {
+  const events = [
+    { id: "holiday", title: "Jour férié", start: "2027-01-01", category: "holiday" as const },
+    { id: "free", title: "Créneau à définir", start: "2027-02-01", category: "open_slot" as const },
+    { id: "cup", title: "Coupe", start: "2027-03-07", category: "competition" as const },
+  ];
+  assert.equal(calendarDefaultDate("2026-10-10", events), "2027-03-07");
+  assert.equal(calendarDefaultDate("2027-03-01", events), "2027-03-01");
+  assert.deepEqual(upcomingCompetitions(events, "2026-10-10").map(event => event.id), ["cup"]);
+  assert.equal(calendarDefaultDate("2027-04-12", events), "2027-04-12");
   assert.equal(calendarDefaultDate("2027-01-01"), "2027-01-01");
   assert.equal(calendarDefaultDate("2027-04-12"), "2027-04-12");
 });

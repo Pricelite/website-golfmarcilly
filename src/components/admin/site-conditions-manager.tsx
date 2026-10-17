@@ -35,7 +35,7 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
     {localMode ? <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Prévisualisation locale : les états sont enregistrés sur cet ordinateur et visibles sur l’accueil local. Aucune modification n’est envoyée à Supabase.</p> : null}
     {message ? <p role="status" className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900">{message}</p> : null}
     {error ? <p role="alert" className="mt-4 rounded-xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
-    <p className="mt-5 text-sm leading-6 text-emerald-950/75">Tous les états passent automatiquement à « Ouvert » chaque nouveau jour. Si vous fermez un parcours ou un service, indiquez le motif : il sera visible sur l’accueil jusqu’à la fin de la journée.</p>
+    <p className="mt-5 text-sm leading-6 text-emerald-950/75">Chaque nouveau jour, les états doivent être confirmés par l’équipe (heure de Paris). Sans validation du jour, ils apparaissent comme non confirmés. Pour une fermeture, indiquez le motif visible sur l’accueil.</p>
     <div className="mt-6 grid gap-4 md:grid-cols-2">
       {conditionItems.map(item => {
         const current = byId.get(item.id);
@@ -43,7 +43,7 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
           <h2 className="font-serif text-xl text-emerald-950">{item.label}</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="text-sm text-emerald-950">État
-              <select name="status" className={selectClass} defaultValue={current?.status ?? "open"} disabled={Boolean(busy)}>
+              <select name="status" className={selectClass} defaultValue={current?.status ?? "unknown"} disabled={Boolean(busy)}>
                 <option value="unknown">À confirmer</option><option value="open">Ouvert</option><option value="closed">Fermé</option>
               </select>
             </label>

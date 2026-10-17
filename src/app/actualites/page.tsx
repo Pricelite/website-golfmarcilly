@@ -1,4 +1,5 @@
 import { BlogCard } from "@/components/ui/blog-card";
+import { ClubNews } from "@/components/club-news";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { posts } from "@/data/posts";
@@ -24,13 +25,15 @@ export default function NewsPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
           as="h1"
-          description="Retrouvez nos conseils pour reprendre le golf, organiser un séminaire ou découvrir le restaurant."
+          description="Les nouvelles sportives du club, puis nos conseils pour préparer votre visite."
           eyebrow="Blog"
           title="Actualités du Golf de Marcilly"
         />
+        <ClubNews headingLevel="h2" />
+        <h2 className="mt-12 font-serif text-3xl">Conseils et découvertes</h2>
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {posts.map((post) => (
-            <BlogCard key={post.slug} post={post} headingLevel="h2" />
+            <BlogCard key={post.slug} post={post} />
           ))}
         </div>
       </section>

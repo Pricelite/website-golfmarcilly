@@ -18,10 +18,8 @@ export function parisDateKey(date: Date): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
-export function visibleCondition(condition: SiteCondition, now = new Date()): SiteCondition {
-  if (!condition.updatedAt || Number.isNaN(Date.parse(condition.updatedAt)) ||
-      parisDateKey(new Date(condition.updatedAt)) !== parisDateKey(now)) {
-    return { ...condition, status: "open", reason: null };
-  }
+export function visibleCondition(condition: SiteCondition): SiteCondition {
+  // An unset state starts open. Explicit changes remain until the team changes them.
+  if (!condition.updatedAt && condition.status === "unknown") return { ...condition, status: "open", reason: null };
   return condition;
 }

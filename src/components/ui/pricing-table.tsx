@@ -1,19 +1,22 @@
 import type { PricingSection } from "@/data/pricing";
+import { CTAButton } from "@/components/ui/cta-button";
 
-export function PricingTable({ section }: { section: PricingSection }) {
+export function PricingTable({ section, id }: { section: PricingSection; id?: string }) {
   return (
-    <section className="overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
+    <section id={id} className="scroll-mt-28 overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
       <div className="border-b border-emerald-950/8 bg-stone-50/80 px-6 py-5">
         <h2 className="font-serif text-2xl text-emerald-950">{section.title}</h2>
         <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p>
       </div>
-      <div className="overflow-x-auto">
+      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{row.values[1]} <span className="text-sm font-normal">/ personne</span></p><p className="my-3 text-sm leading-6">{row.values[0]}</p><CTAButton href="/initiation/reservation">Choisir une initiation</CTAButton></article>)}</div> : null}
+      <div className={section.title === "Découverte" ? "hidden overflow-x-auto sm:block" : "overflow-x-auto"}>
         <table className="min-w-full text-left text-sm">
+          <caption className="sr-only">{section.title} — tarifs 2026</caption>
           <thead className="bg-emerald-950 text-stone-50">
             <tr>
-              <th className="px-6 py-4 font-medium">Offre</th>
-              <th className="px-6 py-4 font-medium">{section.columns[0]}</th>
-              <th className="px-6 py-4 font-medium">{section.columns[1]}</th>
+              <th scope="col" className="px-3 py-4 font-medium sm:px-6">Offre</th>
+              <th scope="col" className="px-3 py-4 font-medium sm:px-6">{section.columns[0]}</th>
+              <th scope="col" className="px-3 py-4 font-medium sm:px-6">{section.columns[1]}</th>
             </tr>
           </thead>
           <tbody>
@@ -22,16 +25,16 @@ export function PricingTable({ section }: { section: PricingSection }) {
                 className="border-b border-emerald-950/8 align-top last:border-b-0"
                 key={row.label}
               >
-                <td className="px-6 py-4 font-medium text-emerald-950">
+                <th scope="row" className="px-3 py-4 font-medium text-emerald-950 sm:px-6">
                   <div>{row.label}</div>
                   {row.note ? (
                     <div className="mt-1 text-xs font-normal text-emerald-950/65">
                       {row.note}
                     </div>
                   ) : null}
-                </td>
-                <td className="px-6 py-4 text-emerald-950/78">{row.values[0]}</td>
-                <td className="px-6 py-4 text-emerald-950/78">{row.values[1]}</td>
+                </th>
+                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{row.values[0]}</td>
+                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{row.values[1]}</td>
               </tr>
             ))}
           </tbody>

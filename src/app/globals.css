@@ -8,6 +8,13 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 7rem;
+  scroll-padding-bottom: 7rem;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid #047857;
+  outline-offset: 3px;
 }
 
 body {
@@ -70,6 +77,7 @@ img {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .site-button { transition: none; }
   .site-button:not(:disabled):hover { translate: none; animation: none; }
   .promo-gold-button:hover { animation: none; }

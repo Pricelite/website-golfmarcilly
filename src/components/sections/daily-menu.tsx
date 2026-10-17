@@ -34,10 +34,11 @@ export async function DailyMenuSection() {
       <div className="flex flex-wrap items-end justify-between gap-2 border-b border-emerald-950/10 px-5 py-4 sm:px-6">
         <div>
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-emerald-700">La Bergerie au quotidien</p>
-          <h2 className="mt-1 font-serif text-3xl">Carte du jour</h2>
+          <h2 className="mt-1 font-serif text-3xl">{activeMenu.date === today ? "Carte du jour" : "Dernière carte publiée"}</h2>
         </div>
-        <p className="text-xs text-emerald-900/75">{formatDailyMenuDate(activeMenu.date)}</p>
+        <p className="text-xs text-emerald-900/85">Publication : {formatDailyMenuDate(activeMenu.date)}</p>
       </div>
+      <p className="px-5 pt-4 text-sm leading-6 sm:px-6">{activeMenu.date === today ? "Carte publiée pour aujourd’hui. Les plats restent soumis à disponibilité." : "La validité de cette carte pour aujourd’hui n’est pas confirmée. Contactez le restaurant pour connaître les plats proposés."}</p>
       <DailyMenuVisibility>
         <div className="divide-y divide-emerald-950/10">
           {categories.map(({ key, title }) => (

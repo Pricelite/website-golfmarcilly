@@ -1,7 +1,14 @@
 import type { AssociationEvent } from "@/data/association-events";
 
-export function calendarDefaultDate(today: string) {
-  return today < "2027-01-01" ? "2027-01-01" : today;
+export function upcomingCompetitions(events: AssociationEvent[], today: string) {
+  return events.filter(event => (!event.category || event.category === "competition") && event.title !== "Créneau à définir" && !isPastEvent(event, today))
+    .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
+}
+
+export function calendarDefaultDate(today: string, events: AssociationEvent[] = []) {
+  const next = upcomingCompetitions(events, today);
+  if (next.some(event => event.start <= `${today.slice(0, 7)}-31` && (event.end ?? event.start) >= `${today.slice(0, 7)}-01`)) return today;
+  return next[0]?.start ?? today;
 }
 
 export function isPastEvent(event: AssociationEvent, today: string) {

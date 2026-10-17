@@ -4,6 +4,7 @@ import { Hero } from "@/components/sections/hero";
 import { SponsorMarquee } from "@/components/sections/sponsor-marquee";
 import { SiteConditions } from "@/components/sections/site-conditions";
 import { BlogCard } from "@/components/ui/blog-card";
+import { ClubNews } from "@/components/club-news";
 import { CTAButton } from "@/components/ui/cta-button";
 import { CourseCard } from "@/components/ui/course-card";
 import { FeatureCard } from "@/components/ui/feature-card";
@@ -181,6 +182,8 @@ export default async function HomePage() {
             eyebrow="Actualités"
             title="Les temps forts du Golf de Marcilly"
           />
+          <ClubNews />
+          <div className="mt-12"><SectionTitle eyebrow="Conseils et découvertes" title="Préparer votre prochaine visite" description="Des articles pratiques à consulter toute l’année." /></div>
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {posts.map((post) => (
               <BlogCard key={post.slug} post={post} />
