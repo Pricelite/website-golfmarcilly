@@ -4,6 +4,7 @@ import { dailyMenuExample, dailyMenuExampleDate, parisDateKey, type DailyMenu } 
 import { getLatestDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility";
 import { DailyMenuDate } from "@/components/sections/daily-menu-date";
+import { siteConfig } from "@/data/site";
 
 const categories = [
   { key: "starters", title: "Entrées" },
@@ -24,8 +25,9 @@ const getPublishedMenu = unstable_cache(
 export async function DailyMenuSection() {
   const today = parisDateKey();
   let published: DailyMenu | null = null;
+  let unavailable = false;
   try { published = await getPublishedMenu(today); }
-  catch { /* Le restaurant reste accessible si la carte est indisponible. */ }
+  catch { unavailable = true; }
   const activeMenu: DailyMenu = published && published.date >= dailyMenuExampleDate
     ? published
     : { date: dailyMenuExampleDate, ...dailyMenuExample };
@@ -39,6 +41,10 @@ export async function DailyMenuSection() {
         </div>
         <DailyMenuDate initialDate={today} />
       </div>
+      {unavailable ? <div role="status" className="px-5 py-4 text-sm leading-6 sm:px-6">
+        <p>La carte est momentanément indisponible. Appelez La Bergerie pour connaître les plats proposés.</p>
+        <a href={`tel:${siteConfig.phoneHref}`} className="mt-3 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">{siteConfig.phoneDisplay}</a>
+      </div> : <>
       <p className="px-5 pt-4 text-sm leading-6 sm:px-6">Notre carte reste valable jusqu’à sa prochaine mise à jour. Les plats sont proposés selon disponibilité.</p>
       <DailyMenuVisibility>
         <div className="divide-y divide-emerald-950/10">
@@ -52,6 +58,7 @@ export async function DailyMenuSection() {
           ))}
         </div>
       </DailyMenuVisibility>
+      </>}
     </section>
   );
 }
