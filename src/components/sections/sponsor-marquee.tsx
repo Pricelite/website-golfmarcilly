@@ -3,7 +3,7 @@ import Image from "next/image";
 import { partners } from "@/data/partners";
 
 const sponsorsWithLogos = partners.flatMap((partner) =>
-  partner.logo && partner.website && partner.showInMarquee !== false
+  partner.website && (partner.logo || partner.showInMarquee === true) && partner.showInMarquee !== false
     ? [{ name: partner.name, logo: partner.logo, website: partner.website }]
     : [],
 );
@@ -25,14 +25,15 @@ export function SponsorMarquee() {
                     aria-label={duplicate ? undefined : `Visiter le site de ${partner.name} (nouvel onglet)`}
                     className="flex h-full w-full items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-700"
                   >
-                    <Image
+                    {partner.logo ? <Image
                       src={partner.logo}
                       alt={duplicate ? "" : partner.name}
                       width={160}
                       height={56}
                       sizes="160px"
+                      loading="eager"
                       className={partner.name === "T’Libre Max" ? "h-16 w-44 object-contain" : "h-14 w-40 object-contain"}
-                    />
+                    /> : <span className="text-center font-serif text-2xl font-semibold tracking-wide text-emerald-950">{partner.name}</span>}
                   </a>
                 </li>
               ))}

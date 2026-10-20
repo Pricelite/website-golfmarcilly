@@ -114,7 +114,7 @@ export default function EventsPage() {
         <div>
           <SectionTitle eyebrow="Les espaces et équipements" title="Votre réunion à La Bergerie" description="La formule séminaire prévoit une salle de réunion équipée, un accueil café et un repas dont le menu est à définir selon la saison." />
           <ul className="mt-6 list-disc space-y-3 pl-5 text-sm leading-7"><li>Salle de réunion, vidéoprojecteur, paperboard et wifi.</li><li>Accueil avec café, thé, jus de fruits et viennoiseries.</li><li>Restauration sur place à La Bergerie.</li></ul>
-          <p className="mt-5 text-sm leading-7">La capacité d’accueil et la disposition de la salle sont à confirmer avec l’équipe selon votre groupe.</p>
+          <p className="mt-5 text-sm leading-7">La salle peut accueillir jusqu’à 90 personnes. L’équipe vous accompagne pour choisir la disposition adaptée à votre réunion ou à votre événement.</p>
           <div className="mt-6 flex flex-wrap gap-3"><CTAButton href="/restaurant#menu-seminaire">Voir la formule séminaire</CTAButton><CTAButton href="#devis">Demander un devis</CTAButton></div>
         </div>
       </section>

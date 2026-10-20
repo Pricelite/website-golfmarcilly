@@ -2,7 +2,7 @@ export const homeExperiences = [
   {
     eyebrow: "Jouer",
     title: "Choisir mon parcours",
-    description: "Grand parcours, 9 trous, Pitch & Putt ou practice : trouvez votre terrain de jeu.",
+    description: "Grand parcours, 9 trous, Kaleka course aller ou practice : trouvez votre terrain de jeu.",
     href: "/golf",
   },
   {
@@ -29,7 +29,7 @@ export const homeFaqs = [
   {
     question: "Le Golf de Marcilly convient-il aux débutants ?",
     answer:
-      "Oui. L'offre combine practice, pitch & putt, parcours d'initiation et accompagnement par des enseignants pour démarrer dans de très bonnes conditions.",
+      "Oui. L'offre combine practice, Kaleka course aller, parcours d'initiation et accompagnement par des enseignants pour démarrer dans de très bonnes conditions.",
   },
   {
     question: "Peut-on venir uniquement pour déjeuner au restaurant ?",

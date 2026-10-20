@@ -31,7 +31,7 @@ export const courses = [
   },
   {
     slug: "pitch-putt-kaleka-18-trous",
-    title: "Pitch & Putt",
+    title: "Kaleka course aller",
     level: "Tous niveaux",
     distance: "18 trous",
     description:
@@ -40,12 +40,12 @@ export const courses = [
   },
   {
     slug: "kaleka-course",
-    title: "Kaleka course",
+    title: "Kaleka course retour",
     level: "Tous niveaux",
     distance: "9 trous · 1 370 m",
     description: "Un parcours de 9 trous plus sélectif, où la précision de la mise en jeu compte.",
     image: "/images/plan-kaleka-course.png",
-    imageAlt: "Plan des 9 trous du Kaleka course au Golf de Marcilly",
+    imageAlt: "Plan des 9 trous du Kaleka course retour au Golf de Marcilly",
     imageFit: "contain",
   },
   {

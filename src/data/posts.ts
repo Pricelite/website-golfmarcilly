@@ -28,7 +28,7 @@ const articleContent: Omit<Post, "readingTime">[] = [
       "Conseils pour bien débuter la saison au Golf de Marcilly, golf près d'Orléans dans le Loiret.",
     content: [
       "La reprise de saison demande de retrouver des repères simples : rythme, contact de balle, confiance au petit jeu et choix de parcours adaptés.",
-      "À Marcilly, la complémentarité entre practice, pitch & putt et grands parcours permet de remettre progressivement le corps et la technique en route.",
+      "À Marcilly, la complémentarité entre practice, Kaleka course aller et grands parcours permet de remettre progressivement le corps et la technique en route.",
       "C'est aussi le bon moment pour réserver un cours, faire un point sur son matériel et relancer une routine de jeu durable.",
     ],
   },
@@ -44,7 +44,7 @@ const articleContent: Omit<Post, "readingTime">[] = [
       "Pourquoi choisir un séminaire golf près d'Orléans pour vos équipes et vos clients.",
     content: [
       "1. Se retrouver au vert près d’Orléans. À Marcilly-en-Villette, le domaine permet d’alterner une réunion et un temps dehors. Précisez votre programme à l’équipe pour organiser les différents moments de la journée.",
-      "2. Réunir son équipe dans une salle équipée. La formule séminaire prévoit une salle, un vidéoprojecteur, un paperboard et le wifi. La capacité et la disposition sont à confirmer selon votre groupe.",
+      "2. Réunir son équipe dans une salle équipée. La formule séminaire prévoit une salle pouvant accueillir jusqu’à 90 personnes, un vidéoprojecteur, un paperboard et le wifi. L’équipe vous conseille sur la disposition adaptée à votre groupe.",
       "3. Découvrir une activité ensemble. Une initiation permet aux participants qui n’ont jamais joué d’essayer le golf avec un encadrement. D’autres formats, dont le footgolf, peuvent être étudiés avec l’équipe.",
       "4. Déjeuner sur place à La Bergerie. La restauration peut s’intégrer à votre programme. Le menu est à définir selon la saison et les besoins de votre groupe.",
       "5. Préparer une proposition adaptée. Indiquez la date souhaitée, le nombre de participants, les temps de réunion et les activités envisagées. L’équipe précisera les disponibilités et les prestations dans votre devis.",

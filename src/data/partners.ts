@@ -25,5 +25,8 @@ export const partners: Partner[] = [
   { name: "Bregent", logo: "/partners/bregent-cutout.png", website: "https://www.caves-lamottoises.com/" },
   { name: "Audilab", logo: "/partners/audilab.svg", website: "https://www.audilab.fr/" },
   { name: "SwingFlow", logo: "/partners/swingflow.png", website: "https://swingflow.fr/" },
+  { name: "US Orléans Loiret Football", logo: "/partners/us-orleans.png", website: "https://orleansloiretfoot.com/" },
+  { name: "Rugby Club Orléans", logo: "/partners/rugby-club-orleans.svg", website: "https://rugbycluborleans.com/" },
+  { name: "Liger Homme", website: "https://www.vitrines-orleans.fr/les-commercants/liger-homme/", showInMarquee: true },
   { name: "La Bergerie" },
 ];

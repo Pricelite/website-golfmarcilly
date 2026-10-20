@@ -14,12 +14,12 @@ test("a closed condition requires a short reason", () => {
   assert.equal(parsed.condition.reason, "Terrain détrempé");
 });
 
-test("grand parcours, Pitch and Putt and Kaleka course have separate states", () => {
+test("grand parcours, Kaleka course aller and Kaleka course have separate states", () => {
   assert.equal(conditionItems.length, 9);
   assert.deepEqual(conditionItems.filter(item => item.id.startsWith("grand-parcours-")).map(item => item.label),
     ["Grand parcours aller", "Grand parcours retour"]);
   assert.deepEqual(conditionItems.filter(item => item.id === "pitch-and-putt" || item.id === "kaleke").map(item => item.label),
-    ["Pitch and Putt", "Kaleka course"]);
+    ["Kaleka course aller", "Kaleka course retour"]);
 });
 
 test("manual closures remain until changed, including on following Paris days", () => {
