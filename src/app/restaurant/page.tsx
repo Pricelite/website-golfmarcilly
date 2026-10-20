@@ -150,10 +150,10 @@ export default function RestaurantPage() {
             </div>
             <div className="divide-y divide-emerald-950/15 border-y border-emerald-950/15">
               {restaurantData.cgv.sections.map((section) => (
-                <article key={section.title} className="grid gap-4 py-7 sm:grid-cols-[11rem_1fr] sm:gap-8">
-                  <h3 className="font-serif text-xl text-emerald-950">{section.title}</h3>
-                  <ul className="list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/75">{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
-                </article>
+                <details key={section.title} className="group py-5">
+                  <summary className="cursor-pointer rounded-sm font-serif text-xl text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">{section.title}</summary>
+                  <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/75">{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
+                </details>
               ))}
             </div>
           </div>

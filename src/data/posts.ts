@@ -62,7 +62,7 @@ const articleContent: Omit<Post, "readingTime">[] = [
       "Préparez votre déjeuner à La Bergerie, restaurant du Golf de Marcilly près d’Orléans : horaires, carte et demandes de groupe.",
     content: [
       "Vous pouvez venir déjeuner à La Bergerie sans jouer au golf. Le restaurant se situe sur le domaine de Marcilly, à Marcilly-en-Villette, dans le Loiret.",
-      "Avant votre visite, consultez les horaires et la date de la carte publiée. Si elle ne correspond pas au jour de votre venue, contactez le restaurant pour connaître les plats proposés.",
+      "Avant votre visite, consultez les horaires et la carte de La Bergerie. La carte reste valable jusqu’à sa prochaine mise à jour, sous réserve de disponibilité des plats. Pour une question sur les plats proposés, contactez le restaurant.",
       "Pour un déjeuner d’équipe ou un repas de groupe, précisez la date, le nombre de convives et vos besoins dans la demande de devis. Une demande de table reste soumise à la confirmation du restaurant.",
     ],
   },
