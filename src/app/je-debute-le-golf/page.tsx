@@ -17,7 +17,7 @@ const beginnerFaqs = [
   { question: "Faut-il acheter du matériel ?", answer: "Non : le matériel est fourni pour l’initiation. Pour une séance au practice sans cours, le tarif prévoit le prêt d’un club par seau et par personne." },
   { question: "Combien de temps dure une initiation ?", answer: `Prévoyez ${initiationExperience.withoutMealDuration} sans repas : ${initiationExperience.lesson}, puis ${initiationExperience.course}. La formule avec repas dure ${initiationExperience.withMealDuration}, dont 1 h à La Bergerie. Le matériel est fourni dans les deux formules.` },
   { question: "Quelle tenue prévoir ?", answer: "Choisissez une tenue confortable qui vous laisse bouger, des chaussures plates et stables, et adaptez-vous à la météo. Pensez à prendre de l’eau et une casquette lorsqu’il fait soleil." },
-  { question: "Comment réserver une initiation ?", answer: "Consultez les créneaux proposés dans l’agenda du golf sur la page de réservation. Si aucun créneau ne s’affiche ou si vous avez une question, appelez l’accueil pour organiser votre venue." },
+  { question: "Comment réserver une initiation ?", answer: "Choisissez un créneau et envoyez votre demande sur la page de réservation. L’équipe vous confirme la disponibilité ; le paiement se fait sur place. Si aucun créneau ne s’affiche, appelez l’accueil." },
   { question: "Et pour les enfants ?", answer: "L’école de golf accueille les jeunes de 4 à 18 ans. Retrouvez les groupes, horaires et formules sur la page Enseignement, puis contactez l’accueil pour l’inscription." },
 ] as const;
 
@@ -54,7 +54,7 @@ export default function BeginnerGolfPage() {
           </div>
           <div className="relative pb-8 sm:pl-6">
             <div className="relative aspect-[4/3] overflow-hidden rounded-[32px] sm:rounded-t-[100px]">
-              <Image src="/images/initiation-groupe-professeur.png" alt="Illustration d’une initiation conviviale au golf avec un professeur et un groupe d’adultes" fill priority sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 72px), 590px" className="object-cover" />
+              <Image src="/images/initiation-groupe-professeur.webp" alt="Illustration d’une initiation conviviale au golf avec un professeur et un groupe d’adultes" fill priority sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 72px), 590px" className="object-cover" />
             </div>
             <div className="relative -mt-12 mr-6 flex w-fit items-center gap-4 rounded-2xl bg-white p-5 shadow-lg shadow-emerald-950/10 sm:-ml-6">
               <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-2xl text-emerald-800">↗</span>
@@ -118,10 +118,10 @@ export default function BeginnerGolfPage() {
             <p className="mt-2 text-sm font-semibold text-emerald-800">{formula.note}</p>
             <p className="mt-5 text-emerald-950"><span className="font-serif text-6xl">{formula.values[1]}</span><span className="ml-2 text-sm">/ personne</span></p>
             <ul className="my-7 flex-1 space-y-3 text-sm leading-7 text-emerald-950/80">{formula.values[0].split(" + ").map(item => <li key={item} className="flex gap-3"><span aria-hidden="true" className="text-emerald-700">✓</span>{item}</li>)}</ul>
-            <CTAButton href="/initiation/reservation" className="self-start">{index === 0 ? "Réserver ma découverte" : "Réserver ma journée"}</CTAButton>
+            <CTAButton href="/initiation/reservation" className="self-start">Choisir un créneau</CTAButton>
           </article>)}
         </div>
-        <p className="mt-5 text-sm leading-7 text-emerald-950/70">Initiations proposées selon les dates et horaires publiés dans l’agenda du golf. Une question ou aucun créneau affiché ? Appelez-nous au <a className="font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p>
+        <p className="mt-5 text-sm leading-7 text-emerald-950/70">Votre demande sera confirmée par l’équipe selon les disponibilités. Paiement sur place. Une question ou aucun créneau affiché ? Appelez-nous au <a className="font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p>
       </section>
       <section className="bg-[#f7f4e9]">
         <div className={sectionClass}>
