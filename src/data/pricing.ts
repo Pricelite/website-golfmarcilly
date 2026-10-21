@@ -65,9 +65,9 @@ export const pricingSections: PricingSection[] = [
     rows: [
       { label: "9 trous Découverte ou Footgolf", values: ["10 €", "10 €"] },
       {
-        label: "18 trous Kaleka course aller ou retour",
+        label: "18 trous Kaleka course aller et retour",
         values: ["25 €", "23 €"],
-        note: "Jeunes -20 ans : 20 € / licencié 18 €",
+        note: "Deux parcours distincts : 9 trous aller + 9 trous retour. Jeunes -20 ans : 20 € / licencié 18 €",
       },
       {
         label: "9 trous Grand Parcours",
