@@ -15,7 +15,7 @@ test("desired date reaches both email representations and legacy requests still 
   const result = spawnSync(process.execPath, ["--conditions=react-server", "--import", "tsx", "--input-type=module", "-e", `import { buildQuoteEmail } from './src/lib/form-emails.ts'; console.log(JSON.stringify([buildQuoteEmail(${JSON.stringify(payload)}), buildQuoteEmail({ ...${JSON.stringify(payload)}, desiredDate: undefined })]));`], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const [email, legacy] = JSON.parse(result.stdout);
-  assert.match(email.text, /Date souhaitée: 17 octobre 2026/);
+  assert.match(email.text, /Date souhaitée : 17 octobre 2026/);
   assert.match(email.html, /17 octobre 2026/);
   assert.match(legacy.text, /À définir/);
 });
