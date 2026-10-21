@@ -1,37 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { FORM_NETWORK_ERROR } from "@/lib/api/form-feedback";
 
 export function NewsletterForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [pending, setPending] = useState(false);
+  const submitting = useRef(false);
 
   async function handleSubmit(formData: FormData) {
+    if (submitting.current || status === "success") return;
+    submitting.current = true;
+    setPending(true);
     setErrorMessage("");
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const response = await fetch("/api/newsletter", {
-      method: "POST",
-      body: JSON.stringify(Object.fromEntries(formData)),
-      headers: { "Content-Type": "application/json" },
-    });
+      if (response.ok) {
+        const result = await response.json().catch(() => null);
+        setConfirmationMessage(typeof result?.message === "string" ? result.message : "Votre demande d’inscription a été transmise au golf.");
+        setStatus("success");
+        return;
+      }
 
-    if (response.ok) {
-      setStatus("success");
-      return;
+      const payload = (await response.json().catch(() => null)) as
+        | { error?: string }
+        | null;
+      setErrorMessage(
+        payload?.error ||
+          "Impossible d'enregistrer votre email pour le moment."
+      );
+      setStatus("error");
+    } catch {
+      setErrorMessage(FORM_NETWORK_ERROR);
+      setStatus("error");
+    } finally {
+      submitting.current = false;
+      setPending(false);
     }
-
-    const payload = (await response.json().catch(() => null)) as
-      | { error?: string }
-      | null;
-    setErrorMessage(
-      payload?.error ||
-        "Impossible d'enregistrer votre email pour le moment."
-    );
-    setStatus("error");
   }
 
   return (
-    <form action={handleSubmit} className="space-y-3">
+    <form action={handleSubmit} className="space-y-3" aria-busy={pending}>
       <label className="block text-sm text-stone-100/88">
         Email
         <input
@@ -45,14 +61,15 @@ export function NewsletterForm() {
       <button
         className="site-button rounded-full px-4 py-3 text-sm font-semibold"
         type="submit"
+        disabled={pending || status === "success"}
       >
-        S&apos;inscrire
+        {pending ? "Envoi…" : "S’inscrire"}
       </button>
       {status === "success" ? (
-        <p className="text-sm text-emerald-200">Merci, votre inscription est prise en compte.</p>
+        <p role="status" className="text-sm text-emerald-200">{confirmationMessage}</p>
       ) : null}
       {status === "error" ? (
-        <p className="text-sm text-red-200">
+        <p role="alert" className="text-sm text-red-200">
           {errorMessage || "Impossible d'enregistrer votre email pour le moment."}
         </p>
       ) : null}

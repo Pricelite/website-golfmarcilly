@@ -22,7 +22,7 @@ import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 
 export const metadata = buildMetadata({
-  title: "45 trous aux portes d'Orléans",
+  title: "Golf de Marcilly : 45 trous près d’Orléans",
   description:
     "Découvrez les parcours, le restaurant La Bergerie, les cours et les événements du Golf de Marcilly, aux portes d'Orléans.",
   path: "/",

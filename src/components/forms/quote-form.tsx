@@ -3,6 +3,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { parisDateKey } from "@/lib/site-conditions";
+import { FORM_NETWORK_ERROR } from "@/lib/api/form-feedback";
 
 type FormState = "idle" | "loading" | "success" | "error";
 type ApiErrorPayload = {
@@ -12,6 +13,7 @@ type ApiErrorPayload = {
 export function QuoteForm() {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("Votre demande de devis a bien été reçue par le site.");
   const submitting = useRef(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -41,10 +43,12 @@ export function QuoteForm() {
         return;
       }
 
+      const result = await response.json().catch(() => null);
+      if (typeof result?.message === "string") setConfirmationMessage(result.message);
       form.reset();
       setState("success");
     } catch {
-      setErrorMessage("Une erreur est survenue. Merci de réessayer.");
+      setErrorMessage(FORM_NETWORK_ERROR);
       setState("error");
     } finally {
       submitting.current = false;
@@ -153,7 +157,7 @@ export function QuoteForm() {
 
       {state === "success" ? (
         <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          Votre demande de devis a bien été reçue par le site.
+            {confirmationMessage}
         </p>
       ) : null}
 

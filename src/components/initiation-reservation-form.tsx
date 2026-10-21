@@ -56,7 +56,7 @@ export default function InitiationReservationForm() {
       });
       const result = await response.json();
       if (!response.ok || !result.ok) {
-        if (response.status === 409) { setTime(""); void loadSlots(); }
+        if (response.status === 409 && result.code !== "duplicate") { setTime(""); void loadSlots(); }
         throw new Error(result.error || "L’envoi a échoué. Merci de réessayer.");
       }
       setSuccess(result.message);

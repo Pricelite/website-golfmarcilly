@@ -9,8 +9,8 @@ import {
   parseTrimmedString,
 } from "@/lib/api/public-form-validation";
 import { methodNotAllowed } from "@/lib/api/responses";
-import { buildMailApiErrorResponse } from "@/lib/email/api-response";
-import { sendMail } from "@/lib/email/mailer";
+import { buildMailApiErrorResponse, mailFailureStatus, mailFailureHeaders } from "@/lib/email/api-response";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
 import { buildQuoteEmail } from "@/lib/form-emails";
 import { parseQuoteDate } from "@/lib/api/quote-date";
 import { isValidQuoteParticipants } from "@/lib/api/quote-participants";
@@ -97,20 +97,26 @@ export async function POST(request: Request) {
   const emailContent = buildQuoteEmail(payload);
 
   try {
-    await sendMail({
-      to: clubEmail,
-      toName: clubEmailName,
-      subject: emailContent.subject,
-      text: emailContent.text,
-      html: emailContent.html,
-      replyTo: payload.email,
-      replyToName: payload.company,
+    const result = await sendDurableFormMail({
+      namespace: "quote-email-dedupe",
+      entry: { form: "quote", reason: "quote-mail", nom: "", prenom: "", entreprise: payload.company, telephone: "", email: payload.email, message: emailContent.text },
+      mail: {
+        to: clubEmail,
+        toName: clubEmailName,
+        subject: emailContent.subject,
+        text: emailContent.text,
+        html: emailContent.html,
+        replyTo: payload.email,
+        replyToName: payload.company,
+      },
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, queued: result.queued, message: result.queued
+      ? "Votre demande de devis a été enregistrée en secours. Notre équipe la traitera après le rétablissement de la messagerie."
+      : "Votre demande de devis a bien été reçue par le site." }, { status: result.queued ? 202 : 200 });
   } catch (error) {
     logApiError("api/quote", "mail_failed", {});
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: 503 });
+    return NextResponse.json(buildMailApiErrorResponse(error), { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 

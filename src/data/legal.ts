@@ -8,6 +8,11 @@ export const legalContent = {
   reviewed: false,
   // Source : extrait Kbis à jour au 15 mai 2025, fourni par le propriétaire le 19 octobre 2026.
   publisherIdentity: "GOLF DE MARCILLY - ORLEANS, société par actions simplifiée à associé unique, au capital social de 30 489,80 €, immatriculée sous le numéro 334 925 419 RCS Orléans. Siège social : Domaine de la Plaine, 45240 Marcilly-en-Villette.",
+  // Numéro recoupé le 21 octobre 2026 pour le SIREN 334925419 :
+  // https://www.societe.com/societe/golf-de-marcilly-orleans-334925419.html
+  // https://entreprises.lefigaro.fr/golf-de-marcilly-orleans-45/entreprise-334925419
+  // Cette vérification documentaire ne constitue pas une validation VIES.
+  vatNumber: "FR23334925419",
   siteCredit: "Conception et gestion du site : Anthony Welh.",
   // Confirmation du propriétaire du site le 14 octobre 2026.
   publicationDirector: "Anthony Welh",
