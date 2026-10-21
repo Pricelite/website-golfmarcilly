@@ -80,7 +80,7 @@ export default function EventsPage() {
           <SectionTitle
             eyebrow="À chaque projet son format"
             title="À vous d’imaginer la journée"
-            description="Réunir vos équipes, remercier vos clients ou simplement passer un bon moment ensemble : choisissez le point de départ, nous étudierons la suite avec vous."
+            description="Réunion, activité de groupe ou réception : choisissez un format et demandez un devis."
           />
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {eventFormats.map((format) => (

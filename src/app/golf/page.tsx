@@ -31,7 +31,7 @@ export default function GolfPage() {
     footgolf: coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Footgolf"),
     "pitch-putt-kaleka-18-trous": kalekaPricing,
     "kaleka-course": kalekaPricing,
-    "parcours-competitions-18-trous": coursePrices(["9 trous Grand Parcours", "18 trous Grand Parcours", "18 trous après 16h00"]),
+    "parcours-competitions-18-trous": coursePrices(["9 trous Grand Parcours", "18 trous Grand Parcours", "18 trous après 16 h 00"]),
   };
   const orderedCourses = [
     courses.find((course) => course.slug === "practice"),

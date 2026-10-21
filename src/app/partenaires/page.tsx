@@ -113,7 +113,7 @@ export default function PartnersPage() {
             <SectionTitle
               eyebrow="Devenir partenaire"
               title="Choisissez la façon de prendre part à l’aventure"
-              description="Votre projet peut vivre sur le terrain, auprès des sportifs ou sur nos supports de communication. Voici quelques pistes pour commencer la discussion."
+              description="Compétition, parcours, practice ou supports de communication : choisissez les espaces adaptés à votre activité."
             />
           </div>
 

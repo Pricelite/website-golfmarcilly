@@ -29,7 +29,7 @@ export const homeFaqs = [
   {
     question: "Le Golf de Marcilly convient-il aux débutants ?",
     answer:
-      "Oui. L'offre combine practice, Kaleka course aller, parcours d'initiation et accompagnement par des enseignants pour démarrer dans de très bonnes conditions.",
+      "Oui. Le practice, les parcours Kaleka et découverte, ainsi que les cours avec un enseignant permettent de débuter à son rythme.",
   },
   {
     question: "Peut-on venir uniquement pour déjeuner au restaurant ?",
@@ -44,6 +44,6 @@ export const homeFaqs = [
   {
     question: "Comment réserver un départ ou un cours ?",
     answer:
-      "Le bouton de réservation présent dans le header et en bas des sections mène à la prise de contact ou à la réservation. Vous pouvez aussi nous appeler directement.",
+      "Utilisez « Réserver un départ » pour accéder aux départs. Pour un cours, contactez le pro de votre choix. Vous pouvez aussi appeler l’accueil.",
   },
 ] as const;

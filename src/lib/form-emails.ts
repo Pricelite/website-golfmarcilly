@@ -10,7 +10,7 @@ function escapeHtml(value: string): string {
 }
 
 function line(label: string, value: string) {
-  return `${label}: ${value || "-"}`;
+  return `${label} : ${value || "-"}`;
 }
 
 export function buildContactEmail(input: {
@@ -30,13 +30,13 @@ export function buildContactEmail(input: {
   const text = [
     `Nouvelle demande ${contextLabel.toLowerCase()}`,
     "",
-    line("Prenom", input.firstName),
+    line("Prénom", input.firstName),
     line("Nom", input.lastName),
-    line("Telephone", input.phone ?? "-"),
+    line("Téléphone", input.phone ?? "-"),
     line("Email", input.email),
     line("Objet", input.subject ?? "-"),
     "",
-    "Message:",
+    "Message :",
     input.message,
   ].join("\n");
 
@@ -45,9 +45,9 @@ export function buildContactEmail(input: {
       <h2 style="margin:0 0 12px">Nouvelle demande ${escapeHtml(contextLabel.toLowerCase())}</h2>
       <table style="border-collapse:collapse;width:100%;max-width:640px">
         <tbody>
-          <tr><td style="padding:6px 0;font-weight:700">Prenom</td><td style="padding:6px 0">${escapeHtml(input.firstName)}</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Prénom</td><td style="padding:6px 0">${escapeHtml(input.firstName)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Nom</td><td style="padding:6px 0">${escapeHtml(input.lastName)}</td></tr>
-          <tr><td style="padding:6px 0;font-weight:700">Telephone</td><td style="padding:6px 0">${escapeHtml(input.phone ?? "-")}</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Téléphone</td><td style="padding:6px 0">${escapeHtml(input.phone ?? "-")}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Email</td><td style="padding:6px 0">${escapeHtml(input.email)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Objet</td><td style="padding:6px 0">${escapeHtml(input.subject ?? "-")}</td></tr>
         </tbody>
@@ -77,11 +77,11 @@ export function buildQuoteEmail(input: {
     "",
     line("Entreprise / organisateur", input.company),
     line("Email", input.email),
-    line("Type d'evenement", input.eventType),
+    line("Type d’événement", input.eventType),
     line("Participants", input.participants ?? "-"),
     line("Date souhaitée", dateLabel),
     "",
-    "Besoin detaille:",
+    "Besoin détaillé :",
     input.details,
   ].join("\n");
 
@@ -92,13 +92,13 @@ export function buildQuoteEmail(input: {
         <tbody>
           <tr><td style="padding:6px 0;font-weight:700">Entreprise / organisateur</td><td style="padding:6px 0">${escapeHtml(input.company)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Email</td><td style="padding:6px 0">${escapeHtml(input.email)}</td></tr>
-          <tr><td style="padding:6px 0;font-weight:700">Type d'evenement</td><td style="padding:6px 0">${escapeHtml(input.eventType)}</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Type d’événement</td><td style="padding:6px 0">${escapeHtml(input.eventType)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Participants</td><td style="padding:6px 0">${escapeHtml(input.participants ?? "-")}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Date souhaitée</td><td style="padding:6px 0">${escapeHtml(dateLabel)}</td></tr>
         </tbody>
       </table>
       <div style="margin-top:18px">
-        <p style="margin:0 0 8px;font-weight:700">Besoin detaille</p>
+        <p style="margin:0 0 8px;font-weight:700">Besoin détaillé</p>
         <p style="margin:0;white-space:pre-wrap">${escapeHtml(input.details)}</p>
       </div>
     </div>

@@ -80,7 +80,7 @@ export const pricingSections: PricingSection[] = [
         note: "Jeunes licenciés de moins de 20 ans : 30 €",
       },
       {
-        label: "18 trous après 16h00",
+        label: "18 trous après 16 h 00",
         values: ["Licence obligatoire", "39 €"],
       },
     ],
@@ -107,7 +107,7 @@ export const pricingSections: PricingSection[] = [
     ],
   },
   {
-    title: "27 trous temps plein 7j/7",
+    title: "27 trous à temps plein, 7 j/7",
     id: "abonnements",
     cta: { href: "/contact#reservation", label: "Se renseigner sur cet abonnement" },
     description: "Abonnements 2026 officiels.",
@@ -134,7 +134,7 @@ export const pricingSections: PricingSection[] = [
     footnotes: ["* 1 mois offert si paiement comptant."],
   },
   {
-    title: "45 trous temps plein 7j/7",
+    title: "45 trous à temps plein, 7 j/7",
     id: "abonnements-temps-plein",
     cta: { href: "/contact#reservation", label: "Choisir un abonnement" },
     description: "Abonnements temps plein et offres entreprise.",
@@ -147,7 +147,7 @@ export const pricingSections: PricingSection[] = [
       { label: "Couple 36 ans - 74 ans", values: ["Annuel", "2292 €*"] },
       { label: "75 ans et plus", values: ["Annuel", "936 €*"] },
       { label: "Couple 75 ans et plus", values: ["Annuel", "1596 €*"] },
-      { label: "Offre 2ème club", values: ["Annuel", "750 €"] },
+      { label: "Offre 2e club", values: ["Annuel", "750 €"] },
       {
         label: "Carte entreprise",
         values: ["Sur devis", "de 2100 € à 4000 € HT"],

@@ -321,7 +321,7 @@ export default function RestaurantReservationModal({
         <div className="fixed inset-0 z-[100]">
           <button
             type="button"
-            aria-label="Fermer la fenetre de reservation"
+            aria-label="Fermer la fenêtre de réservation"
             className="absolute inset-0 bg-emerald-950/55"
             onClick={closeModal}
           />
