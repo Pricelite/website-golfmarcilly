@@ -26,7 +26,7 @@ export async function DailyMenuSection() {
   const today = parisDateKey();
   let published: DailyMenu | null = null;
   let unavailable = false;
-  try { published = await getPublishedMenu(today); }
+  try { published = process.env.PREVIEW_MODE === "true" ? { date: dailyMenuExampleDate, ...dailyMenuExample } : await getPublishedMenu(today); }
   catch { unavailable = true; }
   const activeMenu: DailyMenu = published && published.date >= dailyMenuExampleDate
     ? published

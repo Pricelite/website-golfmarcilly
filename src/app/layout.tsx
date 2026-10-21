@@ -58,6 +58,9 @@ export default function RootLayout({
           Aller au contenu
         </a>
         <Header />
+        {process.env.PREVIEW_MODE === "true" ? <aside className="border-b border-amber-300 bg-amber-50 px-4 py-3 text-center text-sm leading-6 text-emerald-950">
+          <strong>Préversion privée — démonstration uniquement.</strong> Les envois et l’administration sont désactivés. Les créneaux et la carte sont des exemples. Les liens externes ouvrent les services réels.
+        </aside> : null}
         <main id="main-content">{children}</main>
         <Footer />
         <MobileActions />
