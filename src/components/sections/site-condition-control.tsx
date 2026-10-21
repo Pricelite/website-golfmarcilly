@@ -20,7 +20,8 @@ export function SiteConditionControl({ condition, label, editable }: { condition
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => { setCurrent(condition); }, [condition]);
-  const statusClass = `inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2 py-1 text-xs font-semibold before:mr-1.5 before:inline-block before:h-1.5 before:w-1.5 before:rounded-full ${tones[current.status]}`;
+  const statusLabel = current.status === "open" && current.reason === "Carotté" ? "Carotté" : labels[current.status];
+  const statusClass = `inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2 py-1 text-xs font-semibold before:mr-1.5 before:inline-block before:h-1.5 before:w-1.5 before:rounded-full ${current.status === "open" && current.reason ? "border-amber-200 bg-amber-50 text-amber-900 before:bg-amber-500" : tones[current.status]}`;
 
   async function save(status: "open" | "closed", note: string) {
     if (busy) return;
@@ -45,14 +46,15 @@ export function SiteConditionControl({ condition, label, editable }: { condition
   }
 
   return <div className="relative shrink-0">
-    {editable ? <button type="button" aria-label={`Modifier l’état de ${label} : ${labels[current.status]}`} aria-expanded={editing}
+    {editable ? <button type="button" aria-label={`Modifier l’état de ${label} : ${statusLabel}`} aria-expanded={editing}
       className={`${statusClass} transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700`}
-      onClick={() => { setEditing(value => !value); setClosing(false); setError(""); }}>{labels[current.status]} <span aria-hidden="true" className="ml-1 text-[10px]">▾</span></button> :
-      <span className={statusClass}>{labels[current.status]}</span>}
+      onClick={() => { setEditing(value => !value); setClosing(false); setError(""); }}>{statusLabel} <span aria-hidden="true" className="ml-1 text-[10px]">▾</span></button> :
+      <span className={statusClass}>{statusLabel}</span>}
     {editable && editing ? <div role="group" aria-label={`Choisir l’état de ${label}`} onKeyDown={event => { if (event.key === "Escape") setEditing(false); }} className="absolute right-0 top-full z-20 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-xl border border-emerald-950/15 bg-white p-3 text-emerald-950 shadow-xl">
       <p className="text-xs font-semibold">{label}</p>
-      <div className="mt-3 flex gap-2">
+      <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" disabled={busy} onClick={() => void save("open", "")} className="rounded-full bg-emerald-100 px-3 py-2 text-xs font-semibold text-emerald-900 disabled:opacity-50">Ouvert</button>
+        <button type="button" disabled={busy} onClick={() => void save("open", "Carotté")} className="rounded-full bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-900 disabled:opacity-50">Carotté</button>
         <button type="button" disabled={busy} onClick={() => setClosing(true)} className="rounded-full bg-rose-100 px-3 py-2 text-xs font-semibold text-rose-900 disabled:opacity-50">Fermé</button>
       </div>
       {closing ? <form onSubmit={saveClosure} className="mt-3">

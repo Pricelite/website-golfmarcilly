@@ -15,7 +15,7 @@ export const restaurantFaqs = [
   {
     question: "Le restaurant est-il accessible sans jouer au golf ?",
     answer:
-      "Oui. La Bergerie accueille les golfeurs comme les visiteurs extérieurs, sur réservation conseillée selon l'affluence.",
+      "Oui. La Bergerie accueille les golfeurs et les visiteurs extérieurs. La réservation est conseillée selon l’affluence.",
   },
   {
     question: "Peut-on privatiser le restaurant ?",
@@ -25,7 +25,7 @@ export const restaurantFaqs = [
   {
     question: "Proposez-vous des menus groupes ou séminaire ?",
     answer:
-      "Oui. Des menus dédiés peuvent être construits selon le nombre d'invités, le timing et le niveau de prestation attendu.",
+      "Oui. Les menus peuvent être adaptés au nombre d’invités, au programme et aux prestations souhaitées.",
   },
 ] as const;
 

@@ -73,7 +73,7 @@ export default async function HomePage() {
             <div className="relative aspect-[16/10] overflow-hidden">
               <Image src={course.slug === "practice" ? "/images/practice-golf.png" : course.slug === "parcours-decouverte-9-trous" ? "/images/decouverte-photo.webp" : course.slug === "parcours-competitions-18-trous" ? "/images/parcours-18t-competition.jpg" : course.image} alt={course.title} fill sizes="(max-width: 640px) calc((100vw - 44px) / 2), (max-width: 1024px) 45vw, 286px" className="object-cover" />
             </div>
-            <div className="p-4"><h3 className="font-serif text-lg leading-6 sm:text-xl">{course.slug === "pitch-putt-kaleka-18-trous" ? "Kaleka course aller et retour" : course.title}</h3><p className="mt-2 text-xs leading-5 text-emerald-800">{course.level} <span aria-hidden="true">→</span></p></div>
+            <div className="p-4"><h3 className="font-serif text-lg leading-6 sm:text-xl">{course.slug === "pitch-putt-kaleka-18-trous" ? "Kaleka course 18 trous" : course.title}</h3><p className="mt-2 text-xs leading-5 text-emerald-800">{course.level} <span aria-hidden="true">→</span></p></div>
           </Link>)}
         </div>
       </section>
@@ -117,7 +117,7 @@ export default async function HomePage() {
         <article id="enseignement" className="scroll-mt-28 rounded-3xl border border-emerald-950/15 bg-white p-6 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-800">Cours et école de golf</p>
           <h2 className="mt-3 font-serif text-3xl">Progressez avec nos enseignants</h2>
-          <div className="mt-5 flex flex-wrap gap-4">{teachingPros.map(pro => <div key={pro.name} className="w-20 text-center"><Image src={pro.image} alt={pro.name} width={80} height={80} sizes="80px" className="h-20 w-20 rounded-full object-cover object-top" /><p className="mt-2 text-xs leading-5 text-emerald-950/80">{pro.name}</p></div>)}</div>
+          <div className="mt-5 flex flex-wrap gap-4">{teachingPros.map(pro => <div key={pro.name} className="w-20 text-center"><Image src={pro.image} alt={pro.name} width={80} height={80} sizes="80px" className="h-20 w-20 rounded-2xl object-cover object-top" /><p className="mt-2 text-xs leading-5 text-emerald-950/80"><span className="block">{pro.name.split(" ")[0]}</span><span className="block">{pro.name.split(" ").slice(1).join(" ")}</span></p></div>)}</div>
           <p className="mt-5 text-sm leading-7 text-emerald-950/80">École de golf pour les enfants, cours collectifs et particuliers pour les adultes. Retrouvez les formules et les contacts des pros.</p>
           <div className="mt-5"><CTAButton href="/enseignement">Choisir mon cours</CTAButton></div>
         </article>

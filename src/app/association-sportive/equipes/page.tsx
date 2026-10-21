@@ -62,7 +62,7 @@ export default function AssociationTeamsPage() {
         </section>)}
         <div className="mt-14 border-t border-emerald-950/15 pt-8">
           <h2 className="font-serif text-2xl text-emerald-950">Vous avez une photo d’équipe ou un résultat à ajouter ?</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-950/75">Cette page pourra être complétée avec les portraits, les compositions et les résultats transmis par l’association sportive.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-950/75">Transmettez vos photos d’équipe et vos résultats à l’association sportive.</p>
           <div className="mt-5"><CTAButton href="/contact" variant="secondary">Contacter le golf</CTAButton></div>
         </div>
       </div>

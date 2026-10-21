@@ -151,7 +151,7 @@ export default async function AssociationPage() {
       <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier 2027 de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
-          <p className="mt-4 text-sm text-stone-100/80">Choisissez un mois et, pour les vacances scolaires, la zone A, B ou C. Tous les repères du fichier fourni sont visibles dans « Toutes les zones ».</p>
+          <p className="mt-4 text-sm text-stone-100/80">Choisissez un mois et, pour les vacances scolaires, la zone A, B ou C.</p>
           {calendar.unavailable ? <p role="status" className="mt-8 rounded-2xl bg-white p-6 text-emerald-950">Le calendrier est momentanément indisponible. Réessayez dans quelques instants ou contactez l’accueil au {siteConfig.phoneDisplay}.</p> : <AssociationCalendar events={calendar.events} initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />}
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {[
@@ -177,7 +177,7 @@ export default async function AssociationPage() {
             </a>
             <div>
               <h2 className="font-serif text-3xl text-emerald-950">SwingFlow</h2>
-              <p className="mt-4 text-sm leading-7 text-emerald-950/75">Avec SwingFlow, les joueurs et les coachs disposent d’un espace pour retrouver leurs séances, suivre leurs progrès et garder leurs objectifs en vue au fil de la saison.</p>
+              <p className="mt-4 text-sm leading-7 text-emerald-950/75">Retrouvez vos séances, vos progrès et vos objectifs de saison dans un même espace.</p>
               <a href="https://swingflow.fr/" target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold text-emerald-900 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">Découvrir SwingFlow ↗</a>
             </div>
           </div>

@@ -1,7 +1,12 @@
-const golfOpeningHours = "Du lundi au dimanche, de 8 h 30 à 19 h";
+const golfOpeningSchedule = [
+  { days: "Lundi au vendredi", hours: "de 8h30 à 19h00" },
+  { days: "Samedi et dimanche", hours: "de 8h00 à 20h00" },
+] as const;
+const golfOpeningHours = golfOpeningSchedule.map(slot => `${slot.days} ${slot.hours}`).join(". ");
 
 export const siteConfig = {
   golfOpeningHours,
+  golfOpeningSchedule,
   name: "Golf de Marcilly",
   legalName: "Golf de Marcilly-Orléans",
   url: "https://www.marcilly.com",
