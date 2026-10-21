@@ -13,7 +13,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "Golf / Parcours",
   description:
-    "Parcours 18 trous, 9 trous, pitch & putt, practice et formats loisirs pour jouer au golf près d'Orléans dans le Loiret.",
+    "Parcours 18 trous, 9 trous, Kaleka course aller, practice et formats loisirs pour jouer au golf près d'Orléans dans le Loiret.",
   path: "/golf",
 });
 
@@ -24,13 +24,13 @@ export default function GolfPage() {
     ...greenFees,
     rows: greenFees.rows.filter(row => labels.includes(row.label)).map(row => displayLabel ? { ...row, label: displayLabel } : row),
   } : undefined;
-  const kalekaPricing = coursePrices(["18 trous Pitch & Putt ou Kaleka"], "18 trous Kaleka");
+  const kalekaPricing = coursePrices(["18 trous Kaleka course aller et retour"]);
   const pricingByCourse: Record<string, PricingSection | undefined> = {
     practice: practicePricing,
     "parcours-decouverte-9-trous": coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Découverte"),
     footgolf: coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Footgolf"),
-    "pitch-putt-kaleka-18-trous": coursePrices(["18 trous Pitch & Putt ou Kaleka"], "18 trous Pitch & Putt"),
-    "kaleka-course": kalekaPricing ? { ...kalekaPricing, footnotes: ["Le plan présente une boucle de 9 trous ; le tarif indiqué concerne 18 trous."] } : undefined,
+    "pitch-putt-kaleka-18-trous": kalekaPricing,
+    "kaleka-course": kalekaPricing,
     "parcours-competitions-18-trous": coursePrices(["9 trous Grand Parcours", "18 trous Grand Parcours", "18 trous après 16h00"]),
   };
   const orderedCourses = [
@@ -74,8 +74,8 @@ export default function GolfPage() {
                 key={course.slug}
                 first={course}
                 second={kaleka}
-                firstLabel="Pitch & Putt"
-                secondLabel="Kaleka course"
+                firstLabel="Kaleka course aller"
+                secondLabel="Kaleka course retour"
                 firstPricing={pricingByCourse[course.slug]}
                 secondPricing={pricingByCourse["kaleka-course"]}
                 headingLevel="h2"
@@ -88,6 +88,11 @@ export default function GolfPage() {
                 action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}
               />)}
         </div>
+        <aside className="mt-8 rounded-3xl border border-emerald-950/15 bg-emerald-50/60 p-6">
+          <h2 className="font-serif text-2xl">Avant de choisir votre départ</h2>
+          <p className="mt-3 text-sm leading-7 text-emerald-950/85">La licence de golf est obligatoire pour accéder au grand parcours. Vous venez pour la première fois ? Contactez l’accueil pour préparer votre venue, choisir votre parcours et connaître les possibilités de location de matériel.</p>
+          <div className="mt-4"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton></div>
+        </aside>
         <div className="mt-8 flex flex-wrap gap-3">
           <CTAButton href="/tarifs">Consulter les tarifs</CTAButton>
           <CTAButton href={siteConfig.reservationUrl} variant="secondary">Réserver un départ</CTAButton>

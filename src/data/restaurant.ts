@@ -61,46 +61,16 @@ export const restaurantGallery = [
     "description": "Un dessert dressé sur ardoise avec glace et crème fouettée."
   },
   {
-    "src": "/restaurant/gallery/salade.webp",
-    "alt": "Salade avec crevettes, concombre, tomates et œufs",
-    "title": "De la couleur dans l’assiette",
-    "description": "Une salade composée, photographiée en cuisine."
-  },
-  {
     "src": "/restaurant/gallery/preparation-ananas.webp",
     "alt": "Découpe d’un ananas sur un plan de travail",
     "title": "Les gestes en cuisine",
     "description": "La préparation des fruits, avant le dressage."
   },
   {
-    "src": "/restaurant/gallery/dessert-brioche.webp",
-    "alt": "Tranches de brioche avec glace, caramel et crème fouettée",
-    "title": "Une pause gourmande",
-    "description": "Un dessert dressé sur ardoise."
-  },
-  {
-    "src": "/images/accueil-club-house.png",
-    "alt": "Vue aérienne du club-house et du golf de Marcilly",
-    "title": "Le cadre du golf",
-    "description": "Une vue du club-house et des espaces qui l’entourent."
-  },
-  {
     "src": "/restaurant/gallery/dressage-plats.webp",
     "alt": "Assiettes alignées avec frites et salade en cuisine",
     "title": "Prêts pour le service",
     "description": "Les assiettes et leurs accompagnements au dressage."
-  },
-  {
-    "src": "/restaurant/gallery/dessert-chocolat.webp",
-    "alt": "Dessert sur une assiette blanche avec décor de chocolat",
-    "title": "La touche sucrée",
-    "description": "Un dessert et son décor de chocolat."
-  },
-  {
-    "src": "/restaurant/gallery/plancha.webp",
-    "alt": "Cuisson des aliments sur la plancha du restaurant",
-    "title": "Côté cuisine",
-    "description": "Un aperçu des préparations à la plancha."
   },
   {
     "src": "/restaurant/gallery/dressage-desserts.webp",

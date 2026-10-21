@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
+import { parisDateKey } from "@/lib/site-conditions";
+import { FORM_NETWORK_ERROR } from "@/lib/api/form-feedback";
 
 type FormState = "idle" | "loading" | "success" | "error";
 type ApiErrorPayload = {
@@ -11,8 +13,15 @@ type ApiErrorPayload = {
 export function QuoteForm() {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("Votre demande de devis a bien été reçue par le site.");
+  const submitting = useRef(false);
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submitting.current || state === "success") return;
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    submitting.current = true;
     setState("loading");
     setErrorMessage("");
 
@@ -34,16 +43,21 @@ export function QuoteForm() {
         return;
       }
 
+      const result = await response.json().catch(() => null);
+      if (typeof result?.message === "string") setConfirmationMessage(result.message);
+      form.reset();
       setState("success");
     } catch {
-      setErrorMessage("Une erreur est survenue. Merci de réessayer.");
+      setErrorMessage(FORM_NETWORK_ERROR);
       setState("error");
+    } finally {
+      submitting.current = false;
     }
   }
 
   return (
     <form
-      action={handleSubmit}
+      onSubmit={handleSubmit}
       className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
     >
       <div className="rounded-[24px] border border-emerald-950/8 bg-stone-50 px-4 py-4 text-sm leading-7 text-emerald-950/72">
@@ -109,6 +123,10 @@ export function QuoteForm() {
         </label>
       </div>
 
+      <label className="block text-sm font-medium text-emerald-950">Date souhaitée (facultatif)
+        <input type="date" name="desiredDate" min={parisDateKey(new Date())} className="mt-2 block min-h-12 w-full min-w-0 rounded-2xl border border-emerald-950/20 bg-stone-50 px-4 py-3" />
+        <span className="mt-1 block text-xs text-emerald-950/75">Laissez vide si votre date reste à définir.</span>
+      </label>
       <label className="block text-sm font-medium text-emerald-950">
         <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
           Besoin détaillé
@@ -129,7 +147,8 @@ export function QuoteForm() {
           Date, restauration, activité golf : partagez ce qui compte pour vous dans votre message.
         </p>
         <button
-          className="site-button rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-950/15"
+          disabled={state === "loading" || state === "success"}
+          className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm"
           type="submit"
         >
           {state === "loading" ? "Envoi..." : "Demander mon devis"}
@@ -137,13 +156,13 @@ export function QuoteForm() {
       </div>
 
       {state === "success" ? (
-        <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          Votre demande de devis a bien été reçue par le site.
+        <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {confirmationMessage}
         </p>
       ) : null}
 
       {state === "error" ? (
-        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {errorMessage || "Une erreur est survenue. Merci de réessayer."}
         </p>
       ) : null}

@@ -78,8 +78,7 @@ export const restaurantData: RestaurantData = {
   name: "La Bergerie",
   intro: {
     paragraphs: [
-      "Le restaurant La Bergerie vous propose de nombreuses possibilités pour votre réception, que ce soit à titre professionnel ou personnel.",
-      "N'hésitez pas à nous contacter pour nous faire part de vos envies et nous vous retournerons un devis sur-mesure.",
+      "Repas de groupe, réunion ou réception : indiquez la date, le nombre de convives et les prestations souhaitées pour recevoir un devis.",
     ],
     roomRental: "Possibilité de louer la salle sans nos services de restauration : 700 €",
     roomRentalNote: "Vaisselle et nappage en supplément.",

@@ -10,7 +10,7 @@ export function FormPrivacyNotice({ purpose }: FormPrivacyNoticeProps) {
       Les informations saisies sont utilisées par le Golf de Marcilly-Orléans
       pour {purpose}. Leur traitement est nécessaire pour répondre à votre
       demande et prendre, à votre demande, les mesures préalables à une
-      éventuelle prestation. Vous pouvez exercer vos droits auprès de{" "}
+      éventuelle prestation. Pour connaître vos droits et les moyens de les exercer, consultez{" "}
       <Link className="underline underline-offset-4" href="/politique-de-confidentialite">
         notre politique de confidentialité
       </Link>

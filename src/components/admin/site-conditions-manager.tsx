@@ -35,7 +35,7 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
     {localMode ? <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Prévisualisation locale : les états sont enregistrés sur cet ordinateur et visibles sur l’accueil local. Aucune modification n’est envoyée à Supabase.</p> : null}
     {message ? <p role="status" className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900">{message}</p> : null}
     {error ? <p role="alert" className="mt-4 rounded-xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
-    <p className="mt-5 text-sm leading-6 text-emerald-950/75">Tous les états passent automatiquement à « Ouvert » chaque nouveau jour. Si vous fermez un parcours ou un service, indiquez le motif : il sera visible sur l’accueil jusqu’à la fin de la journée.</p>
+    <p className="mt-5 text-sm leading-6 text-emerald-950/75">Les équipements sont ouverts par défaut. Vos modifications restent appliquées jusqu’à votre prochaine intervention, même les jours suivants. Pour une fermeture, indiquez le motif visible sur l’accueil, puis repassez l’état à « Ouvert » lors de la réouverture.</p>
     <div className="mt-6 grid gap-4 md:grid-cols-2">
       {conditionItems.map(item => {
         const current = byId.get(item.id);

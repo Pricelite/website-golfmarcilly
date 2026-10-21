@@ -29,7 +29,7 @@ type DayOption = {
 };
 
 const DEFAULT_TRIGGER_CLASS_NAME =
-  "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-900/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
+  "site-button-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
 
 const SUCCESS_MESSAGE =
   "Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre réservation.";
@@ -336,7 +336,7 @@ export default function RestaurantReservationModal({
               className="w-full max-w-5xl overflow-y-auto rounded-3xl border border-emerald-900/15 bg-white p-5 shadow-2xl max-h-[95dvh] sm:p-6"
             >
               <div className="flex items-start justify-between gap-4">
-                <div>
+                <div className="min-w-0 flex-1">
                   <h2 id={titleId} className="font-[var(--font-display)] text-3xl text-emerald-950">
                     Demande de réservation restaurant
                   </h2>
@@ -347,7 +347,7 @@ export default function RestaurantReservationModal({
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="site-button inline-flex h-10 w-10 items-center justify-center rounded-full text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                  className="site-button inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                   aria-label="Fermer"
                 >
                   ×

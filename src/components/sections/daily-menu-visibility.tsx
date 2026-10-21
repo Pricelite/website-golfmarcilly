@@ -14,13 +14,9 @@ export function DailyMenuVisibility({ children }: { children: ReactNode }) {
     return () => window.clearInterval(timer);
   }, []);
 
-  if (!visible) {
-    return (
-      <p className="px-5 py-5 text-sm leading-6 sm:px-6">
-        La carte du jour est affichée tous les jours de 10 h à 15 h.
-      </p>
-    );
-  }
-
-  return children;
+  if (visible) return children;
+  return <div className="px-5 py-4 text-sm leading-6 sm:px-6">
+    <p>La carte est affichée de 10 h à 15 h, heure de Paris. Vous pouvez aussi la consulter ci-dessous.</p>
+    <details className="mt-3"><summary className="cursor-pointer py-2 font-semibold underline underline-offset-4">Consulter la carte</summary>{children}</details>
+  </div>;
 }

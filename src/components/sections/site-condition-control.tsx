@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { SiteCondition } from "@/data/site-conditions";
 
-const labels = { open: "Ouvert", closed: "Fermé", unknown: "Non renseigné" } as const;
+const labels = { open: "Ouvert", closed: "Fermé", unknown: "Non confirmé" } as const;
 const tones = {
   open: "border-emerald-200 bg-emerald-50 text-emerald-800 before:bg-emerald-600",
   closed: "border-rose-200 bg-rose-50 text-rose-800 before:bg-rose-600",

@@ -16,7 +16,7 @@ export const courses = [
     distance: "1 278 m",
     description:
       "Une boucle de 9 trous pour découvrir le golf et progresser à son rythme.",
-    image: "/images/decouverte-photo.png",
+    image: "/images/decouverte-photo.webp",
     imageAlt: "Green du parcours découverte du Golf de Marcilly entre deux arbres",
   },
   {
@@ -31,21 +31,21 @@ export const courses = [
   },
   {
     slug: "pitch-putt-kaleka-18-trous",
-    title: "Pitch & Putt",
+    title: "Kaleka course aller",
     level: "Tous niveaux",
-    distance: "18 trous",
+    distance: "9 trous",
     description:
-      "Un parcours pour découvrir le golf et travailler le petit jeu à Marcilly.",
+      "Un parcours de 9 trous pour découvrir le golf et travailler le petit jeu. Complété par les 9 trous du Kaleka course retour, il forme un ensemble de 18 trous sur deux parcours distincts.",
     image: "/images/pitch-and-putt-kaleka.jpeg",
   },
   {
     slug: "kaleka-course",
-    title: "Kaleka course",
+    title: "Kaleka course retour",
     level: "Tous niveaux",
     distance: "9 trous · 1 370 m",
-    description: "Un parcours de 9 trous plus sélectif, où la précision de la mise en jeu compte.",
+    description: "Un second parcours distinct de 9 trous, plus sélectif, où la précision de la mise en jeu compte. Avec le Kaleka course aller, l’ensemble compte 18 trous.",
     image: "/images/plan-kaleka-course.png",
-    imageAlt: "Plan des 9 trous du Kaleka course au Golf de Marcilly",
+    imageAlt: "Plan des 9 trous du Kaleka course retour au Golf de Marcilly",
     imageFit: "contain",
   },
   {

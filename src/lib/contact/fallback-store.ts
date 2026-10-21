@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 
 export type ContactFallbackEntry = {
+  form?: "quote" | "initiation" | "newsletter";
   receivedAt: string;
   reason: string;
   nom: string;
@@ -80,8 +81,10 @@ export async function getContactFallbackQueueSnapshot(): Promise<FallbackQueueSn
 
 function notification(row: QueueRow) {
   const entry = row.payload;
+  const labels = { quote: "Devis", initiation: "Initiation", newsletter: "Newsletter" };
+  const label = entry.form ? labels[entry.form] ?? "Contact" : "Contact";
   return {
-    subject: `[Fallback][Contact #${row.id}] ${entry.prenom} ${entry.nom}`,
+    subject: `[Fallback][${label} #${row.id}] ${entry.prenom} ${entry.nom}`.trim(),
     text: [
       "Message repris depuis la file de secours du site.",
       `Référence : ${row.id}`,

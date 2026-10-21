@@ -63,6 +63,7 @@ export function buildContactEmail(input: {
 }
 
 export function buildQuoteEmail(input: {
+  desiredDate?: string;
   company: string;
   email: string;
   eventType: string;
@@ -70,6 +71,7 @@ export function buildQuoteEmail(input: {
   details: string;
 }) {
   const subject = `[Devis] ${input.company} - ${input.eventType}`;
+  const dateLabel = input.desiredDate ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "Europe/Paris" }).format(new Date(`${input.desiredDate}T12:00:00Z`)) : "À définir";
   const text = [
     "Nouvelle demande de devis",
     "",
@@ -77,6 +79,7 @@ export function buildQuoteEmail(input: {
     line("Email", input.email),
     line("Type d'evenement", input.eventType),
     line("Participants", input.participants ?? "-"),
+    line("Date souhaitée", dateLabel),
     "",
     "Besoin detaille:",
     input.details,
@@ -91,6 +94,7 @@ export function buildQuoteEmail(input: {
           <tr><td style="padding:6px 0;font-weight:700">Email</td><td style="padding:6px 0">${escapeHtml(input.email)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Type d'evenement</td><td style="padding:6px 0">${escapeHtml(input.eventType)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Participants</td><td style="padding:6px 0">${escapeHtml(input.participants ?? "-")}</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Date souhaitée</td><td style="padding:6px 0">${escapeHtml(dateLabel)}</td></tr>
         </tbody>
       </table>
       <div style="margin-top:18px">

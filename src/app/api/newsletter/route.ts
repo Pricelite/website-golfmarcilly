@@ -8,8 +8,8 @@ import {
   parseTrimmedString,
 } from "@/lib/api/public-form-validation";
 import { methodNotAllowed } from "@/lib/api/responses";
-import { buildMailApiErrorResponse } from "@/lib/email/api-response";
-import { sendMail } from "@/lib/email/mailer";
+import { buildMailApiErrorResponse, mailFailureStatus, mailFailureHeaders } from "@/lib/email/api-response";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
 import { buildNewsletterEmail } from "@/lib/form-emails";
 import {
   consumeRateLimit,
@@ -74,18 +74,24 @@ export async function POST(request: Request) {
   const emailContent = buildNewsletterEmail({ email });
 
   try {
-    await sendMail({
-      to: clubEmail,
-      toName: clubEmailName,
-      subject: emailContent.subject,
-      text: emailContent.text,
-      html: emailContent.html,
-      replyTo: email,
+    const result = await sendDurableFormMail({
+      namespace: "newsletter-email-dedupe",
+      entry: { form: "newsletter", reason: "newsletter-mail", nom: "", prenom: "", entreprise: "", telephone: "", email, message: emailContent.text },
+      mail: {
+        to: clubEmail,
+        toName: clubEmailName,
+        subject: emailContent.subject,
+        text: emailContent.text,
+        html: emailContent.html,
+        replyTo: email,
+      },
     });
 
-    return NextResponse.json({ ok: true, email });
+    return NextResponse.json({ ok: true, email, queued: result.queued, message: result.queued
+      ? "Votre demande d’inscription a été enregistrée en secours et sera transmise au golf après le rétablissement de la messagerie."
+      : "Votre demande d’inscription a été transmise au golf." }, { status: result.queued ? 202 : 200 });
   } catch (error) {
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: 503 });
+    return NextResponse.json(buildMailApiErrorResponse(error), { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 

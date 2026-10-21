@@ -152,7 +152,7 @@ export function ContactForm({
 
       <div className="flex justify-end">
         <button
-          className="site-button rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-950/15 disabled:cursor-wait disabled:opacity-60"
+          className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm disabled:cursor-wait disabled:opacity-60"
           disabled={state === "loading"}
           type="submit"
         >
