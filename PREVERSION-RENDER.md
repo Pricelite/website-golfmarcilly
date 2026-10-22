@@ -1,7 +1,7 @@
 # Préversion de démonstration sur Render
 
 Service Node.js gratuit, branche `develop`. Build :
-`corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm build`.
+`corepack pnpm install --frozen-lockfile --prod=false && corepack pnpm build`.
 Démarrage : `pnpm start --hostname 0.0.0.0 --port $PORT`.
 Node : `NODE_VERSION=24`. Contrôle de santé : `/_preview-health`.
 
