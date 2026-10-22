@@ -76,10 +76,10 @@ export default async function HomePage() {
             <div className="p-4"><h3 className="font-serif text-lg leading-6 sm:text-xl">{course.slug === "pitch-putt-kaleka-18-trous" ? "Kaleka course 18 trous" : course.title}</h3><p className="mt-2 text-xs leading-5 text-emerald-800">{course.level} <span aria-hidden="true">→</span></p></div>
           </Link>)}
         </div>
-        {activeOffers.length > 0 ? <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-200/70 bg-amber-50/60 px-5 py-4">
-          <p className="font-serif text-xl text-emerald-950">Les offres du moment</p>
-          <PromoOffersModal label="Voir les offres" offers={activeOffers} />
-        </div> : null}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-200/70 bg-amber-50/60 px-5 py-4">
+          <p className="font-serif text-xl text-emerald-950">{activeOffers.length > 0 ? "Les offres du moment" : "Bons plans à venir"}</p>
+          <PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "À venir"} offers={activeOffers} />
+        </div>
       </section>
 
       <section aria-labelledby="discovery-title" className="border-y border-emerald-950/10 bg-emerald-50/70 py-10 sm:py-14">
