@@ -16,7 +16,10 @@ Variables :
 Ne pas importer `.env.local` et ne fournir aucune clé Supabase, Brevo, SMTP,
 Google Calendar, OPS ou mot de passe administrateur. La carte d’exemple vient
 du contenu public du dépôt, les créneaux sont fictifs et le calendrier de l’AS
-utilise son repli public existant. Le bandeau signale la démonstration.
+utilise son repli public existant. Les conditions du golf sont des états de
+démonstration, dont « Grand parcours aller : Carotté » ; elles ne suivent pas le
+fichier local ni les changements du site de production. Le bandeau signale la
+démonstration.
 
 Toutes les ressources sont protégées par authentification HTTP, sauf le contrôle
 de santé minimal. Les POST/PUT/PATCH/DELETE, l’administration et les diagnostics

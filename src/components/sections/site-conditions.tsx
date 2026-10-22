@@ -4,7 +4,7 @@ import { siteConfig } from "@/data/site";
 import { parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { SiteConditionControl } from "./site-condition-control";
 
-export function SiteConditions({ conditions, editable, unavailable = false }: { conditions: SiteCondition[]; editable: boolean; unavailable?: boolean }) {
+export function SiteConditions({ conditions, editable, unavailable = false, preview = false }: { conditions: SiteCondition[]; editable: boolean; unavailable?: boolean; preview?: boolean }) {
   const now = new Date();
   const today = parisDateKey(now);
   const dateLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(now);
@@ -61,7 +61,7 @@ export function SiteConditions({ conditions, editable, unavailable = false }: { 
           </div>
         </div>
         <footer className="mt-3 flex flex-wrap items-start justify-between gap-x-6 gap-y-2 text-xs leading-5 text-emerald-950/75">
-          <p>Les états indiquent les conditions d’accès. Pour le restaurant, consultez les <Link href="/restaurant#horaires-restaurant" className="underline underline-offset-4">horaires de service</Link>.</p>
+          <p>{preview ? "États de démonstration, non synchronisés en temps réel. " : ""}Les états indiquent les conditions d’accès. Pour le restaurant, consultez les <Link href="/restaurant#horaires-restaurant" className="underline underline-offset-4">horaires de service</Link>.</p>
 
         </footer>
         {unknownCount ? <p className="mt-3 text-sm leading-6 text-emerald-950/80">Un renseignement ? Appelez le <a className="font-semibold underline underline-offset-2" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p> : null}
