@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
@@ -21,12 +22,15 @@ export function Header() {
     }} className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-[#f7f4e9]/95 backdrop-blur-lg">
       <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
         <div className="shrink-0">
-          <Link className="block" href="/">
+          <Link className="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700" href="/" aria-label="Golf de Marcilly — Accueil">
+            <Image src="/images/LogoNoir.png" alt="" width={653} height={728} sizes="56px" className="h-14 w-auto shrink-0 object-contain" />
+            <span className="hidden min-[400px]:block">
             <span className="block font-serif text-xl text-emerald-950 sm:text-2xl">
               Golf de Marcilly
             </span>
             <span className="block text-xs uppercase tracking-[0.28em] text-emerald-700">
               Orléans | Loiret
+            </span>
             </span>
           </Link>
           <span className="mt-1 block xl:hidden"><HeaderMarcillyClock /></span>
@@ -60,7 +64,7 @@ export function Header() {
             </a>
             <HeaderMarcillyClock />
           </div>
-          <CTAButton href={siteConfig.reservationUrl}>Réserver un départ</CTAButton>
+          <CTAButton href={siteConfig.bookingEngineUrl}>Réserver un départ</CTAButton>
         </div>
 
         <div className="ml-auto flex items-center gap-2 xl:hidden">
@@ -108,7 +112,7 @@ export function Header() {
             <li>
               <CTAButton
                 className="w-full"
-                href={siteConfig.reservationUrl}
+                href={siteConfig.bookingEngineUrl}
                 variant="primary"
               >
                 Réserver un départ

@@ -95,7 +95,7 @@ export default function GolfPage() {
         </aside>
         <div className="mt-8 flex flex-wrap gap-3">
           <CTAButton href="/tarifs">Consulter les tarifs</CTAButton>
-          <CTAButton href={siteConfig.reservationUrl} variant="secondary">Réserver un départ</CTAButton>
+          <CTAButton href={siteConfig.bookingEngineUrl} variant="secondary">Réserver un départ</CTAButton>
         </div>
       </section>
     </>

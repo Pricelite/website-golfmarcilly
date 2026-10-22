@@ -59,7 +59,7 @@ export const pricingSections: PricingSection[] = [
   {
     title: "Green fees",
     id: "green-fees",
-    cta: { href: siteConfig.reservationUrl, label: "Réserver un départ" },
+    cta: { href: siteConfig.bookingEngineUrl, label: "Réserver un départ" },
     description: "Tarifs 2026 officiels pour les parcours.",
     columns: ["Non licencié", "Licencié"],
     rows: [
