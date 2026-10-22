@@ -22,7 +22,7 @@ export const siteConfig = {
   country: "France",
   countryCode: "FR",
   postalCode: "45240",
-  reservationUrl: "https://marcilly.reservations-golf.fr/",
+  alternateReservationUrl: "https://marcilly.reservations-golf.fr/",
   bookingEngineUrl: "https://golf-marcilly.book.teeitup.com/",
   flashGolfUrl: "https://www.flashgolf.app/",
   mapImageUrl:
