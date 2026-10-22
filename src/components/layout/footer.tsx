@@ -84,7 +84,7 @@ export function Footer() {
               </Link>
             </p>
             <p>
-              <Link className="hover:text-stone-100/75" href={siteConfig.reservationUrl}>
+              <Link className="hover:text-stone-100/75" href={siteConfig.alternateReservationUrl}>
                 Autre plateforme de réservation
               </Link>
             </p>
