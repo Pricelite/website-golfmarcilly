@@ -79,8 +79,13 @@ export function Footer() {
               <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
             </p>
             <p>
-              <Link className="hover:text-stone-100/75" href={siteConfig.reservationUrl}>
+              <Link className="hover:text-stone-100/75" href={siteConfig.bookingEngineUrl}>
                 Réserver un départ
+              </Link>
+            </p>
+            <p>
+              <Link className="hover:text-stone-100/75" href={siteConfig.reservationUrl}>
+                Autre plateforme de réservation
               </Link>
             </p>
           </div>
