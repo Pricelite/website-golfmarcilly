@@ -324,7 +324,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
               <div className="flex items-start justify-between gap-4">
                 <div className="max-w-2xl">
                   <p className="text-sm font-semibold uppercase tracking-[0.28em] text-amber-700/90">
-                    Bon plan du moment
+                    {totalOffers ? "Bon plan du moment" : "Bons plans"}
                   </p>
                   <h2 className="mt-3 font-serif text-3xl leading-tight sm:text-4xl" id={titleId}>
                     {totalOffers ? "✨ Nos Offres du Moment" : "Offres à venir bientôt"}
