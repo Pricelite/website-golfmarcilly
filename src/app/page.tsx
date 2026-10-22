@@ -61,7 +61,7 @@ export default async function HomePage() {
         title="45 trous aux portes d'Orléans"
       />
 
-      <SiteConditions conditions={conditions} editable={canEditConditions} unavailable={conditionsUnavailable} />
+      <SiteConditions conditions={conditions} editable={canEditConditions} unavailable={conditionsUnavailable} preview={process.env.PREVIEW_MODE === "true"} />
 
       <section aria-labelledby="courses-title" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">

@@ -22,3 +22,9 @@ export type SiteCondition = {
 export function emptyConditions(): SiteCondition[] {
   return conditionItems.map(item => ({ id: item.id, status: "open", reason: null, updatedAt: null }));
 }
+
+export function previewConditions(): SiteCondition[] {
+  return emptyConditions().map(condition => condition.id === "grand-parcours-aller"
+    ? { ...condition, reason: "Carotté" }
+    : condition);
+}

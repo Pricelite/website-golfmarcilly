@@ -2,7 +2,7 @@ import "server-only";
 
 import { readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { conditionItems, emptyConditions, type SiteCondition } from "@/data/site-conditions";
+import { conditionItems, emptyConditions, previewConditions, type SiteCondition } from "@/data/site-conditions";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { ConditionInput } from "./site-conditions";
 
@@ -36,6 +36,7 @@ async function readLocal(): Promise<SiteCondition[]> {
 }
 
 export async function listSiteConditions(): Promise<SiteCondition[]> {
+  if (process.env.PREVIEW_MODE === "true") return previewConditions();
   if (process.env.NODE_ENV === "development") return readLocal();
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return emptyConditions();
   const { data, error } = await createSupabaseAdminClient().from("site_conditions")
