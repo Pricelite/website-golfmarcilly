@@ -14,7 +14,7 @@ import {
   type TouchEvent,
 } from "react";
 
-import type { SiteOffer } from "@/data/offers";
+import { upcomingOfferPosters, type SiteOffer } from "@/data/offers";
 
 const AUTOPLAY_DELAY_MS = 5000;
 const CLOSE_ANIMATION_MS = 350;
@@ -47,6 +47,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   const titleId = useId();
   const descriptionId = useId();
   const totalOffers = offers.length;
+  const slideCount = totalOffers || upcomingOfferPosters.length;
 
   const particles = useMemo(
     () =>
@@ -92,35 +93,35 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   const goToSlide = useCallback(
     (index: number) => {
       setActiveIndex(() => {
-        if (totalOffers === 0) {
+        if (slideCount === 0) {
           return 0;
         }
 
-        return (index + totalOffers) % totalOffers;
+        return (index + slideCount) % slideCount;
       });
     },
-    [totalOffers],
+    [slideCount],
   );
 
   const goToNext = useCallback(() => {
     setActiveIndex((currentIndex) => {
-      if (totalOffers === 0) {
+      if (slideCount === 0) {
         return 0;
       }
 
-      return (currentIndex + 1) % totalOffers;
+      return (currentIndex + 1) % slideCount;
     });
-  }, [totalOffers]);
+  }, [slideCount]);
 
   const goToPrevious = useCallback(() => {
     setActiveIndex((currentIndex) => {
-      if (totalOffers === 0) {
+      if (slideCount === 0) {
         return 0;
       }
 
-      return (currentIndex - 1 + totalOffers) % totalOffers;
+      return (currentIndex - 1 + slideCount) % slideCount;
     });
-  }, [totalOffers]);
+  }, [slideCount]);
 
   useEffect(() => {
     return () => {
@@ -255,7 +256,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
       <button
         aria-haspopup="dialog"
         aria-expanded={isMounted}
-        className="relative inline-flex min-h-11 min-w-0 max-w-44 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+        className="relative inline-flex min-h-11 min-w-0 max-w-48 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
         onClick={openModal}
         ref={triggerRef}
         type="button"
@@ -324,16 +325,16 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
               <div className="flex items-start justify-between gap-4">
                 <div className="max-w-2xl">
                   <p className="text-sm font-semibold uppercase tracking-[0.28em] text-amber-700/90">
-                    {totalOffers ? "Bon plan du moment" : "Bons plans"}
+                    {totalOffers ? "Bon plan du moment" : "Bons plans à venir"}
                   </p>
                   <h2 className="mt-3 font-serif text-3xl leading-tight sm:text-4xl" id={titleId}>
-                    {totalOffers ? "✨ Nos Offres du Moment" : "Offres à venir bientôt"}
+                    {totalOffers ? "✨ Nos Offres du Moment" : "Black Friday 2027"}
                   </h2>
                   <p
                     className="mt-3 max-w-xl text-sm leading-7 text-emerald-950/72 sm:text-base"
                     id={descriptionId}
                   >
-                    {totalOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Retrouvez prochainement les nouvelles offres du Golf de Marcilly dans cet espace."}
+                    {totalOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez les visuels des offres annoncées pour novembre 2027."}
                   </p>
                 </div>
 
@@ -478,7 +479,27 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                     </div>
                   </div>
                 </div>
-              </div> : null}
+              </div> : (
+                <div className="mt-6 overflow-hidden rounded-[22px] border border-emerald-950/10 bg-white">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-950/10 px-4 py-3 sm:px-6">
+                    <p aria-live="polite" className="text-sm font-semibold text-emerald-950">
+                      {upcomingOfferPosters[activeIndex].title} · {activeIndex + 1} sur {upcomingOfferPosters.length}
+                    </p>
+                    <div className="flex gap-2">
+                      <button aria-label="Visuel précédent" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-950/15 text-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" onClick={goToPrevious} type="button">‹</button>
+                      <button aria-label="Visuel suivant" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-950/15 text-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" onClick={goToNext} type="button">›</button>
+                    </div>
+                  </div>
+                  <Image
+                    alt={upcomingOfferPosters[activeIndex].alt}
+                    className="h-auto w-full"
+                    height={upcomingOfferPosters[activeIndex].height}
+                    sizes="(max-width: 640px) calc(95vw - 56px), (max-width: 1024px) calc(90vw - 92px), 830px"
+                    src={upcomingOfferPosters[activeIndex].src}
+                    width={upcomingOfferPosters[activeIndex].width}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>,

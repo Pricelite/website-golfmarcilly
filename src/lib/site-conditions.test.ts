@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { parseConditionInput, visibleCondition } from "./site-conditions";
-import { conditionItems, emptyConditions } from "../data/site-conditions";
+import { conditionItems, emptyConditions, previewConditions } from "../data/site-conditions";
 
 test("a closed condition requires a short reason", () => {
   const id = "grand-parcours-aller";
@@ -29,9 +29,11 @@ test("manual closures remain until changed, including on following Paris days", 
   assert.deepEqual(visibleCondition(reopened), reopened);
 });
 
-test("all unset equipment starts open and explicit unknown states remain visible", () => {
-  assert.ok(emptyConditions().every(condition => condition.status === "open"));
-  assert.equal(visibleCondition({ id: "practice", status: "unknown", reason: null, updatedAt: null }).status, "open");
+test("unset equipment remains unconfirmed while the preview keeps its demo states", () => {
+  assert.ok(emptyConditions().every(condition => condition.status === "unknown"));
+  assert.equal(visibleCondition({ id: "practice", status: "unknown", reason: null, updatedAt: null }).status, "unknown");
+  assert.ok(previewConditions().every(condition => condition.status === "open"));
+  assert.equal(previewConditions().find(condition => condition.id === "grand-parcours-aller")?.reason, "Carotté");
   const unknown = { id: "practice" as const, status: "unknown" as const, reason: null, updatedAt: "2026-01-01T12:00:00Z" };
   assert.deepEqual(visibleCondition(unknown), unknown);
 });

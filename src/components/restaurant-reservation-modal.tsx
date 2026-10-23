@@ -283,16 +283,16 @@ export default function RestaurantReservationModal({
       });
 
       const result = (await response.json().catch(() => null)) as
-        | { ok?: boolean; acknowledgementSent?: boolean }
+        | { ok?: boolean; acknowledgementSent?: boolean; queued?: boolean; message?: string; error?: string }
         | null;
 
       if (!response.ok || !result?.ok) {
-        setApiError(getFormErrorMessage(response.status));
+        setApiError(response.status === 409 && result?.error ? result.error : getFormErrorMessage(response.status));
         return;
       }
 
       setLastSubmittedFingerprint(fingerprint);
-      setSuccessMessage(result.acknowledgementSent === false
+      setSuccessMessage(result.queued && result.message ? result.message : result.acknowledgementSent === false
         ? `${SUCCESS_MESSAGE} L’accusé de réception par email n’a pas pu vous être envoyé ; inutile de renvoyer votre demande.`
         : SUCCESS_MESSAGE);
       setForm(INITIAL_FORM);

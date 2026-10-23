@@ -20,11 +20,13 @@ export type SiteCondition = {
 };
 
 export function emptyConditions(): SiteCondition[] {
-  return conditionItems.map(item => ({ id: item.id, status: "open", reason: null, updatedAt: null }));
+  return conditionItems.map(item => ({ id: item.id, status: "unknown", reason: null, updatedAt: null }));
 }
 
 export function previewConditions(): SiteCondition[] {
-  return emptyConditions().map(condition => condition.id === "grand-parcours-aller"
-    ? { ...condition, reason: "Carotté" }
-    : condition);
+  return emptyConditions().map(condition => ({
+    ...condition,
+    status: "open",
+    reason: condition.id === "grand-parcours-aller" ? "Carotté" : null,
+  }));
 }
