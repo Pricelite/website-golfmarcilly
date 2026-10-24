@@ -18,6 +18,14 @@ Ce fichier s'applique à tout le dépôt. L'objectif est de livrer des changemen
 4. En cas de modification de configuration, de migration ou de parcours métier, décrire les prérequis de déploiement, la compatibilité avec les données existantes et la façon de revenir en arrière. Ne pas exécuter de migration, de déploiement ou d'opération sur les données de production sans demande explicite.
 5. Signaler clairement toute hypothèse ou limite qui empêche de conclure qu'un changement est prêt à être déployé. Ne jamais présenter un contrôle non exécuté comme réussi.
 
+## Flux Git et CI
+
+- Faire chaque changement de code sur une branche dédiée créée depuis `develop` à jour. Ne pas modifier directement `develop` ou `main`.
+- Finaliser chaque changement par une pull request vers `develop`.
+- Plusieurs pull requests peuvent être ouvertes simultanément en brouillon (`Draft`). N'en placer qu'une seule à la fois en état prête pour revue (`Ready for review`), dans l'ordre de création des pull requests.
+- Une fois la CI verte, prendre en charge la fusion de la pull request vers `develop`. Résoudre les conflits éventuels sur sa branche, relancer les contrôles nécessaires et attendre de nouveau une CI verte avant la fusion.
+- Exécuter les tâches lourdes (`typecheck`, `lint`, tests complets, build, etc.) une par une, jamais en parallèle.
+
 ## Exigences de production
 
 - Valider et borner les entrées côté serveur ; conserver les contrôles d'origine, de débit et d'authentification des routes concernées. Ne pas faire confiance aux seuls contrôles du navigateur.
