@@ -10,23 +10,33 @@ export const conditionItems = [
   { id: "chariots", label: "Chariots", group: "services", href: "/golf" },
 ] as const;
 
-export type ConditionId = (typeof conditionItems)[number]["id"];
+export type ConditionId = string;
 export type ConditionStatus = "open" | "closed" | "unknown";
-export type SiteCondition = {
-  id: ConditionId;
+export type ConditionGroup = "courses" | "services";
+export type ConditionItem = { id: string; label: string; group: ConditionGroup; href: string; position: number };
+export type ConditionState = { id: string; label: string; status: ConditionStatus };
+export const defaultStates: ConditionState[] = [
+  { id: "open", label: "Ouvert", status: "open" },
+  { id: "closed", label: "Fermé", status: "closed" },
+  { id: "unknown", label: "À confirmer", status: "unknown" },
+  { id: "carotte", label: "Carotté", status: "open" },
+];
+export type SiteCondition = ConditionItem & {
   status: ConditionStatus;
+  stateLabel: string | null;
   reason: string | null;
   updatedAt: string | null;
 };
 
 export function emptyConditions(): SiteCondition[] {
-  return conditionItems.map(item => ({ id: item.id, status: "unknown", reason: null, updatedAt: null }));
+  return conditionItems.map((item, position) => ({ ...item, position, status: "unknown", stateLabel: null, reason: null, updatedAt: null }));
 }
 
 export function previewConditions(): SiteCondition[] {
   return emptyConditions().map(condition => ({
     ...condition,
     status: "open",
-    reason: condition.id === "grand-parcours-aller" ? "Carotté" : null,
+    stateLabel: condition.id === "grand-parcours-aller" ? "Carotté" : null,
+    reason: null,
   }));
 }

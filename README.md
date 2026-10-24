@@ -79,6 +79,14 @@ styles/
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
+## Conditions du site dans le back-office
+
+Un administrateur du back-office personnel ouvre `/admin/contenu/conditions`. Il peut choisir un état pour chaque parcours ou service, ajouter un état réutilisable, ajouter un parcours ou service, et modifier son nom, sa rubrique et son lien interne. Les modifications publiées apparaissent dans « Conditions du jour » sur l’accueil. Une fermeture nécessite un motif.
+
+En développement, les états et le catalogue sont conservés dans des fichiers locaux au worktree. Pour partager ces données entre plusieurs worktrees, définir `SITE_CONDITIONS_LOCAL_PATH` avec le même chemin absolu dans chaque environnement. Les comptes du back-office utilisent séparément `BACKOFFICE_DB_PATH` ; le renseigner avec un chemin absolu commun si les mêmes comptes doivent fonctionner dans plusieurs worktrees. Les modifications locales ne sont pas publiées sur le site en production.
+
+Avant la mise en production, appliquer la migration `supabase/migrations/20261024120000_editable_site_conditions.sql`, puis déployer le code. Elle préserve les lignes et états existants, supprime la liste fermée d’identifiants et ajoute les métadonnées et le catalogue d’états. Le service utilise la clé Supabase côté serveur ; aucun accès public direct aux tables n’est accordé. Pour revenir au code précédent après déploiement, conserver la migration et les données : l’ancien code ignore les nouveaux champs et équipements. Une restauration de schéma demande une migration inverse examinant d’abord les nouveaux équipements et états.
+
 ## Assistant IA
 
 L'assistant Welix et sa route `/api/chat` ont été retirés du site pour l'instant.

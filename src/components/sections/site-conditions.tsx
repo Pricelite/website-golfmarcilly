@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { conditionItems, type SiteCondition } from "@/data/site-conditions";
+import type { SiteCondition } from "@/data/site-conditions";
 import { siteConfig } from "@/data/site";
 import { parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { SiteConditionControl } from "./site-condition-control";
@@ -8,21 +8,20 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
   const now = new Date();
   const today = parisDateKey(now);
   const dateLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(now);
-  const byId = new Map(conditions.map(condition => [condition.id, unavailable ? condition : visibleCondition(condition)]));
-  const displayed = conditionItems.map(item => byId.get(item.id) ?? { id: item.id, status: "unknown" as const, reason: null, updatedAt: null });
+  const displayed = conditions.map(condition => unavailable ? condition : visibleCondition(condition));
   const openCount = displayed.filter(condition => condition.status === "open").length;
-  const adaptedCount = displayed.filter(condition => condition.status === "open" && condition.reason).length;
+  const adaptedCount = displayed.filter(condition => condition.status === "open" && (condition.reason || condition.stateLabel)).length;
   const closedCount = displayed.filter(condition => condition.status === "closed").length;
   const unknownCount = displayed.length - openCount - closedCount;
 
-  function row(item: (typeof conditionItems)[number]) {
-    const condition = displayed.find(condition => condition.id === item.id)!;
+  function row(item: SiteCondition) {
+    const condition = item;
     return <li key={item.id} className="border-b border-emerald-950/10 py-2.5">
       <div className="flex items-center justify-between gap-3">
         <Link href={item.href} className="min-w-0 text-sm font-semibold leading-6 text-emerald-950 hover:underline focus-visible:underline">{item.label}</Link>
         <SiteConditionControl condition={condition} label={item.label} editable={editable && !unavailable} />
       </div>
-      {condition.reason && condition.status !== "unknown" && !(condition.status === "open" && condition.reason === "Carotté") ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
+      {condition.reason && condition.status !== "unknown" && !(condition.status === "open" && (condition.stateLabel === "Carotté" || condition.reason === "Carotté")) ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
     </li>;
   }
 
@@ -53,11 +52,11 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
         <div className="mt-4 grid gap-5 lg:grid-cols-[2fr_1fr] lg:gap-6">
           <div>
             <h3 className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Parcours et practice</h3>
-            <ul className="grid gap-x-5 sm:grid-cols-2">{conditionItems.filter(item => item.group === "courses").map(row)}</ul>
+            <ul className="grid gap-x-5 sm:grid-cols-2">{displayed.filter(item => item.group === "courses").map(row)}</ul>
           </div>
           <div>
             <h3 className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Services sur place</h3>
-            <ul>{conditionItems.filter(item => item.group === "services").map(row)}</ul>
+            <ul>{displayed.filter(item => item.group === "services").map(row)}</ul>
           </div>
         </div>
         <footer className="mt-3 flex flex-wrap items-start justify-between gap-x-6 gap-y-2 text-xs leading-5 text-emerald-950/75">
