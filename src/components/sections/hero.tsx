@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 import { HeroPhotoCarousel } from "@/components/hero-photo-carousel";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -9,9 +10,10 @@ type HeroProps = {
   subtitle: string;
   beginnerCta: { label: string; href: string };
   appCta?: { label: string; href: string };
+  offersAction?: ReactNode;
 };
 
-export function Hero({ eyebrow, title, subtitle, beginnerCta, appCta }: HeroProps) {
+export function Hero({ eyebrow, title, subtitle, beginnerCta, appCta, offersAction }: HeroProps) {
   return (
     <section aria-label="Bienvenue au Golf de Marcilly" className="overflow-hidden bg-[#f7f4e9] text-emerald-950">
       <div className="mx-auto grid max-w-[1600px] lg:grid-cols-2">
@@ -24,6 +26,7 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, appCta }: HeroProp
           <div className="mt-5 flex flex-wrap gap-2">
             <CTAButton href={beginnerCta.href}>{beginnerCta.label}</CTAButton>
             <CTAButton href="/restaurant" variant="secondary">La Bergerie</CTAButton>
+            {offersAction}
           </div>
         </div>
         <div className="relative h-[220px] sm:h-[340px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-auto lg:min-h-[520px]">

@@ -57,6 +57,7 @@ export default async function HomePage() {
         eyebrow="Bienvenue au Golf de Marcilly"
         beginnerCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
         appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
+        offersAction={<PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "Black Friday 2027"} offers={activeOffers} />}
         subtitle="Jouez, découvrez le golf ou déjeunez à La Bergerie. À Marcilly-en-Villette, le domaine accueille golfeurs, débutants et visiteurs."
         title="45 trous aux portes d'Orléans"
       />
@@ -75,10 +76,6 @@ export default async function HomePage() {
             </div>
             <div className="p-4"><h3 className="font-serif text-lg leading-6 sm:text-xl">{course.slug === "pitch-putt-kaleka-18-trous" ? "Kaleka course 18 trous" : course.title}</h3><p className="mt-2 text-xs leading-5 text-emerald-800">{course.level} <span aria-hidden="true">→</span></p></div>
           </Link>)}
-        </div>
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-200/70 bg-amber-50/60 px-5 py-4">
-          <p className="font-serif text-xl text-emerald-950">{activeOffers.length > 0 ? "Les offres du moment" : "Bons plans à venir"}</p>
-          <PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "À venir"} offers={activeOffers} />
         </div>
       </section>
 

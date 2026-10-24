@@ -1,7 +1,8 @@
 import "server-only";
 
 import { mkdirSync, readFileSync } from "node:fs";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { grantCreatedPage, type Grant, type PageContent, type Role } from "./model";
 
@@ -15,8 +16,15 @@ export type MediaRow = { id: string; filename: string; mime: string; size: numbe
 export function dbPath(): string {
   const configured = process.env.BACKOFFICE_DB_PATH?.trim();
   if (!configured && process.env.NODE_ENV === "production") throw new Error("BACKOFFICE_DB_PATH is required in production");
-  const path = configured ? (isAbsolute(configured) ? configured : resolve(configured)) : join(process.cwd(), ".data", "backoffice.sqlite");
-  if (path.includes(`${join(process.cwd(), "public")}`)) throw new Error("Back-office database cannot be public");
+  if (configured && process.env.NODE_ENV === "production" && !isAbsolute(configured)) throw new Error("BACKOFFICE_DB_PATH must be absolute in production");
+  const path = configured ? resolve(configured) : join(process.cwd(), ".data", "backoffice.sqlite");
+  const publicRoot = resolve(process.cwd(), "public");
+  if (path === publicRoot || path.startsWith(publicRoot + sep)) throw new Error("Back-office database cannot be public");
+  const temporaryRoot = resolve(tmpdir());
+  if (process.env.NODE_ENV === "production" && process.env.PREVIEW_MODE !== "true" &&
+    (path === temporaryRoot || path.startsWith(temporaryRoot + sep))) {
+    throw new Error("Back-office database requires persistent storage in production");
+  }
   return path;
 }
 

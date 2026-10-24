@@ -19,7 +19,6 @@ export function parisDateKey(date: Date): string {
 }
 
 export function visibleCondition(condition: SiteCondition): SiteCondition {
-  // An unset state starts open. Explicit changes remain until the team changes them.
-  if (!condition.updatedAt && condition.status === "unknown") return { ...condition, status: "open", reason: null };
+  // Unset and explicitly unknown states remain unconfirmed until the team updates them.
   return condition;
 }

@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { isAbsolute, resolve, sep } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -36,8 +37,16 @@ if (calendar) {
   } catch { issues.push("INITIATION_CALENDAR_ICS_URL : URL invalide."); }
 }
 const dbPath = value("BACKOFFICE_DB_PATH");
-if (dbPath && (!isAbsolute(dbPath) || resolve(dbPath).startsWith(resolve(root, "public") + sep))) {
-  issues.push("BACKOFFICE_DB_PATH : chemin absolu hors du dossier public requis.");
+if (dbPath) {
+  const resolved = resolve(dbPath);
+  const publicRoot = resolve(root, "public");
+  const temporaryRoot = resolve(tmpdir());
+  if (!isAbsolute(dbPath) || resolved === publicRoot || resolved.startsWith(publicRoot + sep)) {
+    issues.push("BACKOFFICE_DB_PATH : chemin absolu hors du dossier public requis.");
+  }
+  if (resolved === temporaryRoot || resolved.startsWith(temporaryRoot + sep)) {
+    issues.push("BACKOFFICE_DB_PATH : le dossier temporaire n'est pas un stockage persistant pour le back-office.");
+  }
 }
 const provider = value("MAIL_PROVIDER").toLowerCase();
 if (provider === "brevo") requireValue("BREVO_API_KEY", "clé Brevo requise.");

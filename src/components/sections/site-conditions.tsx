@@ -9,7 +9,7 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
   const today = parisDateKey(now);
   const dateLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(now);
   const byId = new Map(conditions.map(condition => [condition.id, unavailable ? condition : visibleCondition(condition)]));
-  const displayed = conditionItems.map(item => byId.get(item.id) ?? { id: item.id, status: unavailable ? "unknown" as const : "open" as const, reason: null, updatedAt: null });
+  const displayed = conditionItems.map(item => byId.get(item.id) ?? { id: item.id, status: "unknown" as const, reason: null, updatedAt: null });
   const openCount = displayed.filter(condition => condition.status === "open").length;
   const adaptedCount = displayed.filter(condition => condition.status === "open" && condition.reason).length;
   const closedCount = displayed.filter(condition => condition.status === "closed").length;

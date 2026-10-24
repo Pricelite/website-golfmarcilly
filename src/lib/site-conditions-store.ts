@@ -15,7 +15,7 @@ function normalize(rows: ConditionRow[]): SiteCondition[] {
   return conditionItems.map(item => {
     const row = byId.get(item.id);
     return row ? { id: item.id, status: row.status, reason: row.reason, updatedAt: row.updated_at } :
-      { id: item.id, status: "open", reason: null, updatedAt: null };
+      { id: item.id, status: "unknown", reason: null, updatedAt: null };
   });
 }
 
@@ -38,7 +38,7 @@ async function readLocal(): Promise<SiteCondition[]> {
 export async function listSiteConditions(): Promise<SiteCondition[]> {
   if (process.env.PREVIEW_MODE === "true") return previewConditions();
   if (process.env.NODE_ENV === "development") return readLocal();
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return emptyConditions();
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) throw new Error("Site conditions store unavailable");
   const { data, error } = await createSupabaseAdminClient().from("site_conditions")
     .select("id,status,reason,updated_at").limit(conditionItems.length)
     .abortSignal(AbortSignal.timeout(2500));

@@ -1,6 +1,7 @@
 import { randomBytes, scryptSync, randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync } from "node:fs";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import readline from "node:readline";
 import { DatabaseSync } from "node:sqlite";
 
@@ -24,10 +25,20 @@ async function passwordPrompt(): Promise<string> {
 }
 
 async function main() {
+  const configured = process.env.BACKOFFICE_DB_PATH?.trim();
+  if (process.env.NODE_ENV === "production" && (!configured || !isAbsolute(configured))) {
+    throw new Error("BACKOFFICE_DB_PATH doit être un chemin absolu en production.");
+  }
+  const dbPath = configured ? resolve(configured) : join(process.cwd(), ".data", "backoffice.sqlite");
+  const publicRoot = resolve(process.cwd(), "public");
+  const temporaryRoot = resolve(tmpdir());
+  if (dbPath === publicRoot || dbPath.startsWith(publicRoot + sep)) throw new Error("La base du back-office ne doit pas être publique.");
+  if (process.env.NODE_ENV === "production" && process.env.PREVIEW_MODE !== "true" &&
+    (dbPath === temporaryRoot || dbPath.startsWith(temporaryRoot + sep))) {
+    throw new Error("La base du back-office nécessite un stockage persistant en production.");
+  }
   const password = await passwordPrompt();
   if (password.length < 14 || password.length > 256) throw new Error("Le mot de passe doit contenir entre 14 et 256 caractères.");
-  const configured = process.env.BACKOFFICE_DB_PATH?.trim();
-  const dbPath = configured ? (isAbsolute(configured) ? configured : resolve(configured)) : join(process.cwd(), ".data", "backoffice.sqlite");
   mkdirSync(dirname(dbPath), { recursive: true });
   const db = new DatabaseSync(dbPath);
   try {

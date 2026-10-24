@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 
 import { getRestaurantReservationEnv } from "@/lib/env";
 import { MailerError, sendMail } from "@/lib/email/mailer";
+import { buildMailApiErrorResponse, mailFailureHeaders, mailFailureStatus } from "@/lib/email/api-response";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
 import { parseReservationPayload, type ReservationRequestBody } from "@/lib/restaurant/validation";
-import { deliverRestaurantRequest } from "@/lib/restaurant/delivery";
+import { deliverRestaurantRequest, restaurantRequestFingerprint } from "@/lib/restaurant/delivery";
 import { getFormErrorMessage } from "@/lib/api/form-feedback";
 import { readJsonBody } from "@/lib/api/request-body";
 import {
@@ -176,14 +178,19 @@ export async function POST(request: Request) {
     const ackMail = buildClientAckEmail(parsed.data);
 
     const result = await deliverRestaurantRequest(
-      () => sendMail({
-        to: env.restaurantReservationTo,
-        toName: env.restaurantReservationToName,
-        subject: reservationMail.subject,
-        text: reservationMail.text,
-        html: reservationMail.html,
-        replyTo: parsed.data.email,
-        replyToName: parsed.data.name,
+      () => sendDurableFormMail({
+        namespace: "restaurant-email-dedupe",
+        fingerprint: restaurantRequestFingerprint(parsed.data),
+        entry: { form: "restaurant", reason: "restaurant-mail", nom: parsed.data.name, prenom: "", entreprise: "", telephone: parsed.data.phone || "", email: parsed.data.email, message: reservationMail.text },
+        mail: {
+          to: env.restaurantReservationTo,
+          toName: env.restaurantReservationToName,
+          subject: reservationMail.subject,
+          text: reservationMail.text,
+          html: reservationMail.html,
+          replyTo: parsed.data.email,
+          replyToName: parsed.data.name,
+        },
       }),
       () => sendMail({
         to: parsed.data.email,
@@ -195,10 +202,10 @@ export async function POST(request: Request) {
         replyToName: env.restaurantReservationToName,
       }),
     );
-    if (!result.acknowledgementSent) {
+    if (!result.queued && !result.acknowledgementSent) {
       console.error("[restaurant-reservation] client acknowledgement failed");
     }
-    return NextResponse.json({ ok: true, ...result });
+    return NextResponse.json({ ok: true, ...result, ...(result.queued ? { message: "Votre demande de table a été enregistrée en secours. L’équipe la traitera après le rétablissement de la messagerie. Aucune table n’est confirmée avant sa réponse." } : {}) }, { status: result.queued ? 202 : 200 });
   } catch (error) {
     if (error instanceof MailerError) {
       console.error("[restaurant-reservation] mail send failed", {
@@ -209,9 +216,10 @@ export async function POST(request: Request) {
       console.error("[restaurant-reservation] unexpected error");
     }
 
+    const status = mailFailureStatus(error);
     return NextResponse.json(
-      { ok: false, error: getFormErrorMessage(503) },
-      { status: 503 }
+      { ok: false, error: status === 409 ? buildMailApiErrorResponse(error).error : getFormErrorMessage(503) },
+      { status, headers: mailFailureHeaders(error) }
     );
   }
 }
