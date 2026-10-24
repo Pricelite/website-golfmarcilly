@@ -20,8 +20,8 @@ export function SiteConditionControl({ condition, label, editable }: { condition
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => { setCurrent(condition); }, [condition]);
-  const statusLabel = current.status === "open" && current.reason === "Carotté" ? "Carotté" : labels[current.status];
-  const statusClass = `inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2 py-1 text-xs font-semibold before:mr-1.5 before:inline-block before:h-1.5 before:w-1.5 before:rounded-full ${current.status === "open" && current.reason ? "border-amber-200 bg-amber-50 text-amber-900 before:bg-amber-500" : tones[current.status]}`;
+  const statusLabel = current.stateLabel || (current.status === "open" && current.reason === "Carotté" ? "Carotté" : labels[current.status]);
+  const statusClass = `inline-flex shrink-0 items-center whitespace-nowrap rounded-full border px-2 py-1 text-xs font-semibold before:mr-1.5 before:inline-block before:h-1.5 before:w-1.5 before:rounded-full ${current.status === "open" && (current.reason || current.stateLabel) ? "border-amber-200 bg-amber-50 text-amber-900 before:bg-amber-500" : tones[current.status]}`;
 
   async function save(status: "open" | "closed", note: string) {
     if (busy) return;
