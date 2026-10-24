@@ -23,6 +23,7 @@ export default async function BackOfficePage() {
       <nav className="mt-8 flex flex-wrap gap-3" aria-label="Rubriques du back-office">
         <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu">Pages</Link>
         {can(grants, actor.role, "view", "media") ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/medias">Médiathèque</Link> : null}
+        {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/conditions">Conditions du site</Link> : null}
         {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/utilisateurs">Utilisateurs et droits</Link> : null}
         {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin">Administration existante</Link> : null}
       </nav>
