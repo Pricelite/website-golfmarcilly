@@ -1,6 +1,6 @@
 # Golf de Marcilly - site Next.js
 
-Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase, Google Calendar et envoi d'emails transactionnels. Le code SumUp est conservé pour les anciennes réservations.
+Site du Golf de Marcilly construit avec Next.js App Router, TypeScript, Tailwind CSS, Supabase et envoi d'e-mails transactionnels. Les demandes d'initiation sont confirmées par l'équipe et réglées sur place.
 
 ## Stack
 
@@ -11,7 +11,6 @@ Site premium, responsive et SEO-first pour le Golf de Marcilly, construit avec N
 - Framer Motion
 - Supabase
 - Google Calendar
-- SumUp
 - Nodemailer / SMTP ou Brevo
 
 ## Installation
@@ -28,6 +27,7 @@ pnpm.cmd lint
 pnpm.cmd typecheck
 pnpm.cmd test
 pnpm.cmd build
+pnpm.cmd preflight
 pnpm.cmd start
 ```
 
@@ -74,11 +74,16 @@ styles/
 - demande de reservation restaurant avec email au club + accuse reception client
 - page "Je debute le golf"
 - demande d'initiation à partir des créneaux du calendrier, transmise par email et confirmée manuellement par l'équipe
-- integration Google Calendar pour les initiations
-- integration SumUp conservée pour les anciennes réservations ; le parcours actuel prévoit un paiement sur place
-- page admin indiquant la boîte de suivi des demandes actuelles et affichant séparément les anciennes réservations Supabase
+- lecture du flux privé Google Calendar pour les créneaux d'initiation
+- page admin indiquant la boîte de suivi des demandes actuelles et donnant accès, en lecture seule, aux anciennes réservations Supabase
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
+
+## Assistant IA
+
+L'assistant Welix et sa route `/api/chat` ont été retirés du site pour l'instant.
+
+Le site ne charge pas de mesure d'audience GA4 ; aucun bandeau de consentement GA4 n'est affiché.
 
 ## Fichiers de contenu
 
@@ -101,7 +106,6 @@ Les blocs principaux couvrent :
 
 - Supabase public et admin
 - Google Calendar
-- SumUp
 - email SMTP / Brevo
 - analytics
 - operations / monitoring
@@ -125,34 +129,38 @@ Notes:
 - le traitement planifié échoue avec HTTP 503 dès qu'une demande est en échec définitif, même si l'email d'alerte ne peut pas partir ; surveiller les échecs de cette tâche. Les demandes en échec ne sont pas purgées automatiquement : les traiter puis les supprimer selon la politique de conservation des données
 - les anciennes données de `.contact-fallback` ne sont pas importées automatiquement : les traiter avant de retirer l'ancien stockage
 - chaque message porte une référence stable dans l'objet de l'email ; si le fournisseur accepte un envoi mais que son accusé de traitement est perdu, une reprise peut encore générer un doublon avec la même référence
+- les demandes d'initiation identiques sont limitées à un envoi pendant dix minutes, via la table `public_rate_limits` existante ; un échec d'envoi libère la tentative pour permettre de réessayer. Un fournisseur qui accepte l'email puis perd sa réponse peut encore entraîner un doublon lors d'une nouvelle tentative.
+- ce contrôle requiert la migration `20260925100000_contact_queue_and_rate_limit.sql` déjà utilisée par les formulaires publics. Pour revenir à l'ancien comportement, redéployer la version précédente du code ; conserver la table et ses données, également utilisées par les autres limitations de débit.
 
 ### Carte du jour du restaurant
 
 - Appliquer `supabase/migrations/20260930110000_restaurant_daily_menu.sql` avant de publier cette version. La migration crée une table datée accessible uniquement via la clé de service côté serveur ; elle ne modifie pas les anciennes cartes ni les réservations.
 - Se connecter à `/admin`, ouvrir « Modifier la carte du jour », choisir la date, puis renseigner trois entrées, trois plats et trois desserts avec leurs prix. « Publier la carte » enregistre les choix ; « Retirer cette carte » supprime la publication de cette date.
-- La dernière carte publiée à la date courante ou avant reste active automatiquement les jours suivants et apparaît dans `/restaurant` tous les jours de 10 h à 15 h, selon l'heure de Paris. Il n'est donc nécessaire de republier que lorsque les plats ou les prix changent. Tant qu'aucune carte n'a encore été enregistrée, la carte éditoriale initiale est affichée. La lecture publique est limitée à quatre secondes et le cache est renouvelé toutes les trente secondes, avec invalidation lors d'une modification.
+- La dernière carte publiée reste consultable avec sa date de publication. Seule une publication datée du jour est présentée comme « Carte du jour » ; la validité d’une carte plus ancienne reste à confirmer auprès du restaurant. De 10 h à 15 h (heure de Paris), les plats sont affichés directement ; hors de cette plage, ils restent accessibles dans « Consulter la dernière carte publiée ». Pour confirmer la carte d’un jour, publier son contenu à cette date depuis l’administration. La carte éditoriale initiale reste le repli si aucune publication n’est disponible. La lecture publique est limitée à quatre secondes et le cache est renouvelé toutes les trente secondes, avec invalidation lors d’une modification.
 - En cas de retour à une ancienne version, conserver la table et ses données ; l'ancien code l'ignore. Ne supprimer la table qu'après export ou suppression volontaire des cartes enregistrées.
 
 Ordre de mise en production pour cette évolution : suspendre le traitement planifié de la file, attendre la fin des traitements en cours, appliquer les deux migrations SQL dans l'ordre, vérifier `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY`, puis déployer le code et réactiver la tâche planifiée. Vérifier ensuite la vue interne de `/api/health` et déclencher manuellement la tâche GitHub Actions une fois. Si la première migration a déjà été appliquée, appliquer seulement la seconde. En cas de retour à une ancienne version du site, suspendre de nouveau la tâche planifiée, conserver la table et traiter les messages encore en attente avant de la retirer.
 
-Les mentions légales et la politique de confidentialité attendent encore les informations et la validation du propriétaire (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
+Les mentions légales indiquent Anthony Welh comme directeur de publication, conformément à la confirmation du propriétaire le 14 octobre 2026. L'identité de l'hébergeur effectif et la validation finale des deux pages restent attendues (`src/data/legal.ts`) ; elles restent hors du sitemap et marquées `noindex`.
 - `OPS_CRON_TOKEN` est reutilise pour les diagnostics internes et les operations cron
 
-## Verification actuelle
+## Vérification locale
 
-Au 29 juillet 2026 :
-
-- `pnpm.cmd lint` : OK
-- `pnpm.cmd typecheck` : OK
-- `pnpm.cmd test` : OK
-- `pnpm.cmd build` : OK
+Au 14 octobre 2026, après retrait de l'ancien paiement : contrôle TypeScript, lint des fichiers modifiés, dix tests ciblés et build de production réussis. `node scripts/preflight.mjs` signale encore les paramètres à fournir pour l'environnement cible. La CI exécute les contrôles complets sur push et pull request.
 
 ## Notes de reprise
 
 - Le controle `typecheck` passe via `tsconfig.typecheck.json` pour ne pas dependre des artefacts `.next` generes partiellement par `next typegen`.
 - Le build reste la verification la plus complete du projet, car Next y applique aussi ses controles de routes et de metadata.
-- Le parcours d'initiation canonique est `/initiation/reservation` avec les APIs `/api/initiation-options` (créneaux du flux Google privé) et `/api/reservations` (demande envoyée par email). L'équipe confirme la date au visiteur et le règlement se fait sur place. `/api/slots` appartient à l'ancien parcours.
+- Le parcours d'initiation canonique est `/initiation/reservation` avec les APIs `/api/initiation-options` (créneaux du flux Google privé) et `/api/reservations` (demande envoyée par email). L'équipe confirme la date au visiteur et le règlement se fait sur place.
 - L'ancien endpoint `/api/initiation-reservation` est conserve uniquement comme fallback legacy et n'est plus le parcours principal.
 - La reprise globale du projet est documentee dans [COMPTE-RENDU-REPRISE.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/COMPTE-RENDU-REPRISE.md:1).
 - La checklist de mise en production est documentee dans [CHECKLIST-MISE-EN-PROD.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/CHECKLIST-MISE-EN-PROD.md:1).
 - La procedure d'application Supabase et de configuration production est documentee dans [PROCEDURE-SUPABASE-VERCEL.md](/c:/Users/Anthony/Desktop/website-golfmarcilly/PROCEDURE-SUPABASE-VERCEL.md:1).
+
+## Évolutions UX : préparation du déploiement
+
+- Les équipements sont ouverts par défaut. Les modifications manuelles (fermeture, ouverture ou état à confirmer) restent appliquées jusqu’à la prochaine intervention de l’équipe, sans réinitialisation quotidienne. Les dates de modification sont affichées selon le fuseau Europe/Paris. Une fermeture doit être levée manuellement lors de la réouverture.
+- Le formulaire de devis transmet désormais `desiredDate` (date ISO facultative). Les anciens consommateurs peuvent continuer à omettre ce champ ; le serveur refuse une date fournie invalide ou passée. La date figure dans les versions texte et HTML de l’email.
+- Aucun changement de schéma, aucune migration et aucune nouvelle variable d’environnement ne sont nécessaires pour ces évolutions. Les données existantes sont conservées. Un retour à la version précédente du code suffit pour revenir aux affichages antérieurs, mais rétablit aussi l’ancien comportement des conditions.
+- À faire confirmer par le club : capacité et dispositions des salles, validité des cartes reconduites, nouveaux contenus éditoriaux. L’agenda privé Google Calendar reste la source des initiations ; aucun jour de semaine fixe n’est promis.

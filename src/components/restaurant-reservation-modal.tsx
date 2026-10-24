@@ -29,7 +29,7 @@ type DayOption = {
 };
 
 const DEFAULT_TRIGGER_CLASS_NAME =
-  "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-900/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
+  "site-button-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
 
 const SUCCESS_MESSAGE =
   "Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre réservation.";
@@ -283,16 +283,16 @@ export default function RestaurantReservationModal({
       });
 
       const result = (await response.json().catch(() => null)) as
-        | { ok?: boolean; acknowledgementSent?: boolean }
+        | { ok?: boolean; acknowledgementSent?: boolean; queued?: boolean; message?: string; error?: string }
         | null;
 
       if (!response.ok || !result?.ok) {
-        setApiError(getFormErrorMessage(response.status));
+        setApiError(response.status === 409 && result?.error ? result.error : getFormErrorMessage(response.status));
         return;
       }
 
       setLastSubmittedFingerprint(fingerprint);
-      setSuccessMessage(result.acknowledgementSent === false
+      setSuccessMessage(result.queued && result.message ? result.message : result.acknowledgementSent === false
         ? `${SUCCESS_MESSAGE} L’accusé de réception par email n’a pas pu vous être envoyé ; inutile de renvoyer votre demande.`
         : SUCCESS_MESSAGE);
       setForm(INITIAL_FORM);
@@ -321,7 +321,7 @@ export default function RestaurantReservationModal({
         <div className="fixed inset-0 z-[100]">
           <button
             type="button"
-            aria-label="Fermer la fenetre de reservation"
+            aria-label="Fermer la fenêtre de réservation"
             className="absolute inset-0 bg-emerald-950/55"
             onClick={closeModal}
           />
@@ -336,7 +336,7 @@ export default function RestaurantReservationModal({
               className="w-full max-w-5xl overflow-y-auto rounded-3xl border border-emerald-900/15 bg-white p-5 shadow-2xl max-h-[95dvh] sm:p-6"
             >
               <div className="flex items-start justify-between gap-4">
-                <div>
+                <div className="min-w-0 flex-1">
                   <h2 id={titleId} className="font-[var(--font-display)] text-3xl text-emerald-950">
                     Demande de réservation restaurant
                   </h2>
@@ -347,7 +347,7 @@ export default function RestaurantReservationModal({
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="site-button inline-flex h-10 w-10 items-center justify-center rounded-full text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                  className="site-button inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                   aria-label="Fermer"
                 >
                   ×

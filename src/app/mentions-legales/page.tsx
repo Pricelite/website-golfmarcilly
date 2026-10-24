@@ -30,8 +30,9 @@ export default function LegalPage() {
             <p><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a> — <a href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p>
           </section>
           {legalContent.publisherIdentity && (
-            <section><h2>Éditeur</h2><p>{legalContent.publisherIdentity}</p></section>
+            <section><h2>Éditeur</h2><p>{legalContent.publisherIdentity}</p><p>Numéro de TVA intracommunautaire : {legalContent.vatNumber}.</p></section>
           )}
+          <section><h2>Création et gestion du site</h2><p>{legalContent.siteCredit}</p></section>
           {legalContent.publicationDirector && (
             <section><h2>Direction de la publication</h2><p>{legalContent.publicationDirector}</p></section>
           )}

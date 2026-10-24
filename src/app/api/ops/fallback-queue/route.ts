@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { hasValidOpsToken } from "@/lib/ops/auth";
-import { processContactFallbackQueue } from "@/lib/contact/fallback-store";
+import { FallbackQueueStoreError, processContactFallbackQueue } from "@/lib/contact/fallback-store";
 
 function methodNotAllowed(): NextResponse {
   return NextResponse.json(
@@ -28,7 +28,7 @@ async function handleProcessQueue(request: NextRequest): Promise<NextResponse> {
   const expectedToken = process.env.OPS_CRON_TOKEN?.trim();
   if (!expectedToken) {
     return NextResponse.json(
-      { ok: false, error: "OPS_CRON_TOKEN is missing." },
+      { ok: false, error: "Service indisponible." },
       { status: 503 }
     );
   }
@@ -49,13 +49,14 @@ async function handleProcessQueue(request: NextRequest): Promise<NextResponse> {
       { status: result.failed === 0 ? 200 : 503 }
     );
   } catch (error) {
+    console.error("[api/ops/fallback-queue] processing failed", {
+      source: error instanceof FallbackQueueStoreError ? "storage" : "processing",
+      code: error instanceof FallbackQueueStoreError ? error.code : "unexpected",
+    });
     return NextResponse.json(
       {
         ok: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Unexpected queue processing error.",
+        error: "Traitement momentanément indisponible.",
       },
       { status: 500 }
     );

@@ -12,35 +12,26 @@
   expiresOn?: string;
 };
 
-// Les affiches fournies sont la source des tarifs et conditions ci-dessous.
-// Le carrousel, les pages d'offres et le sitemap utilisent cette liste.
-export const siteOffers: SiteOffer[] = [
+// Aucune offre publiée : retrait demandé par le propriétaire le 19 octobre 2026.
+export const siteOffers: SiteOffer[] = [];
+
+// Visuels annoncés pour novembre 2027, distincts des offres actuellement actives.
+export const upcomingOfferPosters = [
   {
-    slug: "abonnement-900",
-    title: "Votre abonnement 45 trous à 900 €",
-    imageSrc: "/offers/abonnement-900.png",
-    description:
-      "Accès aux 45 trous 7 jours sur 7, pour 900 € ou 12 mensualités de 75 €. Vous payez 8 mois et jouez 12 mois. Offre réservée aux 30 premiers nouveaux abonnés, non abonnés en 2026. Renseignements à l’accueil du golf.",
-    badgeLabel: "Nouveaux abonnés",
-    eyebrow: "Abonnement 45 trous · 7 jours sur 7",
-    promoPrice: "900 €",
-    actionLabel: "Me renseigner sur l’abonnement",
-    actionHref: "/contact#reservation",
+    src: "/images/black-friday-2027-abonnements.png",
+    alt: "Black Friday 2027 : abonnements 27 trous compact à 605 €, 45 trous 5 jours sur 7 à 875 €, 45 trous individuel 7 jours sur 7 à 1 075 € et couple à 1 930 €.",
+    title: "Abonnements",
+    width: 941,
+    height: 1672,
   },
   {
-    slug: "tarifs-septembre",
-    title: "Profitez des tarifs de septembre",
-    imageSrc: "/offers/tarifs-septembre.png",
-    description:
-      "Tout le mois de septembre : 10 € les 9 trous sur le Pitch and Putt, le Kaleka ou le parcours Découverte. Sur le Grand Parcours : 20 € les 9 trous aller ou les 9 trous retour, et 39 € les 18 trous.",
-    badgeLabel: "Tout septembre",
-    eyebrow: "Tarifs des parcours",
-    promoPrice: "Dès 10 €",
-    actionLabel: "Réserver un départ",
-    actionHref: "https://marcilly.reservations-golf.fr/",
-    expiresOn: "2026-09-30",
+    src: "/images/black-friday-2027-practice.png",
+    alt: "Black Friday 2027 : 25 seaux achetés et 11 offerts à 50 €, ou 50 seaux achetés et 25 offerts à 95 €.",
+    title: "Seaux de practice",
+    width: 1086,
+    height: 1448,
   },
-];
+] as const;
 
 export function getActiveSiteOffers(now = new Date()) {
   const parisDay = new Intl.DateTimeFormat("en-CA", {

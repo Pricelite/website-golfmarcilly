@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 
-import {
-  processContactFallbackQueue,
-  storeContactFallbackEntry,
-} from "@/lib/contact/fallback-store";
+import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 import { readJsonBody } from "@/lib/api/request-body";
 import {
@@ -267,14 +264,6 @@ export async function POST(request: Request) {
       replyTo: parsed.data.email,
       replyToName: fullName,
     });
-
-    try {
-      await processContactFallbackQueue({ maxItems: 5 });
-    } catch (queueError) {
-      console.error("[legacy-initiation-reservation] fallback queue processing failed", {
-        message: queueError instanceof Error ? queueError.message : "unknown",
-      });
-    }
 
     return buildLegacyResponse(
       {

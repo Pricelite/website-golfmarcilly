@@ -1,1 +1,3 @@
-export const PRIMA_URL = "https://marcilly.reservations-golf.fr/";
+import { siteConfig } from "@/data/site";
+
+export const PRIMA_URL = siteConfig.alternateReservationUrl;

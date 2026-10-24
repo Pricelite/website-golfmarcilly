@@ -8,6 +8,13 @@ export const associationLinks = {
   results: "https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656",
 };
 
+export const associationPartner = {
+  name: "SwingFlow",
+  href: "https://swingflow.fr/",
+  logo: "/partners/swingflow.png",
+  description: "Retrouvez vos séances, vos progrès et vos objectifs de saison dans un même espace.",
+} as const;
+
 export const associationRoles = [
   {
     title: "Partager la vie du club",
@@ -28,8 +35,8 @@ export const associationGroups = [
     eyebrow: "Jouer ensemble",
     title: "Nos équipes",
     description: "Découvrez la vie collective du club et les rendez-vous joués sous les couleurs de Marcilly. L’accueil vous renseignera sur les équipes, les capitaines et les modalités de participation.",
-    href: "/contact",
-    cta: "Se renseigner sur les équipes",
+    href: "/association-sportive/equipes",
+    cta: "Découvrir les équipes",
   },
   {
     eyebrow: "Partager l’expérience",

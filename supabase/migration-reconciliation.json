@@ -1,0 +1,116 @@
+{
+  "status": "proposal-not-applied",
+  "initializedAt": "2026-10-19",
+  "project": "csbktncqqypgwsgumfkw",
+  "note": "Ordre des lots exécutés, et non ordre lexical. Aucune migration renommée ni inscription au registre CLI effectuée.",
+  "migrations": [
+    {
+      "source": "20260223_initiation_reservations.sql",
+      "sha256": "80629dfcda936d58bad0c7f636e2e7ade612a639af00d9d498f2e8b86e007aee",
+      "proposedVersion": "20261020000001",
+      "phase": 1
+    },
+    {
+      "source": "20260224_initiation_capacity_12.sql",
+      "sha256": "aa5a1699c9f4bbcd75d595e2fdfec23013fca0a99bbceb8ef9a5689ebb56e0de",
+      "proposedVersion": "20261020000002",
+      "phase": 1
+    },
+    {
+      "source": "20260729_initiation_reservation_hardening.sql",
+      "sha256": "3f72d6b102a5fcfe6db42029435f2d2990ea432392bcc5ad83d05c4e6fb85a8b",
+      "proposedVersion": "20261020000003",
+      "phase": 1
+    },
+    {
+      "source": "20260921100000_initiation_confirmed_status.sql",
+      "sha256": "4ed1d38cdb992eba4d3f15a09af5471122aa77b91f90621be1646cd9c5196b63",
+      "proposedVersion": "20261020000004",
+      "phase": 1
+    },
+    {
+      "source": "20260916_association_events.sql",
+      "sha256": "6fc79ce54cd3a4547632f5be465466876b4301cd2fd29f88e6e9a3a7482df6ad",
+      "proposedVersion": "20261020000005",
+      "phase": 2
+    },
+    {
+      "source": "20260921100001_initiation_on_site.sql",
+      "sha256": "2a95fba69812a0ca06e46fc8a62d0b391d2f1c2c1f8a4a1383db922233b97149",
+      "proposedVersion": "20261020000006",
+      "phase": 2
+    },
+    {
+      "source": "20260921_thursday_ranking_cups.sql",
+      "sha256": "ab27c92ac614e5c293109fa6bc0c990219a8ef96b96e1157b8ab406a87a9bc0f",
+      "proposedVersion": "20261020000007",
+      "phase": 2
+    },
+    {
+      "source": "20260925100000_contact_queue_and_rate_limit.sql",
+      "sha256": "2f8196a02d2eee150c8862e803856d0c2935cb32bfe0d8361f60bf69298d0f5c",
+      "proposedVersion": "20261020000008",
+      "phase": 2
+    },
+    {
+      "source": "20260930100000_contact_queue_attempt_start.sql",
+      "sha256": "16efb6da1a95f44f81fe5a545cff4856e6f3872df01036775b73e01776eb222a",
+      "proposedVersion": "20261020000009",
+      "phase": 2
+    },
+    {
+      "source": "20260930110000_restaurant_daily_menu.sql",
+      "sha256": "b6741277700349e5cb3b84dd81f9f689dc941a4391094485ce1a26e6a77b7235",
+      "proposedVersion": "20261020000010",
+      "phase": 2
+    },
+    {
+      "source": "20261001190000_update_october_competitions.sql",
+      "sha256": "a4052a332d73068c92da822961ba4a21a6255070295a78d893d763f2afcef8d5",
+      "proposedVersion": "20261020000011",
+      "phase": 2
+    },
+    {
+      "source": "20261003120000_expand_restaurant_daily_menu_choices.sql",
+      "sha256": "19cb48d7aecdc14ff01834376393b96f6a8c2592580119fe942e602ad3392043",
+      "proposedVersion": "20261020000012",
+      "phase": 2
+    },
+    {
+      "source": "20261009_association_events_2027.sql",
+      "sha256": "20b079d73df6f9610bb85e6b69c7db6ac78cda81b03c1d9d0f4c7fe74e1a6025",
+      "proposedVersion": "20261020000013",
+      "phase": 2
+    },
+    {
+      "source": "20261010_association_2027_open_slots.sql",
+      "sha256": "2e5413dde200f9d6bdd876ce179ef6a760db8f0fddafbd975b78d7df6250d328",
+      "proposedVersion": "20261020000014",
+      "phase": 2
+    },
+    {
+      "source": "20261011_association_2027_calendar_alignment.sql",
+      "sha256": "c3097ed513704c8225c2c07739c00d9439d8f2572ffdef5bc07124b8ee0eabf6",
+      "proposedVersion": "20261020000015",
+      "phase": 2
+    },
+    {
+      "source": "20261011_confirm_thursday_ranking_cups.sql",
+      "sha256": "e3160060c0beafb774e22056a5cf68228002ed0dc7f6e9b33c6dbfcc110d9516",
+      "proposedVersion": "20261020000016",
+      "phase": 2
+    },
+    {
+      "source": "20261011_site_conditions.sql",
+      "sha256": "353a08f6727ed770eedc47241524fba8e4499e109ea49c4c1f7a809e942f7bf6",
+      "proposedVersion": "20261020000017",
+      "phase": 2
+    },
+    {
+      "source": "20261019120000_repair_missing_operational_tables.sql",
+      "sha256": "62f331d1a6732b813778f6ddf9bb15e2e13cad1a16f93636751a98a939560203",
+      "proposedVersion": "20261020000018",
+      "phase": 2
+    }
+  ]
+}

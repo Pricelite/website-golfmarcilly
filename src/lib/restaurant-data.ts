@@ -78,20 +78,19 @@ export const restaurantData: RestaurantData = {
   name: "La Bergerie",
   intro: {
     paragraphs: [
-      "Le restaurant La Bergerie vous propose de nombreuses possibilités pour votre réception, que ce soit à titre professionnel ou personnel.",
-      "N'hésitez pas à nous contacter pour nous faire part de vos envies et nous vous retournerons un devis sur-mesure.",
+      "Repas de groupe, réunion ou réception : indiquez la date, le nombre de convives et les prestations souhaitées pour recevoir un devis.",
     ],
     roomRental: "Possibilité de louer la salle sans nos services de restauration : 700 €",
     roomRentalNote: "Vaisselle et nappage en supplément.",
   },
   services: [
     {
-      title: "Au Quotidien",
+      title: "Au quotidien",
       description:
         "Le lundi et du mercredi au dimanche midi, le restaurant La Bergerie vous accueille avec une cuisine simple et gourmande.",
     },
     {
-      title: "Réservations pour Séminaires et Groupes",
+      title: "Séminaires et groupes",
       description:
         "Salle équipée pour recevoir vos réunions et groupes de travail dans un cadre bucolique.",
     },
@@ -263,7 +262,7 @@ export const restaurantData: RestaurantData = {
     ],
   },
   seminarMenu: {
-    title: "Menu Séminaire",
+    title: "Menu séminaire",
     price: "60 €/pers.",
     sections: [
       {
@@ -272,7 +271,7 @@ export const restaurantData: RestaurantData = {
       },
       {
         title: "Location de salle",
-        items: ["Salle de réunion", "Vidéoprojecteur", "Paperboard", "Wifi"],
+        items: ["Salle de réunion", "Vidéoprojecteur", "Paperboard", "Wi-Fi"],
       },
       {
         title: "Repas (à définir selon la saison)",
@@ -299,12 +298,12 @@ export const restaurantData: RestaurantData = {
     ],
   },
   cgv: {
-    title: "Nos Conditions Générales de Vente",
+    title: "Nos conditions générales de vente",
     sections: [
       {
         title: "Conditions de réservation",
         items: [
-          "Le nombre total de convives facturé pour les repas sera le nombre donné 10 jours avant la date de votre événement.",
+          "Le nombre de convives facturé correspondra au nombre communiqué 10 jours avant votre événement.",
           "Le choix d'un menu unique est souhaité pour une meilleure réalisation de votre prestation.",
         ],
       },
@@ -312,20 +311,20 @@ export const restaurantData: RestaurantData = {
         title: "Détails techniques",
         items: [
           "Remise des clés le jour même.",
-          "Décoration de la salle par vos soins (murale, centre de table,...)",
-          "Nappes et serviettes blanches fournies sauf en cas de réservation de salle seule.",
-          "Tables rondes de 6/7 personnes.",
+          "Décoration de la salle par vos soins (décoration murale, centres de table…).",
+          "Nappes et serviettes blanches fournies, sauf en cas de réservation de la salle seule.",
+          "Tables rondes de 6 à 7 personnes.",
         ],
       },
       {
         title: "Informations diverses",
         items: [
-          "Horaire maximum d'animation : 06 heures du matin.",
+          "Heure limite des animations : 6 h du matin.",
           "Possibilité d'apporter votre vin ou votre champagne pour le repas avec un droit de bouchon de 5 € par bouteille de vin ouverte et de 8 € par bouteille de champagne ouverte.",
         ],
       },
     ],
     closingNote:
-      "Toute l'équipe de la Bergerie est à votre service pour la réussite de votre soirée",
+      "Toute l’équipe de La Bergerie est à votre service pour la réussite de votre soirée.",
   },
 };

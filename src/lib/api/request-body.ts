@@ -1,13 +1,13 @@
 export const MAX_PUBLIC_JSON_BYTES = 16_384;
 
-type TextBodyReadResult =
-  | { ok: true; text: string }
+type BytesBodyReadResult =
+  | { ok: true; bytes: Uint8Array }
   | { ok: false; tooLarge: boolean };
 
-export async function readLimitedTextBody(
+export async function readLimitedBytesBody(
   request: Request,
   maxBytes = MAX_PUBLIC_JSON_BYTES,
-): Promise<TextBodyReadResult> {
+): Promise<BytesBodyReadResult> {
   const declaredLength = request.headers.get("content-length");
   if (declaredLength && Number(declaredLength) > maxBytes) {
     return { ok: false, tooLarge: true };
@@ -34,10 +34,21 @@ export async function readLimitedTextBody(
       bytes.set(chunk, offset);
       offset += chunk.byteLength;
     }
-    return { ok: true, text: new TextDecoder("utf-8", { fatal: true }).decode(bytes) };
+    return { ok: true, bytes };
   } catch {
     return { ok: false, tooLarge: false };
   }
+}
+
+type TextBodyReadResult =
+  | { ok: true; text: string }
+  | { ok: false; tooLarge: boolean };
+
+export async function readLimitedTextBody(request: Request, maxBytes = MAX_PUBLIC_JSON_BYTES): Promise<TextBodyReadResult> {
+  const body = await readLimitedBytesBody(request, maxBytes);
+  if (!body.ok) return body;
+  try { return { ok: true, text: new TextDecoder("utf-8", { fatal: true }).decode(body.bytes) }; }
+  catch { return { ok: false, tooLarge: false }; }
 }
 
 type JsonBodyReadResult<T> =

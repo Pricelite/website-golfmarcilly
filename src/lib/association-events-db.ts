@@ -1,6 +1,7 @@
 import "server-only";
 import { associationEvents, type AssociationEvent } from "@/data/association-events";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { deleteLocalEvent, localCalendarEnabled, readLocalCalendar, saveLocalEvent } from "./association-events-local";
 import type { EventInput } from "./association-events-validation";
 
 export class CalendarStoreError extends Error {
@@ -12,8 +13,9 @@ export class CalendarStoreError extends Error {
 type EventRow = {
   id: string; title: string; start_date: string; end_date: string | null;
   start_time: string | null; note: string | null; status: AssociationEvent["status"] | null;
+  category: AssociationEvent["category"]; zone: AssociationEvent["zone"];
 };
-const columns = "id,title,start_date,end_date,start_time,note,status";
+const columns = "id,title,start_date,end_date,start_time,note,status,category,zone";
 
 function client() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) throw new CalendarStoreError("setup");
@@ -26,15 +28,18 @@ function checkError(error: { code?: string } | null) {
 
 function fromRow(row: EventRow): AssociationEvent {
   return { id: row.id, title: row.title, start: row.start_date, end: row.end_date ?? undefined,
-    time: row.start_time?.slice(0, 5), note: row.note ?? undefined, status: row.status ?? undefined };
+    time: row.start_time?.slice(0, 5), note: row.note ?? undefined, status: row.status ?? undefined,
+    category: row.category ?? "competition", zone: row.zone ?? "all" };
 }
 
 function toRow(event: EventInput) {
   return { title: event.title, start_date: event.start, end_date: event.end ?? null,
-    start_time: event.time ?? null, note: event.note ?? null, status: event.status ?? null };
+    start_time: event.time ?? null, note: event.note ?? null, status: event.status ?? null,
+    category: event.category ?? "competition", zone: event.zone ?? "all" };
 }
 
 export async function listAssociationEvents(): Promise<AssociationEvent[]> {
+  if (localCalendarEnabled()) return readLocalCalendar();
   const db = client();
   const events: AssociationEvent[] = [];
   // Supabase limite les réponses : parcourir toutes les pages du programme actif.
@@ -51,7 +56,12 @@ export async function listAssociationEvents(): Promise<AssociationEvent[]> {
 
 export async function publicAssociationEvents(): Promise<{ events: AssociationEvent[]; unavailable: boolean }> {
   try {
-    return { events: await listAssociationEvents(), unavailable: false };
+    const events = (await listAssociationEvents()).map(event => {
+      const publicEvent = { ...event };
+      delete publicEvent.internalNote;
+      return publicEvent;
+    });
+    return { events, unavailable: false };
   } catch (error) {
     // Repli uniquement avant installation. Une base vide signifie un calendrier vide.
     if (error instanceof CalendarStoreError && error.reason === "setup") return { events: associationEvents, unavailable: false };
@@ -60,6 +70,11 @@ export async function publicAssociationEvents(): Promise<{ events: AssociationEv
 }
 
 export async function saveAssociationEvent(event: EventInput, id?: string) {
+  if (localCalendarEnabled()) {
+    const saved = await saveLocalEvent(event, id);
+    if (!saved) throw new CalendarStoreError("not_found");
+    return saved;
+  }
   const db = client();
   const query = id
     ? db.from("association_events").update(toRow(event)).eq("id", id)
@@ -71,6 +86,10 @@ export async function saveAssociationEvent(event: EventInput, id?: string) {
 }
 
 export async function deleteAssociationEvent(id: string) {
+  if (localCalendarEnabled()) {
+    if (!await deleteLocalEvent(id)) throw new CalendarStoreError("not_found");
+    return;
+  }
   const { data, error } = await client().from("association_events").delete().eq("id", id).select("id").maybeSingle();
   checkError(error);
   if (!data) throw new CalendarStoreError("not_found");

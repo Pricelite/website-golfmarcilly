@@ -6,13 +6,14 @@ import { readJsonBody } from "@/lib/api/request-body";
 import {
   isNonEmptyWithinLength,
   isValidEmail,
-  isWithinLength,
   parseTrimmedString,
 } from "@/lib/api/public-form-validation";
 import { methodNotAllowed } from "@/lib/api/responses";
-import { buildMailApiErrorResponse } from "@/lib/email/api-response";
-import { sendMail } from "@/lib/email/mailer";
+import { buildMailApiErrorResponse, mailFailureStatus, mailFailureHeaders } from "@/lib/email/api-response";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
 import { buildQuoteEmail } from "@/lib/form-emails";
+import { parseQuoteDate } from "@/lib/api/quote-date";
+import { isValidQuoteParticipants } from "@/lib/api/quote-participants";
 import {
   consumeRateLimit,
   hasTrustedOrigin,
@@ -24,7 +25,6 @@ const QUOTE_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const MAX_COMPANY_LENGTH = 160;
 const MAX_EMAIL_LENGTH = 160;
 const MAX_EVENT_TYPE_LENGTH = 120;
-const MAX_PARTICIPANTS_LENGTH = 40;
 const MAX_DETAILS_LENGTH = 4000;
 
 function buildMethodNotAllowed() {
@@ -58,7 +58,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: bodyResult.tooLarge ? "Demande trop volumineuse." : getFormErrorMessage(400) }, { status });
   }
 
+  const desiredDate = parseQuoteDate(bodyResult.data.desiredDate);
+  if (!desiredDate.ok) return NextResponse.json({ error: "Indiquez une date souhaitée valide, aujourd’hui ou à venir." }, { status: 400 });
   const payload = {
+    desiredDate: desiredDate.date,
     company: parseTrimmedString(bodyResult.data.company),
     email: parseTrimmedString(bodyResult.data.email).toLowerCase(),
     eventType: parseTrimmedString(bodyResult.data.eventType),
@@ -72,7 +75,7 @@ export async function POST(request: Request) {
     !isValidEmail(payload.email) ||
     !isNonEmptyWithinLength(payload.eventType, MAX_EVENT_TYPE_LENGTH) ||
     !isNonEmptyWithinLength(payload.details, MAX_DETAILS_LENGTH) ||
-    !isWithinLength(payload.participants, MAX_PARTICIPANTS_LENGTH)
+    !isValidQuoteParticipants(payload.participants)
   ) {
     return NextResponse.json({ error: getFormErrorMessage(400) }, { status: 400 });
   }
@@ -94,20 +97,26 @@ export async function POST(request: Request) {
   const emailContent = buildQuoteEmail(payload);
 
   try {
-    await sendMail({
-      to: clubEmail,
-      toName: clubEmailName,
-      subject: emailContent.subject,
-      text: emailContent.text,
-      html: emailContent.html,
-      replyTo: payload.email,
-      replyToName: payload.company,
+    const result = await sendDurableFormMail({
+      namespace: "quote-email-dedupe",
+      entry: { form: "quote", reason: "quote-mail", nom: "", prenom: "", entreprise: payload.company, telephone: "", email: payload.email, message: emailContent.text },
+      mail: {
+        to: clubEmail,
+        toName: clubEmailName,
+        subject: emailContent.subject,
+        text: emailContent.text,
+        html: emailContent.html,
+        replyTo: payload.email,
+        replyToName: payload.company,
+      },
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, queued: result.queued, message: result.queued
+      ? "Votre demande de devis a été enregistrée en secours. Notre équipe la traitera après le rétablissement de la messagerie."
+      : "Votre demande de devis a bien été reçue par le site." }, { status: result.queued ? 202 : 200 });
   } catch (error) {
     logApiError("api/quote", "mail_failed", {});
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: 503 });
+    return NextResponse.json(buildMailApiErrorResponse(error), { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 

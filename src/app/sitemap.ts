@@ -7,7 +7,16 @@ import { siteConfig } from "@/data/site";
 
 export const revalidate = 60;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  let managedPages: { slug: string; updated_at: string }[] = [];
+  if (process.env.NODE_ENV === "development" || process.env.BACKOFFICE_DB_PATH) {
+    try {
+      const { listPages, openDb } = await import("@/lib/backoffice/db");
+      const db = openDb();
+      try { managedPages = listPages(db).filter(page => Boolean(page.published_json)); }
+      finally { db.close(); }
+    } catch { /* The existing sitemap remains available if the optional content store is unavailable. */ }
+  }
   const staticPages = [
     "/",
     "/golf",
@@ -18,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/actualites",
     "/contact",
     "/association-sportive",
+    "/association-sportive/equipes",
     "/academie",
     "/partenaires",
     "/je-debute-le-golf",
@@ -41,6 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: new URL(`/offres/${offer.slug}`, siteConfig.url).toString(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...managedPages.map((page) => ({
+      url: new URL(`/pages/${page.slug}`, siteConfig.url).toString(),
+      lastModified: page.updated_at,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
     })),
   ];
 }

@@ -1,9 +1,17 @@
+const golfOpeningSchedule = [
+  { days: "Lundi au vendredi", hours: "de 8h30 à 19h00" },
+  { days: "Samedi et dimanche", hours: "de 8h00 à 20h00" },
+] as const;
+const golfOpeningHours = golfOpeningSchedule.map(slot => `${slot.days} ${slot.hours}`).join(". ");
+
 export const siteConfig = {
+  golfOpeningHours,
+  golfOpeningSchedule,
   name: "Golf de Marcilly",
   legalName: "Golf de Marcilly-Orléans",
   url: "https://www.marcilly.com",
   description:
-    "Golf de Marcilly : 45 trous d'exception, restaurant La Bergerie, enseignement et événements premium aux portes d'Orléans.",
+    "Golf de Marcilly près d’Orléans : 45 trous, practice, initiations, cours, restaurant La Bergerie et événements à Marcilly-en-Villette.",
   phoneDisplay: "02 38 76 11 73",
   phoneHref: "+33238761173",
   email: "golf@marcilly.com",
@@ -14,7 +22,8 @@ export const siteConfig = {
   country: "France",
   countryCode: "FR",
   postalCode: "45240",
-  reservationUrl: "https://marcilly.reservations-golf.fr/",
+  alternateReservationUrl: "https://marcilly.reservations-golf.fr/",
+  bookingEngineUrl: "https://golf-marcilly.book.teeitup.com/",
   flashGolfUrl: "https://www.flashgolf.app/",
   mapImageUrl:
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=2.005,47.777,2.031,47.787&bboxSR=4326&imageSR=4326&size=1280,840&format=jpg&f=image",
@@ -25,7 +34,7 @@ export const siteConfig = {
     { label: "LinkedIn", href: "https://fr.linkedin.com/company/golf-de-marcilly" },
   ],
   hours: [
-    { label: "Accueil", value: "Tous les jours, 8h00 - 19h00" },
+    { label: "Accueil", value: golfOpeningHours },
     { label: "Restaurant", value: "Lundi et mercredi à vendredi : 12 h – 14 h. Samedi et dimanche : 12 h – 15 h. Fermé le mardi." },
     { label: "Practice", value: "Tous les jours, 7h30 - 20h00" },
   ],
@@ -36,14 +45,16 @@ export const navigationItems = [
   { label: "Golf / Parcours", href: "/golf" },
   { label: "Tarifs", href: "/tarifs" },
   { label: "Enseignement", href: "/enseignement" },
+  { label: "Je débute le golf", href: "/je-debute-le-golf" },
   { label: "Restaurant", href: "/restaurant" },
   { label: "Événements", href: "/evenements" },
   { label: "Association sportive", href: "/association-sportive" },
   { label: "Partenaires", href: "/partenaires" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 export const footerNavigation = {
-  visiter: [...navigationItems, { label: "Contact", href: "/contact" }],
+  visiter: [...navigationItems],
   infos: [
     { label: "Mentions légales", href: "/mentions-legales" },
     { label: "Politique de confidentialité", href: "/politique-de-confidentialite" },

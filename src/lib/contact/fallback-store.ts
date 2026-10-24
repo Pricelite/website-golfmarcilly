@@ -2,8 +2,10 @@ import "server-only";
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MailerError, sendMail } from "@/lib/email/mailer";
+import { getRestaurantReservationEnv } from "@/lib/env";
 
 export type ContactFallbackEntry = {
+  form?: "quote" | "initiation" | "newsletter" | "restaurant";
   receivedAt: string;
   reason: string;
   nom: string;
@@ -40,8 +42,15 @@ export type FallbackQueueSnapshot = {
 const MAX_ATTEMPTS = 5;
 const DEFAULT_RETENTION_DAYS = 14;
 
-function check(error: { message: string } | null): void {
-  if (error) throw new Error(`Fallback queue unavailable: ${error.message}`);
+export class FallbackQueueStoreError extends Error {
+  constructor(readonly code: string) {
+    super("Fallback queue unavailable");
+    this.name = "FallbackQueueStoreError";
+  }
+}
+
+function check(error: { message: string; code?: string } | null): void {
+  if (error) throw new FallbackQueueStoreError(error.code ?? "unknown");
 }
 
 function safeError(error: unknown): string {
@@ -73,8 +82,10 @@ export async function getContactFallbackQueueSnapshot(): Promise<FallbackQueueSn
 
 function notification(row: QueueRow) {
   const entry = row.payload;
+  const labels = { quote: "Devis", initiation: "Initiation", newsletter: "Newsletter", restaurant: "Restaurant" };
+  const label = entry.form ? labels[entry.form] ?? "Contact" : "Contact";
   return {
-    subject: `[Fallback][Contact #${row.id}] ${entry.prenom} ${entry.nom}`,
+    subject: `[Fallback][${label} #${row.id}] ${entry.prenom} ${entry.nom}`.trim(),
     text: [
       "Message repris depuis la file de secours du site.",
       `Référence : ${row.id}`,
@@ -145,7 +156,7 @@ export async function processContactFallbackQueue(options?: { maxItems?: number 
     const mail = notification(row);
     try {
       await sendMail({
-        to: process.env.EMAIL_TO?.trim() || "golf@marcilly.com",
+        to: row.payload.form === "restaurant" ? getRestaurantReservationEnv().restaurantReservationTo : process.env.EMAIL_TO?.trim() || "golf@marcilly.com",
         ...mail,
         replyTo: row.payload.email,
         replyToName: `${row.payload.prenom} ${row.payload.nom}`.trim(),
