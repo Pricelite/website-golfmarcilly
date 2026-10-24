@@ -1,21 +1,27 @@
-export const homeHighlights = [
+export const homeExperiences = [
   {
-    eyebrow: "Les parcours",
-    title: "45 trous et un practice pour varier le jeu",
-    description:
-      "Découvrez le grand parcours, le parcours 9 trous, le pitch & putt et les espaces d'entraînement.",
+    eyebrow: "Jouer",
+    title: "Choisir mon parcours",
+    description: "Grand parcours, 9 trous, Kaleka course aller ou practice : trouvez votre terrain de jeu.",
+    href: "/golf",
   },
   {
-    eyebrow: "Accessibilité",
-    title: "Le golf aux portes d'Orléans",
-    description:
-      "Retrouvez les parcours, les cours et le restaurant à Marcilly-en-Villette, dans le Loiret.",
+    eyebrow: "Débuter",
+    title: "Faire mon premier swing",
+    description: "Découvrez les premiers gestes avec un enseignant, puis le parcours 9 trous.",
+    href: "/je-debute-le-golf",
   },
   {
-    eyebrow: "Ensemble",
-    title: "Venez jouer, déjeuner ou organiser une sortie",
-    description:
-      "Débutants, joueurs réguliers, familles et groupes : choisissez l'activité qui vous correspond.",
+    eyebrow: "Progresser",
+    title: "Trouver mon cours",
+    description: "École de golf, cours collectifs ou particuliers : choisissez votre accompagnement.",
+    href: "/enseignement",
+  },
+  {
+    eyebrow: "Se réunir",
+    title: "Organiser mon événement",
+    description: "Réunion, initiation en groupe et restauration : parlons de votre journée au golf.",
+    href: "/evenements",
   },
 ] as const;
 
@@ -23,7 +29,7 @@ export const homeFaqs = [
   {
     question: "Le Golf de Marcilly convient-il aux débutants ?",
     answer:
-      "Oui. L'offre combine practice, pitch & putt, parcours d'initiation et accompagnement par des enseignants pour démarrer dans de très bonnes conditions.",
+      "Oui. Le practice, les parcours Kaleka et découverte, ainsi que les cours avec un enseignant permettent de débuter à son rythme.",
   },
   {
     question: "Peut-on venir uniquement pour déjeuner au restaurant ?",
@@ -38,6 +44,6 @@ export const homeFaqs = [
   {
     question: "Comment réserver un départ ou un cours ?",
     answer:
-      "Le bouton de réservation présent dans le header et en bas des sections mène à la prise de contact ou à la réservation. Vous pouvez aussi nous appeler directement.",
+      "Utilisez « Réserver un départ » pour accéder aux départs. Pour un cours, contactez le pro de votre choix. Vous pouvez aussi appeler l’accueil.",
   },
 ] as const;

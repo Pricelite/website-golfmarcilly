@@ -18,6 +18,9 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The optimizer's internal requests do not carry HTTP Basic credentials.
+  // Serve original images in the protected preview; production keeps optimization.
+  images: { unoptimized: process.env.PREVIEW_MODE === "true" },
   async headers() {
     return [
       {

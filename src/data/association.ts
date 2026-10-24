@@ -11,8 +11,8 @@ export const associationLinks = {
 export const associationPartner = {
   name: "SwingFlow",
   href: "https://swingflow.fr/",
-  logo: "/images/swingflow-logo.png",
-  description: "SwingFlow accompagne l’Association Sportive du Golf de Marcilly dans le suivi des joueurs, l’organisation et la communication. Ensemble, nous mettons les outils numériques au service de la vie sportive du club et de celles et ceux qui la font vivre.",
+  logo: "/partners/swingflow.png",
+  description: "Retrouvez vos séances, vos progrès et vos objectifs de saison dans un même espace.",
 } as const;
 
 export const associationRoles = [
@@ -35,8 +35,8 @@ export const associationGroups = [
     eyebrow: "Jouer ensemble",
     title: "Nos équipes",
     description: "Découvrez la vie collective du club et les rendez-vous joués sous les couleurs de Marcilly. L’accueil vous renseignera sur les équipes, les capitaines et les modalités de participation.",
-    href: "/contact",
-    cta: "Se renseigner sur les équipes",
+    href: "/association-sportive/equipes",
+    cta: "Découvrir les équipes",
   },
   {
     eyebrow: "Partager l’expérience",

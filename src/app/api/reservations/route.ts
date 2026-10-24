@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { sendMail } from "@/lib/email/mailer";
-import { buildMailApiErrorResponse } from "@/lib/email/api-response";
-import { parseInitiationRequest, buildInitiationRequestEmail } from "@/lib/initiation/request";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
+import { buildMailApiErrorResponse, mailFailureStatus, mailFailureHeaders } from "@/lib/email/api-response";
+import { parseInitiationRequest, buildInitiationRequestEmail, initiationRequestFingerprint } from "@/lib/initiation/request";
 import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders } from "@/lib/security/request-guards";
 import { getInitiationOptions } from "@/lib/initiation/calendar-options-server";
 import { readJsonBody } from "@/lib/api/request-body";
@@ -24,11 +24,19 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json({ ok: false, error: (error as Error).message }, { status: 503 });
   }
+  const fingerprint = initiationRequestFingerprint(parsed.data);
   try {
-    await sendMail({ to: process.env.EMAIL_TO?.trim() || "golf@marcilly.com", toName: process.env.EMAIL_TO_NAME?.trim(), ...buildInitiationRequestEmail(parsed.data) });
-    return NextResponse.json({ ok: true, message: "Votre demande a été envoyée au golf. Votre réservation sera confirmée uniquement après réception d’un e-mail de notre équipe. Le règlement se fera sur place." });
+    const content = buildInitiationRequestEmail(parsed.data);
+    const result = await sendDurableFormMail({
+      namespace: "initiation-email-dedupe", fingerprint,
+      mail: { to: process.env.EMAIL_TO?.trim() || "golf@marcilly.com", toName: process.env.EMAIL_TO_NAME?.trim(), ...content },
+      entry: { form: "initiation", reason: "initiation-mail", nom: parsed.data.fullName, prenom: "", entreprise: "", telephone: parsed.data.phone, email: parsed.data.email, message: content.text },
+    });
+    return NextResponse.json({ ok: true, queued: result.queued, message: result.queued
+      ? "Votre demande d’initiation a été enregistrée en secours. L’équipe la traitera après le rétablissement de la messagerie. Aucune place n’est réservée avant sa confirmation ; règlement sur place."
+      : "Votre demande a été envoyée au golf. Votre réservation sera confirmée uniquement après réception d’un e-mail de notre équipe. Le règlement se fera sur place." }, { status: result.queued ? 202 : 200 });
   } catch (error) {
-    return NextResponse.json({ ok: false, ...buildMailApiErrorResponse(error) }, { status: 503 });
+    return NextResponse.json({ ok: false, ...buildMailApiErrorResponse(error) }, { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 

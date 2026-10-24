@@ -6,6 +6,9 @@ export function getFormErrorMessage(status: number): string {
   if (status === 403) {
     return "Votre demande n’a pas pu être envoyée. Rechargez la page et réessayez.";
   }
+  if (status === 409) {
+    return "Cette demande vient déjà d’être reçue. Contactez le golf avant de la renouveler.";
+  }
   if (status === 429) {
     return "Vous avez effectué plusieurs tentatives. Patientez quelques minutes avant de réessayer.";
   }

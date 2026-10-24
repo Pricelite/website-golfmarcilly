@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFormErrorMessage } from "@/lib/api/form-feedback";
 
-import { storeContactFallbackEntry } from "@/lib/contact/fallback-store";
 import { logApiError } from "@/lib/api/logging";
 import { readJsonBody } from "@/lib/api/request-body";
 import {
@@ -11,8 +10,8 @@ import {
   parseTrimmedString,
 } from "@/lib/api/public-form-validation";
 import { methodNotAllowed } from "@/lib/api/responses";
-import { buildMailApiErrorResponse } from "@/lib/email/api-response";
-import { MailerError, sendMail } from "@/lib/email/mailer";
+import { buildMailApiErrorResponse, mailFailureHeaders, mailFailureStatus } from "@/lib/email/api-response";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
 import { buildContactEmail } from "@/lib/form-emails";
 import {
   consumeRateLimit,
@@ -100,40 +99,25 @@ export async function POST(request: Request) {
   const emailContent = buildContactEmail(payload);
 
   try {
-    await sendMail({
-      to: clubEmail,
-      toName: clubEmailName,
-      subject: emailContent.subject,
-      text: emailContent.text,
-      html: emailContent.html,
-      replyTo: payload.email,
-      replyToName: emailContent.replyToName,
+    const result = await sendDurableFormMail({
+      namespace: "contact-email-dedupe",
+      entry: { reason: `${payload.context}-mail`, nom: payload.lastName, prenom: payload.firstName, entreprise: "", telephone: payload.phone, email: payload.email, message: [payload.subject || "-", "", payload.message].join("\n") },
+      mail: {
+        to: clubEmail,
+        toName: clubEmailName,
+        subject: emailContent.subject,
+        text: emailContent.text,
+        html: emailContent.html,
+        replyTo: payload.email,
+        replyToName: emailContent.replyToName,
+      },
     });
-
-    return NextResponse.json({ ok: true });
+    return NextResponse.json(result.queued
+      ? { ok: true, queued: true, message: "Votre demande a été enregistrée. Notre équipe la traitera dès le rétablissement de la messagerie." }
+      : { ok: true }, { status: result.queued ? 202 : 200 });
   } catch (error) {
-    const reason = error instanceof MailerError ? error.code : "send";
-
-    try {
-      await storeContactFallbackEntry({
-        receivedAt: new Date().toISOString(),
-        reason: `${payload.context}-${reason}`,
-        nom: payload.lastName,
-        prenom: payload.firstName,
-        entreprise: "",
-        telephone: payload.phone,
-        email: payload.email,
-        message: [payload.subject || "-", "", payload.message].join("\n"),
-      });
-      return NextResponse.json({ ok: true, queued: true, message: "Votre demande a été enregistrée. Notre équipe la traitera dès le rétablissement de la messagerie." }, { status: 202 });
-    } catch {
-      // Both delivery paths failed; the caller must be told to use another channel.
-    }
-
-    logApiError("api/contact", "mail_failed", {
-      code: error instanceof MailerError ? error.code : "send",
-    });
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: 503 });
+    logApiError("api/contact", "delivery_failed", { code: buildMailApiErrorResponse(error).code });
+    return NextResponse.json(buildMailApiErrorResponse(error), { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 

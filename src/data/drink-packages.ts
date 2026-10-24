@@ -15,7 +15,7 @@ export const drinkPackages = [
     { label: "Café", value: "Inclus" },
   ] },
   { name: "Formule Prestige", price: "29 €", items: [
-    { label: "Vin", value: "1 bouteille sélection / 3 personnes" },
+    { label: "Vin", value: "1 bouteille de notre sélection / 3 personnes" },
     { label: "Apéritif", value: "1 coupe de champagne / personne" },
     { label: "Petits fours", value: "8 pièces / personne" },
     { label: "Eau", value: "Incluse" },

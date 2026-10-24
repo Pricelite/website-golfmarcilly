@@ -92,13 +92,15 @@ export function RestaurantDishesCarousel({
               }`}
               key={item.src}
             >
-              <Image
-                alt={item.alt}
-                className="object-contain"
-                fill
-                sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 104px) * 0.55), 647px"
-                src={item.src}
-              />
+              {isActive ? (
+                <Image
+                  alt={item.alt}
+                  className="object-contain"
+                  fill
+                  sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 104px) * 0.55), 647px"
+                  src={item.src}
+                />
+              ) : null}
             </div>
           );
         })}

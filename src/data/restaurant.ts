@@ -15,7 +15,7 @@ export const restaurantFaqs = [
   {
     question: "Le restaurant est-il accessible sans jouer au golf ?",
     answer:
-      "Oui. La Bergerie accueille les golfeurs comme les visiteurs extérieurs, sur réservation conseillée selon l'affluence.",
+      "Oui. La Bergerie accueille les golfeurs et les visiteurs extérieurs. La réservation est conseillée selon l’affluence.",
   },
   {
     question: "Peut-on privatiser le restaurant ?",
@@ -25,7 +25,7 @@ export const restaurantFaqs = [
   {
     question: "Proposez-vous des menus groupes ou séminaire ?",
     answer:
-      "Oui. Des menus dédiés peuvent être construits selon le nombre d'invités, le timing et le niveau de prestation attendu.",
+      "Oui. Les menus peuvent être adaptés au nombre d’invités, au programme et aux prestations souhaitées.",
   },
 ] as const;
 
@@ -37,10 +37,28 @@ export const restaurantGallery = [
     "description": "Le comptoir et les tables du restaurant."
   },
   {
-    "src": "/restaurant/gallery/salade.webp",
-    "alt": "Salade avec crevettes, concombre, tomates et œufs",
-    "title": "De la couleur dans l’assiette",
-    "description": "Une salade composée, photographiée en cuisine."
+    "src": "/restaurant/gallery/buffet-cocktail.jpg",
+    "alt": "Plateaux de bouchées salées disposés sur une table de réception",
+    "title": "Un buffet à partager",
+    "description": "Des plateaux de bouchées salées préparés pour une réception."
+  },
+  {
+    "src": "/restaurant/gallery/bouchees-cocktail.jpg",
+    "alt": "Assortiment de bouchées salées présenté sur une ardoise",
+    "title": "Des bouchées pour se retrouver",
+    "description": "Un assortiment de pièces salées présenté sur ardoise."
+  },
+  {
+    "src": "/restaurant/gallery/gateau-fruits-rouges.jpg",
+    "alt": "Grand gâteau aux fruits rouges décoré de fraises, framboises et crème",
+    "title": "Un dessert à partager",
+    "description": "Un grand gâteau aux fruits rouges, photographié en cuisine."
+  },
+  {
+    "src": "/restaurant/gallery/dessert-brioche-glace.jpg",
+    "alt": "Brioche dorée avec glace, caramel et crème fouettée sur une ardoise",
+    "title": "Une touche gourmande",
+    "description": "Un dessert dressé sur ardoise avec glace et crème fouettée."
   },
   {
     "src": "/restaurant/gallery/preparation-ananas.webp",
@@ -49,34 +67,10 @@ export const restaurantGallery = [
     "description": "La préparation des fruits, avant le dressage."
   },
   {
-    "src": "/restaurant/gallery/dessert-brioche.webp",
-    "alt": "Tranches de brioche avec glace, caramel et crème fouettée",
-    "title": "Une pause gourmande",
-    "description": "Un dessert dressé sur ardoise."
-  },
-  {
-    "src": "/images/accueil-club-house.png",
-    "alt": "Vue aérienne du club-house et du golf de Marcilly",
-    "title": "Le cadre du golf",
-    "description": "Une vue du club-house et des espaces qui l’entourent."
-  },
-  {
     "src": "/restaurant/gallery/dressage-plats.webp",
     "alt": "Assiettes alignées avec frites et salade en cuisine",
     "title": "Prêts pour le service",
     "description": "Les assiettes et leurs accompagnements au dressage."
-  },
-  {
-    "src": "/restaurant/gallery/dessert-chocolat.webp",
-    "alt": "Dessert sur une assiette blanche avec décor de chocolat",
-    "title": "La touche sucrée",
-    "description": "Un dessert et son décor de chocolat."
-  },
-  {
-    "src": "/restaurant/gallery/plancha.webp",
-    "alt": "Cuisson des aliments sur la plancha du restaurant",
-    "title": "Côté cuisine",
-    "description": "Un aperçu des préparations à la plancha."
   },
   {
     "src": "/restaurant/gallery/dressage-desserts.webp",

@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 
 import { getRestaurantReservationEnv } from "@/lib/env";
 import { MailerError, sendMail } from "@/lib/email/mailer";
+import { buildMailApiErrorResponse, mailFailureHeaders, mailFailureStatus } from "@/lib/email/api-response";
+import { sendDurableFormMail } from "@/lib/email/durable-form-mail";
 import { parseReservationPayload, type ReservationRequestBody } from "@/lib/restaurant/validation";
-import { deliverRestaurantRequest } from "@/lib/restaurant/delivery";
+import { deliverRestaurantRequest, restaurantRequestFingerprint } from "@/lib/restaurant/delivery";
 import { getFormErrorMessage } from "@/lib/api/form-feedback";
 import { readJsonBody } from "@/lib/api/request-body";
 import {
@@ -16,7 +18,7 @@ const PARIS_TIME_ZONE = "Europe/Paris";
 const RESERVATION_RATE_LIMIT_MAX_REQUESTS = 8;
 const RESERVATION_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const CLIENT_ACK_TEXT =
-  "Nous regardons la disponibilit\u00e9 et nous allons vous confirmer par mail dans les plus brefs d\u00e9lais.";
+  "Nous vérifions la disponibilité et vous répondrons par e-mail dans les plus brefs délais.";
 
 function methodNotAllowed() {
   return NextResponse.json(
@@ -60,36 +62,36 @@ function formatReservationDate(day: string): string {
 function buildRestaurantEmail(payload: ReservationRequestBody, submittedAt: Date) {
   const submittedAtLabel = formatTimestamp(submittedAt);
   const reservationDate = formatReservationDate(payload.day);
-  const subject = `[Reservation Restaurant] ${payload.name} - ${payload.day} ${payload.time}`;
+  const subject = `[Réservation restaurant] ${payload.name} - ${payload.day} ${payload.time}`;
   const text = [
-    "Nouvelle demande de reservation restaurant",
+    "Nouvelle demande de réservation au restaurant",
     "",
-    `Demande recue le: ${submittedAtLabel}`,
+    `Demande reçue le : ${submittedAtLabel}`,
     "",
-    `Date souhaitee: ${reservationDate} (${payload.day})`,
-    `Horaire souhaite: ${payload.time}`,
-    `Nombre de personnes: ${payload.partySize}`,
+    `Date souhaitée : ${reservationDate} (${payload.day})`,
+    `Horaire souhaité : ${payload.time}`,
+    `Nombre de personnes : ${payload.partySize}`,
     "",
-    `Nom: ${payload.name}`,
-    `Email: ${payload.email}`,
-    `Telephone: ${payload.phone || "-"}`,
+    `Nom : ${payload.name}`,
+    `Email : ${payload.email}`,
+    `Téléphone : ${payload.phone || "-"}`,
     "",
-    "Message:",
+    "Message :",
     payload.message || "-",
   ].join("\n");
 
   const html = `
     <div style="font-family:Arial,sans-serif;color:#10201b;line-height:1.6">
-      <h2 style="margin:0 0 12px">Nouvelle demande de reservation restaurant</h2>
-      <p style="margin:0 0 16px;color:#355d4f">Demande recue le ${escapeHtml(submittedAtLabel)}</p>
+      <h2 style="margin:0 0 12px">Nouvelle demande de réservation au restaurant</h2>
+      <p style="margin:0 0 16px;color:#355d4f">Demande reçue le ${escapeHtml(submittedAtLabel)}</p>
       <table style="border-collapse:collapse;width:100%;max-width:640px">
         <tbody>
-          <tr><td style="padding:6px 0;font-weight:700">Date souhaitee</td><td style="padding:6px 0">${escapeHtml(reservationDate)} (${escapeHtml(payload.day)})</td></tr>
-          <tr><td style="padding:6px 0;font-weight:700">Horaire souhaite</td><td style="padding:6px 0">${escapeHtml(payload.time)}</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Date souhaitée</td><td style="padding:6px 0">${escapeHtml(reservationDate)} (${escapeHtml(payload.day)})</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Horaire souhaité</td><td style="padding:6px 0">${escapeHtml(payload.time)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Nombre de personnes</td><td style="padding:6px 0">${payload.partySize}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Nom</td><td style="padding:6px 0">${escapeHtml(payload.name)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:700">Email</td><td style="padding:6px 0">${escapeHtml(payload.email)}</td></tr>
-          <tr><td style="padding:6px 0;font-weight:700">Telephone</td><td style="padding:6px 0">${escapeHtml(payload.phone || "-")}</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700">Téléphone</td><td style="padding:6px 0">${escapeHtml(payload.phone || "-")}</td></tr>
         </tbody>
       </table>
       <h3 style="margin:18px 0 8px">Message</h3>
@@ -101,16 +103,16 @@ function buildRestaurantEmail(payload: ReservationRequestBody, submittedAt: Date
 }
 
 function buildClientAckEmail(payload: ReservationRequestBody) {
-  const subject = "Votre demande de reservation a bien ete recue";
+  const subject = "Votre demande de réservation a bien été reçue";
   const text = [
     `Bonjour ${payload.name},`,
     "",
     CLIENT_ACK_TEXT,
     "",
-    `Rappel de votre demande:`,
-    `${payload.day} a ${payload.time} pour ${payload.partySize} personne(s).`,
+    `Rappel de votre demande :`,
+    `${payload.day} à ${payload.time} pour ${payload.partySize} personne(s).`,
     "",
-    "Merci et a bientot,",
+    "Merci et à bientôt,",
     "Restaurant du Golf de Marcilly",
   ].join("\n");
 
@@ -118,8 +120,8 @@ function buildClientAckEmail(payload: ReservationRequestBody) {
     <div style="font-family:Arial,sans-serif;color:#10201b;line-height:1.6">
       <h2 style="margin:0 0 12px">Bonjour ${escapeHtml(payload.name)},</h2>
       <p style="margin:0 0 12px">${escapeHtml(CLIENT_ACK_TEXT)}</p>
-      <p style="margin:0 0 12px">Rappel de votre demande: ${escapeHtml(payload.day)} a ${escapeHtml(payload.time)} pour ${payload.partySize} personne(s).</p>
-      <p style="margin:0">Merci et a bientot,<br />Restaurant du Golf de Marcilly</p>
+      <p style="margin:0 0 12px">Rappel de votre demande : ${escapeHtml(payload.day)} à ${escapeHtml(payload.time)} pour ${payload.partySize} personne(s).</p>
+      <p style="margin:0">Merci et à bientôt,<br />Restaurant du Golf de Marcilly</p>
     </div>
   `.trim();
 
@@ -176,14 +178,19 @@ export async function POST(request: Request) {
     const ackMail = buildClientAckEmail(parsed.data);
 
     const result = await deliverRestaurantRequest(
-      () => sendMail({
-        to: env.restaurantReservationTo,
-        toName: env.restaurantReservationToName,
-        subject: reservationMail.subject,
-        text: reservationMail.text,
-        html: reservationMail.html,
-        replyTo: parsed.data.email,
-        replyToName: parsed.data.name,
+      () => sendDurableFormMail({
+        namespace: "restaurant-email-dedupe",
+        fingerprint: restaurantRequestFingerprint(parsed.data),
+        entry: { form: "restaurant", reason: "restaurant-mail", nom: parsed.data.name, prenom: "", entreprise: "", telephone: parsed.data.phone || "", email: parsed.data.email, message: reservationMail.text },
+        mail: {
+          to: env.restaurantReservationTo,
+          toName: env.restaurantReservationToName,
+          subject: reservationMail.subject,
+          text: reservationMail.text,
+          html: reservationMail.html,
+          replyTo: parsed.data.email,
+          replyToName: parsed.data.name,
+        },
       }),
       () => sendMail({
         to: parsed.data.email,
@@ -195,10 +202,10 @@ export async function POST(request: Request) {
         replyToName: env.restaurantReservationToName,
       }),
     );
-    if (!result.acknowledgementSent) {
+    if (!result.queued && !result.acknowledgementSent) {
       console.error("[restaurant-reservation] client acknowledgement failed");
     }
-    return NextResponse.json({ ok: true, ...result });
+    return NextResponse.json({ ok: true, ...result, ...(result.queued ? { message: "Votre demande de table a été enregistrée en secours. L’équipe la traitera après le rétablissement de la messagerie. Aucune table n’est confirmée avant sa réponse." } : {}) }, { status: result.queued ? 202 : 200 });
   } catch (error) {
     if (error instanceof MailerError) {
       console.error("[restaurant-reservation] mail send failed", {
@@ -209,9 +216,10 @@ export async function POST(request: Request) {
       console.error("[restaurant-reservation] unexpected error");
     }
 
+    const status = mailFailureStatus(error);
     return NextResponse.json(
-      { ok: false, error: getFormErrorMessage(503) },
-      { status: 503 }
+      { ok: false, error: status === 409 ? buildMailApiErrorResponse(error).error : getFormErrorMessage(503) },
+      { status, headers: mailFailureHeaders(error) }
     );
   }
 }
