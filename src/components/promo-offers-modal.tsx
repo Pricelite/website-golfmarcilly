@@ -299,7 +299,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
             aria-describedby={descriptionId}
             aria-labelledby={titleId}
             aria-modal="true"
-            className={`relative max-h-[90dvh] w-[95%] max-w-[900px] overflow-y-auto rounded-[24px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,244,238,0.94))] text-emerald-950 shadow-[0_28px_80px_rgba(6,24,20,0.28)] transition-all duration-[350ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:w-[90%] ${
+            className={`relative max-h-[90dvh] w-[95%] ${totalOffers ? "max-w-[900px]" : "max-w-[620px]"} overflow-y-auto rounded-[24px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,244,238,0.94))] text-emerald-950 shadow-[0_28px_80px_rgba(6,24,20,0.28)] transition-all duration-[350ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] sm:w-[90%] ${
               isVisible ? "scale-100 opacity-100" : "scale-[0.9] opacity-0"
             }`}
             onMouseEnter={() => setIsPaused(true)}
@@ -490,14 +490,25 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                       <button aria-label="Visuel suivant" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-950/15 text-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" onClick={goToNext} type="button">›</button>
                     </div>
                   </div>
-                  <Image
-                    alt={upcomingOfferPosters[activeIndex].alt}
-                    className="h-auto w-full"
-                    height={upcomingOfferPosters[activeIndex].height}
-                    sizes="(max-width: 640px) calc(95vw - 56px), (max-width: 1024px) calc(90vw - 92px), 830px"
-                    src={upcomingOfferPosters[activeIndex].src}
-                    width={upcomingOfferPosters[activeIndex].width}
-                  />
+                  <div className="flex flex-col items-center gap-2 bg-[#f7f5ed] px-4 py-4 sm:px-6">
+                    <a
+                      aria-label={`Agrandir l’affiche ${upcomingOfferPosters[activeIndex].title} dans un nouvel onglet`}
+                      className="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"
+                      href={upcomingOfferPosters[activeIndex].src}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <Image
+                        alt={upcomingOfferPosters[activeIndex].alt}
+                        className="h-auto max-h-[min(60dvh,560px)] w-auto max-w-full object-contain shadow-lg"
+                        height={upcomingOfferPosters[activeIndex].height}
+                        sizes="(max-width: 640px) calc(95vw - 88px), 420px"
+                        src={upcomingOfferPosters[activeIndex].src}
+                        width={upcomingOfferPosters[activeIndex].width}
+                      />
+                    </a>
+                    <p className="text-center text-xs text-emerald-950/70">Cliquez sur l’affiche pour l’agrandir.</p>
+                  </div>
                 </div>
               )}
             </div>
