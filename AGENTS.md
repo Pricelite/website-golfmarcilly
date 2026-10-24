@@ -34,6 +34,7 @@ Ce fichier s'applique à tout le dépôt. L'objectif est de livrer des changemen
 - Préserver l'accessibilité et le responsive des pages : HTML sémantique, labels, navigation clavier, états de chargement et d'erreur, textes alternatifs utiles. Conserver les metadata et liens internes lors des changements de contenu ou de route.
 - Respecter le français du site et éviter d'inventer des tarifs, horaires, disponibilités, témoignages ou mentions légales. Vérifier les données métier dans les fichiers source ou demander une précision si elles manquent.
 - Pour Supabase, écrire des migrations traçables dans `supabase/migrations` ; examiner les droits, contraintes, données existantes et effets d'une réexécution. Ne pas modifier une migration déjà appliquée pour changer le schéma en production.
+- Toute nouvelle migration Supabase doit être appliquée automatiquement à la base de staging par le déploiement de staging, dans l'ordre suivi par Supabase, avant de valider la version du site qui en dépend. Vérifier son exécution effective et arrêter le déploiement si elle échoue. Utiliser les accès propres à staging ; cette règle n'autorise aucune opération sur la production.
 - Ne pas introduire une nouvelle dépendance ou un service externe sans besoin concret ; vérifier l'impact sur le bundle, la configuration, la confidentialité et l'exploitation.
 
 ## Vérification proportionnée
