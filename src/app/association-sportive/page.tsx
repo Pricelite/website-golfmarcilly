@@ -5,7 +5,7 @@ import { AssociationCalendar } from "@/components/association-calendar";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { associationFaqs, associationGroups, associationLinks, associationRoles } from "@/data/association";
+import { associationFaqs, associationGroups, associationLinks, associationPartner, associationRoles } from "@/data/association";
 import { associationIndividualResults, associationNews } from "@/data/association-news";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
@@ -172,13 +172,13 @@ export default async function AssociationPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle eyebrow="Suivi sportif" title="L'outil de l’association sportive du Golf de Marcilly" description="SwingFlow accompagne le suivi des joueurs et leur progression tout au long de la saison." />
           <div className="mt-8 grid items-center gap-8 rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5 sm:p-8 md:grid-cols-[220px_1fr]">
-            <a href="https://swingflow.fr/" target="_blank" rel="noopener noreferrer" aria-label="Découvrir SwingFlow (nouvel onglet)" className="flex min-h-40 items-center justify-center rounded-xl bg-white p-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
-              <Image src="/partners/swingflow.png" alt="SwingFlow" width={180} height={123} sizes="180px" className="h-auto max-h-32 w-auto max-w-full object-contain" />
+            <a href={associationPartner.href} target="_blank" rel="noopener noreferrer" aria-label="Découvrir SwingFlow (nouvel onglet)" className="flex min-h-40 items-center justify-center rounded-xl bg-white p-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+              <Image src={associationPartner.logo} alt="Logo de SwingFlow" width={180} height={123} sizes="180px" className="h-auto max-h-32 w-auto max-w-full object-contain" />
             </a>
             <div>
-              <h2 className="font-serif text-3xl text-emerald-950">SwingFlow</h2>
-              <p className="mt-4 text-sm leading-7 text-emerald-950/75">Retrouvez vos séances, vos progrès et vos objectifs de saison dans un même espace.</p>
-              <a href="https://swingflow.fr/" target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold text-emerald-900 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">Découvrir SwingFlow ↗</a>
+              <h2 className="font-serif text-3xl text-emerald-950">{associationPartner.name}</h2>
+              <p className="mt-4 text-sm leading-7 text-emerald-950/75">{associationPartner.description}</p>
+              <a href={associationPartner.href} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold text-emerald-900 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">Découvrir SwingFlow ↗</a>
             </div>
           </div>
         </div>
