@@ -14,11 +14,21 @@ import {
   type TouchEvent,
 } from "react";
 
-import { upcomingOfferPosters, type SiteOffer } from "@/data/offers";
+import { blackFriday2027OpensAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
 
 const AUTOPLAY_DELAY_MS = 5000;
 const CLOSE_ANIMATION_MS = 350;
 const SWIPE_THRESHOLD_PX = 48;
+const BLACK_FRIDAY_OPENS_AT_MS = Date.parse(blackFriday2027OpensAt);
+
+function formatCountdown(remainingMs: number): string {
+  const totalSeconds = Math.ceil(remainingMs / 1000);
+  const days = Math.floor(totalSeconds / 86_400);
+  const hours = Math.floor((totalSeconds % 86_400) / 3_600);
+  const minutes = Math.floor((totalSeconds % 3_600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${days} j ${String(hours).padStart(2, "0")} h ${String(minutes).padStart(2, "0")} min ${String(seconds).padStart(2, "0")} s`;
+}
 
 type PromoOffersModalProps = {
   label: string;
@@ -40,6 +50,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchCurrentX, setTouchCurrentX] = useState<number | null>(null);
+  const [now, setNow] = useState<number | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -48,6 +59,17 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   const descriptionId = useId();
   const totalOffers = offers.length;
   const slideCount = totalOffers || upcomingOfferPosters.length;
+  const isBlackFridayPreview = totalOffers === 0;
+  const canOpen = !isBlackFridayPreview || (now !== null && now >= BLACK_FRIDAY_OPENS_AT_MS);
+  const remainingMs = now === null ? null : Math.max(0, BLACK_FRIDAY_OPENS_AT_MS - now);
+
+  useEffect(() => {
+    if (!isBlackFridayPreview) return;
+    const updateNow = () => setNow(Date.now());
+    updateNow();
+    const interval = window.setInterval(updateNow, 1000);
+    return () => window.clearInterval(interval);
+  }, [isBlackFridayPreview]);
 
   const particles = useMemo(
     () =>
@@ -68,6 +90,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   };
 
   const openModal = () => {
+    if (isBlackFridayPreview && Date.now() < BLACK_FRIDAY_OPENS_AT_MS) return;
     clearCloseTimeout();
     setIsMounted(true);
     requestAnimationFrame(() => {
@@ -254,9 +277,11 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   return (
     <>
       <button
-        aria-haspopup="dialog"
-        aria-expanded={isMounted}
-        className="relative inline-flex min-h-11 min-w-0 max-w-48 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+        aria-haspopup={canOpen ? "dialog" : undefined}
+        aria-expanded={canOpen ? isMounted : undefined}
+        aria-disabled={!canOpen}
+        aria-label={!canOpen ? `Black Friday 2027 : ouverture le 1er novembre à 9 h, heure de Paris${remainingMs !== null ? `, dans ${formatCountdown(remainingMs)}` : ""}` : undefined}
+        className={`relative inline-flex min-h-11 min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${canOpen ? "transition hover:border-amber-400 hover:bg-amber-100" : "cursor-default"}`}
         onClick={openModal}
         ref={triggerRef}
         type="button"
@@ -270,6 +295,9 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
             Bon plan
           </span>
           <span className="text-xs font-semibold leading-tight">{label}</span>
+          {isBlackFridayPreview && !canOpen ? <span aria-hidden="true" className="mt-0.5 whitespace-nowrap text-[0.65rem] font-semibold tabular-nums text-amber-900">
+            {remainingMs === null ? "Ouverture le 1er nov. 2027 à 9 h" : formatCountdown(remainingMs)}
+          </span> : null}
         </span>
       </button>
 
