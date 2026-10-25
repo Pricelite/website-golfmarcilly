@@ -1,5 +1,6 @@
 import ical from "node-ical";
 import { parisDate } from "./request";
+import { INITIATION_MIN_NOTICE_HOURS } from "./constants";
 
 export type InitiationOption = { date: string; time: string };
 export const INITIATION_LOOKAHEAD_DAYS = 183;
@@ -14,7 +15,7 @@ export async function parseInitiationOptions(ics: string, now = new Date()): Pro
     if (event?.type !== "VEVENT") continue;
     for (const instance of ical.expandRecurringEvent(event, { from: now, to })) {
       const title = typeof instance.summary === "string" ? instance.summary : instance.summary?.val || "";
-      if (instance.isFullDay || instance.event.status === "CANCELLED" || instance.start <= now || instance.start > to) continue;
+      if (instance.isFullDay || instance.event.status === "CANCELLED" || instance.start.getTime() - now.getTime() < INITIATION_MIN_NOTICE_HOURS * 60 * 60 * 1000 || instance.start > to) continue;
       // Only empty discovery sessions; never publish private groups or customer names.
       if (!/^\s*DEC\s*[-–—]?\s*VIDE\b/i.test(title)) continue;
       const slot = { date: parisDate(instance.start), time: timeFormat.format(instance.start) };

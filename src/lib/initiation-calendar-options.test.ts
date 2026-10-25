@@ -31,3 +31,12 @@ test("recurrence exceptions, private replacements and winter clock changes are r
 test("an inaccessible feed is not treated as an empty agenda", async () => {
   await assert.rejects(() => parseInitiationOptions("<html>Not found</html>"));
 });
+
+test("initiation choices disappear once the 48-hour booking deadline passes", async () => {
+  const feed = calendar(event("deadline", [
+    "DTSTART:20261026T100000Z", "DTEND:20261026T110000Z", "SUMMARY:DEC - VIDE",
+  ]));
+  assert.deepEqual(await parseInitiationOptions(feed, new Date("2026-10-24T10:00:00Z")),
+    [{ date: "2026-10-26", time: "11:00" }]);
+  assert.deepEqual(await parseInitiationOptions(feed, new Date("2026-10-24T10:00:00.001Z")), []);
+});

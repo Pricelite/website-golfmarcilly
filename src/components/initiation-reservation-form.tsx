@@ -106,7 +106,7 @@ export default function InitiationReservationForm({ initialMeal = "WITHOUT_MEAL"
       <fieldset hidden={step !== 1} disabled={step !== 1 || sending || Boolean(success)} className="min-w-0 rounded-[28px] border border-emerald-900/10 bg-white p-5 shadow-xl shadow-emerald-900/10 sm:p-8">
         <legend className="sr-only">Choisir votre initiation</legend>
         <h2 ref={firstHeading} tabIndex={-1} className="font-serif text-3xl text-emerald-950 focus:outline-none">Quand souhaitez-vous venir ?</h2>
-        <p className="mt-2 text-sm leading-6 text-emerald-900/75">Choisissez un créneau et votre formule. L’équipe confirmera votre demande par e-mail.</p>
+        <p className="mt-2 text-sm leading-6 text-emerald-900/75">Choisissez un créneau et votre formule. L’équipe confirmera votre demande par e-mail. Les demandes ferment 48 h avant le début du créneau.</p>
         {loading ? <p role="status" className="mt-4 text-sm text-emerald-900">Actualisation des créneaux…</p> : null}
         {calendarError ? <p role="alert" className="mt-4 text-sm text-red-800">{calendarError} Réessayez ou appelez le <a className="underline" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p> : null}
         {!loading && !calendarError && slots.length === 0 ? <p role="status" className="mt-4 text-sm text-emerald-900">Aucun créneau d’initiation n’est proposé pour le moment.</p> : null}

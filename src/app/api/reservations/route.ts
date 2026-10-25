@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   try {
     const slots = await getInitiationOptions();
     if (!slots.some(slot => slot.date === parsed.data.date && slot.time === parsed.data.startTime)) {
-      return NextResponse.json({ ok: false, error: "Ce créneau n’est plus proposé dans l’agenda. Actualisez les créneaux et choisissez une autre date ou un autre horaire." }, { status: 409 });
+      return NextResponse.json({ ok: false, error: "Ce créneau n’est plus disponible. Les demandes ferment 48 h avant son début. Actualisez les créneaux et choisissez une autre date ou un autre horaire." }, { status: 409 });
     }
   } catch (error) {
     return NextResponse.json({ ok: false, error: (error as Error).message }, { status: 503 });
