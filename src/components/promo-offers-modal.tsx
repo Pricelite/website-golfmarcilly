@@ -295,7 +295,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
             Bon plan
           </span>
           <span className="text-xs font-semibold leading-tight">{label}</span>
-          {isBlackFridayPreview && !canOpen ? <span aria-hidden="true" className="mt-0.5 whitespace-nowrap text-[0.65rem] font-semibold tabular-nums text-amber-900">
+          {isBlackFridayPreview && !canOpen ? <span aria-hidden="true" className="mt-0.5 whitespace-nowrap text-xs font-bold tabular-nums text-amber-900">
             {remainingMs === null ? "Ouverture le 1er nov. 2027 à 9 h" : formatCountdown(remainingMs)}
           </span> : null}
         </span>
