@@ -15,6 +15,9 @@
 // Aucune offre publiée : retrait demandé par le propriétaire le 19 octobre 2026.
 export const siteOffers: SiteOffer[] = [];
 
+// 1er novembre 2027 à 9 h, heure de Paris (UTC+1 à cette date).
+export const blackFriday2027OpensAt = "2027-11-01T08:00:00.000Z";
+
 // Visuels annoncés pour novembre 2027, distincts des offres actuellement actives.
 export const upcomingOfferPosters = [
   {
