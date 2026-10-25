@@ -4,7 +4,7 @@ import { readFile, rename, writeFile } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import { defaultStates, emptyConditions, previewConditions, type ConditionState, type SiteCondition } from "@/data/site-conditions";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import type { ConditionInput, ConditionItemInput } from "./site-conditions";
+import { isCarotteReason, type ConditionInput, type ConditionItemInput } from "./site-conditions";
 
 type ConditionRow = {
   id: string; status: SiteCondition["status"]; state_label: string | null; reason: string | null; updated_at: string;
@@ -26,8 +26,8 @@ function normalize(rows: ConditionRow[]): SiteCondition[] {
       id: row.id, label: row.label || existing?.label || row.id,
       group: row.item_group || existing?.group || "courses", href: row.href || existing?.href || "/golf",
       position: row.position ?? existing?.position ?? result.length,
-      status: row.status, stateLabel: row.state_label ?? (row.status === "open" && row.reason === "Carotté" ? "Carotté" : null),
-      reason: row.reason, updatedAt: row.updated_at || null,
+      status: row.status, stateLabel: row.state_label ?? (row.status === "open" && isCarotteReason(row.reason) ? "Carotté" : null),
+      reason: row.status === "open" && isCarotteReason(row.reason) ? null : row.reason, updatedAt: row.updated_at || null,
     };
     const index = result.findIndex(item => item.id === row.id);
     if (index < 0) result.push(value); else result[index] = value;

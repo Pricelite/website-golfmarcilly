@@ -17,11 +17,12 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
     event.preventDefault();
     if (busy) return;
     const fields = new FormData(event.currentTarget);
+    const selectedStatus = fields.get("status");
     setBusy(id); setMessage(""); setError("");
     try {
       const response = await fetch("/api/admin/site-conditions", {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: fields.get("status"), reason: fields.get("reason") }),
+        body: JSON.stringify({ id, status: selectedStatus === "carotte" ? "open" : selectedStatus, reason: selectedStatus === "carotte" ? "Carotté" : fields.get("reason") }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Enregistrement impossible. Réessayez.");
@@ -43,8 +44,8 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
           <h2 className="font-serif text-xl text-emerald-950">{item.label}</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="text-sm text-emerald-950">État
-              <select name="status" className={selectClass} defaultValue={current?.status ?? "open"} disabled={Boolean(busy)}>
-                <option value="unknown">À confirmer</option><option value="open">Ouvert</option><option value="closed">Fermé</option>
+              <select name="status" className={selectClass} defaultValue={current?.stateLabel === "Carotté" ? "carotte" : current?.status ?? "open"} disabled={Boolean(busy)}>
+                <option value="unknown">À confirmer</option><option value="open">Ouvert</option><option value="carotte">Carotté</option><option value="closed">Fermé</option>
               </select>
             </label>
             <label className="text-sm text-emerald-950 sm:col-span-2">Motif ou précision (visible sur l’accueil)

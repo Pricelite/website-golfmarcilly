@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseConditionInput, parseConditionItem, parseConditionState, visibleCondition } from "./site-conditions";
+import { isCarotteReason, parseConditionInput, parseConditionItem, parseConditionState, visibleCondition } from "./site-conditions";
 import { conditionItems, emptyConditions, previewConditions } from "../data/site-conditions";
 
 test("a closed condition requires a short reason", () => {
@@ -51,4 +51,16 @@ test("custom equipment and states are validated server-side", () => {
   assert.equal(parsed.condition.stateLabel, "Entretien");
   assert.equal(parseConditionInput({ id: "nouveau-parcours", status: "closed", stateId: "entretien", reason: "Travaux" },
     ["nouveau-parcours"], [state.state]).ok, false);
+});
+
+test("Carotté is a selectable state and legacy spelling displays as that state", () => {
+  assert.equal(isCarotteReason("carrote"), true);
+  const selected = parseConditionInput({ id: "grand-parcours-aller", status: "open", reason: "Carotté" });
+  assert.ok(selected.ok);
+  assert.equal(selected.condition.stateLabel, "Carotté");
+  assert.equal(selected.condition.reason, null);
+  const legacy = parseConditionInput({ id: "grand-parcours-aller", status: "open", reason: "carrote" });
+  assert.ok(legacy.ok);
+  assert.equal(legacy.condition.stateLabel, "Carotté");
+  assert.equal(legacy.condition.reason, null);
 });

@@ -2,6 +2,11 @@ import { conditionItems, type ConditionId, type ConditionState, type ConditionSt
 
 export type ConditionInput = { id: ConditionId; status: ConditionStatus; stateLabel: string | null; reason: string | null };
 
+export function isCarotteReason(value: string | null | undefined): boolean {
+  const normalized = value?.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return normalized === "carotte" || normalized === "carrote";
+}
+
 export function parseConditionInput(value: unknown, ids: readonly string[] = conditionItems.map(item => item.id), states?: ConditionState[]): { ok: true; condition: ConditionInput } | { ok: false; error: string } {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false, error: "État invalide." };
   const input = value as Record<string, unknown>;
@@ -17,10 +22,10 @@ export function parseConditionInput(value: unknown, ids: readonly string[] = con
     const state = states.find(item => item.id === input.stateId);
     if (!state || state.status !== input.status) return { ok: false, error: "État personnalisé invalide." };
     stateLabel = ["open", "closed", "unknown"].includes(state.id) ? null : state.label;
-  } else if (input.status === "open" && reason === "Carotté") {
+  } else if (input.status === "open" && isCarotteReason(reason)) {
     stateLabel = "Carotté";
   }
-  return { ok: true, condition: { id: input.id, status: input.status as ConditionStatus, stateLabel, reason: input.status === "unknown" ? null : reason || null } };
+  return { ok: true, condition: { id: input.id, status: input.status as ConditionStatus, stateLabel, reason: input.status === "unknown" || (input.status === "open" && isCarotteReason(reason)) ? null : reason || null } };
 }
 
 export function parseConditionItem(value: unknown): { ok: true; item: ConditionItemInput } | { ok: false; error: string } {
