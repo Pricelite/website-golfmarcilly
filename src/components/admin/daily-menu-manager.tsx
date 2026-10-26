@@ -2,7 +2,8 @@
 
 import { useRef, useState, type FormEvent } from "react";
 
-import { dailyMenuExample, formatDailyMenuDate, type DailyMenu, type DailyMenuChoice } from "@/data/daily-menu";
+import { dailyMenuExample, formatDailyMenuDate, sortDailyMenuChoices, type DailyMenu, type DailyMenuChoice } from "@/data/daily-menu";
+import { normalizeDailyMenuName, normalizeDailyMenuPrice } from "@/lib/restaurant/daily-menu-validation";
 
 type Choices = Pick<DailyMenu, "starters" | "mains" | "desserts">;
 const groups = [
@@ -11,10 +12,15 @@ const groups = [
   { key: "desserts", title: "Desserts" },
 ] as const;
 const inputClass = "mt-2 w-full rounded-xl border border-emerald-950/20 bg-white px-3 py-2 text-sm text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-700";
+const sortedChoices = (menu: Choices): Choices => ({
+  starters: sortDailyMenuChoices(menu.starters),
+  mains: sortDailyMenuChoices(menu.mains),
+  desserts: sortDailyMenuChoices(menu.desserts),
+});
 
 export function DailyMenuManager({ initialDate, initialMenu, initialError }: { initialDate: string; initialMenu: DailyMenu | null; initialError: boolean }) {
   const [date, setDate] = useState(initialDate);
-  const [choices, setChoices] = useState<Choices>(initialMenu ?? dailyMenuExample);
+  const [choices, setChoices] = useState<Choices>(() => sortedChoices(initialMenu ?? dailyMenuExample));
   const [published, setPublished] = useState(Boolean(initialMenu));
   const [busy, setBusy] = useState(false);
   const [unavailable, setUnavailable] = useState(initialError);
@@ -44,7 +50,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     try {
       const data = await request("GET", undefined, nextDate);
       if (current !== requestNumber.current) return;
-      setChoices(data.menu ?? dailyMenuExample);
+      setChoices(sortedChoices(data.menu ?? dailyMenuExample));
       setPublished(Boolean(data.menu));
       setUnavailable(false);
     } catch (cause) {
@@ -84,7 +90,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     setBusy(true); setError(""); setMessage("");
     try {
       const data = await request("PUT", { date, ...choices });
-      if (data.menu) setChoices(data.menu);
+      if (data.menu) setChoices(sortedChoices(data.menu));
       setPublished(true);
       setMessage(`Carte du ${formatDailyMenuDate(date)} publiée. Elle devient la carte active et le reste jusqu’à la prochaine modification.`);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Enregistrement impossible. Réessayez."); }
@@ -112,6 +118,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
         <input type="date" className={inputClass} value={date} min="1900-01-01" max="2199-12-31" disabled={busy} onChange={(event) => void chooseDate(event.target.value)} />
       </label>
       <p className="mt-3 text-sm text-emerald-900/75">{published ? "Carte publiée pour cette date. Toute modification enregistrée remplace les choix précédents." : "Exemple prérempli. Modifiez les choix puis publiez pour cette date."}</p>
+      <p className="mt-1 text-sm text-emerald-900/75">Les plats seront affichés par prix croissant. Les noms et tarifs sont harmonisés à l’enregistrement ; vérifiez les autres fautes signalées par le correcteur français.</p>
       <form onSubmit={save} className="mt-6">
         <fieldset disabled={busy || unavailable || !date} className="grid gap-5 md:grid-cols-3 disabled:opacity-60">
           {groups.map(({ key, title }) => (
@@ -120,10 +127,10 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
               {choices[key].map((choice, index) => (
                 <div key={`${key}-${index}`} className="mt-4 grid grid-cols-[minmax(0,1fr)_6.5rem_auto] items-end gap-2">
                   <label className="block text-sm">Choix {index + 1}
-                    <input className={inputClass} value={choice.name} onChange={(event) => updateChoice(key, index, "name", event.target.value)} required maxLength={120} autoComplete="off" />
+                    <input className={inputClass} value={choice.name} onChange={(event) => updateChoice(key, index, "name", event.target.value)} onBlur={(event) => updateChoice(key, index, "name", normalizeDailyMenuName(event.target.value))} required maxLength={120} autoComplete="off" spellCheck lang="fr" />
                   </label>
                   <label className="block text-sm">Prix {index + 1}
-                    <input className={inputClass} value={choice.price} onChange={(event) => updateChoice(key, index, "price", event.target.value)} required maxLength={10} pattern="[0-9]{1,4}(,[0-9]{2})? ?€" title="Exemple : 9 € ou 9,50 €" inputMode="decimal" autoComplete="off" />
+                    <input className={inputClass} value={choice.price} onChange={(event) => updateChoice(key, index, "price", event.target.value)} onBlur={(event) => updateChoice(key, index, "price", normalizeDailyMenuPrice(event.target.value))} required maxLength={10} pattern="[0-9]{1,4}([,.][0-9]{1,2})? ?€?" title="Exemple : 9 € ou 9,50 €" inputMode="decimal" autoComplete="off" />
                   </label>
                   <button type="button" disabled={choices[key].length <= 1} onClick={() => removeChoice(key, index)} aria-label={`Supprimer le choix ${index + 1} des ${title.toLocaleLowerCase("fr")}`} className="mb-0.5 h-10 w-10 rounded-full border border-red-700/25 text-lg text-red-800 disabled:cursor-not-allowed disabled:opacity-30">×</button>
                 </div>

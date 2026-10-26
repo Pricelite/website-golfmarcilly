@@ -474,13 +474,13 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                             <button
                               aria-label={`Afficher ${offer.title}`}
                               aria-selected={isActive}
-                              className="site-button group flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+                              className="group flex h-11 w-8 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
                               key={offer.slug}
                               onClick={() => goToSlide(index)}
                               role="tab"
                               type="button"
                             >
-                              <span aria-hidden="true" className={`h-2.5 rounded-full transition-all duration-300 group-hover:bg-white ${isActive ? "w-6 bg-emerald-950" : "w-2.5 bg-emerald-950/45"}`} />
+                              <span aria-hidden="true" className={`h-1.5 rounded-full transition-all duration-300 group-hover:bg-emerald-700 ${isActive ? "w-3 bg-emerald-950" : "w-1.5 bg-emerald-950/40"}`} />
                             </button>
                           );
                         })}
