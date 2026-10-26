@@ -18,6 +18,7 @@ import { getActiveSiteOffers } from "@/data/offers";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 import { listSiteConditions } from "@/lib/site-conditions-store";
 import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
@@ -89,7 +90,7 @@ export default async function HomePage() {
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {discovery.rows.map((row, index) => <article key={row.label} className="rounded-3xl border border-emerald-950/15 bg-white p-6 sm:p-8">
               <h3 className="font-serif text-2xl">{row.label}</h3><p className="mt-2 text-sm font-semibold text-emerald-800">{row.note}</p>
-              <p className="mt-4 text-3xl font-semibold">{row.values[1]} <span className="text-sm font-normal">/ personne</span></p>
+              <p className="mt-4 text-3xl font-semibold">{nonbreakingEuro(row.values[1])} <span className="text-sm font-normal">/ personne</span></p>
               <p className="mt-3 text-sm leading-7 text-emerald-950/80">{index === 0 ? "Le cours et le parcours, sans repas." : "Le cours, le parcours et 1 h de repas à La Bergerie."}</p>
             </article>)}
           </div>

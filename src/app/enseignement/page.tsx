@@ -7,6 +7,7 @@ import { siteConfig } from "@/data/site";
 import { adultCollectiveCoursePosterSrc, juniorPrograms, juniorSchoolPosterSrc, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export const metadata = buildMetadata({
   title: "Cours et école de golf près d’Orléans",
@@ -52,7 +53,7 @@ export default function TeachingPage() {
           {juniorPrograms.map((program) => (
             <article key={program.title} className="flex h-full flex-col rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5 sm:p-8">
               <h3 className="font-serif text-3xl text-emerald-950">{program.title}</h3>
-              <p className="mt-5 text-emerald-950"><span className="font-serif text-5xl">{program.price}</span><span className="ml-2 text-sm">/ saison</span></p>
+              <p className="mt-5 text-emerald-950"><span className="font-serif text-5xl">{nonbreakingEuro(program.price)}</span><span className="ml-2 text-sm">/ saison</span></p>
               <p className="mt-3 font-semibold text-emerald-800">{program.duration}</p>
               <ul className="my-6 space-y-2 border-y border-emerald-950/10 py-5 text-sm text-emerald-950/80">
                 {program.slots.map((slot) => <li key={slot}>{slot}</li>)}
@@ -75,7 +76,7 @@ export default function TeachingPage() {
             <article className="flex flex-col items-start rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Apprendre ensemble</p>
               <h3 className="mt-3 font-serif text-2xl text-stone-50">Cours collectifs adultes</h3>
-              <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez l’accueil pour connaître les dates et les modalités.</p>
+              <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez l’accueil pour connaître les dates et les modalités.</p>
               <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent("Cours collectifs adultes")}`} variant="secondary" className="mt-auto">Demander les dates des cours collectifs</CTAButton>
             </article>
             <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">

@@ -128,9 +128,9 @@ export default function InitiationReservationForm({ initialMeal = "WITHOUT_MEAL"
           </fieldset>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">Participants<select value={participants} onChange={event => setParticipants(Number(event.target.value))} className={field}>{Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select></label>
-            <label className="block">Formule<select value={meal} onChange={event => setMeal(event.target.value as InitiationMealOption)} className={field}><option value="WITHOUT_MEAL">Sans repas — 25 € / personne</option><option value="WITH_MEAL">Avec repas — 48 € / personne</option></select></label>
+            <label className="block">Formule<select value={meal} onChange={event => setMeal(event.target.value as InitiationMealOption)} className={field}><option value="WITHOUT_MEAL">Sans repas — 25 € / personne</option><option value="WITH_MEAL">Avec repas — 48 € / personne</option></select></label>
           </div>
-          <p className="rounded-2xl bg-emerald-50 p-4">Total estimé : <strong>{total} €</strong><br />Paiement sur place après confirmation.</p>
+          <p className="rounded-2xl bg-emerald-50 p-4">Total estimé : <strong>{total} €</strong><br />Paiement sur place après confirmation.</p>
         </div>
         {stepError ? <p role="alert" className="mt-4 text-sm text-red-800">{stepError}</p> : null}
         {error ? <p role="alert" className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
@@ -143,7 +143,7 @@ export default function InitiationReservationForm({ initialMeal = "WITHOUT_MEAL"
         <div className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm leading-6 text-emerald-950">
           <p className="font-semibold">Votre choix</p>
           <p>{formattedDate} à {selectedTime} · {participants} {participants === 1 ? "participant" : "participants"} · {meal === "WITH_MEAL" ? "avec repas" : "sans repas"}</p>
-          <p>Total estimé : {total} € · paiement sur place.</p>
+          <p>Total estimé : {total} € · paiement sur place.</p>
         </div>
         <fieldset disabled={step !== 2 || sending || Boolean(success)} className="mt-5 grid gap-4 text-sm text-emerald-900 sm:grid-cols-2">
           <legend className="sr-only">Vos coordonnées</legend>

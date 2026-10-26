@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CTAButton } from "@/components/ui/cta-button";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 type Choice = { label: string; title: string; description: string; price: string; unit: string; href: string; action: string };
 
@@ -22,7 +23,7 @@ export function BeginnerFormulaPicker({ choices }: { choices: Choice[] }) {
       <div aria-live="polite" aria-atomic="true" className="border-t border-emerald-950/10 bg-[#f0f3e8] p-6 sm:p-8">
         <h3 className="font-serif text-2xl text-emerald-950">{choice.title}</h3>
         <p className="mt-3 text-sm leading-7 text-emerald-950/75">{choice.description}</p>
-        <p className="my-5 text-emerald-950"><span className="font-serif text-4xl">{choice.price}</span><span className="ml-2 text-sm">{choice.unit}</span></p>
+        <p className="my-5 text-emerald-950"><span className="font-serif text-4xl">{nonbreakingEuro(choice.price)}</span><span className="ml-2 text-sm">{choice.unit}</span></p>
         <CTAButton href={choice.href}>{choice.action}</CTAButton>
       </div>
     </div>
