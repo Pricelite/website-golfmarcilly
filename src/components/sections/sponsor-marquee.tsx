@@ -12,7 +12,7 @@ export function SponsorMarquee() {
   return (
     <section aria-label="Nos sponsors et partenaires" className="sponsor-marquee bg-transparent py-4">
       <div className="sponsor-marquee-viewport overflow-hidden" role="group" aria-label="Sponsors du Golf de Marcilly">
-        <div className="sponsor-marquee-track flex w-max">
+        <div className="sponsor-marquee-track flex w-max bg-[#f7f4e9]">
           {[false, true].map((duplicate) => (
             <ul key={String(duplicate)} aria-hidden={duplicate || undefined} className={`flex shrink-0 items-center gap-6 pr-6${duplicate ? " sponsor-marquee-copy" : ""}`}>
               {sponsorsWithLogos.map((partner) => (
