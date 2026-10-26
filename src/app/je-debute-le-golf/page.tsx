@@ -50,6 +50,20 @@ export default function BeginnerGolfPage() {
         </div>
       </section>
 
+      <section id="practice" className="bg-emerald-950">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1fr_0.8fr] lg:px-8">
+          <div>
+            <SectionTitle tone="inverse" eyebrow="Sans réservation" title="Essayer le practice" description="Envoyez quelques balles à votre rythme depuis un poste d’entraînement. Cette formule ne comprend pas de cours." />
+            <p className="mt-5 text-sm text-stone-100/80">Le prêt d’un club est prévu par seau et par personne. Demandez conseil à l’accueil pour votre premier essai.</p>
+          </div>
+          <div className="rounded-[28px] bg-[#f7f4e9] p-6 sm:p-8">
+            <p className="text-sm font-semibold text-emerald-800">{buckets.label} · tarif extérieur</p>
+            <p className="mt-3 font-serif text-5xl text-emerald-950">{nonbreakingEuro(buckets.values[0])}</p>
+            <div className="mt-6"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton></div>
+          </div>
+        </div>
+      </section>
+
       <section id="initiations" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <SectionTitle eyebrow="Avec un enseignant" title="Choisissez votre initiation" description="Une heure avec un pro, puis 1 h 30 sur le parcours découverte de 9 trous. Le matériel est fourni." />
         <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -64,20 +78,6 @@ export default function BeginnerGolfPage() {
           ))}
         </div>
         <p className="mt-5 text-sm leading-7 text-emerald-950/70">La demande sera confirmée par l’équipe selon les disponibilités. Une question ? Appelez le <a className="font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p>
-      </section>
-
-      <section id="practice" className="bg-emerald-950">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1fr_0.8fr] lg:px-8">
-          <div>
-            <SectionTitle tone="inverse" eyebrow="Sans réservation" title="Essayer le practice" description="Envoyez quelques balles à votre rythme depuis un poste d’entraînement. Cette formule ne comprend pas de cours." />
-            <p className="mt-5 text-sm text-stone-100/80">Le prêt d’un club est prévu par seau et par personne. Demandez conseil à l’accueil pour votre premier essai.</p>
-          </div>
-          <div className="rounded-[28px] bg-[#f7f4e9] p-6 sm:p-8">
-            <p className="text-sm font-semibold text-emerald-800">{buckets.label} · tarif extérieur</p>
-            <p className="mt-3 font-serif text-5xl text-emerald-950">{nonbreakingEuro(buckets.values[0])}</p>
-            <div className="mt-6"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton></div>
-          </div>
-        </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
