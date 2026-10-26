@@ -1,6 +1,7 @@
 export type Partner = {
   name: string;
   logo?: string;
+  logoCaption?: string;
   website?: string;
   showInMarquee?: boolean;
 };
@@ -12,7 +13,9 @@ export const partners: Partner[] = [
   { name: "SAFTI", logo: "/partners/safti.svg", website: "https://www.safti.fr/" },
   { name: "ACE TRANS", logo: "/partners/ace-trans-cutout.png", website: "https://acetrans.fr/" },
   { name: "Menuiserie GODEL", logo: "/partners/menuiserie-godel.png", website: "https://menuiseriegodel.fr/" },
-  { name: "RENOV’ CENTRE" },
+  { name: "Rénov’Centre", logo: "/partners/renov-centre-mdm.svg", logoCaption: "Rénov’Centre", website: "https://www.maisondumenuisier.fr/orleans" },
+  { name: "AEDC", logo: "/partners/aedc.png", website: "https://www.pagesjaunes.fr/pros/57101682" },
+  { name: "Garage Thomas AD", logo: "/partners/garage-thomas.png", website: "https://www.garage-thomas45.fr/" },
   { name: "WAGC", logo: "/partners/wagc.png", website: "https://wagc-france.com/", showInMarquee: false },
   { name: "T’Libre Max", logo: "/partners/t-libre-max.webp", website: "https://www.helloasso.com/associations/t-libre-max" },
   { name: "Maserati", logo: "/partners/maserati.svg", website: "https://www.maserati.com/fr/fr" },

@@ -22,6 +22,8 @@ export const metadata = buildMetadata({
 
 export default async function AssociationPage() {
   const calendar = await publicAssociationEvents();
+  const currentYear = Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Paris", year: "numeric" }).format(new Date()));
+  const previousNews = associationNews.filter((article) => Number(article.year) < currentYear);
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([
@@ -116,9 +118,9 @@ export default async function AssociationPage() {
 
       <section id="actualites" className="scroll-mt-28 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="La vie sportive" title="Actualités de Marcilly" description="Retrouvez une sélection d’articles publiés entre 2024 et 2026 sur les équipes du club." />
+          <SectionTitle eyebrow="La vie sportive" title="Actualités de Marcilly" description="Retrouvez une sélection d’articles des saisons passées sur les équipes du club." />
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {associationNews.map((article) => (
+            {previousNews.map((article) => (
               <article key={article.href} className="flex flex-col overflow-hidden rounded-[24px] border border-emerald-950/10 bg-[#f7f4e9] shadow-sm shadow-emerald-950/5">
                 <figure>
                   <div className="relative aspect-[16/9] overflow-hidden">
