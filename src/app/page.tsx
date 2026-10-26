@@ -57,7 +57,7 @@ export default async function HomePage() {
         eyebrow="Bienvenue au Golf de Marcilly"
         beginnerCta={{ label: "Je débute le golf", href: "/je-debute-le-golf" }}
         appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
-        offersAction={<PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "Black Friday 2027"} offers={activeOffers} />}
+        offersAction={<PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "Black Friday 2026"} offers={activeOffers} />}
         subtitle="Jouez, découvrez le golf ou déjeunez à La Bergerie. À Marcilly-en-Villette, le domaine accueille golfeurs, débutants et visiteurs."
         title="45 trous aux portes d'Orléans"
       />
