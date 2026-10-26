@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseDailyMenu, validDailyMenuDate } from "./daily-menu-validation";
+import { normalizeDailyMenuName, parseDailyMenu, validDailyMenuDate } from "./daily-menu-validation";
 
 const choice = (name: string, price = "9 €") => ({ name, price });
 const valid = { date: "2026-09-30", starters: [choice("Œuf"), choice("Poireaux"), choice("Saumon")], mains: [choice("Burger"), choice("Poisson"), choice("Volaille")], desserts: [choice("Cookie"), choice("Tarte"), choice("Riz au lait")] };
@@ -22,4 +22,20 @@ test("daily menu rejects impossible dates and control characters", () => {
   assert.equal(validDailyMenuDate("0000-01-01"), false);
   assert.equal(parseDailyMenu({ ...valid, date: "2026-02-29" }).ok, false);
   assert.equal(parseDailyMenu({ ...valid, starters: [choice("Œuf\nmalveillant"), choice("Poireaux"), choice("Saumon")] }).ok, false);
+});
+
+test("daily menu standardizes common spelling, punctuation and prices before sorting", () => {
+  const parsed = parseDailyMenu({
+    ...valid,
+    starters: [choice("  creme Brulée.  ", "9.5"), choice("Salade de Chevre chaud", "8€"), choice("Terrine Maison", "8,5")],
+  });
+  assert.equal(parsed.ok, true);
+  if (!parsed.ok) return;
+  assert.deepEqual(parsed.menu.starters, [
+    { name: "Salade de chèvre chaud", price: "8 €" },
+    { name: "Terrine maison", price: "8,50 €" },
+    { name: "Crème brûlée", price: "9,50 €" },
+  ]);
+  assert.equal(normalizeDailyMenuName("assiette 3 Saumons,servie chaude."), "Assiette 3 saumons, servie chaude");
+  assert.equal(normalizeDailyMenuName("tarte d'  automne :creme Brulée"), "Tarte d’automne : crème brûlée");
 });

@@ -119,7 +119,7 @@ export const pricingSections: PricingSection[] = [
       { label: "31 - 74 ans", values: ["Annuel", "744 €*"] },
       { label: "75 ans et plus", values: ["Annuel", "492 €*"] },
     ],
-    footnotes: ["* 1 mois offert si paiement comptant."],
+    footnotes: ["* 8 % de remise pour paiement comptant."],
   },
   {
     title: "45 trous semainier 5j/7",
@@ -133,7 +133,7 @@ export const pricingSections: PricingSection[] = [
       { label: "75 ans et plus", values: ["Annuel", "816 €*"] },
       { label: "Couple 75 ans et plus", values: ["Annuel", "1428 €*"] },
     ],
-    footnotes: ["* 1 mois offert si paiement comptant."],
+    footnotes: ["* 8 % de remise pour paiement comptant."],
   },
   {
     title: "45 trous à temps plein, 7 j/7",
@@ -149,12 +149,12 @@ export const pricingSections: PricingSection[] = [
       { label: "Couple 36 ans - 74 ans", values: ["Annuel", "2292 €*"] },
       { label: "75 ans et plus", values: ["Annuel", "936 €*"] },
       { label: "Couple 75 ans et plus", values: ["Annuel", "1596 €*"] },
-      { label: "Offre 2e club", values: ["Annuel", "750 €"] },
+      { label: "Offre 2e club", values: ["Annuel", "750 €"], note: "Sur présentation de la facture." },
       {
         label: "Carte entreprise",
         values: ["Sur devis", "de 2100 € à 4000 € HT"],
       },
     ],
-    footnotes: ["* 1 mois offert si paiement comptant."],
+    footnotes: ["* 8 % de remise pour paiement comptant."],
   },
 ];

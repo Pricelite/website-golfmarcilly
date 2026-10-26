@@ -1,7 +1,8 @@
 import "server-only";
 
-import type { DailyMenu } from "@/data/daily-menu";
+import { sortDailyMenuChoices, type DailyMenu, type DailyMenuChoice } from "@/data/daily-menu";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { normalizeDailyMenuName, normalizeDailyMenuPrice } from "./daily-menu-validation";
 
 type DailyMenuRow = {
   menu_date: string;
@@ -13,7 +14,11 @@ type DailyMenuRow = {
 const columns = "menu_date,starters,mains,desserts";
 
 function fromRow(row: DailyMenuRow): DailyMenu {
-  return { date: row.menu_date, starters: row.starters, mains: row.mains, desserts: row.desserts };
+  const clean = (choices: DailyMenuChoice[]) => sortDailyMenuChoices(choices.map((choice) => ({
+    name: normalizeDailyMenuName(choice.name),
+    price: normalizeDailyMenuPrice(choice.price),
+  })));
+  return { date: row.menu_date, starters: clean(row.starters), mains: clean(row.mains), desserts: clean(row.desserts) };
 }
 
 export async function getDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {

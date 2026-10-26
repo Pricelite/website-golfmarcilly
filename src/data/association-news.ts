@@ -99,18 +99,6 @@ export const associationIndividualResults = [
   },
   {
     year: "2026",
-    name: "Victor Delmas",
-    result: "7e benjamins · Grand Prix Jeunes de Touraine (160 coups)",
-    href: "https://www.golf-centre.fr/fr/competitions/grand-prix-jeunes-de-touraine/",
-    image: "/images/victordelmas.png",
-    imageAlt: "Victor Delmas sur le parcours de golf",
-    imageCaption: "Victor Delmas · Golf de Marcilly",
-    imageSourceUrl: "https://www.marcilly.com/about-1",
-    imagePosition: "center top",
-    imageScale: 1.4,
-  },
-  {
-    year: "2026",
     name: "Jules Dechery",
     result: "11e benjamins · Grand Prix Jeunes de Touraine (167 coups)",
     href: "https://www.golf-centre.fr/fr/competitions/grand-prix-jeunes-de-touraine/",

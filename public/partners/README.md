@@ -23,8 +23,14 @@ d’Orléans. Son nom est affiché dans le bandeau en attendant un logo fourni ;
 la photo de vitrine n’est pas utilisée comme logo. Le lien renvoie à cette fiche,
 le domaine historique liger.pro ne correspondant plus à la boutique lors du contrôle.
 
-Les logos de RENOV’ CENTRE, TLM et La Bergerie restent à fournir : ils ne
-sont pas affichés dans le bandeau pour éviter d'utiliser une mauvaise identité.
+Pour Rénov’Centre, le visuel est celui de son réseau Maison du Menuisier,
+fourni par la fiche officielle du magasin d’Orléans ; le nom Rénov’Centre
+est affiché juste dessous. Son ancien domaine ne répond plus.
+Le logo AEDC provient du portfolio Bologo. Son ancien site présente une erreur
+de certificat ; le lien mène à sa fiche PagesJaunes active.
+Le logo Garage Thomas AD provient du site officiel garage-thomas45.fr.
+Les logos de TLM et La Bergerie restent à fournir : ils ne sont pas affichés
+dans le bandeau pour éviter d'utiliser une mauvaise identité.
 
 Un aperçu des partenaires apparaît aussi en bas de l’accueil. L’ajout se fait
 dans les fichiers du projet ; il n’y a pas d’interface d’administration.
