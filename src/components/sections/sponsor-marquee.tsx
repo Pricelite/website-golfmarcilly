@@ -4,7 +4,7 @@ import { partners } from "@/data/partners";
 
 const sponsorsWithLogos = partners.flatMap((partner) =>
   partner.website && (partner.logo || partner.showInMarquee === true) && partner.showInMarquee !== false
-    ? [{ name: partner.name, logo: partner.logo, removeWhiteBackground: partner.removeWhiteBackground, website: partner.website }]
+    ? [{ name: partner.name, logo: partner.logo, website: partner.website }]
     : [],
 );
 
@@ -12,7 +12,7 @@ export function SponsorMarquee() {
   return (
     <section aria-label="Nos sponsors et partenaires" className="sponsor-marquee bg-transparent py-4">
       <div className="sponsor-marquee-viewport overflow-hidden" role="group" aria-label="Sponsors du Golf de Marcilly">
-        <div className="sponsor-marquee-track flex w-max">
+        <div className="sponsor-marquee-track flex w-max bg-[#f7f4e9]">
           {[false, true].map((duplicate) => (
             <ul key={String(duplicate)} aria-hidden={duplicate || undefined} className={`flex shrink-0 items-center gap-6 pr-6${duplicate ? " sponsor-marquee-copy" : ""}`}>
               {sponsorsWithLogos.map((partner) => (
@@ -32,7 +32,7 @@ export function SponsorMarquee() {
                       height={56}
                       sizes="160px"
                       loading="eager"
-                      className={`${partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain${partner.removeWhiteBackground ? " mix-blend-multiply" : ""}`}
+                      className={`${partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain mix-blend-multiply`}
                     /> : <span className="text-center font-serif text-2xl font-semibold tracking-wide text-emerald-950">{partner.name}</span>}
                   </a>
                 </li>
