@@ -6,7 +6,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { associationFaqs, associationGroups, associationLinks, associationPartner, associationRoles } from "@/data/association";
-import { associationIndividualResults, associationNews } from "@/data/association-news";
+import { associationNews } from "@/data/association-news";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -23,7 +23,7 @@ export const metadata = buildMetadata({
 export default async function AssociationPage() {
   const calendar = await publicAssociationEvents();
   const currentYear = Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Paris", year: "numeric" }).format(new Date()));
-  const previousNews = associationNews.filter((article) => Number(article.year) < currentYear);
+  const currentNews = associationNews.filter((article) => Number(article.year) === currentYear);
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([
@@ -54,7 +54,6 @@ export default async function AssociationPage() {
             ["#groupes", "Équipes, seniors et académie"],
             ["/association-sportive/equipes", "Nos équipes 2026"],
             ["#actualites", "Actualités"],
-            ["#resultats-individuels", "Résultats individuels"],
             ["#partenaire-as", "Suivi sportif"],
             ["#equipe", "L’équipe de l’AS"],
             ["#rejoindre", "Participer"],
@@ -118,9 +117,9 @@ export default async function AssociationPage() {
 
       <section id="actualites" className="scroll-mt-28 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="La vie sportive" title="Actualités de Marcilly" description="Retrouvez une sélection d’articles des saisons passées sur les équipes du club." />
+          <SectionTitle eyebrow="La vie sportive" title="Actualités de Marcilly" description="Retrouvez les actualités de l’année en cours sur les équipes du club." />
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {previousNews.map((article) => (
+            {currentNews.map((article) => (
               <article key={article.href} className="flex flex-col overflow-hidden rounded-[24px] border border-emerald-950/10 bg-[#f7f4e9] shadow-sm shadow-emerald-950/5">
                 <figure>
                   <div className="relative aspect-[16/9] overflow-hidden">
@@ -140,33 +139,6 @@ export default async function AssociationPage() {
               </article>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section id="resultats-individuels" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Les joueurs du club" title="Résultats individuels" description="Quelques résultats publiés pour les joueuses et joueurs de Marcilly. Chaque ligne renvoie au classement ou à l’article officiel." />
-          <ul className="mt-8 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {associationIndividualResults.map((item) => (
-              <li key={`${item.year}-${item.name}-${item.result}`} className="overflow-hidden rounded-2xl border border-emerald-950/10 bg-white last:xl:col-start-2">
-                <figure>
-                  <div className="relative h-56 overflow-hidden">
-                    <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1279px) 50vw, 390px" className="object-cover" style={{ objectPosition: item.imagePosition, transform: `scale(${item.imageScale})`, transformOrigin: "imageOrigin" in item ? item.imageOrigin : undefined }} />
-                  </div>
-                  <figcaption className="px-5 pt-2 text-xs text-emerald-950/60"><a href={item.imageSourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2">{item.imageCaption} ↗</a></figcaption>
-                </figure>
-                <div className="p-5 pt-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">{item.year}</p>
-                <h3 className="mt-2 font-serif text-xl text-emerald-950">{item.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-950/75">{item.result}</p>
-                <a href={item.href} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-emerald-900 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">Voir le résultat ↗</a>
-                {"pressHref" in item && <a href={item.pressHref} target="_blank" rel="noopener noreferrer" className="ml-4 inline-flex min-h-11 items-center text-sm font-semibold text-emerald-900 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">La République du Centre ↗</a>}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-7 max-w-3xl text-sm leading-7 text-emerald-950/75">Cette sélection ne recense pas tous les résultats de chaque sportif. Les classements des compétitions du club sont consultables sur le site de la Fédération.</p>
-          <div className="mt-5"><CTAButton href={associationLinks.results} variant="ghost">Voir les résultats des compétitions du club</CTAButton></div>
         </div>
       </section>
 
