@@ -1,5 +1,6 @@
 import type { PricingSection } from "@/data/pricing";
 import { CTAButton } from "@/components/ui/cta-button";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export function PricingTable({ section, id }: { section: PricingSection; id?: string }) {
   return (
@@ -8,7 +9,7 @@ export function PricingTable({ section, id }: { section: PricingSection; id?: st
         <h2 className="font-serif text-2xl text-emerald-950">{section.title}</h2>
         <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p>
       </div>
-      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{row.values[1]} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{row.note}</p> : null}<p className="my-3 text-sm leading-6">{row.values[0]}</p><CTAButton href="/initiation/reservation">Choisir une initiation</CTAButton></article>)}</div> : null}
+      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{nonbreakingEuro(row.values[1])} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{nonbreakingEuro(row.note)}</p> : null}<p className="my-3 text-sm leading-6">{nonbreakingEuro(row.values[0])}</p><CTAButton href="/initiation/reservation">Choisir une initiation</CTAButton></article>)}</div> : null}
       <div className={section.title === "Découverte" ? "hidden overflow-x-auto sm:block" : "overflow-x-auto"}>
         <table className="min-w-full text-left text-sm">
           <caption className="sr-only">{section.title} — tarifs 2026</caption>
@@ -29,12 +30,12 @@ export function PricingTable({ section, id }: { section: PricingSection; id?: st
                   <div>{row.label}</div>
                   {row.note ? (
                     <div className="mt-1 text-xs font-normal text-emerald-950/65">
-                      {row.note}
+                      {nonbreakingEuro(row.note)}
                     </div>
                   ) : null}
                 </th>
-                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{row.values[0]}</td>
-                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{row.values[1]}</td>
+                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{nonbreakingEuro(row.values[0])}</td>
+                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{nonbreakingEuro(row.values[1])}</td>
               </tr>
             ))}
           </tbody>

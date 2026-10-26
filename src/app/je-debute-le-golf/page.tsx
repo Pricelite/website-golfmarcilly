@@ -8,6 +8,7 @@ import { siteConfig } from "@/data/site";
 import { initiationExperience } from "@/data/initiation-experience";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/schema";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 const beginnerFaqs = [
   { question: "Je n’ai jamais joué : je peux venir ?", answer: "Oui. L’initiation est faite pour découvrir les premiers gestes avec un enseignant, sans expérience préalable." },
@@ -56,7 +57,7 @@ export default function BeginnerGolfPage() {
             <article key={formula.label} className="flex flex-col rounded-[28px] border border-emerald-950/15 bg-white p-6 sm:p-8">
               <h2 className="font-serif text-3xl text-emerald-950">{formula.label}</h2>
               <p className="mt-2 text-sm text-emerald-950/70">{index === 0 ? initiationExperience.withoutMealDuration : initiationExperience.withMealDuration}{index === 1 ? " · repas à La Bergerie" : ""}</p>
-              <p className="my-5 font-serif text-5xl text-emerald-950">{formula.values[1]} <span className="font-sans text-sm">/ personne</span></p>
+              <p className="my-5 font-serif text-5xl text-emerald-950">{nonbreakingEuro(formula.values[1])} <span className="font-sans text-sm">/ personne</span></p>
               <p className="mb-6 flex-1 text-sm leading-7 text-emerald-950/75">{formula.values[0]}</p>
               <CTAButton href={`/initiation/reservation?formule=${index === 0 ? "sans-repas" : "avec-repas"}`} className="self-start">Choisir un créneau</CTAButton>
             </article>
@@ -73,7 +74,7 @@ export default function BeginnerGolfPage() {
           </div>
           <div className="rounded-[28px] bg-[#f7f4e9] p-6 sm:p-8">
             <p className="text-sm font-semibold text-emerald-800">{buckets.label} · tarif extérieur</p>
-            <p className="mt-3 font-serif text-5xl text-emerald-950">{buckets.values[0]}</p>
+            <p className="mt-3 font-serif text-5xl text-emerald-950">{nonbreakingEuro(buckets.values[0])}</p>
             <div className="mt-6"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton></div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import type { PricingSection } from "@/data/pricing";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 type CourseCardProps = {
   title: string;
@@ -80,9 +81,9 @@ export function CourseCard({
                   <tr key={row.label} className="border-b border-emerald-900/10 last:border-0">
                     <th scope="row" className="py-3 pr-2 align-top font-normal">
                       {row.label}
-                      {row.note ? <span className="mt-1 block text-xs leading-5 text-emerald-950/70">{row.note}</span> : null}
+                      {row.note ? <span className="mt-1 block text-xs leading-5 text-emerald-950/70">{nonbreakingEuro(row.note)}</span> : null}
                     </th>
-                    {row.values.map((value, index) => <td key={index} className="py-3 pl-1 text-right align-top font-semibold">{value}</td>)}
+                    {row.values.map((value, index) => <td key={index} className="py-3 pl-1 text-right align-top font-semibold">{nonbreakingEuro(value)}</td>)}
                   </tr>
                 ))}
               </tbody>
