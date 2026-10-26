@@ -1,4 +1,28 @@
-import type { DailyMenu, DailyMenuChoice } from "@/data/daily-menu";
+import { sortDailyMenuChoices, type DailyMenu, type DailyMenuChoice } from "@/data/daily-menu";
+
+const commonSpelling = [
+  [/\bch[eè]vre\b/giu, "chèvre"],
+  [/\bcr[eè]me\b/giu, "crème"],
+  [/\bbr[uû]l[eé]e\b/giu, "brûlée"],
+  [/\bmaison\b/giu, "maison"],
+  [/\bsaumons\b/giu, "saumons"],
+  [/\bveau\b/giu, "veau"],
+  [/\bnutella\b/giu, "Nutella"],
+] as const;
+
+export function normalizeDailyMenuName(value: string): string {
+  let name = value.normalize("NFC").replace(/'/g, "’").replace(/\s+/g, " ").trim();
+  name = name.replace(/\s+([,.!?;])/g, "$1").replace(/([,.!?;])(?=\p{L})/gu, "$1 ")
+    .replace(/’\s+/g, "’").replace(/\s*:\s*/g, "\u00a0: ").replace(/[.!?]+$/g, "").trim();
+  for (const [pattern, replacement] of commonSpelling) name = name.replace(pattern, replacement);
+  return name ? name[0].toLocaleUpperCase("fr") + name.slice(1) : name;
+}
+
+export function normalizeDailyMenuPrice(value: string): string {
+  const compact = value.replace(/\s/g, "").replace(".", ",").replace(/€$/, "");
+  if (!compact) return "";
+  return `${compact.replace(/,(\d)$/, (_, digit: string) => `,${digit}0`)} €`;
+}
 
 export function validDailyMenuDate(value: unknown): value is string {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -12,13 +36,13 @@ function choices(value: unknown): DailyMenuChoice[] | null {
   const cleaned = value.map((item) => {
     if (!item || typeof item !== "object" || Array.isArray(item)) return null;
     const choice = item as Record<string, unknown>;
-    if (typeof choice.name !== "string" || typeof choice.price !== "string") return null;
-    return { name: choice.name.trim(), price: choice.price.trim() };
+    if (typeof choice.name !== "string" || typeof choice.price !== "string" || /[\u0000-\u001f\u007f]/.test(choice.name + choice.price)) return null;
+    return { name: normalizeDailyMenuName(choice.name), price: normalizeDailyMenuPrice(choice.price) };
   });
   if (cleaned.some((item) => !item || !item.name || item.name.length > 120 || /[\u0000-\u001f\u007f]/.test(item.name) || !/^(?:0|[1-9]\d{0,3})(?:,\d{2})?\s?€$/.test(item.price))) return null;
   const result = cleaned as DailyMenuChoice[];
   if (new Set(result.map((item) => item.name.toLocaleLowerCase("fr"))).size !== result.length) return null;
-  return result;
+  return sortDailyMenuChoices(result);
 }
 
 export function parseDailyMenu(value: unknown): { ok: true; menu: DailyMenu } | { ok: false; error: string } {

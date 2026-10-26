@@ -134,20 +134,20 @@ export function RestaurantDishesCarousel({
         <p className="mt-2 min-h-12 text-sm leading-6 text-emerald-950/70">{items[activeIndex].description}</p>
       </div>
       {items.length > 1 ? (
-        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-emerald-950/8 px-5 py-4">
-          <button type="button" className="site-button h-11 rounded-full px-3 text-sm" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}>{isPaused ? "Lecture" : "Pause"}</button>
+        <div className="flex flex-wrap items-center justify-center gap-1 border-t border-emerald-950/8 px-5 py-2">
+          <button type="button" className="h-11 rounded-full px-2 text-xs font-medium text-emerald-950/70 hover:text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-800" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}>{isPaused ? "Lecture" : "Pause"}</button>
           {items.map((item, index) => {
             const isActive = index === activeIndex;
 
             return (
               <button
                 aria-label={`Afficher ${item.title}`}
-                className="site-button group flex h-11 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-emerald-800"
+                className="group flex h-11 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-emerald-800"
                 key={item.src}
                 onClick={() => { goToSlide(index); setIsPaused(true); }}
                 aria-pressed={isActive}
                 type="button"
-              ><span aria-hidden="true" className={`h-2 rounded-full group-hover:bg-white ${isActive ? "w-4 bg-emerald-950" : "w-2 bg-emerald-950/45"}`} /></button>
+              ><span aria-hidden="true" className={`h-1.5 rounded-full group-hover:bg-emerald-700 ${isActive ? "w-3 bg-emerald-950" : "w-1.5 bg-emerald-950/40"}`} /></button>
             );
           })}
         </div>

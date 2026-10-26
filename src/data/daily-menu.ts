@@ -1,5 +1,10 @@
 export type DailyMenuChoice = { name: string; price: string };
 
+export function sortDailyMenuChoices(choices: DailyMenuChoice[]): DailyMenuChoice[] {
+  const amount = (price: string) => Number(price.replace("€", "").replace(",", ".").trim());
+  return [...choices].sort((left, right) => amount(left.price) - amount(right.price));
+}
+
 export type DailyMenu = {
   date: string;
   starters: DailyMenuChoice[];

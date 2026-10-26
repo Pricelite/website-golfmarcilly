@@ -91,7 +91,7 @@ export default async function HomePage() {
             {discovery.rows.map((row, index) => <article key={row.label} className="rounded-3xl border border-emerald-950/15 bg-white p-6 sm:p-8">
               <h3 className="font-serif text-2xl">{row.label}</h3><p className="mt-2 text-sm font-semibold text-emerald-800">{row.note}</p>
               <p className="mt-4 text-3xl font-semibold">{nonbreakingEuro(row.values[1])} <span className="text-sm font-normal">/ personne</span></p>
-              <p className="mt-3 text-sm leading-7 text-emerald-950/80">{index === 0 ? "Le cours et le parcours, sans repas." : "Le cours, le parcours et 1 h de repas à La Bergerie."}</p>
+              <p className="mt-3 text-sm leading-7 text-emerald-950/80">{index === 0 ? "Le cours et le parcours, sans repas." : "Le cours, le repas et le parcours."}</p>
             </article>)}
           </div>
           <p className="mt-5 text-sm leading-7 text-emerald-950/80">Votre demande sera confirmée par l’équipe selon les disponibilités. Paiement sur place.</p>
