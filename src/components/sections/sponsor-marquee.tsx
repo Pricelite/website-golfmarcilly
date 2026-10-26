@@ -4,7 +4,7 @@ import { partners } from "@/data/partners";
 
 const sponsorsWithLogos = partners.flatMap((partner) =>
   partner.website && (partner.logo || partner.showInMarquee === true) && partner.showInMarquee !== false
-    ? [{ name: partner.name, logo: partner.logo, removeWhiteBackground: partner.removeWhiteBackground, website: partner.website }]
+    ? [{ name: partner.name, logo: partner.logo, website: partner.website }]
     : [],
 );
 
@@ -32,7 +32,7 @@ export function SponsorMarquee() {
                       height={56}
                       sizes="160px"
                       loading="eager"
-                      className={`${partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain${partner.removeWhiteBackground ? " mix-blend-multiply" : ""}`}
+                      className={`${partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain mix-blend-multiply`}
                     /> : <span className="text-center font-serif text-2xl font-semibold tracking-wide text-emerald-950">{partner.name}</span>}
                   </a>
                 </li>
