@@ -14,12 +14,12 @@ import {
   type TouchEvent,
 } from "react";
 
-import { blackFriday2027OpensAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
+import { blackFriday2026OpensAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
 
 const AUTOPLAY_DELAY_MS = 5000;
 const CLOSE_ANIMATION_MS = 350;
 const SWIPE_THRESHOLD_PX = 48;
-const BLACK_FRIDAY_OPENS_AT_MS = Date.parse(blackFriday2027OpensAt);
+const BLACK_FRIDAY_OPENS_AT_MS = Date.parse(blackFriday2026OpensAt);
 
 function formatCountdown(remainingMs: number): string {
   const totalSeconds = Math.ceil(remainingMs / 1000);
@@ -280,7 +280,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
         aria-haspopup={canOpen ? "dialog" : undefined}
         aria-expanded={canOpen ? isMounted : undefined}
         aria-disabled={!canOpen}
-        aria-label={!canOpen ? `Black Friday 2027 : ouverture le 1er novembre à 9 h, heure de Paris${remainingMs !== null ? `, dans ${formatCountdown(remainingMs)}` : ""}` : undefined}
+        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 9 h, heure de Paris${remainingMs !== null ? `, dans ${formatCountdown(remainingMs)}` : ""}` : undefined}
         className={`relative inline-flex min-h-11 min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${canOpen ? "transition hover:border-amber-400 hover:bg-amber-100" : "cursor-default"}`}
         onClick={openModal}
         ref={triggerRef}
@@ -296,7 +296,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
           </span>
           <span className="text-xs font-semibold leading-tight">{label}</span>
           {isBlackFridayPreview && !canOpen ? <span aria-hidden="true" className="mt-0.5 whitespace-nowrap text-xs font-bold tabular-nums text-amber-900">
-            {remainingMs === null ? "Ouverture le 1er nov. 2027 à 9 h" : formatCountdown(remainingMs)}
+            {remainingMs === null ? "Ouverture le 1er nov. 2026 à 9 h" : formatCountdown(remainingMs)}
           </span> : null}
         </span>
       </button>
@@ -356,13 +356,13 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                     {totalOffers ? "Bon plan du moment" : "Bons plans à venir"}
                   </p>
                   <h2 className="mt-3 font-serif text-3xl leading-tight sm:text-4xl" id={titleId}>
-                    {totalOffers ? "✨ Nos Offres du Moment" : "Black Friday 2027"}
+                    {totalOffers ? "✨ Nos Offres du Moment" : "Black Friday 2026"}
                   </h2>
                   <p
                     className="mt-3 max-w-xl text-sm leading-7 text-emerald-950/72 sm:text-base"
                     id={descriptionId}
                   >
-                    {totalOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez les visuels des offres annoncées pour novembre 2027."}
+                    {totalOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez les visuels des offres annoncées pour novembre 2026."}
                   </p>
                 </div>
 

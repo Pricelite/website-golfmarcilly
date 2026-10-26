@@ -15,21 +15,21 @@
 // Aucune offre publiée : retrait demandé par le propriétaire le 19 octobre 2026.
 export const siteOffers: SiteOffer[] = [];
 
-// 1er novembre 2027 à 9 h, heure de Paris (UTC+1 à cette date).
-export const blackFriday2027OpensAt = "2027-11-01T08:00:00.000Z";
+// 1er novembre 2026 à 9 h, heure de Paris (UTC+1 à cette date).
+export const blackFriday2026OpensAt = "2026-11-01T08:00:00.000Z";
 
-// Visuels annoncés pour novembre 2027, distincts des offres actuellement actives.
+// Visuels annoncés pour novembre 2026, distincts des offres actuellement actives.
 export const upcomingOfferPosters = [
   {
-    src: "/images/black-friday-2027-abonnements.png",
-    alt: "Black Friday 2027 : abonnements 27 trous compact à 605 €, 45 trous 5 jours sur 7 à 875 €, 45 trous individuel 7 jours sur 7 à 1 075 € et couple à 1 930 €.",
+    src: "/images/black-friday-2026-abonnements.png",
+    alt: "Black Friday 2026 : abonnements 27 trous compact à 605 €, 45 trous 5 jours sur 7 à 875 €, 45 trous individuel 7 jours sur 7 à 1 075 € et couple à 1 930 €.",
     title: "Abonnements",
     width: 941,
     height: 1672,
   },
   {
-    src: "/images/black-friday-2027-practice.png",
-    alt: "Black Friday 2027 : 25 seaux achetés et 11 offerts à 50 €, ou 50 seaux achetés et 25 offerts à 95 €.",
+    src: "/images/black-friday-2026-practice.png",
+    alt: "Black Friday 2026 : 25 seaux achetés et 11 offerts à 50 €, ou 50 seaux achetés et 25 offerts à 95 €.",
     title: "Seaux de practice",
     width: 1086,
     height: 1448,
