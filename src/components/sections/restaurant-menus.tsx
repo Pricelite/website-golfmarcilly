@@ -1,6 +1,7 @@
 import { CTAButton } from "@/components/ui/cta-button";
 import { SectionTitle } from "@/components/ui/section-title";
 import { restaurantData } from "@/lib/restaurant-data";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export function RestaurantMenus() {
   const seminar = restaurantData.seminarMenu;
@@ -13,7 +14,7 @@ export function RestaurantMenus() {
             <article key={menu.name} className="flex flex-col overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#faf8f0]">
               <div className="border-b border-emerald-950/15 bg-emerald-950 px-6 py-6 text-stone-50">
                 <h3 className="font-serif text-2xl">{menu.name}</h3>
-                <p className="mt-3"><span className="font-serif text-4xl">{menu.price}</span><span className="ml-2 text-sm text-stone-100/85">/ personne</span></p>
+                <p className="mt-3"><span className="font-serif text-4xl">{nonbreakingEuro(menu.price)}</span><span className="ml-2 text-sm text-stone-100/85">/ personne</span></p>
               </div>
               <div className="flex-1 divide-y divide-emerald-950/10 px-6">
                 {menu.sections.map((section) => (
@@ -41,7 +42,7 @@ export function RestaurantMenus() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Formule Entreprises</p>
             <h2 className="mt-2 font-serif text-3xl text-emerald-950">Une journée de séminaire au golf</h2>
           </div>
-          <p className="font-serif text-3xl text-emerald-950">{seminar.price}</p>
+          <p className="font-serif text-3xl text-emerald-950">{nonbreakingEuro(seminar.price)}</p>
         </div>
         <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-2 lg:gap-12">
           <div>

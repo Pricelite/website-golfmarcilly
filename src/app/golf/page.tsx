@@ -24,13 +24,13 @@ export default function GolfPage() {
     ...greenFees,
     rows: greenFees.rows.filter(row => labels.includes(row.label)).map(row => displayLabel ? { ...row, label: displayLabel } : row),
   } : undefined;
-  const kalekaPricing = coursePrices(["18 trous Kaleka course aller et retour"]);
+  const kalekaCombinedLabel = "18 trous Kaleka course aller et retour";
   const pricingByCourse: Record<string, PricingSection | undefined> = {
     practice: practicePricing,
     "parcours-decouverte-9-trous": coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Découverte"),
     footgolf: coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Footgolf"),
-    "pitch-putt-kaleka-18-trous": kalekaPricing,
-    "kaleka-course": kalekaPricing,
+    "pitch-putt-kaleka-18-trous": coursePrices(["9 trous Kaleka course aller", kalekaCombinedLabel]),
+    "kaleka-course": coursePrices(["9 trous Kaleka course retour", kalekaCombinedLabel]),
     "parcours-competitions-18-trous": coursePrices(["9 trous Grand Parcours", "18 trous Grand Parcours", "18 trous après 16 h 00"]),
   };
   const orderedCourses = [

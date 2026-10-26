@@ -1,5 +1,6 @@
 import { SectionTitle } from "@/components/ui/section-title";
 import { drinkPackages } from "@/data/drink-packages";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export function DrinkPackages() {
   return (
@@ -10,7 +11,7 @@ export function DrinkPackages() {
           <article key={plan.name} className="overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#faf8f0]">
             <div className="border-b border-emerald-950/15 bg-emerald-950 px-5 py-4 text-stone-50">
               <h3 className="font-serif text-xl">{plan.name}</h3>
-              <p className="mt-2"><span className="font-serif text-3xl">{plan.price}</span><span className="ml-2 text-xs text-stone-100/85">/ personne</span></p>
+              <p className="mt-2"><span className="font-serif text-3xl">{nonbreakingEuro(plan.price)}</span><span className="ml-2 text-xs text-stone-100/85">/ personne</span></p>
             </div>
             <dl className="divide-y divide-emerald-950/10 px-5">
               {plan.items.map(item => (

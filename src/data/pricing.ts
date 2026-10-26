@@ -64,6 +64,8 @@ export const pricingSections: PricingSection[] = [
     columns: ["Non licencié", "Licencié"],
     rows: [
       { label: "9 trous Découverte ou Footgolf", values: ["10 €", "10 €"] },
+      { label: "9 trous Kaleka course aller", values: ["18 €", "18 €"] },
+      { label: "9 trous Kaleka course retour", values: ["18 €", "18 €"] },
       {
         label: "18 trous Kaleka course aller et retour",
         values: ["25 €", "23 €"],
