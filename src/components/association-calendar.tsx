@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { AssociationEvent } from "@/data/association-events";
-import { calendarDefaultDate, eventsInMonth, eventsOnDay, formatCalendarDate, isPastEvent, monthDays, upcomingCompetitions } from "@/lib/association-calendar";
+import { calendarDefaultDate, eventsInMonth, eventsOnDay, formatCalendarDate, isPastEvent, monthDays } from "@/lib/association-calendar";
 import { siteConfig } from "@/data/site";
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -58,7 +58,6 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
   const mobile = useSyncExternalStore(subscribeScreen, () => window.matchMedia("(max-width: 767px)").matches, () => false);
   const [display, setDisplay] = useState<"list" | "calendar" | null>(null);
   const listView = (display ?? (mobile ? "list" : "calendar")) === "list";
-  const upcoming = upcomingCompetitions(associationEvents, today);
   const year = view?.year ?? Number(defaultDate.slice(0, 4));
   const month = view?.month ?? Number(defaultDate.slice(5, 7)) - 1;
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
@@ -87,11 +86,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
 
   return (
     <>
-    <section aria-labelledby="upcoming-competitions" className="mt-8 rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-5 sm:p-6">
-      <h3 id="upcoming-competitions" className="font-serif text-2xl">Prochaines compétitions</h3>
-      {upcoming.length ? <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{upcoming.slice(0, 3).map(event => <li key={event.id}><button type="button" onClick={() => { setView({ year: Number(event.start.slice(0, 4)), month: Number(event.start.slice(5, 7)) - 1 }); setSelectedDay(null); setSelected(event); }} className={`h-full w-full rounded-xl border-l-3 p-4 text-left ${eventStyle(event, today)}`}><span className="block text-xs">{formatCalendarDate(event.start)}</span><span className="mt-2 block font-semibold">{event.title}</span><span className="mt-2 block text-xs">{eventStatus(event, today)} · Voir les détails</span></button></li>)}</ul> : <p className="mt-3 text-sm">Aucune compétition à venir n’est publiée pour le moment. Les créneaux à définir restent consultables dans le calendrier complet.</p>}
-    </section>
-    <div className="mt-6 overflow-hidden rounded-2xl border border-emerald-950/15 bg-white text-emerald-950 shadow-lg shadow-black/5">
+    <div className="mt-8 overflow-hidden rounded-2xl border border-emerald-950/15 bg-white text-emerald-950 shadow-lg shadow-black/5">
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div aria-live="polite" aria-atomic="true">
           <h3 className="font-serif text-3xl">{months[month]} {year}</h3>
@@ -160,9 +155,9 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
         <a className="mt-4 inline-block text-sm font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>Renseignements : {siteConfig.phoneDisplay}</a>
       </div> : null}
 
-      <div className="p-4 sm:p-6">
+      {(listView || selectedDay) ? <div className="p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h4 className="font-serif text-xl">{selectedDay ? `Le ${formatCalendarDate(selectedDay)}` : "Les dates du mois"}</h4>
+          <h4 className="font-serif text-xl">{selectedDay ? `Le ${formatCalendarDate(selectedDay)}` : "Compétitions et créneaux"}</h4>
           {selectedDay ? <button type="button" className="site-button rounded-full px-4 py-2 text-sm" onClick={() => setSelectedDay(null)}>Afficher tout le mois</button> : null}
         </div>
         {visibleEvents.length === 0 ? <p className="text-sm leading-7 text-emerald-900/70">Aucune date publiée pour {selectedDay ? "ce jour" : "ce mois"}.</p> : null}
@@ -177,8 +172,8 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
           </li>)}
         </ul> : null}
         {markers.length > 0 ? <div className="mt-6 border-t border-emerald-950/10 pt-4"><h5 className="text-sm font-medium text-slate-600">Fêtes, jours fériés et vacances</h5><ul aria-label="Repères du calendrier" className="mt-2 flex flex-wrap gap-2">{markers.map(event => <li key={event.id}><button type="button" onClick={() => setSelected(event)} className="rounded-md border border-slate-200 bg-slate-50/60 px-2.5 py-1.5 text-left text-xs text-slate-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"><span className="font-medium">{event.title}</span> · {formatCalendarDate(event.start)}{event.end ? ` → ${formatCalendarDate(event.end)}` : ""}{eventZone(event)}</button></li>)}</ul></div> : null}
-        <p className="mt-5 border-t border-emerald-950/10 pt-4 text-xs leading-6 text-emerald-900/70">Les épreuves et leurs modalités peuvent évoluer. Contactez l’accueil avant toute inscription. Les dates en option ou à confirmer restent susceptibles de changer.</p>
-      </div>
+      </div> : null}
+      <p className="border-t border-emerald-950/10 p-4 text-xs leading-6 text-emerald-900/70 sm:p-6">Les épreuves et leurs modalités peuvent évoluer. Contactez l’accueil avant toute inscription. Les dates en option ou à confirmer restent susceptibles de changer.</p>
     </div>
     </>
   );
