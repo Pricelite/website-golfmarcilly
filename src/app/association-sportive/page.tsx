@@ -47,12 +47,12 @@ export default async function AssociationPage() {
       <nav aria-label="Dans cette page" className="border-y border-emerald-950/10">
         <div className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 px-4 py-3 sm:px-6 lg:px-8">
           {[
+            ["#competitions", "Compétitions et résultats"],
             ["#role", "Le rôle de l’AS"],
             ["#groupes", "Équipes, seniors et académie"],
             ["/association-sportive/equipes", "Nos équipes 2026"],
             ["#actualites", "Actualités"],
             ["#resultats-individuels", "Résultats individuels"],
-            ["#competitions", "Compétitions et résultats"],
             ["#partenaire-as", "Suivi sportif"],
             ["#equipe", "L’équipe de l’AS"],
             ["#rejoindre", "Participer"],
@@ -61,6 +61,26 @@ export default async function AssociationPage() {
           ))}
         </div>
       </nav>
+
+      <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier 2027 de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
+          <p className="mt-4 text-sm text-stone-100/80">Choisissez un mois et, pour les vacances scolaires, la zone A, B ou C.</p>
+          {calendar.unavailable ? <p role="status" className="mt-8 rounded-2xl bg-white p-6 text-emerald-950">Le calendrier est momentanément indisponible. Réessayez dans quelques instants ou contactez l’accueil au {siteConfig.phoneDisplay}.</p> : <AssociationCalendar events={calendar.events} initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />}
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            {[
+              { title: "Vérifier son départ", text: "Retrouvez les départs publiés pour les compétitions du club sur le service de la Fédération française de golf.", label: "Consulter les départs", href: associationLinks.starts },
+              { title: "Retrouver les résultats", text: "Accédez aux résultats publiés des compétitions et retrouvez les classements des épreuves disputées.", label: "Voir les résultats", href: associationLinks.results },
+            ].map((item) => (
+              <article key={item.title} className="flex flex-col border-t border-white/25 pt-5">
+                <h3 className="font-serif text-2xl text-stone-50">{item.title}</h3>
+                <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-100/80">{item.text}</p>
+                <CTAButton href={item.href} variant="secondary" className="self-start">{item.label}</CTAButton>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section id="role" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <SectionTitle eyebrow="Comprendre" title="À quoi sert une association sportive de golf ?" />
@@ -145,26 +165,6 @@ export default async function AssociationPage() {
           </ul>
           <p className="mt-7 max-w-3xl text-sm leading-7 text-emerald-950/75">Cette sélection ne recense pas tous les résultats de chaque sportif. Les classements des compétitions du club sont consultables sur le site de la Fédération.</p>
           <div className="mt-5"><CTAButton href={associationLinks.results} variant="ghost">Voir les résultats des compétitions du club</CTAButton></div>
-        </div>
-      </section>
-
-      <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier 2027 de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
-          <p className="mt-4 text-sm text-stone-100/80">Choisissez un mois et, pour les vacances scolaires, la zone A, B ou C.</p>
-          {calendar.unavailable ? <p role="status" className="mt-8 rounded-2xl bg-white p-6 text-emerald-950">Le calendrier est momentanément indisponible. Réessayez dans quelques instants ou contactez l’accueil au {siteConfig.phoneDisplay}.</p> : <AssociationCalendar events={calendar.events} initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />}
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {[
-              { title: "Vérifier son départ", text: "Retrouvez les départs publiés pour les compétitions du club sur le service de la Fédération française de golf.", label: "Consulter les départs", href: associationLinks.starts },
-              { title: "Retrouver les résultats", text: "Accédez aux résultats publiés des compétitions et retrouvez les classements des épreuves disputées.", label: "Voir les résultats", href: associationLinks.results },
-            ].map((item) => (
-              <article key={item.title} className="flex flex-col border-t border-white/25 pt-5">
-                <h3 className="font-serif text-2xl text-stone-50">{item.title}</h3>
-                <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-100/80">{item.text}</p>
-                <CTAButton href={item.href} variant="secondary" className="self-start">{item.label}</CTAButton>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
