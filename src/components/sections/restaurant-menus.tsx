@@ -23,7 +23,7 @@ export function RestaurantMenus() {
                     <ul className="mt-3 text-sm leading-7 text-emerald-950/85">
                       {section.items.map((item, index) => (
                         <li key={item}>
-                          {index > 0 && section.type === "choice" ? <span className="my-2 block font-serif italic text-emerald-800">ou</span> : null}
+                          {index > 0 && section.type === "choice" ? <span className="my-2 block text-center font-serif font-bold text-emerald-800">ou</span> : null}
                           {item}
                         </li>
                       ))}
