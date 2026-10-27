@@ -6,6 +6,7 @@ import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility
 import { DailyMenuDate } from "@/components/sections/daily-menu-date";
 import { siteConfig } from "@/data/site";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
+import { sharedContentSyncEnabled } from "@/lib/supabase/content-config";
 
 const categories = [
   { key: "starters", title: "Entrées" },
@@ -13,9 +14,13 @@ const categories = [
   { key: "desserts", title: "Desserts" },
 ] as const;
 
+const menuSource = sharedContentSyncEnabled()
+  ? process.env.CONTENT_SUPABASE_URL?.trim()
+  : process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+
 const getPublishedMenu = unstable_cache(
   (date: string) => getLatestDailyMenu(date, { timeoutMs: 4_000 }),
-  ["restaurant-daily-menu"],
+  ["restaurant-daily-menu", menuSource ?? "unconfigured"],
   { revalidate: 30 },
 );
 

@@ -6,6 +6,7 @@ import { CompetitionManager } from "@/components/admin/competition-manager";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { CalendarStoreError, listAssociationEvents } from "@/lib/association-events-db";
 import { localCalendarEnabled } from "@/lib/association-events-local";
+import { sharedContentSyncEnabled } from "@/lib/supabase/content";
 
 export const metadata: Metadata = { title: "Administration des compétitions", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -29,6 +30,7 @@ export default async function AdminCompetitionsPage() {
       <Link className="underline underline-offset-4" href="/admin">Réservations initiation</Link>
       <Link className="underline underline-offset-4" href="/association-sportive#competitions" target="_blank" rel="noreferrer">Voir le calendrier public ↗</Link>
     </nav>
+    {sharedContentSyncEnabled() ? <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Données partagées activées : les changements effectués ici sont publiés sur le calendrier public.</p> : null}
     {error ? <p role="alert" className="mt-8 rounded-2xl bg-amber-50 p-5 text-amber-950">{error}</p> : <CompetitionManager initialEvents={events ?? []} localMode={localCalendarEnabled()} />}
   </div>;
 }

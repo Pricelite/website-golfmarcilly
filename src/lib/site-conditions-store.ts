@@ -3,7 +3,7 @@ import "server-only";
 import { readFile, rename, writeFile } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import { defaultStates, emptyConditions, previewConditions, type ConditionState, type SiteCondition } from "@/data/site-conditions";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createContentAdminClient, localContentStoreEnabled } from "@/lib/supabase/content";
 import { isCarotteReason, type ConditionInput, type ConditionItemInput } from "./site-conditions";
 
 type ConditionRow = {
@@ -61,9 +61,8 @@ async function writeLocal(conditions: SiteCondition[]) {
 
 export async function listSiteConditions(): Promise<SiteCondition[]> {
   if (process.env.PREVIEW_MODE === "true") return previewConditions();
-  if (process.env.NODE_ENV === "development") return readLocal();
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) throw new Error("Site conditions store unavailable");
-  const { data, error } = await createSupabaseAdminClient().from("site_conditions")
+  if (localContentStoreEnabled()) return readLocal();
+  const { data, error } = await createContentAdminClient().from("site_conditions")
     .select("id,status,state_label,reason,updated_at,label,item_group,href,position").limit(100)
     .abortSignal(AbortSignal.timeout(2500));
   if (error) throw error;
@@ -71,7 +70,7 @@ export async function listSiteConditions(): Promise<SiteCondition[]> {
 }
 
 export async function listConditionStates(): Promise<ConditionState[]> {
-  if (process.env.NODE_ENV === "development") {
+  if (localContentStoreEnabled()) {
     try {
       const value: unknown = JSON.parse(await readFile(localStatesFile, "utf8"));
       if (!Array.isArray(value) || !value.every(item => item && typeof item.id === "string" && typeof item.label === "string" &&
@@ -82,14 +81,14 @@ export async function listConditionStates(): Promise<ConditionState[]> {
       throw error;
     }
   }
-  const { data, error } = await createSupabaseAdminClient().from("site_condition_states").select("id,label,status").limit(100);
+  const { data, error } = await createContentAdminClient().from("site_condition_states").select("id,label,status").limit(100);
   if (error) throw error;
   return [...defaultStates, ...((data ?? []) as ConditionState[]).filter(item => !defaultStates.some(base => base.id === item.id))];
 }
 
 export async function saveSiteCondition(input: ConditionInput): Promise<SiteCondition> {
   const updatedAt = new Date().toISOString();
-  if (process.env.NODE_ENV === "development") {
+  if (localContentStoreEnabled()) {
     const operation = pendingWrite.then(async () => {
       const rows = await readLocal();
       const next = rows.map(item => item.id === input.id ? { ...item, status: input.status, stateLabel: input.stateLabel, reason: input.reason, updatedAt } : item);
@@ -101,7 +100,7 @@ export async function saveSiteCondition(input: ConditionInput): Promise<SiteCond
   }
   const item = (await listSiteConditions()).find(value => value.id === input.id);
   if (!item) throw new Error("Unknown condition item");
-  const { data, error } = await createSupabaseAdminClient().from("site_conditions")
+  const { data, error } = await createContentAdminClient().from("site_conditions")
     .upsert({ id: input.id, label: item.label, item_group: item.group, href: item.href, position: item.position,
       status: input.status, state_label: input.stateLabel, reason: input.reason, updated_at: updatedAt }, { onConflict: "id" })
     .select("id,status,state_label,reason,updated_at,label,item_group,href,position").single();
@@ -113,7 +112,7 @@ export async function saveConditionItem(item: ConditionItemInput): Promise<SiteC
   const current = await listSiteConditions();
   if (current.length >= 100 && !current.some(existing => existing.id === item.id)) throw new Error("Too many condition items");
   const existing = current.find(value => value.id === item.id);
-  if (process.env.NODE_ENV === "development") {
+  if (localContentStoreEnabled()) {
     const operation = pendingWrite.then(async () => {
       const rows = await readLocal();
       const value = rows.find(row => row.id === item.id);
@@ -126,7 +125,7 @@ export async function saveConditionItem(item: ConditionItemInput): Promise<SiteC
     pendingWrite = operation.catch(() => {});
     return operation;
   }
-  const { data, error } = await createSupabaseAdminClient().from("site_conditions")
+  const { data, error } = await createContentAdminClient().from("site_conditions")
     .upsert({ id: item.id, label: item.label, item_group: item.group, href: item.href,
       position: existing?.position ?? current.length, status: existing?.status ?? "unknown",
       state_label: existing?.stateLabel ?? null, reason: existing?.reason ?? null }, { onConflict: "id" })
@@ -139,7 +138,7 @@ export async function saveConditionState(state: ConditionState): Promise<void> {
   const states = await listConditionStates();
   if (states.some(item => item.id === state.id)) throw new Error("Duplicate condition state");
   if (states.length >= 100) throw new Error("Too many condition states");
-  if (process.env.NODE_ENV === "development") {
+  if (localContentStoreEnabled()) {
     const operation = pendingWrite.then(async () => {
       const existing = (await listConditionStates()).filter(item => !defaultStates.some(base => base.id === item.id));
       const temporary = `${localStatesFile}.${process.pid}.tmp`;
@@ -149,6 +148,6 @@ export async function saveConditionState(state: ConditionState): Promise<void> {
     pendingWrite = operation.catch(() => {});
     return operation;
   }
-  const { error } = await createSupabaseAdminClient().from("site_condition_states").insert(state);
+  const { error } = await createContentAdminClient().from("site_condition_states").insert(state);
   if (error) throw error;
 }

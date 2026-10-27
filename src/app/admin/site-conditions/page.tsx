@@ -6,6 +6,7 @@ import { SiteConditionsManager } from "@/components/admin/site-conditions-manage
 import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { listSiteConditions } from "@/lib/site-conditions-store";
+import { localContentStoreEnabled, sharedContentSyncEnabled } from "@/lib/supabase/content";
 
 export const metadata: Metadata = { title: "État du golf — Administration", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -25,7 +26,8 @@ export default async function AdminSiteConditionsPage() {
       <Link className="underline underline-offset-4" href="/admin">Administration</Link>
       <Link className="underline underline-offset-4" href="/" target="_blank" rel="noreferrer">Voir l’accueil ↗</Link>
     </nav>
+    {sharedContentSyncEnabled() ? <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Données partagées activées : les changements effectués ici sont publiés sur le site public.</p> : null}
     {unavailable ? <p role="alert" className="mt-8 rounded-xl bg-red-50 p-4 text-sm text-red-800">Les états sont indisponibles. Vérifiez la configuration et la migration avant de les modifier.</p> :
-      <SiteConditionsManager initialConditions={conditions} localMode={process.env.NODE_ENV === "development"} />}
+      <SiteConditionsManager initialConditions={conditions} localMode={localContentStoreEnabled()} />}
   </div>;
 }

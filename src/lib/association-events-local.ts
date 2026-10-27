@@ -3,12 +3,13 @@ import { readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { associationEvents, type AssociationEvent } from "@/data/association-events";
 import type { EventInput } from "./association-events-validation";
+import { localContentStoreEnabled } from "./supabase/content";
 
 const localFile = join(process.cwd(), ".local-association-events-2027.json");
 let pendingWrite: Promise<unknown> = Promise.resolve();
 
 export function localCalendarEnabled() {
-  return process.env.NODE_ENV === "development";
+  return localContentStoreEnabled();
 }
 
 export async function readLocalCalendar(): Promise<AssociationEvent[]> {
