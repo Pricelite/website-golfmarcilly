@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { localContentStoreEnabled, sharedContentSyncEnabled, validateSharedContentConfig } from "./content-config";
+import { localContentStoreEnabled, scopedContentSyncEnabled, sharedContentSyncEnabled, validateSharedContentConfig } from "./content-config";
 
 test("shared content stays local by default and is restricted to development", () => {
   const original = { ...process.env };
@@ -12,13 +12,19 @@ test("shared content stays local by default and is restricted to development", (
     process.env.CONTENT_SYNC_ENABLED = "true";
     assert.equal(localContentStoreEnabled(), false);
     assert.equal(sharedContentSyncEnabled(), true);
+    assert.equal(scopedContentSyncEnabled(), false);
+    process.env.CONTENT_SYNC_TOKEN = "scoped-token";
+    assert.equal(scopedContentSyncEnabled(), true);
     Reflect.set(process.env, "NODE_ENV", "production");
     assert.equal(localContentStoreEnabled(), false);
     assert.equal(sharedContentSyncEnabled(), false);
+    assert.equal(scopedContentSyncEnabled(), false);
   } finally {
     Reflect.set(process.env, "NODE_ENV", original.NODE_ENV);
     if (original.CONTENT_SYNC_ENABLED === undefined) delete process.env.CONTENT_SYNC_ENABLED;
     else process.env.CONTENT_SYNC_ENABLED = original.CONTENT_SYNC_ENABLED;
+    if (original.CONTENT_SYNC_TOKEN === undefined) delete process.env.CONTENT_SYNC_TOKEN;
+    else process.env.CONTENT_SYNC_TOKEN = original.CONTENT_SYNC_TOKEN;
   }
 });
 

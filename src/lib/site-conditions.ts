@@ -28,6 +28,19 @@ export function parseConditionInput(value: unknown, ids: readonly string[] = con
   return { ok: true, condition: { id: input.id, status: input.status as ConditionStatus, stateLabel, reason: input.status === "unknown" || (input.status === "open" && isCarotteReason(reason)) ? null : reason || null } };
 }
 
+export function parseSyncedConditionInput(value: unknown, ids: readonly string[], states: ConditionState[]): { ok: true; condition: ConditionInput } | { ok: false; error: string } {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false, error: "État invalide." };
+  const input = value as Record<string, unknown>;
+  const parsed = parseConditionInput({ ...input, reason: input.reason ?? undefined }, ids);
+  if (!parsed.ok) return parsed;
+  const label = input.stateLabel;
+  if (label !== null && label !== undefined &&
+      (typeof label !== "string" || !states.some(state => state.label === label && state.status === parsed.condition.status))) {
+    return { ok: false, error: "État personnalisé invalide." };
+  }
+  return { ok: true, condition: { ...parsed.condition, stateLabel: typeof label === "string" ? label : null } };
+}
+
 export function parseConditionItem(value: unknown): { ok: true; item: ConditionItemInput } | { ok: false; error: string } {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false, error: "Équipement invalide." };
   const input = value as Record<string, unknown>;

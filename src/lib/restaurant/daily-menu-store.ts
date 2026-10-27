@@ -2,6 +2,7 @@ import "server-only";
 
 import { sortDailyMenuChoices, type DailyMenu, type DailyMenuChoice } from "@/data/daily-menu";
 import { createContentAdminClient } from "@/lib/supabase/content";
+import { scopedContentRequest, scopedContentSyncEnabled } from "@/lib/supabase/scoped-content-sync";
 import { normalizeDailyMenuName, normalizeDailyMenuPrice } from "./daily-menu-validation";
 
 type DailyMenuRow = {
@@ -22,6 +23,7 @@ function fromRow(row: DailyMenuRow): DailyMenu {
 }
 
 export async function getDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<DailyMenu | null>("menu:get", { date });
   let query = createContentAdminClient()
     .from("restaurant_daily_menus").select(columns).eq("menu_date", date);
   if (options?.timeoutMs) query = query.abortSignal(AbortSignal.timeout(options.timeoutMs));
@@ -31,6 +33,7 @@ export async function getDailyMenu(date: string, options?: { timeoutMs?: number 
 }
 
 export async function getLatestDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<DailyMenu | null>("menu:latest", { date });
   let query = createContentAdminClient()
     .from("restaurant_daily_menus")
     .select(columns)
@@ -44,6 +47,7 @@ export async function getLatestDailyMenu(date: string, options?: { timeoutMs?: n
 }
 
 export async function saveDailyMenu(menu: DailyMenu): Promise<DailyMenu> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<DailyMenu>("menu:save", menu);
   const { data, error } = await createContentAdminClient().from("restaurant_daily_menus")
     .upsert({ menu_date: menu.date, starters: menu.starters, mains: menu.mains, desserts: menu.desserts, updated_at: new Date().toISOString() }, { onConflict: "menu_date" })
     .select(columns).single();
@@ -52,6 +56,7 @@ export async function saveDailyMenu(menu: DailyMenu): Promise<DailyMenu> {
 }
 
 export async function deleteDailyMenu(date: string): Promise<boolean> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<boolean>("menu:delete", { date });
   const { data, error } = await createContentAdminClient().from("restaurant_daily_menus")
     .delete().eq("menu_date", date).select("menu_date").maybeSingle();
   if (error) throw error;

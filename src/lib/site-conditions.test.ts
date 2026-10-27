@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isCarotteReason, parseConditionInput, parseConditionItem, parseConditionState, visibleCondition } from "./site-conditions";
+import { isCarotteReason, parseConditionInput, parseConditionItem, parseConditionState, parseSyncedConditionInput, visibleCondition } from "./site-conditions";
 import { conditionItems, emptyConditions, previewConditions } from "../data/site-conditions";
 
 test("a closed condition requires a short reason", () => {
@@ -63,4 +63,14 @@ test("Carotté is a selectable state and legacy spelling displays as that state"
   assert.ok(legacy.ok);
   assert.equal(legacy.condition.stateLabel, "Carotté");
   assert.equal(legacy.condition.reason, null);
+});
+
+test("scoped synchronization accepts only a matching known state label", () => {
+  const states = [{ id: "carotte", label: "Carotté", status: "open" as const }];
+  const id = "grand-parcours-aller";
+  const valid = parseSyncedConditionInput({ id, status: "open", stateLabel: "Carotté", reason: null }, [id], states);
+  assert.ok(valid.ok);
+  assert.equal(valid.condition.stateLabel, "Carotté");
+  assert.equal(parseSyncedConditionInput({ id, status: "open", stateLabel: "Privé", reason: null }, [id], states).ok, false);
+  assert.equal(parseSyncedConditionInput({ id, status: "closed", stateLabel: "Carotté", reason: "Travaux" }, [id], states).ok, false);
 });
