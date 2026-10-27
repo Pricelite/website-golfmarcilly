@@ -22,6 +22,7 @@ test("sitemap includes editorial entry points and current offers, without transa
 });
 
 test("canonical, social URL and robots point to the same public site", () => {
+  assert.equal(siteConfig.url, "https://www.golfdemarcilly.com");
   const meta = buildMetadata({ title: "Test", description: "Test", path: "/initiation/reservation", indexable: false });
   assert.equal(meta.alternates?.canonical, new URL("/initiation/reservation", siteConfig.url).href);
   assert.equal(meta.openGraph?.url, meta.alternates?.canonical);

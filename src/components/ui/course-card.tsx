@@ -6,6 +6,7 @@ import type { PricingSection } from "@/data/pricing";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 type CourseCardProps = {
+  id?: string;
   title: string;
   description: string;
   level: string;
@@ -24,6 +25,7 @@ type CourseCardProps = {
 };
 
 export function CourseCard({
+  id,
   title,
   description,
   level,
@@ -43,7 +45,7 @@ export function CourseCard({
   const Heading = headingLevel;
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-[32px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
+    <article id={id} className="flex h-full scroll-mt-28 flex-col overflow-hidden rounded-[32px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
       <div className="relative aspect-[4/3] bg-[#f7f4e9]">
         <Image
           alt={imageAlt ?? title}

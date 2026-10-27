@@ -61,6 +61,7 @@ export default function GolfPage() {
           {orderedCourses.map((course) => course.slug === "parcours-decouverte-9-trous" && footgolf
             ? <CourseVariantCard
                 key={course.slug}
+                id={course.slug}
                 first={course}
                 second={footgolf}
                 firstLabel="Découverte"
@@ -72,6 +73,7 @@ export default function GolfPage() {
             : course.slug === "pitch-putt-kaleka-18-trous" && kaleka
             ? <CourseVariantCard
                 key={course.slug}
+                id={course.slug}
                 first={course}
                 second={kaleka}
                 firstLabel="Kaleka course aller"
@@ -83,6 +85,7 @@ export default function GolfPage() {
             : <CourseCard
                 key={course.slug}
                 {...course}
+                id={course.slug}
                 headingLevel="h2"
                 pricing={pricingByCourse[course.slug]}
                 action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}

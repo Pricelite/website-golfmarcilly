@@ -39,7 +39,7 @@ export default function BeginnerGolfPage() {
             <h1 className="mt-4 font-serif text-4xl leading-tight text-emerald-950 sm:text-6xl">Le golf, ça s’essaie.</h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-emerald-950/75">Envie de découvrir ? Choisissez une initiation avec un pro ou essayez quelques balles au practice. Aucun niveau n’est requis.</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <CTAButton href="/initiation/reservation">Choisir une initiation</CTAButton>
+              <CTAButton href="/initiation/reservation">Demander un créneau</CTAButton>
               <CTAButton href="#practice" variant="secondary">Découvrir le practice</CTAButton>
             </div>
             <p className="mt-5 text-sm text-emerald-950/65">Pour l’initiation : matériel fourni · confirmation par e-mail · paiement sur place.</p>
