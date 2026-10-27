@@ -9,7 +9,7 @@ import { HeaderMarcillyClock } from "@/components/layout/header-marcilly-clock";
 import { navigationItems, siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
 
-const headerNavigation = navigationItems.filter(item => item.href !== "/contact" && item.href !== "/je-debute-le-golf");
+const desktopNavigation = navigationItems.filter(item => item.href !== "/contact" && item.href !== "/je-debute-le-golf");
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -24,6 +24,7 @@ export function Header() {
         <div className="shrink-0">
           <Link className="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700" href="/" aria-label="Golf de Marcilly — Accueil">
             <Image src="/images/LogoNoir.png" alt="" width={653} height={728} sizes="56px" className="h-14 w-auto shrink-0 object-contain" />
+            <span className="font-serif text-lg text-emerald-950 min-[400px]:hidden">Marcilly</span>
             <span className="hidden min-[400px]:block">
             <span className="block font-serif text-xl text-emerald-950 sm:text-2xl">
               Golf de Marcilly
@@ -41,7 +42,7 @@ export function Header() {
           className="hidden min-w-0 flex-1 xl:block"
         >
           <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-emerald-950">
-            {headerNavigation.map((item) => (
+            {desktopNavigation.map((item) => (
               <li key={item.href}>
                 <Link
                   className="block whitespace-nowrap rounded-lg py-2 transition hover:text-emerald-700"
@@ -98,7 +99,7 @@ export function Header() {
       >
         <nav aria-label="Navigation mobile" className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <ul className="space-y-3">
-            {headerNavigation.map((item) => (
+            {navigationItems.map((item) => (
               <li key={item.href}>
                 <Link
                   className="site-button block rounded-2xl px-4 py-3 text-sm font-medium"

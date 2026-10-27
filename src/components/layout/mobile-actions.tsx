@@ -11,7 +11,7 @@ export function MobileActions() {
   const initiation = pathname === "/je-debute-le-golf" || pathname.startsWith("/initiation");
   const teaching = pathname === "/enseignement" || pathname === "/reserver-un-cours";
   const action = initiation
-    ? { href: pathname === "/initiation/reservation" ? "#choisir-initiation" : "/initiation/reservation", label: "Choisir une initiation" }
+    ? { href: pathname === "/initiation/reservation" ? "#choisir-initiation" : "/initiation/reservation", label: "Demander un créneau" }
     : pathname === "/evenements"
       ? { href: "#devis", label: "Demander un devis" }
       : teaching

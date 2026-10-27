@@ -7,7 +7,8 @@ import { courses } from "@/data/courses";
 
 type Course = (typeof courses)[number];
 
-export function CourseVariantCard({ first, second, firstLabel, secondLabel, firstPricing, secondPricing, headingLevel = "h3" }: {
+export function CourseVariantCard({ id, first, second, firstLabel, secondLabel, firstPricing, secondPricing, headingLevel = "h3" }: {
+  id?: string;
   first: Course;
   second: Course;
   firstLabel: string;
@@ -21,6 +22,7 @@ export function CourseVariantCard({ first, second, firstLabel, secondLabel, firs
 
   return <CourseCard
     {...course}
+    id={id}
     headingLevel={headingLevel}
     pricing={selected === "first" ? firstPricing : secondPricing}
     switcher={<div role="group" aria-label="Choisir un parcours" className="flex flex-wrap gap-2">
