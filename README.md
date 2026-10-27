@@ -79,15 +79,25 @@ styles/
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
+## Surveillance des services
+
+Le workflow GitHub Actions `fallback-queue.yml` traite la file de secours toutes les cinq minutes, puis interroge `/api/health` avec `OPS_CRON_TOKEN`. La réponse publique sans jeton ne vérifie que la disponibilité HTTP ; seule la réponse authentifiée contrôle les dépendances et l'état de la file. Configurer les notifications d'échec des workflows GitHub pour les personnes chargées de l'exploitation. Ce contrôle de connexion ne garantit pas qu'un e-mail arrive dans la boîte de réception : vérifier aussi régulièrement la boîte du golf et les demandes en attente.
+
 ## Conditions du site dans le back-office
 
 Un administrateur du back-office personnel ouvre `/admin/contenu/conditions`. Il peut choisir un état pour chaque parcours ou service, ajouter un état réutilisable, ajouter un parcours ou service, et modifier son nom, sa rubrique et son lien interne. Les modifications publiées apparaissent dans « Conditions du jour » sur l’accueil. Une fermeture nécessite un motif.
 
 En développement, les états et le catalogue sont conservés dans des fichiers locaux au worktree. Pour partager ces données entre plusieurs worktrees, définir `SITE_CONDITIONS_LOCAL_PATH` avec le même chemin absolu dans chaque environnement. Les comptes du back-office utilisent séparément `BACKOFFICE_DB_PATH` ; le renseigner avec un chemin absolu commun si les mêmes comptes doivent fonctionner dans plusieurs worktrees.
 
-Pour partager en direct les conditions du golf, la carte du jour et les compétitions avec le site public depuis localhost, renseigner dans `.env.local` `CONTENT_SYNC_ENABLED=true`, `CONTENT_SUPABASE_URL` (URL HTTPS du projet Supabase de production) et `CONTENT_SUPABASE_SERVICE_ROLE_KEY` (clé de service de ce même projet). Redémarrer le serveur local. Les trois contenus sont alors lus et modifiés dans la même base que la production ; une modification dans leurs écrans d'administration locaux est immédiatement réelle. Une configuration incomplète provoque une erreur au lieu de revenir silencieusement aux fichiers locaux. Les demandes, réservations, e-mails et autres données continuent d'utiliser `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` du local. La clé de service reste exclusivement côté serveur ; ne jamais la commiter ou la placer dans une variable `NEXT_PUBLIC_`.
+Pour partager en direct les conditions du golf, la carte du jour et les compétitions avec le site public depuis localhost, utiliser de préférence le jeton limité `CONTENT_SYNC_TOKEN` :
 
-Les pages et médias du back-office de contenu, stockés dans SQLite, ne sont pas concernés par ce mode. Les modifications de code et de design nécessitent toujours une pull request et un déploiement. Pour revenir au mode local, remettre `CONTENT_SYNC_ENABLED=false` et redémarrer ; les anciennes données locales sont conservées.
+1. Déployer la route `/api/ops/content-sync` sur le site public, puis enregistrer un jeton aléatoire d'au moins 32 caractères dans la variable Vercel **Production** `CONTENT_SYNC_TOKEN` et redéployer.
+2. Dans `.env.local`, définir `CONTENT_SYNC_ENABLED=true` et le même `CONTENT_SYNC_TOKEN`, sans préfixe `NEXT_PUBLIC_`, puis redémarrer le serveur local. Le jeton autorise uniquement la lecture et la modification des conditions du golf, de la carte du jour et des compétitions. Vérifier d'abord la lecture des trois contenus avant toute modification réelle.
+3. Retirer `CONTENT_SUPABASE_SERVICE_ROLE_KEY` et `CONTENT_SUPABASE_URL` de `.env.local` après vérification. Garder `NEXT_PUBLIC_SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` locaux pour les autres fonctions du site.
+
+L'ancienne configuration `CONTENT_SUPABASE_URL` / `CONTENT_SUPABASE_SERVICE_ROLE_KEY` reste disponible pendant la transition si aucun `CONTENT_SYNC_TOKEN` n'est défini en local. Elle donne des droits beaucoup plus larges et doit être retirée après migration. Un jeton local défini mais invalide ou un service distant indisponible provoque une erreur au lieu de revenir silencieusement à cette clé. Pour revenir à des données locales sans toucher à la production, remettre `CONTENT_SYNC_ENABLED=false` et redémarrer ; les anciennes données locales sont conservées.
+
+Les pages, comptes et médias du back-office de contenu sont stockés dans SQLite et dans le dossier média adjacent à `BACKOFFICE_DB_PATH`. Ils ne sont pas concernés par ce mode : une page ou image créée sur localhost n'apparaît pas sur le site public. En production, ce back-office ne doit être activé qu'avec un disque persistant partagé entre toutes les instances ; un système de fichiers éphémère de fonction serverless ne suffit pas. Les modifications de code et de design nécessitent toujours une pull request et un déploiement.
 
 Avant la mise en production, appliquer la migration `supabase/migrations/20261024120000_editable_site_conditions.sql`, puis déployer le code. Elle préserve les lignes et états existants, supprime la liste fermée d’identifiants et ajoute les métadonnées et le catalogue d’états. Le service utilise la clé Supabase côté serveur ; aucun accès public direct aux tables n’est accordé. Pour revenir au code précédent après déploiement, conserver la migration et les données : l’ancien code ignore les nouveaux champs et équipements. Une restauration de schéma demande une migration inverse examinant d’abord les nouveaux équipements et états.
 

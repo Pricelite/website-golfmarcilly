@@ -41,7 +41,7 @@ export default async function AssociationPage() {
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]">
-            <Image src="/images/parcours-accueil.png" alt="Les greens et le plan d’eau du Golf de Marcilly" fill priority sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), 526px" className="object-cover" />
+            <Image src="/images/parcours-accueil.webp" alt="Les greens et le plan d’eau du Golf de Marcilly" fill priority sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), 526px" className="object-cover" />
           </div>
         </div>
       </section>

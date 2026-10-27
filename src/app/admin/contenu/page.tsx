@@ -20,6 +20,7 @@ export default async function BackOfficePage() {
     const pages = listPages(db).filter(page => can(grants, actor.role, "view", `page:${page.id}`));
     return <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-emerald-700">Back-office · {actor.role}</p><h1 className="mt-2 font-serif text-4xl text-emerald-950">Gestion du contenu</h1><p className="mt-2 text-sm text-emerald-900/70">Connecté en tant que {actor.name}</p></div><LogoutButton /></div>
+      <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950">Les pages, comptes et images de cette administration sont enregistrés sur le disque de cette installation. Ils ne sont pas synchronisés avec le site public depuis localhost. La publication en production nécessite un stockage persistant configuré sur l’hébergement.</p>
       <nav className="mt-8 flex flex-wrap gap-3" aria-label="Rubriques du back-office">
         <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu">Pages</Link>
         {can(grants, actor.role, "view", "media") ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/medias">Médiathèque</Link> : null}

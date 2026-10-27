@@ -4,6 +4,7 @@ import { readFile, rename, writeFile } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import { defaultStates, emptyConditions, previewConditions, type ConditionState, type SiteCondition } from "@/data/site-conditions";
 import { createContentAdminClient, localContentStoreEnabled } from "@/lib/supabase/content";
+import { scopedContentRequest, scopedContentSyncEnabled } from "@/lib/supabase/scoped-content-sync";
 import { isCarotteReason, type ConditionInput, type ConditionItemInput } from "./site-conditions";
 
 type ConditionRow = {
@@ -62,6 +63,7 @@ async function writeLocal(conditions: SiteCondition[]) {
 export async function listSiteConditions(): Promise<SiteCondition[]> {
   if (process.env.PREVIEW_MODE === "true") return previewConditions();
   if (localContentStoreEnabled()) return readLocal();
+  if (scopedContentSyncEnabled()) return scopedContentRequest<SiteCondition[]>("conditions:list");
   const { data, error } = await createContentAdminClient().from("site_conditions")
     .select("id,status,state_label,reason,updated_at,label,item_group,href,position").limit(100)
     .abortSignal(AbortSignal.timeout(2500));
@@ -70,6 +72,7 @@ export async function listSiteConditions(): Promise<SiteCondition[]> {
 }
 
 export async function listConditionStates(): Promise<ConditionState[]> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<ConditionState[]>("conditions:states");
   if (localContentStoreEnabled()) {
     try {
       const value: unknown = JSON.parse(await readFile(localStatesFile, "utf8"));
@@ -87,6 +90,7 @@ export async function listConditionStates(): Promise<ConditionState[]> {
 }
 
 export async function saveSiteCondition(input: ConditionInput): Promise<SiteCondition> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<SiteCondition>("conditions:save", input);
   const updatedAt = new Date().toISOString();
   if (localContentStoreEnabled()) {
     const operation = pendingWrite.then(async () => {
@@ -109,6 +113,7 @@ export async function saveSiteCondition(input: ConditionInput): Promise<SiteCond
 }
 
 export async function saveConditionItem(item: ConditionItemInput): Promise<SiteCondition> {
+  if (scopedContentSyncEnabled()) return scopedContentRequest<SiteCondition>("conditions:item", item);
   const current = await listSiteConditions();
   if (current.length >= 100 && !current.some(existing => existing.id === item.id)) throw new Error("Too many condition items");
   const existing = current.find(value => value.id === item.id);
@@ -135,6 +140,10 @@ export async function saveConditionItem(item: ConditionItemInput): Promise<SiteC
 }
 
 export async function saveConditionState(state: ConditionState): Promise<void> {
+  if (scopedContentSyncEnabled()) {
+    await scopedContentRequest<null>("conditions:state", state);
+    return;
+  }
   const states = await listConditionStates();
   if (states.some(item => item.id === state.id)) throw new Error("Duplicate condition state");
   if (states.length >= 100) throw new Error("Too many condition states");

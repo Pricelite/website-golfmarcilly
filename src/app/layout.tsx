@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: absoluteUrl("/images/club-house-marcilly.png"),
+        url: absoluteUrl("/images/club-house-marcilly-og.jpg"),
         alt: siteConfig.name,
       },
     ],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [absoluteUrl("/images/club-house-marcilly.png")],
+    images: [absoluteUrl("/images/club-house-marcilly-og.jpg")],
   },
 };
 

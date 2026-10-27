@@ -10,7 +10,7 @@ export function buildOrganizationSchema() {
     url: siteConfig.url,
     telephone: siteConfig.phoneDisplay,
     email: siteConfig.email,
-    image: absoluteUrl("/images/club-house-marcilly.png"),
+    image: absoluteUrl("/images/club-house-marcilly-og.jpg"),
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.addressLine1,
