@@ -12,8 +12,8 @@ export type DailyMenu = {
   desserts: DailyMenuChoice[];
 };
 
-// Carte transmise par le propriétaire le 3 octobre 2026. Elle sert de repli tant
-// qu'aucune carte plus récente n'a été publiée dans Supabase.
+// Carte transmise par le propriétaire le 3 octobre 2026. Elle sert uniquement
+// d'exemple dans l'administration et dans le mode aperçu.
 export const dailyMenuExampleDate = "2026-10-03";
 export const dailyMenuExample: Omit<DailyMenu, "date"> = {
   starters: [
