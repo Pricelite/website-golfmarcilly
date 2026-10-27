@@ -79,6 +79,10 @@ styles/
 - maintien d'un endpoint legacy `/api/initiation-reservation` pour compatibilite
 - sitemap, robots, metadata et JSON-LD
 
+## Surveillance des services
+
+Le workflow GitHub Actions `fallback-queue.yml` traite la file de secours toutes les cinq minutes, puis interroge `/api/health` avec `OPS_CRON_TOKEN`. La réponse publique sans jeton ne vérifie que la disponibilité HTTP ; seule la réponse authentifiée contrôle les dépendances et l'état de la file. Configurer les notifications d'échec des workflows GitHub pour les personnes chargées de l'exploitation. Ce contrôle de connexion ne garantit pas qu'un e-mail arrive dans la boîte de réception : vérifier aussi régulièrement la boîte du golf et les demandes en attente.
+
 ## Conditions du site dans le back-office
 
 Un administrateur du back-office personnel ouvre `/admin/contenu/conditions`. Il peut choisir un état pour chaque parcours ou service, ajouter un état réutilisable, ajouter un parcours ou service, et modifier son nom, sa rubrique et son lien interne. Les modifications publiées apparaissent dans « Conditions du jour » sur l’accueil. Une fermeture nécessite un motif.
