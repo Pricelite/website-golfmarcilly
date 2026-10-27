@@ -11,6 +11,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     <p className="text-xs font-semibold uppercase tracking-[.2em] text-emerald-700">Administration</p>
     <h1 className="mt-3 font-serif text-4xl text-emerald-950">Connexion personnelle</h1>
     <p className="mt-4 text-sm leading-6 text-emerald-900/75">Saisissez votre adresse et votre mot de passe pour gérer les contenus autorisés.</p>
+    <p className="mt-3 text-sm leading-6 text-emerald-900/75">Cet espace utilise des comptes et fichiers propres à cette installation. Les pages et médias créés en local ne sont pas publiés automatiquement sur le site public.</p>
     <LoginForm error={params.error} />
   </section>;
 }
