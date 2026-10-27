@@ -19,7 +19,7 @@ const partnershipIdeas = [
     label: "Sur le terrain",
     title: "Parcours",
     description: "Imaginez une présence au fil du jeu : autour d’un départ, d’un trou ou d’un espace du parcours.",
-    image: "/images/parcours-accueil.png",
+    image: "/images/parcours-accueil.webp",
     imageAlt: "Parcours arboré du Golf de Marcilly",
   },
   {

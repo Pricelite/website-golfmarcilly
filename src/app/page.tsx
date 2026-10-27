@@ -73,7 +73,7 @@ export default async function HomePage() {
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4 sm:gap-5">
           {orderedCourses.map(course => <Link key={course.slug} href={`/golf#${course.slug}`} className="group overflow-hidden rounded-2xl border border-emerald-950/15 bg-white transition-colors hover:border-emerald-700">
             <div className="relative aspect-[16/10] overflow-hidden">
-              <Image src={course.slug === "practice" ? "/images/practice-golf.png" : course.slug === "parcours-decouverte-9-trous" ? "/images/decouverte-photo.webp" : course.slug === "parcours-competitions-18-trous" ? "/images/parcours-18t-competition.jpg" : course.image} alt={course.title} fill sizes="(max-width: 640px) calc((100vw - 44px) / 2), (max-width: 1024px) 45vw, 286px" className="object-cover" />
+              <Image src={course.slug === "practice" ? "/images/practice-golf.webp" : course.slug === "parcours-decouverte-9-trous" ? "/images/decouverte-photo.webp" : course.slug === "parcours-competitions-18-trous" ? "/images/parcours-18t-competition.jpg" : course.image} alt={course.title} fill sizes="(max-width: 640px) calc((100vw - 44px) / 2), (max-width: 1024px) 45vw, 286px" className="object-cover" />
             </div>
             <div className="p-4"><h3 className="font-serif text-lg leading-6 sm:text-xl">{course.slug === "pitch-putt-kaleka-18-trous" ? "Kaleka course 18 trous" : course.title}</h3><p className="mt-2 text-xs leading-5 text-emerald-800">{course.level} <span aria-hidden="true">→</span></p></div>
           </Link>)}

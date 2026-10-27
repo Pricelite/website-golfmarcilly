@@ -82,7 +82,7 @@ export const associationTeamGroups = [
         title: "Seniors 3 messieurs",
         division: "2e division en 2026",
         result: "Maintien en 2e division à l’issue de la saison 2026.",
-        image: "/images/practice-golf.png",
+        image: "/images/practice-golf.webp",
         imageCaption: "Photo d’équipe à venir",
         imageSourceUrl: null,
         source: "Ligue Centre-Val de Loire",
