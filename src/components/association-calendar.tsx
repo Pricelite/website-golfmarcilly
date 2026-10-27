@@ -60,6 +60,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
   const listView = (display ?? (mobile ? "list" : "calendar")) === "list";
   const year = view?.year ?? Number(defaultDate.slice(0, 4));
   const month = view?.month ?? Number(defaultDate.slice(5, 7)) - 1;
+  const showingNextCompetitionMonth = view === null && defaultDate.slice(0, 7) !== today.slice(0, 7);
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [zone, setZone] = useState<"all" | "A" | "B" | "C">("B");
@@ -90,6 +91,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div aria-live="polite" aria-atomic="true">
           <h3 className="font-serif text-3xl">{months[month]} {year}</h3>
+          {showingNextCompetitionMonth ? <p className="mt-1 text-sm font-medium text-emerald-800">Prochain mois avec une compétition publiée</p> : null}
           <p className="mt-1 text-sm text-emerald-900/70">{monthCompetitions} compétition{monthCompetitions > 1 ? "s" : ""} ou créneau{monthCompetitions > 1 ? "x" : ""} · {monthMarkers} repère{monthMarkers > 1 ? "s" : ""}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

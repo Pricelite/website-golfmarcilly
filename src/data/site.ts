@@ -9,7 +9,7 @@ export const siteConfig = {
   golfOpeningSchedule,
   name: "Golf de Marcilly",
   legalName: "Golf de Marcilly-Orléans",
-  url: "https://www.marcilly.com",
+  url: "https://www.golfdemarcilly.com",
   description:
     "Golf de Marcilly près d’Orléans : 45 trous, practice, initiations, cours, restaurant La Bergerie et événements à Marcilly-en-Villette.",
   phoneDisplay: "02 38 76 11 73",
