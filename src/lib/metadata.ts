@@ -32,7 +32,7 @@ export function buildMetadata({
   description,
   path = "/",
   keywords = [],
-  image = "/images/club-house-marcilly.png",
+  image = "/images/club-house-marcilly-og.jpg",
   indexable = true,
   type = "website",
 }: MetadataInput): Metadata {

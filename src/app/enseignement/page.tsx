@@ -36,7 +36,7 @@ export default function TeachingPage() {
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]">
-            <Image src="/images/ecole-de-golf-retouchee.png" alt="Illustration de jeunes golfeurs à l’entraînement" fill priority sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), 588px" className="object-cover" />
+            <Image src="/images/ecole-de-golf-retouchee.webp" alt="Illustration de jeunes golfeurs à l’entraînement" fill priority sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 48px), 588px" className="object-cover" />
           </div>
         </div>
       </section>

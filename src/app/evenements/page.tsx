@@ -15,7 +15,7 @@ export const metadata = buildMetadata({
   description:
     "Organisez un séminaire, un team building ou une réception au Golf de Marcilly, près d’Orléans. Découvrez les espaces, les activités et demandez un devis.",
   path: "/evenements",
-  image: "/images/practice-golf.png",
+  image: "/images/practice-golf-og.jpg",
 });
 
 export default function EventsPage() {
@@ -30,7 +30,7 @@ export default function EventsPage() {
 
       <section className="relative isolate overflow-hidden bg-emerald-950 text-stone-50">
         <Image
-          src="/images/practice-golf.png"
+          src="/images/practice-golf.webp"
           alt=""
           fill
           priority
