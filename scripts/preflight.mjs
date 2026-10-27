@@ -49,6 +49,7 @@ if (dbPath) {
   }
 }
 const provider = value("MAIL_PROVIDER").toLowerCase();
+if (value("CONTENT_SYNC_TOKEN") && value("CONTENT_SYNC_TOKEN").length < 32) issues.push("CONTENT_SYNC_TOKEN : au moins 32 caractères aléatoires requis.");
 if (provider === "brevo") requireValue("BREVO_API_KEY", "clé Brevo requise.");
 else if (provider === "smtp") {
   for (const name of ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS"]) requireValue(name, "configuration SMTP requise.");

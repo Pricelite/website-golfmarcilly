@@ -5,7 +5,7 @@ import { getLatestDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility";
 import { siteConfig } from "@/data/site";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
-import { sharedContentSyncEnabled } from "@/lib/supabase/content-config";
+import { scopedContentSyncEnabled, sharedContentSyncEnabled } from "@/lib/supabase/content-config";
 
 const categories = [
   { key: "starters", title: "Entrées" },
@@ -13,7 +13,9 @@ const categories = [
   { key: "desserts", title: "Desserts" },
 ] as const;
 
-const menuSource = sharedContentSyncEnabled()
+const menuSource = scopedContentSyncEnabled()
+  ? siteConfig.url
+  : sharedContentSyncEnabled()
   ? process.env.CONTENT_SUPABASE_URL?.trim()
   : process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 

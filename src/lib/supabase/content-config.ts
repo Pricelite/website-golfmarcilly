@@ -2,6 +2,10 @@ export function sharedContentSyncEnabled() {
   return process.env.NODE_ENV === "development" && process.env.CONTENT_SYNC_ENABLED === "true";
 }
 
+export function scopedContentSyncEnabled() {
+  return sharedContentSyncEnabled() && Boolean(process.env.CONTENT_SYNC_TOKEN?.trim());
+}
+
 export function localContentStoreEnabled() {
   return process.env.NODE_ENV === "development" && !sharedContentSyncEnabled();
 }

@@ -1,6 +1,7 @@
 import "server-only";
 import { associationEvents, type AssociationEvent } from "@/data/association-events";
 import { createContentAdminClient } from "@/lib/supabase/content";
+import { ScopedContentError, scopedContentRequest, scopedContentSyncEnabled } from "@/lib/supabase/scoped-content-sync";
 import { deleteLocalEvent, localCalendarEnabled, readLocalCalendar, saveLocalEvent } from "./association-events-local";
 import type { EventInput } from "./association-events-validation";
 
@@ -40,6 +41,7 @@ function toRow(event: EventInput) {
 
 export async function listAssociationEvents(): Promise<AssociationEvent[]> {
   if (localCalendarEnabled()) return readLocalCalendar();
+  if (scopedContentSyncEnabled()) return scopedContentRequest<AssociationEvent[]>("events:list");
   const db = client();
   const events: AssociationEvent[] = [];
   // Supabase limite les réponses : parcourir toutes les pages du programme actif.
@@ -70,6 +72,13 @@ export async function publicAssociationEvents(): Promise<{ events: AssociationEv
 }
 
 export async function saveAssociationEvent(event: EventInput, id?: string) {
+  if (scopedContentSyncEnabled()) {
+    try { return await scopedContentRequest<AssociationEvent>("events:save", { event, id }); }
+    catch (error) {
+      if (error instanceof ScopedContentError && error.status === 404) throw new CalendarStoreError("not_found");
+      throw error;
+    }
+  }
   if (localCalendarEnabled()) {
     const saved = await saveLocalEvent(event, id);
     if (!saved) throw new CalendarStoreError("not_found");
@@ -86,6 +95,14 @@ export async function saveAssociationEvent(event: EventInput, id?: string) {
 }
 
 export async function deleteAssociationEvent(id: string) {
+  if (scopedContentSyncEnabled()) {
+    try { await scopedContentRequest<null>("events:delete", { id }); }
+    catch (error) {
+      if (error instanceof ScopedContentError && error.status === 404) throw new CalendarStoreError("not_found");
+      throw error;
+    }
+    return;
+  }
   if (localCalendarEnabled()) {
     if (!await deleteLocalEvent(id)) throw new CalendarStoreError("not_found");
     return;
