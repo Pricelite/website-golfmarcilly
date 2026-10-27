@@ -1,7 +1,7 @@
 import "server-only";
 
 import { sortDailyMenuChoices, type DailyMenu, type DailyMenuChoice } from "@/data/daily-menu";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createContentAdminClient } from "@/lib/supabase/content";
 import { normalizeDailyMenuName, normalizeDailyMenuPrice } from "./daily-menu-validation";
 
 type DailyMenuRow = {
@@ -22,7 +22,7 @@ function fromRow(row: DailyMenuRow): DailyMenu {
 }
 
 export async function getDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {
-  let query = createSupabaseAdminClient()
+  let query = createContentAdminClient()
     .from("restaurant_daily_menus").select(columns).eq("menu_date", date);
   if (options?.timeoutMs) query = query.abortSignal(AbortSignal.timeout(options.timeoutMs));
   const { data, error } = await query.maybeSingle();
@@ -31,7 +31,7 @@ export async function getDailyMenu(date: string, options?: { timeoutMs?: number 
 }
 
 export async function getLatestDailyMenu(date: string, options?: { timeoutMs?: number }): Promise<DailyMenu | null> {
-  let query = createSupabaseAdminClient()
+  let query = createContentAdminClient()
     .from("restaurant_daily_menus")
     .select(columns)
     .lte("menu_date", date)
@@ -44,7 +44,7 @@ export async function getLatestDailyMenu(date: string, options?: { timeoutMs?: n
 }
 
 export async function saveDailyMenu(menu: DailyMenu): Promise<DailyMenu> {
-  const { data, error } = await createSupabaseAdminClient().from("restaurant_daily_menus")
+  const { data, error } = await createContentAdminClient().from("restaurant_daily_menus")
     .upsert({ menu_date: menu.date, starters: menu.starters, mains: menu.mains, desserts: menu.desserts, updated_at: new Date().toISOString() }, { onConflict: "menu_date" })
     .select(columns).single();
   if (error) throw error;
@@ -52,7 +52,7 @@ export async function saveDailyMenu(menu: DailyMenu): Promise<DailyMenu> {
 }
 
 export async function deleteDailyMenu(date: string): Promise<boolean> {
-  const { data, error } = await createSupabaseAdminClient().from("restaurant_daily_menus")
+  const { data, error } = await createContentAdminClient().from("restaurant_daily_menus")
     .delete().eq("menu_date", date).select("menu_date").maybeSingle();
   if (error) throw error;
   return Boolean(data);

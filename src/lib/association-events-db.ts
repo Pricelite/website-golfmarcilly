@@ -1,6 +1,6 @@
 import "server-only";
 import { associationEvents, type AssociationEvent } from "@/data/association-events";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createContentAdminClient } from "@/lib/supabase/content";
 import { deleteLocalEvent, localCalendarEnabled, readLocalCalendar, saveLocalEvent } from "./association-events-local";
 import type { EventInput } from "./association-events-validation";
 
@@ -18,8 +18,8 @@ type EventRow = {
 const columns = "id,title,start_date,end_date,start_time,note,status,category,zone";
 
 function client() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) throw new CalendarStoreError("setup");
-  return createSupabaseAdminClient();
+  try { return createContentAdminClient(); }
+  catch { throw new CalendarStoreError("setup"); }
 }
 
 function checkError(error: { code?: string } | null) {
