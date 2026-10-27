@@ -109,7 +109,7 @@ export default function ContactPage() {
         </div>
 
         <div className="mt-16">
-          <SectionTitle eyebrow="Carte" title="Accès et Google Maps" />
+          <SectionTitle eyebrow="Carte" title="Accès et OpenStreetMap" />
           <div className="mt-8">
             <MapEmbed src={siteConfig.mapImageUrl} href={siteConfig.mapExternalUrl} title="Accès Golf de Marcilly" />
           </div>
