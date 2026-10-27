@@ -30,3 +30,13 @@ jobs:
             --request POST \
             --header "Authorization: Bearer $OPS_CRON_TOKEN" \
             "${SITE_URL%/}/api/ops/fallback-queue?maxItems=25"
+      - name: Check production services
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          OPS_CRON_TOKEN: ${{ secrets.OPS_CRON_TOKEN }}
+        run: |
+          curl --fail --show-error --silent --retry 1 \
+            --max-time 30 \
+            --output /dev/null \
+            --header "Authorization: Bearer $OPS_CRON_TOKEN" \
+            "${SITE_URL%/}/api/health"

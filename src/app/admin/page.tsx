@@ -67,7 +67,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       <section className="mt-8 rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5" aria-labelledby="initiation-inbox">
         <h2 id="initiation-inbox" className="font-serif text-2xl text-emerald-950">Demandes d’initiation</h2>
         <p className="mt-3 text-sm leading-7 text-emerald-900/80">Le formulaire transmet les demandes à <strong>{inbox}</strong>. Consultez les messages dont l’objet commence par <strong>[Initiation] Demande pour le</strong>, puis répondez au visiteur pour confirmer le créneau. Le règlement se fait sur place.</p>
-        <p className="mt-3 text-sm leading-7 text-emerald-900/80">Les demandes par e-mail n’apparaissent pas dans cette administration. En cas d’échec d’envoi, le formulaire affiche une erreur au visiteur.</p>
+        <p className="mt-3 text-sm leading-7 text-emerald-900/80">Les demandes par e-mail n’apparaissent pas dans cette administration. Si l’envoi échoue mais que la demande est enregistrée dans la file de secours, le visiteur est informé que l’équipe la traitera après rétablissement de la messagerie. Aucune place n’est réservée avant votre confirmation.</p>
       </section>
     </section>
   </div>;
