@@ -5,6 +5,7 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { posts } from "@/data/posts";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
+import { formatDate } from "@/lib/utils";
 
 export const metadata = buildMetadata({
   title: "Actualités",
@@ -31,6 +32,7 @@ export default function NewsPage() {
         />
         <ClubNews headingLevel="h2" />
         <h2 className="mt-12 font-serif text-3xl">Conseils et découvertes</h2>
+        {posts[0] ? <p className="mt-3 max-w-3xl text-sm leading-7 text-emerald-950/75">Dernier conseil publié le {formatDate(posts[0].publishedAt)}. Pour les tarifs, horaires et conditions actuels, consultez les pages dédiées du site.</p> : null}
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {posts.map((post) => (
             <BlogCard key={post.slug} post={post} />

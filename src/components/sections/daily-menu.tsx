@@ -38,7 +38,7 @@ export async function DailyMenuSection() {
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-emerald-700">La Bergerie au quotidien</p>
           <h2 className="mt-1 font-serif text-3xl">Carte du jour</h2>
         </div>
-        {published && <time dateTime={published.date} className="text-xs capitalize text-emerald-900/85">Carte publiée le {formatDailyMenuDate(published.date)}</time>}
+        {published && <time dateTime={published.date} className="text-xs text-emerald-900/85">Carte publiée le {formatDailyMenuDate(published.date)}</time>}
       </div>
       {unavailable || !published ? <div role="status" className="px-5 py-4 text-sm leading-6 sm:px-6">
         <p>{unavailable ? "La carte est momentanément indisponible." : "Aucune carte n’est publiée pour le moment."} Appelez La Bergerie pour connaître les plats proposés.</p>
