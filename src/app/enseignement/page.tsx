@@ -42,7 +42,7 @@ export default function TeachingPage() {
       </section>
       <nav aria-label="Dans cette page" className="border-y border-emerald-950/10">
         <div className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 px-4 py-3 sm:px-6 lg:px-8">
-          {[["#ecole-de-golf", "Enfants et tarifs"], ["#adultes", "Adultes"], ["#enseignants", "Nos enseignants"], ["#label-sportif", "Label Sportif 2024"], ["#inscription", "Questions et inscription"]].map(([href, label]) => (
+          {[["#ecole-de-golf", "Enfants et tarifs"], ["#academie", "L’académie"], ["#adultes", "Adultes"], ["#enseignants", "Nos enseignants"], ["#label-sportif", "Label Sportif 2024"], ["#inscription", "Questions et inscription"]].map(([href, label]) => (
             <Link key={href} href={href} className={`py-2 text-sm font-medium text-emerald-950 ${linkClass}`}>{label}</Link>
           ))}
         </div>
@@ -61,6 +61,13 @@ export default function TeachingPage() {
               <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(`École de golf — ${program.title}`)}`} variant="secondary" className="mt-auto self-start">Renseignements et inscription</CTAButton>
             </article>
           ))}
+        </div>
+        <div id="academie" className="mt-8 flex scroll-mt-28 flex-col gap-5 rounded-[28px] border border-emerald-950/10 bg-emerald-50 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="max-w-2xl">
+            <h3 className="font-serif text-2xl text-emerald-950">L’académie du golf</h3>
+            <p className="mt-3 text-sm leading-7 text-emerald-950/75">L’académie accompagne les jeunes dans leur découverte et leur progression. Retrouvez leur parcours et les informations de l’école de golf.</p>
+          </div>
+          <CTAButton href="/academie" variant="secondary" className="self-start shrink-0">Découvrir l’académie</CTAButton>
         </div>
         <p className="mt-5 max-w-3xl text-sm leading-7 text-emerald-950/70">La cotisation à l’association sportive et les autres tarifs figurent sur l’affiche ci-dessous. Contactez l’accueil pour confirmer le groupe, le calendrier et les modalités d’inscription.</p>
       </section>
