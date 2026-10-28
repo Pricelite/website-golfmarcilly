@@ -4,7 +4,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { siteConfig } from "@/data/site";
-import { adultCollectiveCoursePosterSrc, juniorPrograms, juniorSchoolPosterSrc, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
+import { adultCollectiveCoursePosterSrc, juniorPrograms, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
@@ -55,10 +55,13 @@ export default function TeachingPage() {
               <h3 className="font-serif text-3xl text-emerald-950">{program.title}</h3>
               <p className="mt-5 text-emerald-950"><span className="font-serif text-5xl">{nonbreakingEuro(program.price)}</span><span className="ml-2 text-sm">/ saison</span></p>
               <p className="mt-3 font-semibold text-emerald-800">{program.duration}</p>
+              <ul className="mt-4 space-y-1 text-sm text-emerald-950/75">
+                {program.included.map((item) => <li key={item}>✓ {item}</li>)}
+              </ul>
               <ul className="my-6 space-y-2 border-y border-emerald-950/10 py-5 text-sm text-emerald-950/80">
                 {program.slots.map((slot) => <li key={slot}>{slot}</li>)}
               </ul>
-              <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(`École de golf — ${program.title}`)}`} variant="secondary" className="mt-auto self-start">Renseignements et inscription</CTAButton>
+              <CTAButton href={`/enseignement/inscription?programme=${program.key}`} variant="secondary" className="mt-auto self-start">Renseignements et inscription</CTAButton>
             </article>
           ))}
         </div>
@@ -69,7 +72,7 @@ export default function TeachingPage() {
           </div>
           <CTAButton href="/academie" variant="secondary" className="self-start shrink-0">Découvrir l’académie</CTAButton>
         </div>
-        <p className="mt-5 max-w-3xl text-sm leading-7 text-emerald-950/70">La cotisation à l’association sportive et les autres tarifs figurent sur l’affiche ci-dessous. Contactez l’accueil pour confirmer le groupe, le calendrier et les modalités d’inscription.</p>
+        <p className="mt-5 max-w-3xl text-sm leading-7 text-emerald-950/70">Contactez l’accueil pour confirmer le groupe, le calendrier et les modalités d’inscription.</p>
       </section>
       <section id="adultes" className="scroll-mt-28 bg-emerald-950">
         <div className={sectionClass}>
@@ -96,22 +99,17 @@ export default function TeachingPage() {
       </section>
       <section className="bg-[#f7f4e9]">
         <div className={sectionClass}>
-          <SectionTitle eyebrow="Informations pratiques" title="Les affiches des cours" description="Retrouvez les détails des deux programmes et ouvrez chaque affiche pour la lire en grand." />
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {[
-              { src: juniorSchoolPosterSrc, title: "École de golf 2026–2027", alt: "Affiche de l’école de golf 2026–2027 : groupes Baby Évolution et Loisir, 35 séances, 235 €" },
-              { src: adultCollectiveCoursePosterSrc, title: "Cours collectifs adultes", alt: "Affiche des cours collectifs adultes : 20 séances d’une heure, 200 €" },
-            ].map((poster) => (
-              <article key={poster.src} className="flex flex-col rounded-[28px] border border-emerald-950/10 bg-white p-5 shadow-sm shadow-emerald-950/5 sm:p-7">
-                <h3 className="font-serif text-2xl text-emerald-950">{poster.title}</h3>
-                <a href={poster.src} target="_blank" rel="noopener noreferrer" aria-label={`Voir l’affiche ${poster.title} en grand (nouvel onglet)`} className="group mt-5 block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
-                  <span className="relative mx-auto block aspect-[2/3] w-full max-w-sm overflow-hidden rounded-2xl bg-[#f7f4e9]">
-                    <Image src={poster.src} alt={poster.alt} fill sizes="(max-width: 768px) calc(100vw - 72px), 384px" className="object-contain" />
-                  </span>
-                  <span className="mt-4 block text-sm font-semibold text-emerald-950 underline underline-offset-4 group-hover:text-emerald-700">Voir l’affiche en grand <span aria-hidden="true">↗</span></span>
-                </a>
-              </article>
-            ))}
+          <SectionTitle eyebrow="Informations pratiques" title="L’affiche des cours adultes" description="Ouvrez l’affiche des cours collectifs adultes pour la lire en grand. Les informations à jour de l’école de golf figurent ci-dessus." />
+          <div className="mt-8 max-w-xl">
+            <article className="flex flex-col rounded-[28px] border border-emerald-950/10 bg-white p-5 shadow-sm shadow-emerald-950/5 sm:p-7">
+              <h3 className="font-serif text-2xl text-emerald-950">Cours collectifs adultes</h3>
+              <a href={adultCollectiveCoursePosterSrc} target="_blank" rel="noopener noreferrer" aria-label="Voir l’affiche des cours collectifs adultes en grand (nouvel onglet)" className="group mt-5 block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+                <span className="relative mx-auto block aspect-[2/3] w-full max-w-sm overflow-hidden rounded-2xl bg-[#f7f4e9]">
+                  <Image src={adultCollectiveCoursePosterSrc} alt="Affiche des cours collectifs adultes : 20 séances d’une heure, 200 €" fill sizes="(max-width: 768px) calc(100vw - 72px), 384px" className="object-contain" />
+                </span>
+                <span className="mt-4 block text-sm font-semibold text-emerald-950 underline underline-offset-4 group-hover:text-emerald-700">Voir l’affiche en grand <span aria-hidden="true">↗</span></span>
+              </a>
+            </article>
           </div>
         </div>
       </section>

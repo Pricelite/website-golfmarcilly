@@ -39,7 +39,8 @@ export default function PrivacyPage() {
           <p>
             Selon votre demande, les formulaires recueillent vos coordonnées,
             votre message et les informations utiles à son traitement : date,
-            nombre de participants ou formule choisie.
+            nombre de participants ou formule choisie. Pour l’école de golf,
+            le prénom et l’âge de l’enfant sont également demandés.
           </p>
           <p>{legalContent.processingDetails}</p>
           <p>
