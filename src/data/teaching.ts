@@ -1,11 +1,10 @@
 ﻿// Source : https://www.marcilly.com/enseignement — consultée le 16 septembre 2026.
-// L’affiche de la saison 2026–2027 fournie par le club prime pour les horaires et tarifs ci-dessous.
+// Horaires : affiche 2026–2027 du club. Tarif et inclusions : capture du club confirmée le 28 octobre 2026.
 export const juniorPrograms = [
-  { title: "Baby Évolution", price: "235 €", duration: "35 séances · 1 h par semaine", slots: ["Mercredi : 11 h – 12 h", "Samedi : 14 h – 15 h"] },
-  { title: "Loisir", price: "235 €", duration: "35 séances · 1 h par semaine", slots: ["Mercredi : 14 h – 15 h", "Samedi : 10 h – 11 h"] },
+  { key: "baby-golf", title: "Baby Golf", price: "257 €", duration: "35 séances · 1 h par semaine", included: ["Licence 12 mois incluse", "Groupe Baby Golf inclus"], slots: ["Mercredi : 11 h – 12 h", "Samedi : 14 h – 15 h"] },
+  { key: "loisir", title: "Loisir", price: "257 €", duration: "35 séances · 1 h par semaine", included: ["Licence 12 mois incluse", "Groupe Loisir inclus"], slots: ["Mercredi : 14 h – 15 h", "Samedi : 10 h – 11 h"] },
 ] as const;
 
-export const juniorSchoolPosterSrc = "/enseignement/ecole-de-golf-2026-2027.png";
 export const adultCollectiveCoursePosterSrc = "/enseignement/cours-collectifs-adultes.png";
 
 export const sportingLabelCriteria = [

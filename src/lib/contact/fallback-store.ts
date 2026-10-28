@@ -3,9 +3,10 @@ import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MailerError, sendMail } from "@/lib/email/mailer";
 import { getRestaurantReservationEnv } from "@/lib/env";
+import { siteConfig } from "@/data/site";
 
 export type ContactFallbackEntry = {
-  form?: "quote" | "initiation" | "newsletter" | "restaurant";
+  form?: "quote" | "initiation" | "newsletter" | "restaurant" | "school";
   receivedAt: string;
   reason: string;
   nom: string;
@@ -82,7 +83,7 @@ export async function getContactFallbackQueueSnapshot(): Promise<FallbackQueueSn
 
 function notification(row: QueueRow) {
   const entry = row.payload;
-  const labels = { quote: "Devis", initiation: "Initiation", newsletter: "Newsletter", restaurant: "Restaurant" };
+  const labels = { quote: "Devis", initiation: "Initiation", newsletter: "Newsletter", restaurant: "Restaurant", school: "École de golf" };
   const label = entry.form ? labels[entry.form] ?? "Contact" : "Contact";
   return {
     subject: `[Fallback][${label} #${row.id}] ${entry.prenom} ${entry.nom}`.trim(),
@@ -156,7 +157,7 @@ export async function processContactFallbackQueue(options?: { maxItems?: number 
     const mail = notification(row);
     try {
       await sendMail({
-        to: row.payload.form === "restaurant" ? getRestaurantReservationEnv().restaurantReservationTo : process.env.EMAIL_TO?.trim() || "golf@marcilly.com",
+        to: row.payload.form === "restaurant" ? getRestaurantReservationEnv().restaurantReservationTo : row.payload.form === "school" ? siteConfig.email : process.env.EMAIL_TO?.trim() || "golf@marcilly.com",
         ...mail,
         replyTo: row.payload.email,
         replyToName: `${row.payload.prenom} ${row.payload.nom}`.trim(),
