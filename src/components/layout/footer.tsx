@@ -78,16 +78,18 @@ export function Footer() {
             <p>
               <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
             </p>
-            <p>
-              <Link className="hover:text-stone-100/75" href={siteConfig.bookingEngineUrl}>
-                Réserver un départ
-              </Link>
-            </p>
-            <p>
-              <Link className="hover:text-stone-100/75" href={siteConfig.alternateReservationUrl}>
-                Autre plateforme de réservation
-              </Link>
-            </p>
+            <div>
+              <p className="text-xs text-stone-100/65">Pour jouer sur les parcours</p>
+              <Link className="hover:text-stone-100/75" href={siteConfig.bookingEngineUrl}>Réserver un départ</Link>
+            </div>
+            <div>
+              <p className="text-xs text-stone-100/65">Pour une première initiation</p>
+              <Link className="hover:text-stone-100/75" href="/initiation/reservation">Demander un créneau</Link>
+            </div>
+            <div>
+              <p className="text-xs text-stone-100/65">Autre accès pour les départs</p>
+              <Link className="hover:text-stone-100/75" href={siteConfig.alternateReservationUrl}>Utiliser l’autre plateforme</Link>
+            </div>
           </div>
         </div>
       </div>

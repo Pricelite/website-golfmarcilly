@@ -91,7 +91,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div aria-live="polite" aria-atomic="true">
           <h3 className="font-serif text-3xl">{months[month]} {year}</h3>
-          {showingNextCompetitionMonth ? <p className="mt-1 text-sm font-medium text-emerald-800">Prochain mois avec une compétition publiée</p> : null}
+          {showingNextCompetitionMonth ? <p className="mt-1 text-sm font-medium text-emerald-800">Aucune compétition à venir ce mois-ci. Prochaine compétition publiée en {months[month].toLocaleLowerCase("fr-FR")} {year}.</p> : null}
           <p className="mt-1 text-sm text-emerald-900/70">{monthCompetitions} compétition{monthCompetitions > 1 ? "s" : ""} ou créneau{monthCompetitions > 1 ? "x" : ""} · {monthMarkers} repère{monthMarkers > 1 ? "s" : ""}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

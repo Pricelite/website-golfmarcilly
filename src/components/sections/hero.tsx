@@ -8,12 +8,12 @@ type HeroProps = {
   eyebrow: string;
   title: string;
   subtitle: string;
-  beginnerCta: { label: string; href: string };
+  playCta: { label: string; href: string };
   appCta?: { label: string; href: string };
   offersAction?: ReactNode;
 };
 
-export function Hero({ eyebrow, title, subtitle, beginnerCta, appCta, offersAction }: HeroProps) {
+export function Hero({ eyebrow, title, subtitle, playCta, appCta, offersAction }: HeroProps) {
   return (
     <section aria-label="Bienvenue au Golf de Marcilly" className="overflow-hidden bg-[#f7f4e9] text-emerald-950">
       <div className="mx-auto grid max-w-[1600px] lg:grid-cols-2">
@@ -24,10 +24,11 @@ export function Hero({ eyebrow, title, subtitle, beginnerCta, appCta, offersActi
           <h1 className="mt-3 max-w-xl text-balance font-serif text-[2.25rem] leading-[1.08] tracking-[-0.035em] sm:text-5xl xl:text-6xl 2xl:text-7xl">{title}</h1>
           <p className="mt-3 max-w-lg text-base leading-7 text-emerald-950/75 sm:text-lg sm:leading-8">{subtitle}</p>
           <div className="mt-5 flex flex-wrap gap-2">
-            <CTAButton href={beginnerCta.href}>{beginnerCta.label}</CTAButton>
-            <CTAButton href="/restaurant" variant="secondary">La Bergerie</CTAButton>
-            {offersAction}
+            <CTAButton href={playCta.href}>{playCta.label}</CTAButton>
+            <CTAButton href="/je-debute-le-golf" variant="secondary">Débuter</CTAButton>
+            <CTAButton href="/restaurant" variant="secondary">Déjeuner</CTAButton>
           </div>
+          {offersAction ? <div className="mt-4">{offersAction}</div> : null}
         </div>
         <div className="relative h-[220px] sm:h-[340px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-auto lg:min-h-[520px]">
           <HeroPhotoCarousel />
