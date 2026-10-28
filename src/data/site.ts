@@ -1,6 +1,6 @@
 const golfOpeningSchedule = [
-  { days: "Lundi au vendredi", hours: "de 9h à 18h" },
-  { days: "Samedi et dimanche", hours: "de 9h à 19h" },
+  { days: "Lundi au vendredi", hours: "de 9 h à 18 h" },
+  { days: "Samedi et dimanche", hours: "de 9 h à 19 h" },
 ] as const;
 const golfOpeningHours = golfOpeningSchedule.map(slot => `${slot.days} ${slot.hours}`).join(". ");
 

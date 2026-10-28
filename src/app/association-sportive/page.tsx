@@ -78,7 +78,7 @@ export default async function AssociationPage() {
 
       <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier 2027 de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
+          <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {[
               { title: "Vérifier son départ", text: "Retrouvez les départs publiés pour les compétitions du club sur le service de la Fédération française de golf.", label: "Consulter les départs", href: associationLinks.starts },
