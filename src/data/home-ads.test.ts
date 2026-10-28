@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { visibleHomeAd, type HomeAd } from "./home-ads";
+import { visibleHomeAd, visibleHomeAds, type HomeAd } from "./home-ads";
 
 const ad: HomeAd = {
   advertiser: "Exemple",
@@ -17,4 +17,9 @@ test("une publicité respecte ses dates de début et de fin incluses", () => {
   assert.equal(visibleHomeAd(ad, "2026-11-30"), ad);
   assert.equal(visibleHomeAd(ad, "2026-12-01"), null);
   assert.equal(visibleHomeAd(null, "2026-11-15"), null);
+});
+
+test("les affiches datées quittent la rotation après l’événement", () => {
+  const permanent = { ...ad, startsOn: undefined, endsOn: undefined };
+  assert.deepEqual(visibleHomeAds([ad, permanent], "2026-12-01"), [permanent]);
 });
