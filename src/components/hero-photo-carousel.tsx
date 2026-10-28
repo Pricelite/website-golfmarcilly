@@ -37,13 +37,15 @@ export function HeroPhotoCarousel() {
         </div>
       ))}
       <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center px-0.5 text-white">
-        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 inset-y-1.5 rounded-full bg-emerald-950/70 shadow-sm" />
-        <button type="button" aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"} className="group relative flex h-11 w-9 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => setPaused(!isPaused)}>
-          <span aria-hidden="true" className="flex h-5 w-5 items-center justify-center rounded-full bg-white/85 text-[10px] text-emerald-950 group-hover:bg-white">{isPaused ? "▶" : "Ⅱ"}</span>
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 inset-y-1.5 rounded-full bg-emerald-950/80 shadow-sm" />
+        <button type="button" aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"} className="group relative flex h-11 w-8 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => setPaused(!isPaused)}>
+          <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-xs text-emerald-950 group-hover:bg-white">{isPaused ? "▶" : "Ⅱ"}</span>
         </button>
         {heroPhotos.map((photo, index) => (
-          <button key={photo.src} type="button" aria-label={`Afficher la photo ${index + 1} : ${photo.alt}`} aria-pressed={active === index} className="group relative flex h-11 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => { setActive(index); setPaused(true); }}>
-            <span aria-hidden="true" className={`h-1 rounded-full transition-all motion-reduce:transition-none group-hover:bg-white ${active === index ? "w-2.5 bg-white/95" : "w-1 bg-white/55"}`} />
+          <button key={photo.src} type="button" aria-label={`Afficher la photo ${index + 1} : ${photo.alt}`} aria-pressed={active === index} className="group relative flex h-11 w-8 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => { setActive(index); setPaused(true); }}>
+            <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 group-hover:bg-white">
+              <span className={`h-1.5 rounded-full bg-emerald-950 transition-all motion-reduce:transition-none ${active === index ? "w-3" : "w-1.5 opacity-45"}`} />
+            </span>
           </button>
         ))}
       </div>
