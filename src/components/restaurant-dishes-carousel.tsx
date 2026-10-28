@@ -135,19 +135,19 @@ export function RestaurantDishesCarousel({
       </div>
       {items.length > 1 ? (
         <div className="flex flex-wrap items-center justify-center gap-1 border-t border-emerald-950/8 px-5 py-2">
-          <button type="button" className="group flex h-11 w-9 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}><span aria-hidden="true" className="flex h-5 w-5 items-center justify-center rounded-full border border-emerald-950/25 text-[10px] text-emerald-950/70 group-hover:border-emerald-950/60 group-hover:text-emerald-950">{isPaused ? "▶" : "Ⅱ"}</span></button>
+          <button type="button" className="h-11 rounded-full px-2 text-[11px] font-medium text-emerald-950/80 hover:text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800" onClick={() => setIsPaused(!isPaused)} aria-label={isPaused ? "Lancer le diaporama" : "Mettre le diaporama en pause"}>{isPaused ? "Lecture" : "Pause"}</button>
           {items.map((item, index) => {
             const isActive = index === activeIndex;
 
             return (
               <button
                 aria-label={`Afficher ${item.title}`}
-                className="group flex h-11 w-5 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
+                className="group flex h-11 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
                 key={item.src}
                 onClick={() => { goToSlide(index); setIsPaused(true); }}
                 aria-pressed={isActive}
                 type="button"
-              ><span aria-hidden="true" className={`h-1 rounded-full group-hover:bg-emerald-700 ${isActive ? "w-2.5 bg-emerald-950" : "w-1 bg-emerald-950/40"}`} /></button>
+              ><span aria-hidden="true" className={`h-1.5 rounded-full group-hover:bg-emerald-700 ${isActive ? "w-3 bg-emerald-950" : "w-1.5 bg-emerald-950/40"}`} /></button>
             );
           })}
         </div>
