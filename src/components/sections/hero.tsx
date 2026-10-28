@@ -25,8 +25,8 @@ export function Hero({ eyebrow, title, subtitle, playCta, appCta, offersAction }
           <p className="mt-3 max-w-lg text-base leading-7 text-emerald-950/75 sm:text-lg sm:leading-8">{subtitle}</p>
           <div className="mt-5 flex flex-wrap gap-2">
             <CTAButton href={playCta.href}>{playCta.label}</CTAButton>
-            <CTAButton href="/je-debute-le-golf" variant="secondary">Je débute le golf</CTAButton>
-            <CTAButton href="/restaurant" variant="secondary">Déjeuner à La Bergerie</CTAButton>
+            <CTAButton href="/je-debute-le-golf" variant="secondary">Débuter</CTAButton>
+            <CTAButton href="/restaurant" variant="secondary">Déjeuner</CTAButton>
           </div>
           {offersAction ? <div className="mt-4">{offersAction}</div> : null}
         </div>
