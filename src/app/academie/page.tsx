@@ -19,7 +19,7 @@ export default function AcademyPage() {
     <>
       <JsonLd data={buildBreadcrumbSchema([
         { name: "Accueil", path: "/" },
-        { name: "Association sportive", path: "/association-sportive" },
+        { name: "Enseignement", path: "/enseignement" },
         { name: "Académie du golf", path: "/academie" },
       ])} />
 

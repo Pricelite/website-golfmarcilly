@@ -51,7 +51,7 @@ export default async function AssociationPage() {
           {[
             ["#role", "Le rôle de l’AS"],
             ["#competitions", "Compétitions et résultats"],
-            ["#groupes", "Équipes, seniors et académie"],
+            ["#groupes", "Équipes et seniors"],
             ["/association-sportive/equipes", "Nos équipes 2026"],
             ["#actualites", "Actualités"],
             ["#partenaire-as", "Suivi sportif"],
@@ -98,8 +98,8 @@ export default async function AssociationPage() {
 
       <section id="groupes" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="À chacun son parcours" title="Vivre le golf à tous les âges" description="Équipes du club, rendez-vous seniors et apprentissage des jeunes : choisissez l’espace qui vous correspond." />
-          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+          <SectionTitle eyebrow="À chacun son parcours" title="Vivre le golf à tous les âges" description="Équipes du club et rendez-vous seniors : choisissez l’espace qui vous correspond." />
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
             {associationGroups.map((group, index) => (
               <article key={group.title} className="flex min-h-80 flex-col rounded-[28px] border border-emerald-950/10 bg-white p-7 shadow-sm shadow-emerald-950/5 sm:p-8">
                 <div className="flex items-center justify-between gap-4">
