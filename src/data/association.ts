@@ -45,13 +45,6 @@ export const associationGroups = [
     href: "https://www.amicale-golf-seniors-45.com/",
     cta: "Voir les rendez-vous seniors",
   },
-  {
-    eyebrow: "Grandir par le golf",
-    title: "L’académie",
-    description: "L’académie accompagne les jeunes dans leur découverte et leur progression. Retrouvez les informations de l’école de golf et les possibilités d’inscription.",
-    href: "/academie",
-    cta: "L’académie du golf",
-  },
 ] as const;
 
 export const associationFaqs = [
