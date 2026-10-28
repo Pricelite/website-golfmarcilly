@@ -25,6 +25,11 @@
   animation: invitation-float 6s ease-in-out infinite;
 }
 
+.invitation[data-paused="true"]::before,
+.invitation[data-paused="true"] .ball {
+  animation-play-state: paused;
+}
+
 @keyframes invitation-shine {
   from { transform: translateX(-35%); }
   to { transform: translateX(35%); }
