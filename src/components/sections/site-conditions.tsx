@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { SiteCondition } from "@/data/site-conditions";
 import { siteConfig } from "@/data/site";
-import { homeAds, visibleHomeAd } from "@/data/home-ads";
+import { homeAds, visibleHomeAds } from "@/data/home-ads";
 import { parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { HomeAdSlot } from "./home-ad-slot";
 import { SiteConditionControl } from "./site-condition-control";
@@ -28,7 +28,7 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
   }
 
   return <section aria-labelledby="conditions-title" className="border-y border-emerald-950/10 bg-[#efeadd]/50 py-6 sm:py-7">
-    <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8 2xl:grid-cols-[10rem_minmax(0,1fr)_10rem] 2xl:items-stretch">
+    <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8 2xl:grid-cols-[12rem_minmax(0,1fr)_12rem] 2xl:items-stretch">
       <div className="order-1 rounded-[24px] border border-emerald-950/10 bg-white p-4 shadow-sm shadow-emerald-950/5 sm:col-span-2 sm:px-6 sm:py-5 2xl:order-2 2xl:col-span-1">
         <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <div>
@@ -67,8 +67,8 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
         </footer>
         {unknownCount ? <p className="mt-3 text-sm leading-6 text-emerald-950/80">Un renseignement ? Appelez le <a className="font-semibold underline underline-offset-2" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p> : null}
       </div>
-      <div className="order-2 2xl:order-1"><HomeAdSlot ad={visibleHomeAd(homeAds.left, today)} side="left" /></div>
-      <div className="order-3"><HomeAdSlot ad={visibleHomeAd(homeAds.right, today)} side="right" /></div>
+      <div className="order-2 2xl:order-1"><HomeAdSlot ads={visibleHomeAds(homeAds.left, today)} side="left" /></div>
+      <div className="order-3"><HomeAdSlot ads={visibleHomeAds(homeAds.right, today)} side="right" /></div>
     </div>
   </section>;
 }
