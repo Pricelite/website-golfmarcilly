@@ -23,13 +23,6 @@ export const homeAds: { left: HomeAd[]; right: HomeAd[] } = {
       kind: "event",
       endsOn: "2026-10-31",
     },
-    {
-      advertiser: "La Bergerie",
-      image: "/restaurant/gallery/bar.webp",
-      imageAlt: "La salle du restaurant La Bergerie",
-      url: "/restaurant",
-      kind: "example",
-    },
   ],
   right: [
     {
@@ -39,13 +32,6 @@ export const homeAds: { left: HomeAd[]; right: HomeAd[] } = {
       caption: "Dès le 1er novembre",
       kind: "house",
       endsOn: "2026-10-31",
-    },
-    {
-      advertiser: "Séminaires au golf",
-      image: "/images/seminaire-conference-marcilly.webp",
-      imageAlt: "Une conférence réunissant de nombreux participants",
-      url: "/evenements",
-      kind: "example",
     },
   ],
 };
