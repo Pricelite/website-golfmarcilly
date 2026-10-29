@@ -77,5 +77,35 @@ export const restaurantGallery = [
     "alt": "Préparation de plusieurs desserts sur ardoises en cuisine",
     "title": "Les dernières finitions",
     "description": "Le dressage des desserts avant le service."
+  },
+  {
+    "src": "/restaurant/gallery/burgers-frites.png",
+    "alt": "Deux burgers accompagnés de frites, dressés sur des planches en cuisine",
+    "title": "Burgers et frites",
+    "description": "Deux assiettes gourmandes prêtes à être servies."
+  },
+  {
+    "src": "/restaurant/gallery/assiette-desserts.png",
+    "alt": "Assiette de desserts aux fruits rouges, chocolat et macaron",
+    "title": "Une assiette de douceurs",
+    "description": "Un assortiment de desserts et de fruits rouges."
+  },
+  {
+    "src": "/restaurant/gallery/tartare-saumon.png",
+    "alt": "Tartare de saumon dressé sur une grande assiette blanche",
+    "title": "Une entrée fraîche",
+    "description": "Un tartare de saumon dressé avec soin."
+  },
+  {
+    "src": "/restaurant/gallery/dessert-chou.png",
+    "alt": "Chou garni de crème et nappé de sauce sur une assiette blanche",
+    "title": "Le plaisir du dessert",
+    "description": "Un chou gourmand servi à l’assiette."
+  },
+  {
+    "src": "/restaurant/gallery/gateaux-fete.png",
+    "alt": "Deux gâteaux décorés de crème et de fruits rouges sur un plateau doré",
+    "title": "Gâteaux à partager",
+    "description": "Deux gâteaux préparés pour une occasion à partager."
   }
 ] as const;
