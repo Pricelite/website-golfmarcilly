@@ -6,7 +6,6 @@ import { SponsorMarquee } from "@/components/sections/sponsor-marquee";
 import { SiteConditions } from "@/components/sections/site-conditions";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
-import { MapEmbed } from "@/components/ui/map-embed";
 import { SectionTitle } from "@/components/ui/section-title";
 import { teachingPros } from "@/data/teaching";
 import { getActiveSiteOffers } from "@/data/offers";
@@ -102,11 +101,10 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <SectionTitle
           description={`${siteConfig.addressLine1}, ${siteConfig.addressLine2}.`}
-          eyebrow="Carte / accès"
+          eyebrow="Nous trouver"
           title="Un accès simple depuis Orléans"
         />
-        <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <MapEmbed src={siteConfig.mapImageUrl} href={siteConfig.mapExternalUrl} title="Accès Golf de Marcilly" />
+        <div className="mt-8 max-w-3xl">
           <div className="rounded-[32px] border border-emerald-950/10 bg-white p-8 shadow-sm shadow-emerald-950/5">
             <h2 className="font-serif text-3xl text-emerald-950">Nous contacter</h2>
             <div className="mt-6 space-y-3 text-sm leading-7 text-emerald-950/76">
