@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { Hero } from "@/components/sections/hero";
 import { PromoOffersModal } from "@/components/promo-offers-modal";
@@ -9,12 +10,14 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { teachingPros } from "@/data/teaching";
 import { getActiveSiteOffers } from "@/data/offers";
+import { pricingSections } from "@/data/pricing";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 import { listSiteConditions } from "@/lib/site-conditions-store";
 import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export const metadata = buildMetadata({
   title: "Golf de Marcilly : 45 trous près d’Orléans",
@@ -27,6 +30,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const activeOffers = getActiveSiteOffers();
+  const practiceBuckets = pricingSections.find(section => section.id === "practice")?.rows[0];
   let conditions = emptyConditions();
   let conditionsUnavailable = false;
   try { conditions = await listSiteConditions(); }
@@ -52,14 +56,24 @@ export default async function HomePage() {
       <SiteConditions conditions={conditions} editable={canEditConditions} unavailable={conditionsUnavailable} preview={process.env.PREVIEW_MODE === "true"} />
 
       <section aria-labelledby="discovery-title" className="border-y border-emerald-950/10 bg-emerald-50/70 py-10 sm:py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_0.8fr] lg:px-8">
+          <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-800">Vos premiers pas</p>
             <h2 id="discovery-title" className="mt-3 font-serif text-3xl sm:text-4xl">Votre première partie commence ici</h2>
             <p className="mt-4 text-base leading-7 text-emerald-950/80">1 h avec un pro, puis 1 h 30 sur le parcours 9 trous en autonomie. Le matériel est fourni dans les deux formules.</p>
+            <p className="mt-5 text-sm leading-7 text-emerald-950/80">Votre demande sera confirmée par l’équipe selon les disponibilités. Paiement sur place.</p>
+            <div className="mt-5 flex flex-wrap gap-3"><CTAButton href="/initiation/reservation">Voir les dates d’initiation</CTAButton><CTAButton href="/je-debute-le-golf" variant="ghost">Comparer les formules</CTAButton></div>
           </div>
-          <p className="mt-5 text-sm leading-7 text-emerald-950/80">Votre demande sera confirmée par l’équipe selon les disponibilités. Paiement sur place.</p>
-          <div className="mt-5 flex flex-wrap gap-3"><CTAButton href="/initiation/reservation">Voir les dates d’initiation</CTAButton><CTAButton href="/je-debute-le-golf" variant="ghost">Comparer les formules</CTAButton></div>
+          {practiceBuckets ? <Link href="/je-debute-le-golf#practice" className="group relative block min-h-64 overflow-hidden rounded-[28px] bg-emerald-950 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">
+            <Image src="/images/practice-golf.webp" alt="Vue aérienne des postes d’entraînement du practice" fill sizes="(max-width: 1024px) 100vw, 520px" className="object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none" />
+            <span className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/35 to-transparent" aria-hidden="true" />
+            <span className="relative flex min-h-64 flex-col justify-end p-6 sm:p-8">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em]">Sans réservation · Practice</span>
+              <strong className="mt-2 font-serif text-3xl font-normal">{practiceBuckets.label}</strong>
+              <span className="mt-1 text-lg font-semibold">{nonbreakingEuro(practiceBuckets.values[0])} <span className="text-xs font-normal">tarif extérieur</span></span>
+              <span className="mt-3 text-sm underline underline-offset-4">Découvrir le practice →</span>
+            </span>
+          </Link> : null}
         </div>
       </section>
 
