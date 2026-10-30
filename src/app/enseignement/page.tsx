@@ -1,5 +1,6 @@
 ﻿import Image from "next/image";
 import Link from "next/link";
+import { ContactForm } from "@/components/forms/contact-form";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
@@ -65,10 +66,13 @@ export default function TeachingPage() {
             </article>
           ))}
         </div>
-        <div id="academie" className="mt-8 flex scroll-mt-28 flex-col gap-5 rounded-[28px] border border-emerald-950/10 bg-emerald-50 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div id="academie" className="mt-8 grid scroll-mt-28 gap-5 rounded-[28px] border border-emerald-950/10 bg-emerald-50 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_240px_auto] lg:items-center">
           <div className="max-w-2xl">
             <h3 className="font-serif text-2xl text-emerald-950">L’académie du golf</h3>
             <p className="mt-3 text-sm leading-7 text-emerald-950/75">L’académie accompagne les jeunes dans leur découverte et leur progression. Retrouvez leur parcours et les informations de l’école de golf.</p>
+          </div>
+          <div className="relative aspect-[3/2] w-full max-w-sm overflow-hidden rounded-2xl bg-white lg:w-60">
+            <Image src="/images/acadomia.png" alt="Visuel Acadomia associant accompagnement scolaire et golf pour les jeunes" fill sizes="(max-width: 1024px) calc(100vw - 80px), 240px" className="object-cover" />
           </div>
           <CTAButton href="/academie" variant="secondary" className="self-start shrink-0">Découvrir l’académie</CTAButton>
         </div>
@@ -86,8 +90,8 @@ export default function TeachingPage() {
             <article className="flex flex-col items-start rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Apprendre ensemble</p>
               <h3 className="mt-3 font-serif text-2xl text-stone-50">Cours collectifs adultes</h3>
-              <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez l’accueil pour connaître les dates et les modalités.</p>
-              <CTAButton href={`mailto:${siteConfig.email}?subject=${encodeURIComponent("Cours collectifs adultes")}`} variant="secondary" className="mt-auto">Demander les dates des cours collectifs</CTAButton>
+              <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez les pros pour connaître les dates et les modalités.</p>
+              <CTAButton href="#enseignants" variant="secondary" className="mt-auto">Contacter les pros</CTAButton>
             </article>
             <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
               <h3 className="font-serif text-2xl text-stone-50">Cours particuliers</h3>
@@ -153,8 +157,8 @@ export default function TeachingPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <CTAButton href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</CTAButton>
             <CTAButton href="/reserver-un-cours" variant="secondary">Choisir mon pro</CTAButton>
+            <CTAButton href="#demande-cours" variant="secondary">Écrire au golf</CTAButton>
           </div>
-          <p className="mt-5 text-sm text-emerald-950"><a className={`break-all ${linkClass}`} href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
           <p className="mt-3 text-sm leading-7 text-emerald-950/70">{siteConfig.addressLine1}<br />{siteConfig.addressLine2}</p>
         </div>
         <div>
@@ -166,6 +170,12 @@ export default function TeachingPage() {
                 <p className="mt-3 text-sm leading-7 text-emerald-950/75">{faq.answer}</p>
               </details>
             ))}
+          </div>
+        </div>
+        <div id="demande-cours" className="scroll-mt-28 lg:col-span-2">
+          <SectionTitle eyebrow="Écrire au golf" title="Envoyez votre demande de cours" description="Précisez le cours souhaité et vos disponibilités. Votre message est transmis directement à l’accueil du golf." />
+          <div className="mt-6 max-w-3xl">
+            <ContactForm context="enseignement" submitLabel="Envoyer ma demande au golf" subjectPlaceholder="Cours collectif, école de golf..." messagePlaceholder="Indiquez le cours souhaité et vos disponibilités." />
           </div>
         </div>
       </section>
