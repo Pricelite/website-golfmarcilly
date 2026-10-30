@@ -16,7 +16,7 @@ pas actives : ne pas lancer `db push` sur ces sources historiques.
 
 La migration `20261030160000_site_analytics.sql` a été exécutée manuellement dans l’éditeur SQL Supabase sur Golf Staging, puis sur Golf Prod, avant la publication du code. Le test transactionnel `supabase/tests/site_analytics.sql` a réussi sur les deux bases ; il annule ses données de test. Les tables de statistiques étaient absentes de Golf Prod avant l’opération. L’exécution dans l’éditeur SQL ne renseigne pas le registre Supabase CLI : ne pas déduire de son absence que la migration doit être rejouée.
 
-Le workflow GitHub de staging attend toujours un accès PostgreSQL dédié et ne peut pas servir de preuve d’exécution tant que ce secret n’est pas configuré. Les vérifications manuelles ne remplacent pas son contrôle automatique pour les prochaines migrations.
+Le propriétaire du projet a autorisé une exception pour cette publication : le workflow GitHub de staging, dépourvu d’accès PostgreSQL dédié, a été retiré de la PR après les vérifications manuelles. Cette exception ne vaut pas pour les prochaines migrations : configurer l’accès staging et rétablir l’application et les tests automatiques avant leur déploiement.
 
 ## Adoption ultérieure de la CLI
 
