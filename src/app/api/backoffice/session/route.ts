@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordLogin } from "@/lib/analytics/store";
 import { COOKIE_NAME, actorFromToken, issueSession, sessionCookieOptions, tokenHash, verifyPassword } from "@/lib/backoffice/auth";
 import { readJsonBody, readLimitedTextBody } from "@/lib/api/request-body";
 import { audit, openDb, type UserRow } from "@/lib/backoffice/db";
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
     if (!user || !user.active || !valid) return fail("Identifiants invalides.", 401, "invalid");
     const token = issueSession(db, user);
     audit(db, user.id, "session.login", user.id);
+    await recordLogin("named_account", user.id).catch(() => {});
     const response = isForm
       ? NextResponse.redirect(new URL("/admin/contenu", request.url), 303)
       : NextResponse.json({ ok: true });

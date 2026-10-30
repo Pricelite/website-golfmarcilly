@@ -12,6 +12,12 @@ Trois sources historiques commencent par `20261011`. Aucun de ces fichiers
 déjà exécutés n’a été renommé ou réappliqué. Les versions proposées ne sont
 pas actives : ne pas lancer `db push` sur ces sources historiques.
 
+## Statistiques du site — 30 octobre 2026
+
+La migration `20261030160000_site_analytics.sql` a été exécutée manuellement dans l’éditeur SQL Supabase sur Golf Staging, puis sur Golf Prod, avant la publication du code. Le test transactionnel `supabase/tests/site_analytics.sql` a réussi sur les deux bases ; il annule ses données de test. Les tables de statistiques étaient absentes de Golf Prod avant l’opération. L’exécution dans l’éditeur SQL ne renseigne pas le registre Supabase CLI : ne pas déduire de son absence que la migration doit être rejouée.
+
+Le propriétaire du projet a autorisé une exception pour cette publication : le workflow GitHub de staging, dépourvu d’accès PostgreSQL dédié, a été retiré de la PR après les vérifications manuelles. Cette exception ne vaut pas pour les prochaines migrations : configurer l’accès staging et rétablir l’application et les tests automatiques avant leur déploiement.
+
 ## Adoption ultérieure de la CLI
 
 1. Réaliser une sauvegarde PostgreSQL et valider sa restauration sur une cible

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AnalyticsPreferencesButton } from "@/components/analytics/preferences-button";
 import { footerNavigation, siteConfig } from "@/data/site";
 
 function SocialIcon({ label }: { label: "Facebook" | "Instagram" | "LinkedIn" }) {
@@ -43,6 +44,7 @@ export function Footer() {
               </a>
             ))}
           </nav>
+          <div className="mt-6"><AnalyticsPreferencesButton /></div>
         </div>
 
         <div>

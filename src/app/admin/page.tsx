@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 type AdminPageProps = { searchParams: Promise<{ error?: string; next?: string }> };
-const adminDestinations = ["/admin/competitions", "/admin/restaurant", "/admin/site-conditions", "/admin/archives"] as const;
+const adminDestinations = ["/admin/competitions", "/admin/restaurant", "/admin/site-conditions", "/admin/archives", "/admin/statistiques"] as const;
 
 function AdminLogin({ error, next }: { error?: string; next?: string }) {
   const message = error === "rate_limited"
@@ -62,6 +62,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/competitions">Gérer les compétitions</Link>
         <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/restaurant">Modifier la carte du jour</Link>
         <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/site-conditions">État du golf</Link>
+        <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/statistiques">Statistiques</Link>
         <Link className="rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900" href="/admin/archives">Archives des initiations</Link>
       </div>
       <section className="mt-8 rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5" aria-labelledby="initiation-inbox">
