@@ -1,0 +1,39 @@
+name: Staging database migrations
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - "supabase/migrations/**"
+      - "supabase/tests/**"
+      - ".github/workflows/staging-migrations.yml"
+  workflow_dispatch:
+
+jobs:
+  migrate-and-test:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Check staging connection
+        env:
+          SUPABASE_STAGING_DB_URL: ${{ secrets.SUPABASE_STAGING_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_STAGING_DB_URL" ]; then
+            echo "SUPABASE_STAGING_DB_URL is required in the staging environment" >&2
+            exit 1
+          fi
+      - name: Apply pending migrations in order
+        env:
+          SUPABASE_STAGING_DB_URL: ${{ secrets.SUPABASE_STAGING_DB_URL }}
+        run: supabase db push --db-url "$SUPABASE_STAGING_DB_URL" --include-all --yes
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Verify analytics calculations and grants
+        env:
+          SUPABASE_STAGING_DB_URL: ${{ secrets.SUPABASE_STAGING_DB_URL }}
+        run: psql "$SUPABASE_STAGING_DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/site_analytics.sql
