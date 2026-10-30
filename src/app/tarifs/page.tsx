@@ -27,7 +27,7 @@ export default function PricingPage() {
           <SectionTitle
             as="h1"
             eyebrow="Tarifs 2026"
-            title="Des tarifs lisibles pour jouer, apprendre et recevoir"
+            title="Le golf à Marcilly, à votre rythme"
           />
           <CTAButton href="/contact#reservation" variant="secondary">Besoin d’un conseil ?</CTAButton>
         </div>
