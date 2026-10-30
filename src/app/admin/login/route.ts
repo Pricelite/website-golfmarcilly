@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 
+import { recordLogin } from "@/lib/analytics/store";
+
 import {
   ADMIN_SESSION_COOKIE_NAME,
   createAdminSessionToken,
@@ -62,7 +64,7 @@ export async function POST(request: Request) {
   try { formData = await request.formData(); }
   catch { return redirectToAdmin(request.url, { error: "missing_password" }); }
   const requestedNext = formData.get("next");
-  const next = requestedNext === "/admin/competitions" || requestedNext === "/admin/restaurant" || requestedNext === "/admin/site-conditions" || requestedNext === "/admin/archives" ? requestedNext : "/admin";
+  const next = requestedNext === "/admin/competitions" || requestedNext === "/admin/restaurant" || requestedNext === "/admin/site-conditions" || requestedNext === "/admin/archives" || requestedNext === "/admin/statistiques" ? requestedNext : "/admin";
   const passwordValue = formData.get("password");
   const password = typeof passwordValue === "string" ? passwordValue : "";
 
@@ -84,6 +86,8 @@ export async function POST(request: Request) {
     path: "/",
     maxAge: getAdminSessionMaxAgeSeconds(),
   });
+
+  await recordLogin("shared_admin").catch(() => {});
 
   return response;
 }

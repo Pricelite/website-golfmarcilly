@@ -26,6 +26,7 @@ export default async function BackOfficePage() {
         {can(grants, actor.role, "view", "media") ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/medias">Médiathèque</Link> : null}
         {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/conditions">Conditions du site</Link> : null}
         {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/contenu/utilisateurs">Utilisateurs et droits</Link> : null}
+        {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin/statistiques">Statistiques</Link> : null}
         {actor.role === "admin" ? <Link className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" href="/admin">Administration existante</Link> : null}
       </nav>
       <div className="mt-10 flex items-baseline justify-between"><h2 className="font-serif text-2xl">Pages administrables</h2><span className="text-sm text-emerald-900/60">{pages.length} page{pages.length > 1 ? "s" : ""}</span></div>
