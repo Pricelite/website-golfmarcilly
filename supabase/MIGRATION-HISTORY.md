@@ -18,6 +18,14 @@ La migration `20261030160000_site_analytics.sql` a été exécutée manuellement
 
 Le propriétaire du projet a autorisé une exception pour cette publication : le workflow GitHub de staging, dépourvu d’accès PostgreSQL dédié, a été retiré de la PR après les vérifications manuelles. Cette exception ne vaut pas pour les prochaines migrations : configurer l’accès staging et rétablir l’application et les tests automatiques avant leur déploiement.
 
+## Intégration GitHub de Golf Staging
+
+Golf Staging ne possède pas de registre Supabase CLI pour les anciennes migrations et son schéma n'est pas identique à celui de Golf Prod. Connecter directement le dossier racine `supabase/` réexécuterait ces fichiers sur Staging. L'intégration GitHub officielle de **Golf Staging uniquement** utilise donc le répertoire de travail `staging`, dont `staging/supabase/migrations` commence par une migration de référence `20261030170000_existing_schema_baseline.sql`. Elle vérifie la présence du schéma analytics déjà appliqué sans le recréer. Le projet Golf Prod ne doit pas être connecté à ce dossier.
+
+Configurer l'intégration sur le projet Golf Staging avec le dépôt `Pricelite/website-golfmarcilly`, la branche `develop`, le répertoire `staging` et le déploiement automatique des migrations activé. La CI compare chaque migration datée postérieure à la référence dans `supabase/migrations` et `staging/supabase/migrations`, y compris son empreinte SHA-256. Une nouvelle migration doit être ajoutée à l'identique aux deux emplacements avant la fusion vers `develop`. Supabase applique les fichiers Staging selon leur version et conserve leur historique dans son registre. Ne pas renommer ou modifier une migration déjà appliquée.
+
+Vérifier le premier déploiement Supabase : la migration de référence doit réussir, les trois tables analytics doivent rester intactes et aucun ancien fichier SQL ne doit être exécuté. Vérifier ensuite le statut de l'intégration à chaque changement de schéma et ne pas publier le code dépendant d'une migration tant que ce statut n'est pas réussi. L'intégration Supabase ne bloque pas à elle seule un déploiement Vercel déclenché simultanément par `develop` ; prévoir ce verrou avant la prochaine évolution de schéma. Le rapprochement complet des migrations historiques de Golf Prod avec la CLI reste décrit ci-dessous et n'est pas effectué par cette intégration Staging.
+
 ## Adoption ultérieure de la CLI
 
 1. Réaliser une sauvegarde PostgreSQL et valider sa restauration sur une cible

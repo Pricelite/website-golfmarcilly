@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Check staging migration copies
+        run: node scripts/check-staging-migrations.mjs
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
