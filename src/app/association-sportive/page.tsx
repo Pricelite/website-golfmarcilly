@@ -84,7 +84,7 @@ export default async function AssociationPage() {
               { title: "Vérifier son départ", text: "Retrouvez les départs publiés pour les compétitions du club sur le service de la Fédération française de golf.", label: "Consulter les départs", href: associationLinks.starts },
               { title: "Retrouver les résultats", text: "Accédez aux résultats publiés des compétitions et retrouvez les classements des épreuves disputées.", label: "Voir les résultats", href: associationLinks.results },
             ].map((item) => (
-              <article key={item.title} className="flex flex-col border-t border-white/25 pt-5">
+              <article key={item.title} className="flex flex-col rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
                 <h3 className="font-serif text-2xl text-stone-50">{item.title}</h3>
                 <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-100/80">{item.text}</p>
                 <CTAButton href={item.href} variant="secondary" className="self-start">{item.label}</CTAButton>
@@ -120,7 +120,7 @@ export default async function AssociationPage() {
           <SectionTitle eyebrow="La vie sportive" title="Actualités de Marcilly" description="Retrouvez les actualités de l’année en cours sur les équipes du club." />
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {currentNews.map((article) => (
-              <article key={article.href} className="flex flex-col overflow-hidden rounded-[24px] border border-emerald-950/10 bg-[#f7f4e9] shadow-sm shadow-emerald-950/5">
+              <article key={article.href} className="flex flex-col overflow-hidden rounded-[24px] border border-emerald-950/20 bg-[#e8f4ed] shadow-sm shadow-emerald-950/10">
                 <figure>
                   <div className="relative aspect-[16/9] overflow-hidden">
                     <Image src={article.image} alt={article.imageAlt} fill sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1279px) 50vw, 390px" className="object-cover" />
