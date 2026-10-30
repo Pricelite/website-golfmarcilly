@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/contact-form";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -182,4 +182,3 @@ export default function TeachingPage() {
     </>
   );
 }
-
