@@ -1,0 +1,4 @@
+project_id = "golf-marcilly-staging"
+
+[remotes.staging]
+project_id = "yozjqvvkxkzncampegzl"
