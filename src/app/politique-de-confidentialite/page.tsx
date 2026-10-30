@@ -53,11 +53,16 @@ export default function PrivacyPage() {
           <p>{legalContent.retentionDetails}</p>
           <h2>Cookies et services externes</h2>
           <p>
-            Le site public ne dépose actuellement aucun cookie de mesure
-            d’audience ou de publicité. Un cookie strictement nécessaire est
-            utilisé uniquement pour maintenir la session des personnes autorisées
-            dans l’espace d’administration. Il n’est pas déposé lors de la
-            consultation des pages publiques.
+            La mesure d’audience est facultative. Après votre accord, le site
+            conserve dans votre navigateur un identifiant aléatoire de visiteur
+            et de visite. Il enregistre uniquement le chemin des pages consultées,
+            sans paramètres d’URL ni adresse IP. Une visite se termine après 30
+            minutes d’inactivité. Ces données sont conservées pendant 180 jours
+            par défaut ; cette durée peut être configurée entre 30 et 730 jours.
+            Vous pouvez refuser ou modifier votre choix à tout moment depuis le
+            pied de page. Les connexions à l’administration sont comptées
+            séparément. Les cookies de session des personnes autorisées servent
+            uniquement à maintenir leur accès à l’administration.
           </p>
           <p>{legalContent.thirdPartyDetails}</p>
           <p>

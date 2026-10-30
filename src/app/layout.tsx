@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AnalyticsTracker } from "@/components/analytics/tracker";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { MobileActions } from "@/components/layout/mobile-actions";
@@ -64,6 +65,7 @@ export default function RootLayout({
         <main id="main-content">{children}</main>
         <Footer />
         <MobileActions />
+        <AnalyticsTracker />
       </body>
     </html>
   );
