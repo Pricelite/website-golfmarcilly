@@ -36,13 +36,13 @@ export function RestaurantMenus() {
         </div>
       </section>
 
-      <section id="menu-seminaire" className="mt-12 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#f7f4e9]">
-        <div className="flex flex-wrap items-center justify-between gap-5 border-b border-emerald-950/15 px-6 py-7 sm:px-8">
+      <section id="menu-seminaire" className="mt-12 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/20 bg-[#e8f4ed] shadow-sm shadow-emerald-950/10">
+        <div className="flex flex-wrap items-center justify-between gap-5 border-b border-emerald-950/15 bg-emerald-950 px-6 py-7 text-stone-50 sm:px-8">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Formule Entreprises</p>
-            <h2 className="mt-2 font-serif text-3xl text-emerald-950">Une journée de séminaire au golf</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">Formule Entreprises</p>
+            <h2 className="mt-2 font-serif text-3xl text-stone-50">Une journée de séminaire au golf</h2>
           </div>
-          <p className="font-serif text-3xl text-emerald-950">{nonbreakingEuro(seminar.price)}</p>
+          <p className="font-serif text-3xl text-stone-50">{nonbreakingEuro(seminar.price)}</p>
         </div>
         <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-2 lg:gap-12">
           <div>
