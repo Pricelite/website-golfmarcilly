@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { needsNewVisit, publicPath, validUuid } from "@/lib/analytics/core";
 
@@ -18,6 +18,18 @@ function getConsent(): "yes" | "no" | null {
     return value === "yes" || value === "no" ? value : null;
   } catch { return null; }
 }
+
+function subscribeConsent(onChange: () => void) {
+  const onStorage = (event: StorageEvent) => { if (event.key === CONSENT_KEY) onChange(); };
+  window.addEventListener("storage", onStorage);
+  window.addEventListener("analytics-consent-changed", onChange);
+  return () => {
+    window.removeEventListener("storage", onStorage);
+    window.removeEventListener("analytics-consent-changed", onChange);
+  };
+}
+
+function serverConsent(): "loading" { return "loading"; }
 
 function track(path: string) {
   try {
@@ -43,20 +55,16 @@ function track(path: string) {
 
 export function AnalyticsTracker() {
   const pathname = usePathname();
-  const [consent, setConsent] = useState<"yes" | "no" | null>(null);
+  const consent = useSyncExternalStore<"yes" | "no" | "loading" | null>(subscribeConsent, getConsent, serverConsent);
   const [open, setOpen] = useState(false);
-  const [ready, setReady] = useState(false);
-  useEffect(() => { setConsent(getConsent()); setReady(true); }, []);
   useEffect(() => {
     const path = publicPath(pathname);
     if (consent === "yes" && path) track(path);
   }, [consent, pathname]);
   useEffect(() => {
     const show = () => setOpen(true);
-    const sync = (event: StorageEvent) => { if (event.key === CONSENT_KEY) setConsent(getConsent()); };
     window.addEventListener("analytics-preferences", show);
-    window.addEventListener("storage", sync);
-    return () => { window.removeEventListener("analytics-preferences", show); window.removeEventListener("storage", sync); };
+    return () => { window.removeEventListener("analytics-preferences", show); };
   }, []);
 
   function choose(value: "yes" | "no") {
@@ -69,11 +77,11 @@ export function AnalyticsTracker() {
         localStorage.removeItem(VISIT_AT_KEY);
       }
     } catch { return; }
-    setConsent(value);
+    window.dispatchEvent(new Event("analytics-consent-changed"));
     setOpen(false);
   }
 
-  if (!ready || !publicPath(pathname) || (!open && consent !== null)) return null;
+  if (consent === "loading" || !publicPath(pathname) || (!open && consent !== null)) return null;
   return <aside aria-label="Choix de mesure d’audience" className="fixed inset-x-4 bottom-24 z-[90] mx-auto max-w-xl rounded-2xl border border-emerald-950/20 bg-white p-5 text-emerald-950 shadow-2xl lg:bottom-5">
     <h2 className="font-serif text-xl">Mesure d’audience</h2>
     <p className="mt-2 text-sm leading-6">Avec votre accord, nous comptons les visites et les pages consultées pour améliorer le site. Un identifiant aléatoire est conservé dans ce navigateur ; aucune adresse IP ni adresse complète avec paramètres n’est enregistrée. Vous pouvez changer ce choix dans le pied de page. <a href="/politique-de-confidentialite" className="underline underline-offset-4">En savoir plus</a>.</p>

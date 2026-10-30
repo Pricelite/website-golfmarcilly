@@ -41,25 +41,27 @@ export function StatisticsDashboard() {
   const [preset, setPreset] = useState<Preset>("seven");
   const [customStart, setCustomStart] = useState(today);
   const [customEnd, setCustomEnd] = useState(today);
-  const [data, setData] = useState<DashboardReport | null>(null);
-  const [busy, setBusy] = useState(true);
-  const [error, setError] = useState("");
+  const [result, setResult] = useState<{ key: string; data?: DashboardReport; error?: string } | null>(null);
 
   const range = useMemo(() => {
     const start = preset === "today" ? today : preset === "seven" ? addDays(today, -6) : preset === "thirty" ? addDays(today, -29) : preset === "month" ? `${today.slice(0, 7)}-01` : customStart;
     return reportRange(start, preset === "custom" ? customEnd : today, today);
   }, [preset, today, customStart, customEnd]);
 
+  const rangeKey = range ? `${range.start}:${range.end}` : "";
+  const busy = Boolean(range && result?.key !== rangeKey);
+  const error = !range ? "Choisissez une période valide de 366 jours maximum, sans date future." : result?.key === rangeKey ? result.error ?? "" : "";
+  const data = result?.key === rangeKey ? result.data : null;
+
   useEffect(() => {
-    if (!range) { setError("Choisissez une période valide de 366 jours maximum, sans date future."); setBusy(false); return; }
+    if (!range) return;
     const controller = new AbortController();
-    setBusy(true); setError("");
     fetch(`/api/admin/statistiques?start=${range.start}&end=${range.end}`, { cache: "no-store", signal: controller.signal })
       .then(async response => { const result = await response.json(); if (!response.ok) throw new Error(result.error || "Chargement impossible."); return result as DashboardReport; })
-      .then(result => { setData(result); setBusy(false); })
-      .catch(cause => { if (controller.signal.aborted) return; setError(cause instanceof Error ? cause.message : "Chargement impossible."); setBusy(false); });
+      .then(data => { setResult({ key: rangeKey, data }); })
+      .catch(cause => { if (controller.signal.aborted) return; setResult({ key: rangeKey, error: cause instanceof Error ? cause.message : "Chargement impossible." }); });
     return () => controller.abort();
-  }, [range?.start, range?.end]);
+  }, [range, rangeKey]);
 
   return <div className="mt-8 space-y-8">
     <div className="rounded-3xl border border-emerald-950/15 bg-white p-5 shadow-sm sm:p-6">
