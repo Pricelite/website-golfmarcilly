@@ -12,7 +12,7 @@ export type PricingSection = {
   id?: string;
   cta?: { href: string; label: string };
   title: string;
-  description: string;
+  description?: string;
   columns: [string, string];
   rows: PricingRow[];
   footnotes?: string[];
@@ -60,7 +60,6 @@ export const pricingSections: PricingSection[] = [
     title: "Green fees",
     id: "green-fees",
     cta: { href: siteConfig.bookingEngineUrl, label: "Réserver un départ" },
-    description: "Tarifs 2026 officiels pour les parcours.",
     columns: ["Non licencié", "Licencié"],
     rows: [
       { label: "9 trous Découverte ou Footgolf", values: ["10 €", "10 €"] },
@@ -109,7 +108,7 @@ export const pricingSections: PricingSection[] = [
     ],
   },
   {
-    title: "27 trous à temps plein, 7 j/7",
+    title: "27 trous à temps plein + compact, 7 j/7",
     id: "abonnements",
     cta: { href: "/contact#reservation", label: "Se renseigner sur cet abonnement" },
     description: "Abonnements 2026 officiels.",

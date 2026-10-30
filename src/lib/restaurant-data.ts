@@ -217,11 +217,6 @@ export const restaurantData: RestaurantData = {
               "Carpaccio d’ananas flambé, sorbet coco",
             ],
           },
-          {
-            title: "Boissons comprises",
-            type: "list",
-            items: ["1 café"],
-          },
         ],
       },
       {
@@ -251,11 +246,6 @@ export const restaurantData: RestaurantData = {
               "Tarte citron / citron vert revisitée, meringue croustillante",
               "Royal chocolat et croquant feuilleté",
             ],
-          },
-          {
-            title: "Boissons comprises",
-            type: "list",
-            items: ["1 café"],
           },
         ],
       },

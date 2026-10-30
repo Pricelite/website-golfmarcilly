@@ -7,7 +7,7 @@ export function PricingTable({ section, id }: { section: PricingSection; id?: st
     <section id={id ?? section.id} className="scroll-mt-28 overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
       <div className="border-b border-emerald-950/8 bg-stone-50/80 px-6 py-5">
         <h2 className="font-serif text-2xl text-emerald-950">{section.title}</h2>
-        <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p>
+        {section.description ? <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p> : null}
       </div>
       {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{nonbreakingEuro(row.values[1])} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{nonbreakingEuro(row.note)}</p> : null}<p className="my-3 text-sm leading-6">{nonbreakingEuro(row.values[0])}</p><CTAButton href="/initiation/reservation">Demander un créneau</CTAButton></article>)}</div> : null}
       <div className={section.title === "Découverte" ? "hidden overflow-x-auto sm:block" : "overflow-x-auto"}>
