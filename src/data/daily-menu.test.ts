@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { isDailyMenuDisplayTime, parisDateKey } from "./daily-menu";
+import { isDailyMenuDisplayTime, isWeekdaySpecialDate, parisDateKey } from "./daily-menu";
 
 test("daily menu date follows Paris midnight, including the summer offset", () => {
   assert.equal(parisDateKey(new Date("2026-09-29T21:59:59Z")), "2026-09-29");
@@ -17,4 +17,11 @@ test("daily menu is displayed from 10:00 until 15:00 in Paris", () => {
   assert.equal(isDailyMenuDisplayTime(new Date("2026-07-01T13:00:00Z")), false);
   assert.equal(isDailyMenuDisplayTime(new Date("2026-12-01T09:00:00Z")), true);
   assert.equal(isDailyMenuDisplayTime(new Date("2026-12-01T14:00:00Z")), false);
+});
+
+test("weekday special is visible only on its Paris date and never on weekends", () => {
+  assert.equal(isWeekdaySpecialDate("2026-10-29", new Date("2026-10-29T12:00:00Z")), true);
+  assert.equal(isWeekdaySpecialDate("2026-10-28", new Date("2026-10-29T12:00:00Z")), false);
+  assert.equal(isWeekdaySpecialDate("2026-10-31", new Date("2026-10-31T12:00:00Z")), false);
+  assert.equal(isWeekdaySpecialDate("2026-11-01", new Date("2026-11-01T12:00:00Z")), false);
 });

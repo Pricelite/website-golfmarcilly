@@ -18,6 +18,7 @@ function fromRow(row: DailyMenuRow): DailyMenu {
   const clean = (choices: DailyMenuChoice[]) => sortDailyMenuChoices(choices.map((choice) => ({
     name: normalizeDailyMenuName(choice.name),
     price: normalizeDailyMenuPrice(choice.price),
+    ...(choice.dailySpecial === true ? { dailySpecial: true as const } : {}),
   })));
   return { date: row.menu_date, starters: clean(row.starters), mains: clean(row.mains), desserts: clean(row.desserts) };
 }

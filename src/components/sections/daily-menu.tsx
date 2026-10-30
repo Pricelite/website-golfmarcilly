@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { dailyMenuExample, dailyMenuExampleDate, formatDailyMenuDate, parisDateKey, sortDailyMenuChoices, type DailyMenu } from "@/data/daily-menu";
 import { getLatestDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { DailyMenuVisibility } from "@/components/sections/daily-menu-visibility";
+import { WeekdaySpecialVisibility } from "@/components/sections/weekday-special-visibility";
 import { siteConfig } from "@/data/site";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 import { scopedContentSyncEnabled, sharedContentSyncEnabled } from "@/lib/supabase/content-config";
@@ -31,6 +32,7 @@ export async function DailyMenuSection() {
   let unavailable = false;
   try { published = process.env.PREVIEW_MODE === "true" ? { date: dailyMenuExampleDate, ...dailyMenuExample } : await getPublishedMenu(today); }
   catch { unavailable = true; }
+  const special = published?.mains.find((choice) => choice.dailySpecial);
   return (
     <section id="carte-du-jour" className="scroll-mt-28 overflow-hidden rounded-[24px] border border-stone-50/25 bg-[#faf8f0] text-emerald-950 shadow-xl shadow-black/15">
       <div className="flex flex-wrap items-end justify-between gap-2 border-b border-emerald-950/10 px-5 py-4 sm:px-6">
@@ -40,6 +42,13 @@ export async function DailyMenuSection() {
         </div>
         {published && <time dateTime={published.date} className="text-xs text-emerald-900/85">Carte publiée le {formatDailyMenuDate(published.date)}</time>}
       </div>
+      {published && special ? <WeekdaySpecialVisibility menuDate={published.date}>
+        <div className="mx-5 mt-4 rounded-xl border-2 border-white/35 bg-[#173a2e] p-4 text-center text-stone-50 shadow-inner sm:mx-6">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#dbe9b4]">L’ardoise · Plat du jour</p>
+          <p className="mt-2 font-serif text-xl leading-snug">{special.name}</p>
+          <p className="mt-2 text-lg font-semibold tabular-nums">{nonbreakingEuro(special.price)}</p>
+        </div>
+      </WeekdaySpecialVisibility> : null}
       {unavailable || !published ? <div role="status" className="px-5 py-4 text-sm leading-6 sm:px-6">
         <p>{unavailable ? "La carte est momentanément indisponible." : "Aucune carte n’est publiée pour le moment."} Appelez La Bergerie pour connaître les plats proposés.</p>
         <a href={`tel:${siteConfig.phoneHref}`} className="mt-3 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">{siteConfig.phoneDisplay}</a>
