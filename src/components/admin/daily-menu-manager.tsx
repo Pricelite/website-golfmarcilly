@@ -70,6 +70,17 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     });
   }
 
+  function setDailySpecial(index: number) {
+    setChoices((current) => {
+      const alreadySelected = current.mains[index]?.dailySpecial === true;
+      return { ...current, mains: current.mains.map((choice, choiceIndex) => ({
+        name: choice.name,
+        price: choice.price,
+        ...(choiceIndex === index && !alreadySelected ? { dailySpecial: true as const } : {}),
+      })) };
+    });
+  }
+
   function addChoice(group: keyof Choices) {
     setChoices((current) => current[group].length >= 12 ? current : {
       ...current,
@@ -119,13 +130,15 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
       </label>
       <p className="mt-3 text-sm text-emerald-900/75">{published ? "Carte publiée pour cette date. Toute modification enregistrée remplace les choix précédents." : "Exemple prérempli. Modifiez les choix puis publiez pour cette date."}</p>
       <p className="mt-1 text-sm text-emerald-900/75">Les plats seront affichés par prix croissant. Les noms et tarifs sont harmonisés à l’enregistrement ; vérifiez les autres fautes signalées par le correcteur français.</p>
+      <p className="mt-1 text-sm text-emerald-900/75">Cochez un plat pour l’ardoise. Il s’affichera uniquement le jour de cette carte, du lundi au vendredi. Publiez une nouvelle carte pour le plat du jour suivant.</p>
       <form onSubmit={save} className="mt-6">
         <fieldset disabled={busy || unavailable || !date} className="grid gap-5 md:grid-cols-3 disabled:opacity-60">
           {groups.map(({ key, title }) => (
             <fieldset key={key} className="rounded-2xl border border-emerald-950/15 bg-white p-5">
               <legend className="px-2 font-serif text-xl">{title}</legend>
               {choices[key].map((choice, index) => (
-                <div key={`${key}-${index}`} className="mt-4 grid grid-cols-[minmax(0,1fr)_6.5rem_auto] items-end gap-2">
+                <div key={`${key}-${index}`} className="mt-4">
+                <div className="grid grid-cols-[minmax(0,1fr)_6.5rem_auto] items-end gap-2">
                   <label className="block text-sm">Choix {index + 1}
                     <input className={inputClass} value={choice.name} onChange={(event) => updateChoice(key, index, "name", event.target.value)} onBlur={(event) => updateChoice(key, index, "name", normalizeDailyMenuName(event.target.value))} required maxLength={120} autoComplete="off" spellCheck lang="fr" />
                   </label>
@@ -133,6 +146,8 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
                     <input className={inputClass} value={choice.price} onChange={(event) => updateChoice(key, index, "price", event.target.value)} onBlur={(event) => updateChoice(key, index, "price", normalizeDailyMenuPrice(event.target.value))} required maxLength={10} pattern="[0-9]{1,4}([,.][0-9]{1,2})? ?€?" title="Exemple : 9 € ou 9,50 €" inputMode="decimal" autoComplete="off" />
                   </label>
                   <button type="button" disabled={choices[key].length <= 1} onClick={() => removeChoice(key, index)} aria-label={`Supprimer le choix ${index + 1} des ${title.toLocaleLowerCase("fr")}`} className="mb-0.5 h-10 w-10 rounded-full border border-red-700/25 text-lg text-red-800 disabled:cursor-not-allowed disabled:opacity-30">×</button>
+                </div>
+                {key === "mains" ? <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs font-semibold text-emerald-900"><input type="checkbox" checked={Boolean(choice.dailySpecial)} onChange={() => setDailySpecial(index)} className="h-4 w-4 accent-emerald-800" />Afficher sur l’ardoise « Plat du jour »</label> : null}
                 </div>
               ))}
               <button type="button" disabled={choices[key].length >= 12} onClick={() => addChoice(key)} className="mt-5 rounded-full border border-emerald-950/20 px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40">Ajouter un choix</button>

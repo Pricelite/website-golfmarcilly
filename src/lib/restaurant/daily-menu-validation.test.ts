@@ -38,4 +38,14 @@ test("daily menu standardizes common spelling, punctuation and prices before sor
   ]);
   assert.equal(normalizeDailyMenuName("assiette 3 Saumons,servie chaude."), "Assiette 3 saumons, servie chaude");
   assert.equal(normalizeDailyMenuName("tarte d'  automne :creme Brulée"), "Tarte d’automne : crème brûlée");
+  assert.equal(normalizeDailyMenuName("supreme de poulet riz a l espagnol"), "Suprême de poulet, riz à l’espagnole");
+});
+
+test("one main can be selected for the weekday slate without changing older menus", () => {
+  const selected = parseDailyMenu({ ...valid, mains: [{ name: "supreme de poulet riz a l espagnol", price: "14.9", dailySpecial: true }, choice("Burger")] });
+  assert.equal(selected.ok, true);
+  if (selected.ok) assert.deepEqual(selected.menu.mains[0], { name: "Burger", price: "9 €" });
+  if (selected.ok) assert.deepEqual(selected.menu.mains[1], { name: "Suprême de poulet, riz à l’espagnole", price: "14,90 €", dailySpecial: true });
+  assert.equal(parseDailyMenu({ ...valid, mains: [{ ...choice("Burger"), dailySpecial: true }, { ...choice("Poisson"), dailySpecial: true }] }).ok, false);
+  assert.equal(parseDailyMenu({ ...valid, starters: [{ ...choice("Œuf"), dailySpecial: true }] }).ok, false);
 });
