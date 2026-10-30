@@ -67,7 +67,7 @@ export default function EventsPage() {
           { title: "Une activité à partager", text: "Faites découvrir le golf à vos invités, même s’ils n’ont jamais joué." },
           { title: "La Bergerie sur place", text: "Prolongez la journée autour d’un déjeuner ou d’un moment convivial." },
         ].map((item, index) => (
-          <div key={item.title} className="bg-[#f7f4e9] p-6 sm:p-8">
+          <div key={item.title} className="bg-[#e8f4ed] p-6 sm:p-8">
             <span className="text-xs font-semibold tracking-[0.24em] text-emerald-700">0{index + 1}</span>
             <h2 className="mt-3 font-serif text-2xl text-emerald-950">{item.title}</h2>
             <p className="mt-2 text-sm leading-7 text-emerald-950/75">{item.text}</p>

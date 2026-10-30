@@ -142,7 +142,7 @@ export default function RestaurantPage() {
             <div>
               <SectionTitle eyebrow="Préparer votre réception" title={restaurantData.cgv.title} />
               <p className="mt-5 text-sm leading-7 text-emerald-950/70">Les informations essentielles pour organiser votre repas, votre réception ou votre location de salle à La Bergerie.</p>
-              <div className="mt-6 rounded-2xl border-l-4 border-emerald-700 bg-[#f7f4e9] p-5">
+              <div className="mt-6 rounded-2xl border-l-4 border-emerald-700 bg-[#e8f4ed] p-5 shadow-sm shadow-emerald-950/10">
                 <h3 className="font-serif text-xl text-emerald-950">Location de salle seule</h3>
                 <p className="mt-2 text-sm font-semibold leading-7 text-emerald-950">{restaurantData.intro.roomRental}</p>
                 <p className="mt-1 text-sm leading-7 text-emerald-950/70">{restaurantData.intro.roomRentalNote}</p>
