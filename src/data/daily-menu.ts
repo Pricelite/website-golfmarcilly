@@ -1,4 +1,4 @@
-export type DailyMenuChoice = { name: string; price: string };
+export type DailyMenuChoice = { name: string; price: string; dailySpecial?: true };
 
 export function sortDailyMenuChoices(choices: DailyMenuChoice[]): DailyMenuChoice[] {
   const amount = (price: string) => Number(price.replace("€", "").replace(",", ".").trim());
@@ -44,6 +44,12 @@ export function parisDateKey(now = new Date()): string {
   }).formatToParts(now);
   const value = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
   return `${value("year")}-${value("month")}-${value("day")}`;
+}
+
+export function isWeekdaySpecialDate(menuDate: string, now = new Date()): boolean {
+  if (menuDate !== parisDateKey(now)) return false;
+  const weekday = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Paris", weekday: "short" }).format(now);
+  return weekday !== "Sat" && weekday !== "Sun";
 }
 
 export function isDailyMenuDisplayTime(now = new Date()): boolean {
