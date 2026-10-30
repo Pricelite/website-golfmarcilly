@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/contact-form";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -82,18 +82,18 @@ export default function TeachingPage() {
         <div className={sectionClass}>
           <SectionTitle tone="inverse" eyebrow="Cours adultes" title="Découvrir ou aller plus loin" />
           <div className="mt-8 grid gap-6 lg:grid-cols-3">
-            <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
+            <article className="flex flex-col rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
               <h3 className="font-serif text-2xl text-stone-50">Vous débutez ?</h3>
               <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Commencez par une journée découverte pour faire vos premiers pas dans le golf.</p>
               <CTAButton href="/initiation/reservation" variant="secondary" className="self-start">Voir les dates d’initiation</CTAButton>
             </article>
-            <article className="flex flex-col items-start rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
+            <article className="flex flex-col items-start rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Apprendre ensemble</p>
               <h3 className="mt-3 font-serif text-2xl text-stone-50">Cours collectifs adultes</h3>
               <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez les pros pour connaître les dates et les modalités.</p>
               <CTAButton href="#enseignants" variant="secondary" className="mt-auto">Contacter les pros</CTAButton>
             </article>
-            <article className="flex flex-col rounded-[28px] border border-white/20 bg-white/5 p-6 sm:p-8">
+            <article className="flex flex-col rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
               <h3 className="font-serif text-2xl text-stone-50">Cours particuliers</h3>
               <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Pour un accompagnement individuel, contactez directement le pro de votre choix. Ses coordonnées figurent ci-dessous ; il pourra vous préciser ses disponibilités et ses tarifs.</p>
               <CTAButton href="#enseignants" variant="secondary" className="self-start">Contacter les pros</CTAButton>
@@ -182,3 +182,4 @@ export default function TeachingPage() {
     </>
   );
 }
+
