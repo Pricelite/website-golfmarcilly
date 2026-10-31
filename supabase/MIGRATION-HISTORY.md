@@ -24,6 +24,8 @@ Golf Staging ne possède pas de registre Supabase CLI pour les anciennes migrati
 
 Configurer l'intégration sur le projet Golf Staging avec le dépôt `Pricelite/website-golfmarcilly`, la branche `develop`, le répertoire `staging` et le déploiement automatique des migrations activé. La CI compare chaque migration datée postérieure à la référence dans `supabase/migrations` et `staging/supabase/migrations`, y compris son empreinte SHA-256. Une nouvelle migration doit être ajoutée à l'identique aux deux emplacements avant la fusion vers `develop`. Supabase applique les fichiers Staging selon leur version et conserve leur historique dans son registre. Ne pas renommer ou modifier une migration déjà appliquée.
 
+Le 31 octobre 2026, l'intégration a été activée avec ces réglages. L'activation seule n'a pas créé le registre `supabase_migrations.schema_migrations` sur Golf Staging : le premier déploiement doit être déclenché par un nouveau commit sur `develop`, puis vérifié dans Supabase avant de considérer l'automatisation comme opérationnelle.
+
 Vérifier le premier déploiement Supabase : la migration de référence doit réussir, les trois tables analytics doivent rester intactes et aucun ancien fichier SQL ne doit être exécuté. Vérifier ensuite le statut de l'intégration à chaque changement de schéma et ne pas publier le code dépendant d'une migration tant que ce statut n'est pas réussi. L'intégration Supabase ne bloque pas à elle seule un déploiement Vercel déclenché simultanément par `develop` ; prévoir ce verrou avant la prochaine évolution de schéma. Le rapprochement complet des migrations historiques de Golf Prod avec la CLI reste décrit ci-dessous et n'est pas effectué par cette intégration Staging.
 
 ## Adoption ultérieure de la CLI
