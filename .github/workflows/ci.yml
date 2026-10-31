@@ -20,6 +20,9 @@ jobs:
       - name: Check staging migration copies
         run: node scripts/check-staging-migrations.mjs
 
+      - name: Test staging deployment gate
+        run: node --test scripts/wait-for-staging-supabase.test.mjs
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
