@@ -2,3 +2,18 @@ project_id = "golf-marcilly-staging"
 
 [remotes.staging]
 project_id = "yozjqvvkxkzncampegzl"
+
+# Preserve the Auth settings that were present on Golf Staging before the
+# GitHub integration's first configuration sync (31 October 2026).
+[remotes.staging.auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = []
+
+[remotes.staging.auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[remotes.staging.auth.email]
+enable_confirmations = true
+max_frequency = "1m0s"
+otp_length = 8
