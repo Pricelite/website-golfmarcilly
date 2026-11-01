@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
@@ -14,6 +15,7 @@ const desktopNavigation = navigationItems.filter(item => item.href !== "/contact
 export function Header() {
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
 
   return (
     <header onKeyDown={event => {
@@ -22,7 +24,8 @@ export function Header() {
     }} className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-[#f7f4e9]/95 backdrop-blur-lg">
       <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
         <div className="shrink-0">
-          <Link className="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700" href="/" aria-label="Golf de Marcilly — Accueil">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link className="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700" href="/" aria-label="Golf de Marcilly — Accueil">
             <Image src="/images/LogoNoir.png" alt="" width={653} height={728} sizes="56px" className="h-14 w-auto shrink-0 object-contain" />
             <span className="font-serif text-lg text-emerald-950 min-[400px]:hidden">Marcilly</span>
             <span className="hidden min-[400px]:block">
@@ -33,7 +36,11 @@ export function Header() {
               Orléans | Loiret
             </span>
             </span>
-          </Link>
+            </Link>
+            {pathname === "/" ? <a href="https://leclub-golf.com/fr" target="_blank" rel="noopener noreferrer" aria-label="LeClub Golf (nouvel onglet)" className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:h-12 sm:w-12">
+              <Image src="/images/leclubgolf.png" alt="LeClub Golf" fill sizes="48px" className="scale-[1.7] object-cover" />
+            </a> : null}
+          </div>
           <span className="mt-1 block xl:hidden"><HeaderMarcillyClock /></span>
         </div>
 
