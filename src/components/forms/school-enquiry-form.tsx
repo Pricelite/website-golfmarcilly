@@ -120,11 +120,11 @@ export function SchoolEnquiryForm({ initialProgramKey }: { initialProgramKey: Pr
       </fieldset>
 
       <label className={labelClass}>Précisions utiles (facultatif)
-        <textarea name="notes" maxLength={2000} rows={4} placeholder="Expérience du golf, questions ou disponibilités..." className={inputClass} />
+        <textarea name="notes" maxLength={2000} rows={4} placeholder="Expérience du golf, questions ou disponibilités…" className={inputClass} />
       </label>
       <FormPrivacyNotice purpose="traiter votre demande concernant l’école de golf et vous répondre" />
       <button type="submit" disabled={state === "loading"} className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold disabled:cursor-wait disabled:opacity-60">
-        {state === "loading" ? "Envoi en cours..." : "Envoyer ma demande au golf"}
+        {state === "loading" ? "Envoi en cours…" : "Envoyer ma demande au golf"}
       </button>
       {state === "success" ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{feedback}</p> : null}
       {state === "error" ? <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{feedback}</p> : null}

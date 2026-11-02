@@ -131,7 +131,7 @@ export default function RestaurantPage() {
             <div id="devis-restaurant" className="scroll-mt-28 rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm sm:p-8">
               <SectionTitle eyebrow="Groupes & privatisation" title="Construisons votre réception" description="Précisez la date, le nombre de personnes, le menu et les boissons souhaitées. Ajoutez vos besoins pour la salle ou le séminaire." />
               <div className="mt-8">
-                <ContactForm context="restaurant" subjectPlaceholder="Devis : repas, boissons, réception..." messagePlaceholder="Date souhaitée, nombre de personnes, menu choisi, boissons souhaitées et besoins complémentaires..." submitLabel="Envoyer ma demande de devis" successMessage="Votre demande restaurant a bien été reçue par le site." />
+                <ContactForm context="restaurant" subjectPlaceholder="Devis : repas, boissons, réception…" messagePlaceholder="Date souhaitée, nombre de personnes, menu choisi, boissons souhaitées et besoins complémentaires…" submitLabel="Envoyer ma demande de devis" successMessage="Votre demande au restaurant a bien été reçue par le site." />
               </div>
             </div>
           </div>

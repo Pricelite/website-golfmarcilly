@@ -43,7 +43,7 @@ export default function TeachingPage() {
       </section>
       <nav aria-label="Dans cette page" className="border-y border-emerald-950/10">
         <div className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 px-4 py-3 sm:px-6 lg:px-8">
-          {[["#ecole-de-golf", "Enfants et tarifs"], ["#academie", "L’académie"], ["#adultes", "Adultes"], ["#enseignants", "Nos enseignants"], ["#label-sportif", "Label Sportif 2024"], ["#inscription", "Questions et inscription"]].map(([href, label]) => (
+          {[["#ecole-de-golf", "Enfants et tarifs"], ["#academie", "L’académie"], ["#adultes", "Adultes"], ["#enseignants", "Nos enseignants"], ["#label-sportif", "Accompagnement des jeunes"], ["#inscription", "Questions et inscription"]].map(([href, label]) => (
             <Link key={href} href={href} className={`py-2 text-sm font-medium text-emerald-950 ${linkClass}`}>{label}</Link>
           ))}
         </div>
@@ -140,7 +140,7 @@ export default function TeachingPage() {
       </section>
       <section id="label-sportif" className="scroll-mt-28 bg-[#f7f4e9]">
         <div className={sectionClass}>
-          <SectionTitle eyebrow="École de golf · Label Sportif 2024" title="Six repères pour accompagner les jeunes" />
+          <SectionTitle eyebrow="École de golf" title="Six repères pour accompagner les jeunes" />
           <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sportingLabelCriteria.map((criterion, index) => (
               <li key={criterion} className="border-t border-emerald-950/20 pt-5">
@@ -175,7 +175,7 @@ export default function TeachingPage() {
         <div id="demande-cours" className="scroll-mt-28 lg:col-span-2">
           <SectionTitle eyebrow="Écrire au golf" title="Envoyez votre demande de cours" description="Précisez le cours souhaité et vos disponibilités. Votre message est transmis directement à l’accueil du golf." />
           <div className="mt-6 max-w-3xl">
-            <ContactForm context="enseignement" submitLabel="Envoyer ma demande au golf" subjectPlaceholder="Cours collectif, école de golf..." messagePlaceholder="Indiquez le cours souhaité et vos disponibilités." />
+            <ContactForm context="enseignement" submitLabel="Envoyer ma demande au golf" subjectPlaceholder="Cours collectif, école de golf…" messagePlaceholder="Indiquez le cours souhaité et vos disponibilités." />
           </div>
         </div>
       </section>
