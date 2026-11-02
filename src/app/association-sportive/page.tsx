@@ -144,7 +144,7 @@ export default async function AssociationPage() {
 
       <section id="partenaire-as" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Suivi sportif" title="L'outil de l’association sportive du Golf de Marcilly" description="SwingFlow accompagne le suivi des joueurs et leur progression tout au long de la saison." />
+          <SectionTitle eyebrow="Suivi sportif" title="L’outil de l’association sportive du Golf de Marcilly" description="SwingFlow accompagne le suivi des joueurs et leur progression tout au long de la saison." />
           <div className="mt-8 grid items-center gap-8 rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm shadow-emerald-950/5 sm:p-8 md:grid-cols-[220px_1fr]">
             <a href={associationPartner.href} target="_blank" rel="noopener noreferrer" aria-label="Découvrir SwingFlow (nouvel onglet)" className="flex min-h-40 items-center justify-center rounded-xl bg-white p-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
               <Image src={associationPartner.logo} alt="Logo de SwingFlow" width={180} height={123} sizes="180px" className="h-auto max-h-32 w-auto max-w-full object-contain" />

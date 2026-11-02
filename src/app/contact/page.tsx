@@ -3,7 +3,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { MapEmbed } from "@/components/ui/map-embed";
 import { SectionTitle } from "@/components/ui/section-title";
-import { siteConfig } from "@/data/site";
+import { getGolfOpeningHours, siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
@@ -14,7 +14,10 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
+export const dynamic = "force-dynamic";
+
 export default function ContactPage() {
+  const openingHours = [{ label: "Accueil", value: getGolfOpeningHours() }, ...siteConfig.hours];
   return (
     <>
       <JsonLd
@@ -88,7 +91,7 @@ export default function ContactPage() {
               Horaires
             </p>
             <ul className="mt-4 space-y-2 text-sm leading-7 text-emerald-950/72">
-              {siteConfig.hours.map((item) => (
+              {openingHours.map((item) => (
                 <li key={item.label}>
                   <span className="font-medium text-emerald-950">{item.label} :</span>{" "}
                   {item.value}

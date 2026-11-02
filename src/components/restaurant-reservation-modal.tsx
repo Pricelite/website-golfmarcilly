@@ -517,7 +517,7 @@ export default function RestaurantReservationModal({
                     disabled={isSubmitting}
                     className="site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                   >
-                    {isSubmitting ? "Envoi..." : "Envoyer la demande"}
+                    {isSubmitting ? "Envoi…" : "Envoyer la demande"}
                   </button>
 
                   <button

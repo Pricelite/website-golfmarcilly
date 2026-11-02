@@ -17,6 +17,7 @@ Ce fichier s'applique à tout le dépôt. L'objectif est de livrer des changemen
 3. Préserver les contrats publics : URLs, méthodes HTTP, formes de réponse, statuts, cookies, variables d'environnement et comportement SEO. Si une modification de contrat est nécessaire, mettre à jour ses consommateurs et la documentation pertinente.
 4. En cas de modification de configuration, de migration ou de parcours métier, décrire les prérequis de déploiement, la compatibilité avec les données existantes et la façon de revenir en arrière. Ne pas exécuter de migration, de déploiement ou d'opération sur les données de production sans demande explicite.
 5. Signaler clairement toute hypothèse ou limite qui empêche de conclure qu'un changement est prêt à être déployé. Ne jamais présenter un contrôle non exécuté comme réussi.
+6. À chaque changement qui touche un texte visible, relire avant livraison l’orthographe, les accords, les accents, les apostrophes, les espaces et la ponctuation en français. Inclure les pages publiques, le back-office, les formulaires, les messages d’erreur, les e-mails, les métadonnées et les textes alternatifs concernés. Vérifier la cohérence des heures, dates, nombres et unités sans modifier les faits, les tarifs, les citations, les noms propres ou les contenus fournis par le propriétaire sans source fiable. Corriger les erreurs repérées dans le périmètre du changement et signaler celles qui nécessitent une validation métier.
 
 ## Flux Git et CI
 

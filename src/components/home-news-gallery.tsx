@@ -334,7 +334,7 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
                 type="button"
                 onClick={(event) => handleOpen(event, asset)}
                 className="absolute left-1/2 top-1/2 z-10 inline-flex -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-transparent text-zinc-100 transition duration-300 hover:scale-110 hover:text-zinc-300 focus-visible:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 focus-visible:ring-offset-2"
-                aria-label={`Ouvrir l'affiche ${asset.title}`}
+                aria-label={`Ouvrir l’affiche ${asset.title}`}
               >
                 <IconGlyph icon={asset.icon} />
                 <span className="sr-only">{asset.iconLabel}</span>
@@ -349,7 +349,7 @@ export default function HomeNewsGallery({ assets }: HomeNewsGalleryProps) {
             <div className="fixed inset-0 z-[120]">
               <button
                 type="button"
-                aria-label="Fermer l'affiche"
+                aria-label="Fermer l’affiche"
                 onClick={handleClose}
                 className="absolute inset-0 bg-zinc-950/76"
               />

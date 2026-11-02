@@ -74,7 +74,7 @@ export function QuoteForm() {
             name="company"
             autoComplete="organization"
             maxLength={160}
-            placeholder="Nom de l'entreprise ou du porteur de projet"
+            placeholder="Nom de l’entreprise ou du porteur de projet"
             required
             type="text"
           />
@@ -104,7 +104,7 @@ export function QuoteForm() {
             className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
             name="eventType"
             maxLength={120}
-            placeholder="Séminaire, mariage, team building..."
+            placeholder="Séminaire, mariage, team building…"
             required
             type="text"
           />
@@ -135,7 +135,7 @@ export function QuoteForm() {
           className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
           name="details"
           maxLength={4000}
-          placeholder="Date souhaitée, ambiance, restauration, objectifs..."
+          placeholder="Date souhaitée, ambiance, restauration, objectifs…"
           required
         />
       </label>
@@ -151,7 +151,7 @@ export function QuoteForm() {
           className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm"
           type="submit"
         >
-          {state === "loading" ? "Envoi..." : "Demander mon devis"}
+          {state === "loading" ? "Envoi…" : "Demander mon devis"}
         </button>
       </div>
 
