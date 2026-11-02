@@ -2,12 +2,12 @@ export const restaurantHighlights = [
   {
     title: "Déjeunez au golf, même sans jouer",
     description:
-      "La Bergerie accueille les golfeurs et les visiteurs extérieurs pour un déjeuner ou un rendez-vous d'affaires.",
+      "La Bergerie accueille les golfeurs et les visiteurs extérieurs pour un déjeuner ou un rendez-vous d’affaires.",
   },
   {
     title: "Des menus pour votre repas ou votre groupe",
     description:
-      "Consultez les formules de déjeuner, de séminaire et de réception, puis contactez l'équipe pour votre repas de groupe ou votre privatisation.",
+      "Consultez les formules de déjeuner, de séminaire et de réception, puis contactez l’équipe pour votre repas de groupe ou votre privatisation.",
   },
 ] as const;
 

@@ -5,7 +5,7 @@ export const courses = [
     level: "Tous niveaux",
     distance: "Postes couverts et extérieurs",
     description:
-      "Zones d'entraînement pour le long jeu, les approches et le putting, pensées pour des séances efficaces toute l'année.",
+      "Zones d’entraînement pour le long jeu, les approches et le putting, pensées pour des séances efficaces toute l’année.",
     image: "/images/practice-vue-aerienne.png",
     imageAlt: "Vue aérienne du practice et du club-house du Golf de Marcilly",
   },

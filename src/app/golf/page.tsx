@@ -13,7 +13,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "Golf / Parcours",
   description:
-    "Parcours 18 trous, 9 trous, Kaleka course aller, practice et formats loisirs pour jouer au golf près d'Orléans dans le Loiret.",
+    "Parcours 18 trous, 9 trous, Kaleka course aller, practice et formats loisirs pour jouer au golf près d’Orléans dans le Loiret.",
   path: "/golf",
 });
 
@@ -53,7 +53,7 @@ export default function GolfPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
           as="h1"
-          description="Le domaine propose plusieurs façons de jouer et de progresser : grand parcours, format court, entraînement et activités groupes."
+          description="Le domaine propose plusieurs façons de jouer et de progresser : grand parcours, format court, entraînement et activités de groupe."
           eyebrow="Golf de Marcilly-Orléans"
           title="Des parcours complémentaires pour tous les niveaux"
         />

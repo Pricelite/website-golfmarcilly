@@ -108,7 +108,7 @@ export const restaurantData: RestaurantData = {
     { label: "Dimanche", hours: "12 h – 15 h", barHours: "8 h – 20 h" },
   ],
   carte: {
-    title: "La Carte du Moment",
+    title: "La carte du moment",
     sections: [
       {
         title: "Entrées",
@@ -126,7 +126,7 @@ export const restaurantData: RestaurantData = {
           { name: "Burger de la Bergerie", price: "17 €" },
           { name: "Sauté de sanglier à la vigneronne", price: "18 €" },
           {
-            name: "Picahna de veau grillée, sauce chimichurri",
+            name: "Picanha de veau grillée, sauce chimichurri",
             price: "19 €",
           },
           { name: "Parmentier de canard sauce foie gras", price: "20 €" },
@@ -156,7 +156,7 @@ export const restaurantData: RestaurantData = {
     ],
   },
   groupMenus: {
-    title: "Nos Menus de Groupes",
+    title: "Nos menus de groupes",
     ctaLabel: "Je demande un devis",
     items: [
       {
@@ -256,7 +256,7 @@ export const restaurantData: RestaurantData = {
     price: "60 €/pers.",
     sections: [
       {
-        title: "Café d'accueil",
+        title: "Café d’accueil",
         items: ["Café, thé, jus de fruits, viennoiseries"],
       },
       {
@@ -294,7 +294,7 @@ export const restaurantData: RestaurantData = {
         title: "Conditions de réservation",
         items: [
           "Le nombre de convives facturé correspondra au nombre communiqué 10 jours avant votre événement.",
-          "Le choix d'un menu unique est souhaité pour une meilleure réalisation de votre prestation.",
+          "Le choix d’un menu unique est souhaité pour une meilleure réalisation de votre prestation.",
         ],
       },
       {
@@ -310,7 +310,7 @@ export const restaurantData: RestaurantData = {
         title: "Informations diverses",
         items: [
           "Heure limite des animations : 6 h du matin.",
-          "Possibilité d'apporter votre vin ou votre champagne pour le repas avec un droit de bouchon de 5 € par bouteille de vin ouverte et de 8 € par bouteille de champagne ouverte.",
+          "Possibilité d’apporter votre vin ou votre champagne pour le repas avec un droit de bouchon de 5 € par bouteille de vin ouverte et de 8 € par bouteille de champagne ouverte.",
         ],
       },
     ],

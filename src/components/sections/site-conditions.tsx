@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { SiteCondition } from "@/data/site-conditions";
-import { siteConfig } from "@/data/site";
+import { getGolfOpeningSchedule, siteConfig } from "@/data/site";
 import { homeAds, visibleHomeAds } from "@/data/home-ads";
 import { parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { HomeAdSlot } from "./home-ad-slot";
@@ -44,7 +44,7 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
         <div className="mt-3 rounded-xl border border-emerald-950/10 bg-[#f7f5ed] px-3 py-2.5 sm:flex sm:items-center sm:gap-5">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-800 sm:mb-0">Horaires du golf</p>
           <dl className="grid gap-x-6 gap-y-1 text-sm leading-6 sm:flex sm:flex-wrap">
-            {siteConfig.golfOpeningSchedule.map(slot => <div key={slot.days} className="flex items-baseline justify-between gap-4">
+            {getGolfOpeningSchedule(now).map(slot => <div key={slot.days} className="flex items-baseline justify-between gap-4">
               <dt className="text-emerald-950/80">{slot.days}</dt>
               <dd className="whitespace-nowrap font-semibold tabular-nums text-emerald-950">{slot.hours}</dd>
             </div>)}

@@ -74,8 +74,8 @@ export default function AnnouncementMarqueeClient({
           target="_blank"
           rel="noopener noreferrer"
           className={`${className} hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200`}
-          aria-label={`Accéder à l'annonce: ${item.text}`}
-          title="Accéder à l'annonce"
+          aria-label={`Accéder à l’annonce : ${item.text}`}
+          title="Accéder à l’annonce"
         >
           {item.text}
         </a>

@@ -22,7 +22,7 @@ import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 export const metadata = buildMetadata({
   title: "Golf de Marcilly : 45 trous près d’Orléans",
   description:
-    "Découvrez les parcours, le restaurant La Bergerie, les cours et les événements du Golf de Marcilly, aux portes d'Orléans.",
+    "Découvrez les parcours, le restaurant La Bergerie, les cours et les événements du Golf de Marcilly, aux portes d’Orléans.",
   path: "/",
 });
 
@@ -103,7 +103,7 @@ export default async function HomePage() {
         </article>
         <article id="evenements" className="scroll-mt-28 overflow-hidden rounded-3xl bg-emerald-950 text-white">
           <div className="relative h-36 sm:h-44"><Image src="/restaurant/gallery/buffet-cocktail.jpg" alt="Buffet de bouchées salées préparé pour une réception à La Bergerie" fill sizes="(max-width: 1024px) 90vw, 584px" className="object-cover" /></div>
-          <div className="p-6 sm:p-8"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100">Séminaires et groupes</p><h2 className="mt-3 font-serif text-3xl">Réunissez-vous au golf</h2><p className="mt-4 text-sm leading-7 text-stone-100">Réunion équipée, activité golf et restauration sur place : présentez-nous votre projet pour une proposition adaptée.</p><div className="mt-5"><CTAButton href="/evenements#devis" variant="secondary">Demander un devis</CTAButton></div></div>
+          <div className="p-6 sm:p-8"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100">Séminaires et groupes</p><h2 className="mt-3 font-serif text-3xl">Réunissez-vous au golf</h2><p className="mt-4 text-sm leading-7 text-stone-100">Réunion équipée, activité de golf et restauration sur place : présentez-nous votre projet pour une proposition adaptée.</p><div className="mt-5"><CTAButton href="/evenements#devis" variant="secondary">Demander un devis</CTAButton></div></div>
         </article>
       </section>
 

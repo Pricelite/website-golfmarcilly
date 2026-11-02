@@ -34,7 +34,7 @@ export function NewsletterForm() {
         | null;
       setErrorMessage(
         payload?.error ||
-          "Impossible d'enregistrer votre email pour le moment."
+          "Impossible d’enregistrer votre e-mail pour le moment."
       );
       setStatus("error");
     } catch {
@@ -70,7 +70,7 @@ export function NewsletterForm() {
       ) : null}
       {status === "error" ? (
         <p role="alert" className="text-sm text-red-200">
-          {errorMessage || "Impossible d'enregistrer votre email pour le moment."}
+          {errorMessage || "Impossible d’enregistrer votre e-mail pour le moment."}
         </p>
       ) : null}
     </form>
