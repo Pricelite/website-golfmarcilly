@@ -37,9 +37,9 @@ export const homeFaqs = [
       "Absolument. Le restaurant La Bergerie accueille aussi bien les golfeurs que les visiteurs extérieurs, sur réservation conseillée.",
   },
   {
-    question: "Proposez-vous des séminaires près d'Orléans ?",
+    question: "Proposez-vous des séminaires près d’Orléans ?",
     answer:
-      "Oui. Nous accueillons réunions, incentives, team buildings, déjeuners d'affaires et événements privés avec des formules adaptables.",
+      "Oui. Nous accueillons réunions, incentives, team buildings, déjeuners d’affaires et événements privés avec des formules adaptables.",
   },
   {
     question: "Comment réserver un départ ou un cours ?",

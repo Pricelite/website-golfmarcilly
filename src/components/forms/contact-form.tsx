@@ -18,7 +18,7 @@ export function ContactForm({
   context = "contact",
   submitLabel = "Envoyer ma demande",
   successMessage = "Votre demande a bien été reçue par le site.",
-  subjectPlaceholder = "Réservation, renseignement, événement...",
+  subjectPlaceholder = "Réservation, renseignement, événement…",
   messagePlaceholder = "Décrivez votre demande.",
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
@@ -156,7 +156,7 @@ export function ContactForm({
           disabled={state === "loading"}
           type="submit"
         >
-          {state === "loading" ? "Envoi..." : submitLabel}
+          {state === "loading" ? "Envoi…" : submitLabel}
         </button>
       </div>
 

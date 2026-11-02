@@ -8,7 +8,7 @@ import { absoluteUrl } from "@/lib/metadata";
 
 export const metadata: Metadata = {
   title: "Administration du golf",
-  description: "Suivi des demandes d'initiation par e-mail et gestion du golf.",
+  description: "Suivi des demandes d’initiation par e-mail et gestion du golf.",
   alternates: { canonical: absoluteUrl("/admin") },
   robots: { index: false, follow: false },
 };

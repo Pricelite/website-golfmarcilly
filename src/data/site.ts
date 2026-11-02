@@ -1,12 +1,23 @@
-const golfOpeningSchedule = [
+const currentGolfOpeningSchedule = [
+  { days: "Lundi au vendredi", hours: "de 8 h 30 à 19 h" },
+  { days: "Samedi et dimanche", hours: "de 8 h à 20 h" },
+] as const;
+const winterGolfOpeningSchedule = [
   { days: "Lundi au vendredi", hours: "de 9 h à 18 h" },
   { days: "Samedi et dimanche", hours: "de 9 h à 19 h" },
 ] as const;
-const golfOpeningHours = golfOpeningSchedule.map(slot => `${slot.days} ${slot.hours}`).join(". ");
+
+/** L'affiche du club annonce ces nouveaux horaires à partir du 26 novembre 2026, heure de Paris. */
+export function getGolfOpeningSchedule(now = new Date()) {
+  const parisDay = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+  return parisDay < "2026-11-26" ? currentGolfOpeningSchedule : winterGolfOpeningSchedule;
+}
+
+export function getGolfOpeningHours(now = new Date()) {
+  return getGolfOpeningSchedule(now).map(slot => `${slot.days} ${slot.hours}`).join(". ");
+}
 
 export const siteConfig = {
-  golfOpeningHours,
-  golfOpeningSchedule,
   name: "Golf de Marcilly",
   legalName: "Golf de Marcilly-Orléans",
   url: "https://www.golfdemarcilly.com",
@@ -34,9 +45,8 @@ export const siteConfig = {
     { label: "LinkedIn", href: "https://fr.linkedin.com/company/golf-de-marcilly" },
   ],
   hours: [
-    { label: "Accueil", value: golfOpeningHours },
-    { label: "Restaurant", value: "Lundi et mercredi à vendredi : 12 h – 14 h. Samedi et dimanche : 12 h – 15 h. Fermé le mardi." },
-    { label: "Practice", value: "Tous les jours, 7h30 - 20h00" },
+    { label: "Restaurant", value: "Le lundi et du mercredi au vendredi : 12 h – 14 h. Samedi et dimanche : 12 h – 15 h. Fermé le mardi." },
+    { label: "Practice", value: "Tous les jours, de 7 h 30 à 20 h" },
   ],
 } as const;
 
@@ -66,7 +76,7 @@ export const globalTestimonials = [
     name: "Sophie R.",
     role: "Green fee weekend",
     quote:
-      "Le site, le parcours et l'accueil donnent exactement la sensation d'un club premium sans prétention. Une vraie respiration à quelques minutes d'Orléans.",
+      "Le site, le parcours et l’accueil donnent exactement la sensation d’un club premium sans prétention. Une vraie respiration à quelques minutes d’Orléans.",
   },
   {
     name: "Nicolas T.",
@@ -78,6 +88,6 @@ export const globalTestimonials = [
     name: "Claire M.",
     role: "Cours débutante",
     quote:
-      "Les pros mettent tout de suite en confiance. Le cadre est superbe et le parcours d'apprentissage est très bien pensé pour progresser vite.",
+      "Les pros mettent tout de suite en confiance. Le cadre est superbe et le parcours d’apprentissage est très bien pensé pour progresser vite.",
   },
 ] as const;

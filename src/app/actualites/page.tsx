@@ -10,7 +10,7 @@ import { formatDate } from "@/lib/utils";
 export const metadata = buildMetadata({
   title: "Actualités",
   description:
-    "Blog du Golf de Marcilly : conseils, vie du club, restaurant et événements près d'Orléans.",
+    "Blog du Golf de Marcilly : conseils, vie du club, restaurant et événements près d’Orléans.",
   path: "/actualites",
 });
 
