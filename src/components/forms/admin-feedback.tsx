@@ -1,10 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, type FormEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import { feedbackPromotionEndsAt, isFeedbackPromotionActive } from "@/data/feedback-promotion";
 import { feedbackTypes, MAX_FEEDBACK_LENGTH } from "@/lib/admin-feedback/model";
 
+function subscribePromotion(notify: () => void) {
+  let timer: ReturnType<typeof setTimeout>;
+  function update() {
+    notify();
+    const remaining = feedbackPromotionEndsAt - Date.now();
+    if (remaining > 0) timer = setTimeout(update, Math.min(remaining, 60_000));
+  }
+  update();
+  document.addEventListener("visibilitychange", notify);
+  return () => { clearTimeout(timer); document.removeEventListener("visibilitychange", notify); };
+}
+const noPromotionOnServer = () => false;
+
 export function AdminFeedback() {
+  const showPromotion = useSyncExternalStore(subscribePromotion, isFeedbackPromotionActive, noPromotionOnServer);
   const dialog = useRef<HTMLDialogElement>(null);
   const sending = useRef(false);
   const context = useRef({ page: "/", openedAt: 0 });
@@ -50,6 +65,11 @@ export function AdminFeedback() {
   }
   const field = "mt-2 block w-full rounded-xl border border-emerald-950/25 bg-white px-3 py-3 text-base text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
   return <>
+    {showPromotion && <button type="button" onClick={open} aria-haspopup="dialog" aria-label="Contacter l’administrateur : une remarque ou un bug ?"
+      className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-emerald-950/20 bg-[#f4d77c] px-4 py-3 text-left text-emerald-950 shadow-xl transition hover:bg-[#ffe39a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700 lg:right-6 lg:bottom-6">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-6 w-6 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8l-5 3v-3H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" /><path strokeLinecap="round" d="M7 9h10M7 13h6" /></svg>
+      <span><span className="block text-sm font-semibold">Un avis ou un bug ?</span><span className="block text-xs">Contacter l’administrateur</span></span>
+    </button>}
     <button type="button" onClick={open} aria-haspopup="dialog" className="min-h-11 rounded-full border border-stone-100/40 px-4 py-2 text-sm text-stone-100 transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Contacter l’administrateur</button>
     <dialog ref={dialog} aria-labelledby="admin-feedback-title" aria-describedby="admin-feedback-description"
       onClose={() => { document.body.style.overflow = previousOverflow.current; }}
