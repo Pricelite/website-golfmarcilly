@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 export function NewPageForm() {
+  const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -14,7 +16,7 @@ export function NewPageForm() {
       const response = await fetch("/api/backoffice/pages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug, content: { title, seoTitle: title, seoDescription: "", theme: "cream", blocks: [] } }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Création impossible.");
-      location.assign(`/admin/contenu/pages/${data.page.id}`);
+      router.push(`/admin/contenu/pages/${data.page.id}`);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Création impossible."); setBusy(false); }
   }
   return <form onSubmit={submit} className="mt-4 grid gap-3 rounded-2xl border border-emerald-950/10 bg-white p-5 sm:grid-cols-2">
