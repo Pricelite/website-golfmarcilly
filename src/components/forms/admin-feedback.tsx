@@ -59,7 +59,7 @@ export function AdminFeedback() {
         <button type="button" onClick={() => dialog.current?.close()} aria-label="Fermer le formulaire" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-emerald-950/20 text-xl focus-visible:outline-2 focus-visible:outline-emerald-700">×</button>
       </div>
       <p id="admin-feedback-description" className="mt-3 text-sm leading-6">Une remarque sur le site ou un problème à signaler ? Décrivez-le ici.</p>
-      {sent ? <div role="status" className="mt-6 rounded-xl border border-emerald-700/25 bg-emerald-50 p-4"><p>Votre message a bien été envoyé à l’administrateur. Merci pour votre retour.</p><button type="button" onClick={() => dialog.current?.close()} className="site-button mt-4">Fermer</button></div> :
+      {sent ? <div role="status" className="mt-6 rounded-xl border border-emerald-700/25 bg-emerald-50 p-4"><p>Votre message a bien été envoyé à l’administrateur. Merci pour votre retour.</p><button type="button" onClick={() => dialog.current?.close()} className="site-button site-button-primary mt-4 inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-semibold">Fermer</button></div> :
         <form onSubmit={submit} aria-busy={busy} className="mt-6 space-y-5">
           <fieldset disabled={busy} className="space-y-5 disabled:opacity-70">
             <label className="block text-sm font-semibold">Type de message<select value={type} onChange={e => setType(e.target.value)} className={field}>{feedbackTypes.map(value => <option key={value}>{value}</option>)}</select></label>
@@ -71,7 +71,7 @@ export function AdminFeedback() {
           </fieldset>
           <p className="text-xs leading-5 text-emerald-950/75">Le message, la page consultée et la date sont transmis à l’administrateur pour traiter votre retour. <Link href="/politique-de-confidentialite" onClick={() => dialog.current?.close()} className="underline underline-offset-2">Confidentialité</Link>.</p>
           {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-900">{error}</p>}
-          <button disabled={busy} type="submit" className="site-button min-h-11 w-full disabled:cursor-wait disabled:opacity-60">{busy ? "Envoi en cours…" : "Envoyer le message"}</button>
+          <button disabled={busy} type="submit" className="site-button site-button-primary inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-wait disabled:opacity-60">{busy ? "Envoi en cours…" : "Envoyer le message"}</button>
         </form>}
     </dialog>
   </>;
