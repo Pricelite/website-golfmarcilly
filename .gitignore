@@ -30,6 +30,7 @@
 .vscode/
 .pnpm-store/
 .local-association-events-2027.json
+.local-daily-menu.json
 .local-site-conditions.json
 .data/
 
