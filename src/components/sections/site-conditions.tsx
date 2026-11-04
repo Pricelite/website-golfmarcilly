@@ -5,6 +5,7 @@ import { homeAds, visibleHomeAds } from "@/data/home-ads";
 import { parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { HomeAdSlot } from "./home-ad-slot";
 import { SiteConditionControl } from "./site-condition-control";
+import { RefreshStaleHome } from "./refresh-stale-home";
 
 export function SiteConditions({ conditions, editable, unavailable = false, preview = false }: { conditions: SiteCondition[]; editable: boolean; unavailable?: boolean; preview?: boolean }) {
   const now = new Date();
@@ -28,13 +29,14 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
   }
 
   return <section aria-labelledby="conditions-title" className="border-y border-emerald-950/10 bg-[#efeadd]/50 py-6 sm:py-7">
+    <RefreshStaleHome />
     <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8 2xl:grid-cols-[12rem_minmax(0,1fr)_12rem] 2xl:items-stretch">
       <div className="order-1 rounded-[24px] border border-emerald-950/10 bg-white p-4 shadow-sm shadow-emerald-950/5 sm:col-span-2 sm:px-6 sm:py-5 2xl:order-2 2xl:col-span-1">
         <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <div>
             <h2 id="conditions-title" className="font-serif text-2xl leading-tight text-emerald-950 sm:text-3xl">Conditions du jour</h2>
             <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm leading-6 text-emerald-950/80">
-              <time dateTime={today} className="capitalize">{dateLabel}</time>
+              <time id="conditions-date" dateTime={today} className="capitalize">{dateLabel}</time>
             </div>
           </div>
           <p className={`rounded-full border px-3 py-2 text-sm font-semibold ${closedCount || unknownCount ? "border-stone-200 bg-stone-50 text-emerald-950" : adaptedCount ? "border-amber-200 bg-amber-50 text-amber-900" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}>

@@ -7,10 +7,13 @@ const winterGolfOpeningSchedule = [
   { days: "Samedi et dimanche", hours: "de 9 h à 19 h" },
 ] as const;
 
-/** L'affiche du club annonce ces nouveaux horaires à partir du 26 novembre 2026, heure de Paris. */
+/** Horaires d'hiver du 1er novembre au 10 mars inclus, chaque année, heure de Paris. */
 export function getGolfOpeningSchedule(now = new Date()) {
-  const parisDay = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
-  return parisDay < "2026-11-26" ? currentGolfOpeningSchedule : winterGolfOpeningSchedule;
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", month: "2-digit", day: "2-digit" }).formatToParts(now);
+  const month = parts.find(part => part.type === "month")?.value;
+  const day = parts.find(part => part.type === "day")?.value;
+  const monthDay = `${month}-${day}`;
+  return monthDay >= "11-01" || monthDay <= "03-10" ? winterGolfOpeningSchedule : currentGolfOpeningSchedule;
 }
 
 export function getGolfOpeningHours(now = new Date()) {

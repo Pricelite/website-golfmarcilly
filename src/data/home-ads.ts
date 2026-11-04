@@ -25,10 +25,10 @@ export const homeAds: { left: HomeAd[]; right: HomeAd[] } = {
   ],
   right: [
     {
-      advertiser: "Nouveaux horaires du golf",
-      image: "/ads/nouveaux-horaires-novembre-2026.png",
-      imageAlt: "Nouveaux horaires à partir du 26 novembre : de 9 h à 18 h du lundi au vendredi et de 9 h à 19 h le samedi et le dimanche",
-      caption: "À partir du 26 novembre",
+      advertiser: "Horaires d'hiver du golf",
+      image: "/ads/horaires-hiver.svg",
+      imageAlt: "Horaires d'hiver du 1er novembre au 10 mars : de 9 h à 18 h du lundi au vendredi et de 9 h à 19 h le samedi et le dimanche",
+      caption: "Du 1er novembre au 10 mars",
       kind: "house",
     },
   ],
