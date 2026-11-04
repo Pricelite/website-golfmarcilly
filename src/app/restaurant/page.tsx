@@ -10,6 +10,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { restaurantGallery } from "@/data/restaurant";
+import { getGolfOpeningSchedule } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { restaurantData } from "@/lib/restaurant-data";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -32,6 +33,7 @@ const pageLinks = [
 ] as const;
 
 export default function RestaurantPage() {
+  const barHours = getGolfOpeningSchedule().map(slot => slot.hours.replace(/^de /, "").replace(" à ", " – "));
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }, { name: "Restaurant", path: "/restaurant" }])} />
@@ -102,12 +104,12 @@ export default function RestaurantPage() {
             </div>
             <div className="rounded-b-[28px] bg-[#f7f4e9] px-5 py-2 text-emerald-950 sm:px-7 lg:rounded-r-[28px] lg:rounded-bl-none">
               <dl className="divide-y divide-emerald-950/15">
-                {restaurantData.hours.map((day) => (
+                {restaurantData.hours.map((day, index) => (
                   <div key={day.label} className="grid grid-cols-[5rem_minmax(0,1fr)] gap-4 py-2.5 text-sm leading-5 sm:grid-cols-[7rem_minmax(0,1fr)]">
                     <dt className="font-semibold">{day.label}</dt>
                     <dd className="grid gap-1">
                       <div className="flex justify-between gap-3"><span className="text-emerald-950/65">Restaurant</span><span className="whitespace-nowrap font-semibold">{day.hours}</span></div>
-                      <div className="flex justify-between gap-3 text-emerald-800"><span className="text-emerald-950/65">Bar</span><span className="whitespace-nowrap font-semibold">{day.barHours}</span></div>
+                      <div className="flex justify-between gap-3 text-emerald-800"><span className="text-emerald-950/65">Bar</span><span className="whitespace-nowrap font-semibold">{barHours[index < 5 ? 0 : 1]}</span></div>
                     </dd>
                   </div>
                 ))}
