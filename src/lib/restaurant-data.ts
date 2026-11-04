@@ -6,7 +6,6 @@ export type RestaurantService = {
 export type RestaurantHours = {
   label: string;
   hours: string;
-  barHours: string;
 };
 
 export type RestaurantMenuItem = {
@@ -99,13 +98,13 @@ export const restaurantData: RestaurantData = {
     },
   ],
   hours: [
-    { label: "Lundi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
-    { label: "Mardi", hours: "Fermé", barHours: "8 h 30 – 19 h" },
-    { label: "Mercredi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
-    { label: "Jeudi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
-    { label: "Vendredi", hours: "12 h – 14 h", barHours: "8 h 30 – 19 h" },
-    { label: "Samedi", hours: "12 h – 15 h", barHours: "8 h – 20 h" },
-    { label: "Dimanche", hours: "12 h – 15 h", barHours: "8 h – 20 h" },
+    { label: "Lundi", hours: "12 h – 14 h" },
+    { label: "Mardi", hours: "Fermé" },
+    { label: "Mercredi", hours: "12 h – 14 h" },
+    { label: "Jeudi", hours: "12 h – 14 h" },
+    { label: "Vendredi", hours: "12 h – 14 h" },
+    { label: "Samedi", hours: "12 h – 15 h" },
+    { label: "Dimanche", hours: "12 h – 15 h" },
   ],
   carte: {
     title: "La carte du moment",
