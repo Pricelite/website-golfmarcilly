@@ -43,6 +43,7 @@ export default function PrivacyPage() {
             le prénom et l’âge de l’enfant sont également demandés.
           </p>
           <p>{legalContent.processingDetails}</p>
+          <p>Le formulaire « Contacter l’administrateur » transmet le type de retour, le message, la page consultée sans ses paramètres et la date d’envoi à l’administrateur du site. L’e-mail est facultatif et sert uniquement à répondre. Ces informations permettent de traiter les remarques et de corriger les problèmes du site.</p>
           <p>
             Les champs signalés comme obligatoires sont nécessaires pour traiter
             la demande. À défaut, le site ne pourra pas l’envoyer à l’équipe.
