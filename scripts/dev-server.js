@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { spawn, spawnSync } = require("child_process");
 
-const projectRoot = process.cwd();
+const projectRoot = path.resolve(__dirname, "..");
 const lockFile = path.join(projectRoot, ".next", "dev", "lock");
 
 function run(command, args) {
@@ -82,11 +82,13 @@ function removeLockFile() {
 }
 
 stopNodeOnPort(3000);
-stopNodeOnPort(3001);
 removeLockFile();
 
+console.log(`Golf de Marcilly : ${projectRoot}`);
+console.log("Adresse locale : http://localhost:3000/");
+
 const nextBin = path.join(projectRoot, "node_modules", ".bin", "next.cmd");
-const child = spawn("cmd.exe", ["/c", nextBin, "dev", "--webpack"], {
+const child = spawn("cmd.exe", ["/c", nextBin, "dev", "--webpack", "--port", "3000"], {
   cwd: projectRoot,
   stdio: "inherit",
   shell: false,
