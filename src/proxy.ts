@@ -2,7 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { previewPathBlocked, validPreviewCredentials } from "@/lib/preview-access";
 
 export function proxy(request: NextRequest) {
-  if (process.env.PREVIEW_MODE !== "true") return NextResponse.next();
+  if (process.env.PREVIEW_MODE !== "true") {
+    if (process.env.NODE_ENV === "production" && !process.env.BACKOFFICE_DB_PATH?.trim()) {
+      const path = request.nextUrl.pathname;
+      if (/^\/api\/backoffice(?:\/|$)/.test(path)) {
+        return NextResponse.json({ error: "Administration de contenu indisponible sur cet hébergement." },
+          { status: 503, headers: { "Cache-Control": "no-store" } });
+      }
+      if (/^\/admin\/contenu(?:\/|$)/.test(path)) {
+        return NextResponse.redirect(new URL("/admin", request.url), 307);
+      }
+      if (/^\/pages(?:\/|$)/.test(path)) {
+        return new NextResponse(null, { status: 404, headers: { "Cache-Control": "no-store" } });
+      }
+    }
+    return NextResponse.next();
+  }
   const headers = { "X-Robots-Tag": "noindex, nofollow, noarchive", "Cache-Control": "private, no-store" };
   const password = process.env.PREVIEW_PASSWORD ?? "";
   if (password.length < 16) return NextResponse.json({ error: "Préversion non configurée." }, { status: 503, headers });
