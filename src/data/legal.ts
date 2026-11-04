@@ -16,8 +16,11 @@ export const legalContent = {
   siteCredit: "Conception et gestion du site : Anthony Welh.",
   // Confirmation du propriétaire du site le 14 octobre 2026.
   publicationDirector: "Anthony Welh",
-  // TODO : raison sociale, adresse postale et numéro de téléphone de l'hébergeur de production.
-  hostingDetails: "",
+  // Hébergeur confirmé par le propriétaire le 4 novembre 2026.
+  // Adresse : https://vercel.com/legal/privacy-notice
+  // Le seul numéro publié par Vercel concerne son agent chargé des signalements de droits d'auteur :
+  // https://vercel.com/legal/dmca-policy
+  hostingDetails: "Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis. Téléphone de son agent chargé des signalements de droits d’auteur : +1 559 288 7060.",
   dataController: "GOLF DE MARCILLY - ORLEANS, Domaine de la Plaine, 45240 Marcilly-en-Villette.",
   processingDetails: "Les coordonnées et informations transmises servent à répondre aux demandes de contact, de devis, de table ou d’initiation et à organiser la prestation sollicitée. La base juridique est l’exécution de mesures précontractuelles prises à la demande de la personne concernée.",
   recipientsDetails: "Les données sont accessibles aux membres habilités de l’équipe du Golf de Marcilly-Orléans et, dans la limite nécessaire à leurs missions, aux prestataires techniques chargés de l’hébergement, de la messagerie, de la base de données et de la sécurité du site.",

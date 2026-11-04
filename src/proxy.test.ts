@@ -32,3 +32,24 @@ test("preview protection covers pages, assets, mutations, admin and health witho
     }
   }
 });
+
+test("production without persistent content storage avoids public 500 responses", () => {
+  const env = process.env as Record<string, string | undefined>;
+  const before = { mode: process.env.PREVIEW_MODE, storage: process.env.BACKOFFICE_DB_PATH, node: process.env.NODE_ENV };
+  try {
+    process.env.PREVIEW_MODE = "false";
+    env.NODE_ENV = "production";
+    delete process.env.BACKOFFICE_DB_PATH;
+    const request = (path: string) => new NextRequest(`https://www.golfdemarcilly.com${path}`);
+    assert.equal(proxy(request("/api/backoffice/pages")).status, 503);
+    assert.equal(proxy(request("/pages/page-inconnue")).status, 404);
+    const admin = proxy(request("/admin/contenu"));
+    assert.equal(admin.status, 307);
+    assert.equal(admin.headers.get("location"), "https://www.golfdemarcilly.com/admin");
+    assert.equal(proxy(request("/admin")).headers.get("x-middleware-next"), "1");
+  } finally {
+    for (const [key, value] of Object.entries({ PREVIEW_MODE: before.mode, BACKOFFICE_DB_PATH: before.storage, NODE_ENV: before.node })) {
+      if (value === undefined) delete env[key]; else env[key] = value;
+    }
+  }
+});

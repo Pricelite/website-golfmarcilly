@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Block, PageContent } from "@/lib/backoffice/model";
 
@@ -11,6 +12,7 @@ type Props = { id: string; slug: string; initialContent: PageContent; initialRev
 const field = "mt-1 w-full rounded-xl border border-emerald-950/20 bg-white px-3 py-2 text-sm text-emerald-950";
 
 export function PageEditor({ id, slug, initialContent, initialRevision, initialPublishedRevision, initialReviewRequested, history, permissions }: Props) {
+  const router = useRouter();
   const [content, setContent] = useState(initialContent);
   const [revision, setRevision] = useState(initialRevision);
   const [publishedRevision, setPublishedRevision] = useState(initialPublishedRevision);
@@ -50,7 +52,7 @@ export function PageEditor({ id, slug, initialContent, initialRevision, initialP
   async function remove() {
     if (!confirm("Supprimer cette page et son historique ? Cette action est définitive.")) return;
     setBusy(true); setError("");
-    try { const response = await fetch(`/api/backoffice/pages/${id}`, { method: "DELETE" }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Suppression impossible."); location.assign("/admin/contenu"); }
+    try { const response = await fetch(`/api/backoffice/pages/${id}`, { method: "DELETE" }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Suppression impossible."); router.push("/admin/contenu"); router.refresh(); }
     catch (cause) { setError(cause instanceof Error ? cause.message : "Suppression impossible."); setBusy(false); }
   }
   return <div>
