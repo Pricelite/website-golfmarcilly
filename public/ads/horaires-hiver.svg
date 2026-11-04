@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" role="img" aria-labelledby="title description">
+  <title id="title">Horaires d’hiver du Golf de Marcilly</title>
+  <desc id="description">Du 1er novembre au 10 mars inclus : 9 h à 18 h du lundi au vendredi, 9 h à 19 h le samedi et le dimanche.</desc>
+  <rect width="800" height="1200" fill="#f7f4e9"/>
+  <rect x="28" y="28" width="744" height="1144" rx="28" fill="none" stroke="#164638" stroke-width="4"/>
+  <circle cx="400" cy="160" r="70" fill="#164638"/>
+  <path d="M365 190V120l70 20-70 20" fill="none" stroke="#f7f4e9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="300" text-anchor="middle" fill="#164638" font-family="Georgia, serif" font-size="46">GOLF DE MARCILLY</text>
+  <text x="400" y="385" text-anchor="middle" fill="#164638" font-family="Georgia, serif" font-size="76" font-weight="bold">HORAIRES</text>
+  <text x="400" y="463" text-anchor="middle" fill="#164638" font-family="Georgia, serif" font-size="76" font-weight="bold">D’HIVER</text>
+  <text x="400" y="535" text-anchor="middle" fill="#164638" font-family="Arial, sans-serif" font-size="34">DU 1ER NOVEMBRE AU 10 MARS</text>
+  <rect x="80" y="595" width="640" height="205" rx="22" fill="#164638"/>
+  <text x="400" y="660" text-anchor="middle" fill="#f7f4e9" font-family="Arial, sans-serif" font-size="34">LUNDI AU VENDREDI</text>
+  <text x="400" y="750" text-anchor="middle" fill="#f7f4e9" font-family="Georgia, serif" font-size="84" font-weight="bold">9 h – 18 h</text>
+  <rect x="80" y="830" width="640" height="205" rx="22" fill="#164638"/>
+  <text x="400" y="895" text-anchor="middle" fill="#f7f4e9" font-family="Arial, sans-serif" font-size="34">SAMEDI ET DIMANCHE</text>
+  <text x="400" y="985" text-anchor="middle" fill="#f7f4e9" font-family="Georgia, serif" font-size="84" font-weight="bold">9 h – 19 h</text>
+  <text x="400" y="1110" text-anchor="middle" fill="#164638" font-family="Arial, sans-serif" font-size="29">Chaque année · Heure de Paris</text>
+</svg>
