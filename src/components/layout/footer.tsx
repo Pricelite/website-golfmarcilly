@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminFeedback } from "@/components/forms/admin-feedback";
 
 import { AnalyticsPreferencesButton } from "@/components/analytics/preferences-button";
 import { footerNavigation, siteConfig } from "@/data/site";
@@ -45,6 +46,7 @@ export function Footer() {
             ))}
           </nav>
           <div className="mt-6"><AnalyticsPreferencesButton /></div>
+          <div className="mt-4"><AdminFeedback /></div>
         </div>
 
         <div>
