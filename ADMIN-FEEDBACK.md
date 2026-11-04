@@ -2,6 +2,8 @@
 
 Le bouton du pied de page ouvre un formulaire accessible avec dialogue natif (clavier, Échap, retour du focus), adapté aux petits écrans. Le navigateur transmet uniquement le type, le message, l’e-mail facultatif, le chemin de page sans paramètres ni fragment et les champs de protection.
 
+Un accès flottant doré est affiché sur les pages jusqu’au 4 décembre 2026 inclus (heure de Paris), au-dessus des actions mobiles. Sa disparition est automatique, y compris sur une page restée ouverte ; le bouton permanent du pied de page est conservé. La date se règle dans `src/data/feedback-promotion.ts`.
+
 ## Configuration serveur
 
 Dans **Vercel → projet website-golfmarcilly → Settings → Environment Variables**, définir `ADMIN_FEEDBACK_EMAIL_TO` avec la boîte destinataire indiquée par le propriétaire, pour **Production**, puis redéployer. Définir séparément la valeur de test pour Preview si nécessaire. Ne pas préfixer par `NEXT_PUBLIC_`.
