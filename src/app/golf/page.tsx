@@ -15,7 +15,7 @@ import { buildBreadcrumbSchema } from "@/lib/schema";
 export const metadata = buildMetadata({
   title: "Golf / Parcours",
   description:
-    "Parcours 18 trous, 9 trous, Kaleka course aller, practice et formats loisirs pour jouer au golf près d’Orléans dans le Loiret.",
+    "Parcours 18 trous, 9 trous, Kaleka course 18 trous, practice et formats loisirs pour jouer au golf près d’Orléans dans le Loiret.",
   path: "/golf",
 });
 
@@ -31,8 +31,11 @@ export default function GolfPage() {
     practice: practicePricing,
     "parcours-decouverte-9-trous": coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Découverte"),
     footgolf: coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Footgolf"),
-    "pitch-putt-kaleka-18-trous": coursePrices(["9 trous Kaleka course aller", kalekaCombinedLabel]),
-    "kaleka-course": coursePrices(["9 trous Kaleka course retour", kalekaCombinedLabel]),
+    "pitch-putt-kaleka-18-trous": greenFees ? {
+      ...greenFees,
+      rows: greenFees.rows.filter(row => ["9 trous Kaleka course aller", kalekaCombinedLabel].includes(row.label))
+        .map(row => ({ ...row, label: row.label === kalekaCombinedLabel ? "18 trous" : "9 trous (aller ou retour)" })),
+    } : undefined,
     "parcours-competitions-18-trous": coursePrices(["9 trous Grand Parcours", "18 trous Grand Parcours", "18 trous après 16 h 00"]),
   };
   const orderedCourses = [
@@ -42,7 +45,6 @@ export default function GolfPage() {
     courses.find((course) => course.slug === "parcours-competitions-18-trous"),
   ].filter((course): course is NonNullable<typeof course> => Boolean(course));
   const footgolf = courses.find(course => course.slug === "footgolf");
-  const kaleka = courses.find(course => course.slug === "kaleka-course");
 
   return (
     <>
@@ -72,16 +74,17 @@ export default function GolfPage() {
                 secondPricing={pricingByCourse.footgolf}
                 headingLevel="h2"
               />
-            : course.slug === "pitch-putt-kaleka-18-trous" && kaleka
-            ? <CourseVariantCard
+            : course.slug === "pitch-putt-kaleka-18-trous"
+            ? <CourseCard
                 key={course.slug}
+                {...course}
                 id={course.slug}
-                first={course}
-                second={kaleka}
-                firstLabel="Kaleka course aller"
-                secondLabel="Kaleka course retour"
-                firstPricing={pricingByCourse[course.slug]}
-                secondPricing={pricingByCourse["kaleka-course"]}
+                title="18 trous Kaleka course"
+                distance="18 trous"
+                description="Deux parcours distincts de 9 trous composent un ensemble de 18 trous pour découvrir le golf, travailler le petit jeu et la précision des mises en jeu."
+                pricing={pricingByCourse[course.slug]}
+                ctaLabel="Réserver un départ"
+                ctaHref={siteConfig.bookingEngineUrl}
                 headingLevel="h2"
               />
             : <CourseCard
