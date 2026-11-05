@@ -1,7 +1,7 @@
 import "server-only";
 import { readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { associationEvents, type AssociationEvent } from "@/data/association-events";
+import { associationCalendarStartsOn, associationEvents, type AssociationEvent } from "@/data/association-events";
 import type { EventInput } from "./association-events-validation";
 import { localContentStoreEnabled } from "./supabase/content";
 
@@ -24,7 +24,7 @@ export async function readLocalCalendar(): Promise<AssociationEvent[]> {
     typeof event.id !== "string" || typeof event.title !== "string" || typeof event.start !== "string")) {
     throw new Error("Invalid local calendar");
   }
-  return (events as AssociationEvent[]).filter(event => event.start >= "2027-01-01")
+  return (events as AssociationEvent[]).filter(event => event.start >= associationCalendarStartsOn)
     .sort((a, b) => a.start.localeCompare(b.start) || a.id.localeCompare(b.id));
 }
 

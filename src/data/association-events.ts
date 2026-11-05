@@ -1,5 +1,8 @@
 import agenda2027 from "./association-events-2027.json";
 import context2027 from "./association-calendar-context-2027.json";
+import clubProgramme from "./association-club-events-2026-2027.json";
+
+export const associationCalendarStartsOn = "2026-11-01";
 
 export type AssociationEvent = {
   id: string;
@@ -17,4 +20,6 @@ export type AssociationEvent = {
 // The owner-supplied 2027 agenda is the fallback before Supabase setup.
 // Once configured, updates are made through /admin/competitions.
 export const associationEvents2027: AssociationEvent[] = agenda2027 as AssociationEvent[];
-export const associationEvents: AssociationEvent[] = [...associationEvents2027, ...context2027] as AssociationEvent[];
+export const associationCalendar2027: AssociationEvent[] = [...associationEvents2027, ...context2027] as AssociationEvent[];
+export const associationClubEvents: AssociationEvent[] = clubProgramme as AssociationEvent[];
+export const associationEvents: AssociationEvent[] = [...associationCalendar2027, ...associationClubEvents];
