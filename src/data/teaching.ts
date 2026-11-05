@@ -5,7 +5,7 @@ export const juniorPrograms = [
   { key: "loisir", title: "Loisir", price: "257 €", duration: "35 séances · 1 h par semaine", included: ["Licence 12 mois incluse", "Groupe Loisir inclus"], slots: ["Mercredi : 14 h – 15 h", "Samedi : 10 h – 11 h"] },
 ] as const;
 
-export const adultCollectiveCoursePosterSrc = "/enseignement/cours-collectifs-adultes.png";
+export const adultCollectiveCoursePosterSrc = "/enseignement/cours-collectifs-adultes-corrige.png";
 
 export const sportingLabelCriteria = [
   "Du temps pour progresser",
