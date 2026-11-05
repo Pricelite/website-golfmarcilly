@@ -17,6 +17,8 @@ export const siteOffers: SiteOffer[] = [];
 
 // 1er novembre 2026 à 9 h, heure de Paris (UTC+1 à cette date).
 export const blackFriday2026OpensAt = "2026-11-01T08:00:00.000Z";
+// Lundi 30 novembre 2026 à 20 h, heure de Paris (UTC+1).
+export const blackFriday2026ClosesAt = "2026-11-30T19:00:00.000Z";
 
 // Visuels annoncés pour novembre 2026, distincts des offres actuellement actives.
 export const upcomingOfferPosters = [
