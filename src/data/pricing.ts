@@ -118,7 +118,7 @@ export const pricingSections: PricingSection[] = [
       { label: "31 à 74 ans", values: ["Annuel", "744 €*"] },
       { label: "75 ans et plus", values: ["Annuel", "492 €*"] },
     ],
-    footnotes: ["* 1 mois offert si paiement comptant."],
+    footnotes: ["* 8 % de remise si paiement comptant."],
   },
   {
     title: "45 trous semainier 5 j/7",
@@ -132,7 +132,7 @@ export const pricingSections: PricingSection[] = [
       { label: "75 ans et plus", values: ["Annuel", "816 €*"] },
       { label: "Couple de 75 ans et plus", values: ["Annuel", "1 428 €*"] },
     ],
-    footnotes: ["* 1 mois offert si paiement comptant."],
+    footnotes: ["* 8 % de remise si paiement comptant."],
   },
   {
     title: "45 trous à temps plein, 7 j/7",
@@ -154,6 +154,6 @@ export const pricingSections: PricingSection[] = [
         values: ["Sur devis", "de 2 100 € à 4 000 € HT"],
       },
     ],
-    footnotes: ["* 1 mois offert si paiement comptant."],
+    footnotes: ["* 8 % de remise si paiement comptant."],
   },
 ];
