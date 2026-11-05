@@ -18,6 +18,7 @@ import { listSiteConditions } from "@/lib/site-conditions-store";
 import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
+import { getBlackFriday2026Timing } from "@/lib/offer-campaign";
 
 export const metadata = buildMetadata({
   title: "Golf de Marcilly : 45 trous près d’Orléans",
@@ -39,16 +40,21 @@ export default async function HomePage() {
     conditions = conditions.map(condition => ({ ...condition, status: "unknown" }));
   }
   const canEditConditions = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
+  // This dynamic Server Component supplies one request timestamp to the client for hydration.
+  // eslint-disable-next-line react-hooks/purity
+  const offersNow = Date.now();
+  const showOffers = activeOffers.length > 0 || getBlackFriday2026Timing(offersNow).phase !== "ended";
 
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }])} />
 
+      {showOffers ? <PromoOffersModal initialNow={offersNow} label={activeOffers.length > 0 ? undefined : "Black Friday 2026"} offers={activeOffers} /> : null}
+
       <Hero
         eyebrow="Bienvenue au Golf de Marcilly"
         playCta={{ label: "Jouer", href: "/golf" }}
         appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
-        offersAction={<PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "Black Friday 2026"} offers={activeOffers} />}
         subtitle="Jouez, découvrez le golf ou déjeunez à La Bergerie. À Marcilly-en-Villette, le domaine accueille golfeurs, débutants et visiteurs."
         title="45 trous aux portes d’Orléans"
       />

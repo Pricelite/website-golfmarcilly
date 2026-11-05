@@ -14,24 +14,16 @@ import {
   type TouchEvent,
 } from "react";
 
-import { blackFriday2026OpensAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
+import { blackFriday2026ClosesAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
+import { formatOfferCountdown, getBlackFriday2026Timing } from "@/lib/offer-campaign";
 
 const AUTOPLAY_DELAY_MS = 5000;
 const CLOSE_ANIMATION_MS = 350;
 const SWIPE_THRESHOLD_PX = 48;
-const BLACK_FRIDAY_OPENS_AT_MS = Date.parse(blackFriday2026OpensAt);
-
-function formatCountdown(remainingMs: number): string {
-  const totalSeconds = Math.ceil(remainingMs / 1000);
-  const days = Math.floor(totalSeconds / 86_400);
-  const hours = Math.floor((totalSeconds % 86_400) / 3_600);
-  const minutes = Math.floor((totalSeconds % 3_600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${days} j ${String(hours).padStart(2, "0")} h ${String(minutes).padStart(2, "0")} min ${String(seconds).padStart(2, "0")} s`;
-}
 
 type PromoOffersModalProps = {
-  label: string;
+  initialNow: number;
+  label?: string;
   offers: SiteOffer[];
 };
 
@@ -43,14 +35,14 @@ function getFocusableElements(container: HTMLElement) {
   ).filter((element) => !element.hasAttribute("disabled") && element.tabIndex !== -1);
 }
 
-export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
+export function PromoOffersModal({ initialNow, label, offers }: PromoOffersModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchCurrentX, setTouchCurrentX] = useState<number | null>(null);
-  const [now, setNow] = useState<number | null>(null);
+  const [now, setNow] = useState(initialNow);
   const closeTimeoutRef = useRef<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -59,17 +51,22 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   const descriptionId = useId();
   const totalOffers = offers.length;
   const slideCount = totalOffers || upcomingOfferPosters.length;
+  const hasMultipleOffers = slideCount > 1;
+  const planLabel = hasMultipleOffers ? "Bons plans" : "Bon plan";
+  const offerActionLabel = hasMultipleOffers ? "Voir les offres" : "Voir l’offre";
   const isBlackFridayPreview = totalOffers === 0;
-  const canOpen = !isBlackFridayPreview || (now !== null && now >= BLACK_FRIDAY_OPENS_AT_MS);
-  const remainingMs = now === null ? null : Math.max(0, BLACK_FRIDAY_OPENS_AT_MS - now);
+  const campaignTiming = getBlackFriday2026Timing(now);
+  const isCampaignExpired = isBlackFridayPreview && campaignTiming.phase === "ended";
+  const canOpen = !isBlackFridayPreview || campaignTiming.phase === "active";
+  const showDialog = isMounted && !isCampaignExpired;
 
   useEffect(() => {
-    if (!isBlackFridayPreview) return;
+    if (!isBlackFridayPreview || isCampaignExpired) return;
     const updateNow = () => setNow(Date.now());
     updateNow();
     const interval = window.setInterval(updateNow, 1000);
     return () => window.clearInterval(interval);
-  }, [isBlackFridayPreview]);
+  }, [isBlackFridayPreview, isCampaignExpired]);
 
   const particles = useMemo(
     () =>
@@ -82,15 +79,15 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     [],
   );
 
-  const clearCloseTimeout = () => {
+  const clearCloseTimeout = useCallback(() => {
     if (closeTimeoutRef.current !== null) {
       window.clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
-  };
+  }, []);
 
   const openModal = () => {
-    if (isBlackFridayPreview && Date.now() < BLACK_FRIDAY_OPENS_AT_MS) return;
+    if (isBlackFridayPreview && getBlackFriday2026Timing(Date.now()).phase !== "active") return;
     clearCloseTimeout();
     setIsMounted(true);
     requestAnimationFrame(() => {
@@ -98,12 +95,12 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     });
   };
 
-  const completeClose = () => {
+  const completeClose = useCallback(() => {
     setIsMounted(false);
     setIsVisible(false);
     setIsPaused(false);
     triggerRef.current?.focus();
-  };
+  }, []);
 
   const closeModal = useCallback(() => {
     clearCloseTimeout();
@@ -111,7 +108,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     closeTimeoutRef.current = window.setTimeout(() => {
       completeClose();
     }, CLOSE_ANIMATION_MS);
-  }, []);
+  }, [clearCloseTimeout, completeClose]);
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -150,10 +147,10 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       clearCloseTimeout();
     };
-  }, []);
+  }, [clearCloseTimeout]);
 
   useEffect(() => {
-    if (!isMounted) {
+    if (!showDialog) {
       return;
     }
 
@@ -164,10 +161,10 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [isMounted]);
+  }, [showDialog]);
 
   useEffect(() => {
-    if (!isMounted || isPaused || totalOffers <= 1) {
+    if (!showDialog || isPaused || totalOffers <= 1) {
       return;
     }
 
@@ -178,10 +175,10 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       window.clearInterval(interval);
     };
-  }, [goToNext, isMounted, isPaused, totalOffers]);
+  }, [goToNext, showDialog, isPaused, totalOffers]);
 
   useEffect(() => {
-    if (!isMounted) {
+    if (!showDialog) {
       return;
     }
 
@@ -234,7 +231,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeModal, goToNext, goToPrevious, isMounted, totalOffers]);
+  }, [closeModal, goToNext, goToPrevious, showDialog, totalOffers]);
 
   const handleOverlayMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -274,34 +271,43 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     setTouchCurrentX(null);
   };
 
+  if (isCampaignExpired) return null;
+
   return (
     <>
       <button
         aria-haspopup={canOpen ? "dialog" : undefined}
         aria-expanded={canOpen ? isMounted : undefined}
         aria-disabled={!canOpen}
-        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 9 h, heure de Paris${remainingMs !== null ? `, dans ${formatCountdown(remainingMs)}` : ""}` : undefined}
-        className={`relative inline-flex min-h-11 min-w-0 items-center justify-center gap-2 overflow-hidden rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-left text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${canOpen ? "transition hover:border-amber-400 hover:bg-amber-100" : "cursor-default"}`}
+        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 9 h, heure de Paris, dans ${formatOfferCountdown(campaignTiming.remainingMs)}` : undefined}
+        className={`group relative block w-full overflow-hidden border-y border-amber-400/60 bg-[#f4d77b] text-left text-emerald-950 shadow-[0_4px_16px_rgba(120,80,10,0.08)] focus-visible:z-10 focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-emerald-800 ${canOpen ? "transition-colors hover:bg-[#f8df94]" : "cursor-default"}`}
         onClick={openModal}
         ref={triggerRef}
         type="button"
       >
-        <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.28)_38%,transparent_62%)] opacity-70" />
-        <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-sm font-bold text-amber-100 ">
-          %
-        </span>
-        <span className="relative flex flex-col">
-          <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-emerald-950/70">
-            Bon plan
+        <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.5),transparent_65%)]" />
+        <span className="relative mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-5 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:px-8">
+          <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-2xl font-bold text-amber-100 sm:h-14 sm:w-14">
+            %
           </span>
-          <span className="text-xs font-semibold leading-tight">{label}</span>
-          {isBlackFridayPreview && !canOpen ? <span aria-hidden="true" className="mt-0.5 whitespace-nowrap text-xs font-bold tabular-nums text-amber-900">
-            {remainingMs === null ? "Ouverture le 1er nov. 2026 à 9 h" : formatCountdown(remainingMs)}
-          </span> : null}
+          <span className="flex min-w-0 flex-1 flex-col gap-1">
+            <span className="text-xl font-bold leading-tight sm:text-2xl">
+              {planLabel} {canOpen ? "du moment" : "à venir"}
+            </span>
+            <span className="text-sm leading-snug sm:text-base">
+              {label ? `${label} · ` : ""}{slideCount} {hasMultipleOffers ? "offres" : "offre"} à découvrir
+            </span>
+            {isBlackFridayPreview ? <span className="mt-1 text-sm font-bold leading-snug text-emerald-950">
+              {canOpen ? <>Plus que <span className="tabular-nums">{formatOfferCountdown(campaignTiming.remainingMs)}</span> pour profiter {hasMultipleOffers ? "des offres" : "de l’offre"}.</> : <>Ouverture dans <span className="tabular-nums">{formatOfferCountdown(campaignTiming.remainingMs)}</span></>}
+            </span> : null}
+          </span>
+          <span className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-emerald-950 px-6 py-3 text-base font-bold text-white shadow-md transition-colors group-hover:bg-emerald-900 sm:w-auto">
+            {canOpen ? offerActionLabel : "Prochainement"} <span aria-hidden="true">→</span>
+          </span>
         </span>
       </button>
 
-      {isMounted ? createPortal(
+      {showDialog ? createPortal(
         <div
           aria-hidden={!isVisible}
           className={`fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 ${
@@ -353,17 +359,18 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
               <div className="flex items-start justify-between gap-4">
                 <div className="max-w-2xl">
                   <p className="text-sm font-semibold uppercase tracking-[0.28em] text-amber-700/90">
-                    {totalOffers ? "Bon plan du moment" : "Bons plans à venir"}
+                    {planLabel} du moment
                   </p>
                   <h2 className="mt-3 font-serif text-3xl leading-tight sm:text-4xl" id={titleId}>
-                    {totalOffers ? "✨ Nos Offres du Moment" : "Black Friday 2026"}
+                    {totalOffers ? (hasMultipleOffers ? "Nos offres du moment" : "Notre offre du moment") : "Black Friday 2026"}
                   </h2>
                   <p
                     className="mt-3 max-w-xl text-sm leading-7 text-emerald-950/72 sm:text-base"
                     id={descriptionId}
                   >
-                    {totalOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez les visuels des offres annoncées pour novembre 2026."}
+                    {totalOffers ? (hasMultipleOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez notre offre exclusive disponible pour une durée limitée.") : "Découvrez les offres Black Friday de novembre 2026."}
                   </p>
+                  {isBlackFridayPreview ? <p className="mt-3 text-sm font-semibold text-emerald-900">Jusqu’au <time dateTime={blackFriday2026ClosesAt}>lundi 30 novembre 2026 à 20 h</time>, heure de Paris.</p> : null}
                 </div>
 
                 <button
