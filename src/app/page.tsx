@@ -44,11 +44,12 @@ export default async function HomePage() {
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }])} />
 
+      <PromoOffersModal label={activeOffers.length > 0 ? undefined : "Black Friday 2026"} offers={activeOffers} />
+
       <Hero
         eyebrow="Bienvenue au Golf de Marcilly"
         playCta={{ label: "Jouer", href: "/golf" }}
         appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
-        offersAction={<PromoOffersModal label={activeOffers.length > 0 ? "Voir les offres" : "Black Friday 2026"} offers={activeOffers} />}
         subtitle="Jouez, découvrez le golf ou déjeunez à La Bergerie. À Marcilly-en-Villette, le domaine accueille golfeurs, débutants et visiteurs."
         title="45 trous aux portes d’Orléans"
       />
