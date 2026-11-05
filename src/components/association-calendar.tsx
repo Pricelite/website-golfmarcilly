@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { AssociationEvent } from "@/data/association-events";
-import { calendarDefaultDate, eventsInMonth, eventsOnDay, formatCalendarDate, isPastEvent, monthDays } from "@/lib/association-calendar";
+import { calendarDefaultDate, eventsInWeek, eventsOnDay, formatCalendarDate, formatCalendarWeek, isPastEvent, shiftCalendarDate, upcomingCompetitions, weekDays } from "@/lib/association-calendar";
 import { siteConfig } from "@/data/site";
 
-const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const buttonClass = "site-button inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
 
 function isContextEvent(event: AssociationEvent) {
@@ -53,34 +52,32 @@ function subscribeScreen(callback: () => void) {
 
 export function AssociationCalendar({ initialDate, events: associationEvents }: { initialDate: string; events: AssociationEvent[] }) {
   const today = useSyncExternalStore(subscribeToDate, currentParisDate, () => initialDate);
-  const [view, setView] = useState<{ year: number; month: number } | null>(null);
-  const defaultDate = calendarDefaultDate(today, associationEvents);
+  const [view, setView] = useState<string | null>(null);
+  const weekStart = calendarDefaultDate(view ?? today);
+  const days = weekDays(weekStart);
   const mobile = useSyncExternalStore(subscribeScreen, () => window.matchMedia("(max-width: 767px)").matches, () => false);
   const [display, setDisplay] = useState<"list" | "calendar" | null>(null);
   const listView = (display ?? (mobile ? "list" : "calendar")) === "list";
-  const year = view?.year ?? Number(defaultDate.slice(0, 4));
-  const month = view?.month ?? Number(defaultDate.slice(5, 7)) - 1;
-  const showingNextCompetitionMonth = view === null && defaultDate.slice(0, 7) !== today.slice(0, 7);
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [zone, setZone] = useState<"all" | "A" | "B" | "C">("B");
   const detailRef = useRef<HTMLDivElement>(null);
-  const years = Array.from(new Set([year, ...associationEvents.flatMap(event => [Number(event.start.slice(0, 4)), Number((event.end ?? event.start).slice(0, 4))])])).sort((a, b) => a - b);
 
   useEffect(() => {
     if (selected) detailRef.current?.focus();
   }, [selected]);
 
-  function changeMonth(delta: number) {
-    const date = new Date(Date.UTC(year, month + delta, 1));
-    setView({ year: date.getUTCFullYear(), month: date.getUTCMonth() });
+  function changeWeek(date: string | null) {
+    setView(date);
     setSelected(null);
     setSelectedDay(null);
   }
 
-  const events = eventsInMonth(associationEvents.filter(event => zone === "all" || !event.zone || event.zone === "all" || event.zone === zone), year, month);
-  const monthCompetitions = events.filter(event => !isContextEvent(event)).length;
-  const monthMarkers = events.length - monthCompetitions;
+  const zoneEvents = associationEvents.filter(event => zone === "all" || !event.zone || event.zone === "all" || event.zone === zone);
+  const events = eventsInWeek(zoneEvents, weekStart);
+  const weekCompetitions = events.filter(event => !isContextEvent(event)).length;
+  const weekMarkers = events.length - weekCompetitions;
+  const nextCompetition = upcomingCompetitions(zoneEvents, today)[0];
   const visibleEvents = selectedDay ? eventsOnDay(events, selectedDay) : events;
   const competitions = visibleEvents.filter(event => !isContextEvent(event));
   const markers = visibleEvents.filter(isContextEvent);
@@ -90,22 +87,15 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
     <div className="mt-8 overflow-hidden rounded-2xl border border-emerald-950/15 bg-white text-emerald-950 shadow-lg shadow-black/5">
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div aria-live="polite" aria-atomic="true">
-          <h3 className="font-serif text-3xl">{months[month]} {year}</h3>
-          {showingNextCompetitionMonth ? <p className="mt-1 text-sm font-medium text-emerald-800">Aucune compétition à venir ce mois-ci. Prochaine compétition publiée en {months[month].toLocaleLowerCase("fr-FR")} {year}.</p> : null}
-          <p className="mt-1 text-sm text-emerald-900/70">{monthCompetitions} compétition{monthCompetitions > 1 ? "s" : ""} ou créneau{monthCompetitions > 1 ? "x" : ""} · {monthMarkers} repère{monthMarkers > 1 ? "s" : ""}</p>
+          <h3 className="font-serif text-2xl sm:text-3xl">{formatCalendarWeek(weekStart)}</h3>
+          <p className="mt-1 text-sm text-emerald-900/70">{weekCompetitions} compétition{weekCompetitions > 1 ? "s" : ""} ou créneau{weekCompetitions > 1 ? "x" : ""} · {weekMarkers} repère{weekMarkers > 1 ? "s" : ""}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button" className={buttonClass} onClick={() => { setView({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) - 1 }); setSelected(null); setSelectedDay(null); }}>Ce mois-ci</button>
-          <button type="button" aria-label="Mois précédent" className={buttonClass} onClick={() => changeMonth(-1)}>←</button>
-          <button type="button" aria-label="Mois suivant" className={buttonClass} onClick={() => changeMonth(1)}>→</button>
-          <label className="sr-only" htmlFor="as-calendar-month">Choisir un mois</label>
-          <select id="as-calendar-month" className="min-h-11 max-w-full rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={month} onChange={event => { setView({ year, month: Number(event.target.value) }); setSelected(null); setSelectedDay(null); }}>
-            {months.map((label, index) => <option key={label} value={index}>{label}</option>)}
-          </select>
-          <label className="sr-only" htmlFor="as-calendar-year">Choisir une année</label>
-          <select id="as-calendar-year" className="min-h-11 rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={year} onChange={event => { setView({ year: Number(event.target.value), month }); setSelected(null); setSelectedDay(null); }}>
-            {years.map(value => <option key={value} value={value}>{value}</option>)}
-          </select>
+          <button type="button" className={buttonClass} onClick={() => changeWeek(null)}>Cette semaine</button>
+          <button type="button" aria-label="Semaine précédente" className={buttonClass} onClick={() => changeWeek(shiftCalendarDate(weekStart, -7))}>←</button>
+          <button type="button" aria-label="Semaine suivante" className={buttonClass} onClick={() => changeWeek(shiftCalendarDate(weekStart, 7))}>→</button>
+          <label className="sr-only" htmlFor="as-calendar-date">Choisir une date</label>
+          <input id="as-calendar-date" type="date" className="min-h-11 min-w-0 max-w-full rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={view ?? today} onChange={event => { if (event.target.value) changeWeek(event.target.value); }} />
           {associationEvents.some(event => event.zone && event.zone !== "all") ? <><label className="sr-only" htmlFor="as-calendar-zone">Choisir une zone scolaire</label><select id="as-calendar-zone" className="min-h-11 rounded-lg border border-emerald-950/20 bg-white px-3 text-sm" value={zone} onChange={event => { setZone(event.target.value as typeof zone); setSelected(null); setSelectedDay(null); }}><option value="all">Toutes les zones</option><option value="A">Zone A</option><option value="B">Zone B</option><option value="C">Zone C</option></select></> : null}
         </div>
       </div>
@@ -118,20 +108,21 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <p className="px-4 pb-4 text-xs leading-5 text-slate-600 sm:px-6">
         Bleu : à confirmer ou créneau libre ; jaune : option ; vert : confirmé. Les vacances, fêtes et jours fériés apparaissent en gris clair comme repères.
       </p>
+      {events.length === 0 ? <div className="border-t border-emerald-950/10 px-4 py-4 text-sm sm:px-6"><p>Aucune date publiée pour cette semaine.</p>{nextCompetition && nextCompetition.start > days[6] ? <button type="button" className="mt-2 min-h-11 text-left font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" onClick={() => changeWeek(nextCompetition.start)}>Prochaine compétition : {formatCalendarDate(nextCompetition.start)} →</button> : null}</div> : null}
       <div hidden={listView}>
       <div className="grid grid-cols-7 border-y border-emerald-950/10 bg-stone-50 text-center text-xs font-semibold text-emerald-800">
         {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map(day => <div key={day} className="py-3">{day}</div>)}
       </div>
       <div className="grid grid-cols-7 gap-px bg-emerald-950/10">
-        {monthDays(year, month).map((day, index) => {
-          const dayEvents = day ? eventsOnDay(events, day) : [];
+        {days.map(day => {
+          const dayEvents = eventsOnDay(events, day);
           const pastDayEvents = dayEvents.length > 0 && dayEvents.every(event => isPastEvent(event, today));
           return (
-            <div key={day ?? `blank-${index}`} className={`min-w-0 ${pastDayEvents ? "bg-slate-100" : day ? "bg-white" : "bg-stone-50"} min-h-16 p-1 sm:min-h-20 md:min-h-32 md:p-2`}>
-              {day ? <>
+            <div key={day} className={`min-w-0 ${pastDayEvents ? "bg-slate-100" : "bg-white"} min-h-16 p-1 sm:min-h-20 md:min-h-32 md:p-2`}>
                 <button type="button" aria-label={`${formatCalendarDate(day)}, ${dayEvents.length} date${dayEvents.length > 1 ? "s" : ""} au programme`} aria-pressed={selectedDay === day} aria-current={day === today ? "date" : undefined} onClick={() => { setSelectedDay(selectedDay === day ? null : day); setSelected(null); }} className={`site-button mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 md:mx-0 ${day === today ? "font-bold ring-2 ring-emerald-800" : selectedDay === day ? "font-bold ring-2 ring-amber-500" : ""}`}>
                   {Number(day.slice(-2))}
                 </button>
+                <span className="mt-1 block text-center text-[10px] text-emerald-900/70 md:text-left">{new Intl.DateTimeFormat("fr-FR", { month: "short", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`))}</span>
                 <div aria-hidden="true" className="mt-1 flex justify-center gap-1 md:hidden">{dayEvents.length > 0 ? <span className={`h-1.5 w-1.5 rounded-full ${pastDayEvents ? "bg-slate-500" : "bg-emerald-700"}`} /> : null}</div>
                 <div className="mt-1 hidden space-y-1 md:block">
                   {dayEvents.map(event => <button key={event.id} type="button" onClick={() => setSelected(event)} className={`block w-full break-words rounded-md text-left focus-visible:outline-2 focus-visible:outline-offset-2 ${isContextEvent(event) ? "px-1.5 py-1 text-[11px] leading-4 text-slate-500 hover:bg-slate-50" : `border-l-3 px-2 py-1.5 text-xs leading-5 ${eventStyle(event, today)}`}`}>
@@ -139,7 +130,6 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
                     {isContextEvent(event) ? null : <span className="block text-[11px] font-semibold">{eventStatus(event, today)}{eventZone(event)}</span>}
                   </button>)}
                 </div>
-              </> : null}
             </div>
           );
         })}
@@ -160,10 +150,10 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       {(listView || selectedDay) ? <div className="p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h4 className="font-serif text-xl">{selectedDay ? `Le ${formatCalendarDate(selectedDay)}` : "Compétitions et créneaux"}</h4>
-          {selectedDay ? <button type="button" className="site-button rounded-full px-4 py-2 text-sm" onClick={() => setSelectedDay(null)}>Afficher tout le mois</button> : null}
+          {selectedDay ? <button type="button" className="site-button rounded-full px-4 py-2 text-sm" onClick={() => setSelectedDay(null)}>Afficher toute la semaine</button> : null}
         </div>
-        {visibleEvents.length === 0 ? <p className="text-sm leading-7 text-emerald-900/70">Aucune date publiée pour {selectedDay ? "ce jour" : "ce mois"}.</p> : null}
-        {competitions.length === 0 && visibleEvents.length > 0 ? <p className="mb-4 text-sm leading-7">Aucune compétition ni aucun créneau publié pour {selectedDay ? "ce jour" : "ce mois"}. Les repères ci-dessous sont uniquement informatifs.</p> : null}
+        {visibleEvents.length === 0 && selectedDay ? <p className="text-sm leading-7 text-emerald-900/70">Aucune date publiée pour ce jour.</p> : null}
+        {competitions.length === 0 && visibleEvents.length > 0 ? <p className="mb-4 text-sm leading-7">Aucune compétition ni aucun créneau publié pour {selectedDay ? "ce jour" : "cette semaine"}. Les repères ci-dessous sont uniquement informatifs.</p> : null}
         {competitions.length > 0 ? <ul aria-label="Compétitions et créneaux" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {competitions.map(event => <li key={event.id}>
             <button type="button" onClick={() => setSelected(event)} className={`h-full w-full rounded-lg border-l-3 p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 ${eventStyle(event, today)}`}>

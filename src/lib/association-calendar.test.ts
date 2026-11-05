@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { calendarDefaultDate, monthDays, eventsOnDay, eventsInMonth, isPastEvent, upcomingCompetitions } from "./association-calendar";
+import { calendarDefaultDate, monthDays, eventsOnDay, eventsInMonth, eventsInWeek, formatCalendarWeek, isPastEvent, shiftCalendarDate, upcomingCompetitions, weekDays } from "./association-calendar";
 import { associationEvents, associationEvents2027 } from "../data/association-events";
 
 test("events become past only after their inclusive final day", () => {
@@ -14,18 +14,43 @@ test("events become past only after their inclusive final day", () => {
   assert.equal(isPastEvent(multiple, "2027-01-03"), true);
 });
 
-test("calendar opens on the next competition or the current month, ignoring context and empty slots", () => {
+test("next competition shortcut ignores context and empty slots", () => {
   const events = [
     { id: "holiday", title: "Jour férié", start: "2027-01-01", category: "holiday" as const },
     { id: "free", title: "Créneau à définir", start: "2027-02-01", category: "open_slot" as const },
     { id: "cup", title: "Coupe", start: "2027-03-07", category: "competition" as const },
   ];
-  assert.equal(calendarDefaultDate("2026-10-10", events), "2027-03-07");
-  assert.equal(calendarDefaultDate("2027-03-01", events), "2027-03-01");
   assert.deepEqual(upcomingCompetitions(events, "2026-10-10").map(event => event.id), ["cup"]);
-  assert.equal(calendarDefaultDate("2027-04-12", events), "2027-04-12");
-  assert.equal(calendarDefaultDate("2027-01-01"), "2027-01-01");
-  assert.equal(calendarDefaultDate("2027-04-12"), "2027-04-12");
+});
+
+test("calendar opens on the current Monday through Sunday even when that week has no events", () => {
+  assert.equal(calendarDefaultDate("2026-11-05"), "2026-11-02");
+  assert.equal(calendarDefaultDate("2026-11-08"), "2026-11-02");
+  assert.equal(calendarDefaultDate("2026-11-09"), "2026-11-09");
+  assert.deepEqual(weekDays("2026-11-05"), ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08"]);
+  assert.deepEqual(eventsInWeek(associationEvents, "2026-11-05"), []);
+});
+
+test("weekly navigation crosses months, years, leap days and daylight-saving changes", () => {
+  assert.deepEqual(weekDays("2027-01-01"), ["2026-12-28", "2026-12-29", "2026-12-30", "2026-12-31", "2027-01-01", "2027-01-02", "2027-01-03"]);
+  for (const [start, next] of [["2026-12-28", "2027-01-04"], ["2028-02-28", "2028-03-06"], ["2027-03-22", "2027-03-29"], ["2026-10-19", "2026-10-26"]]) {
+    assert.equal(shiftCalendarDate(start, 7), next);
+    assert.equal(shiftCalendarDate(next, -7), start);
+  }
+  assert.ok(weekDays("2028-02-29").includes("2028-02-29"));
+  assert.equal(formatCalendarWeek("2026-11-05"), "Du 2 au 8 novembre 2026");
+  assert.equal(formatCalendarWeek("2027-01-01"), "Du 28 décembre 2026 au 3 janvier 2027");
+});
+
+test("weekly events include overlaps and both boundaries, counting multi-day events once", () => {
+  const events = [
+    { id: "before", title: "Avant", start: "2026-12-27" },
+    { id: "monday", title: "Lundi", start: "2026-12-28" },
+    { id: "overlap", title: "Vacances", start: "2026-12-20", end: "2027-01-05", category: "vacation" as const },
+    { id: "sunday", title: "Dimanche", start: "2027-01-03" },
+    { id: "after", title: "Après", start: "2027-01-04" },
+  ];
+  assert.deepEqual(eventsInWeek(events, "2027-01-01").map(event => event.id), ["overlap", "monday", "sunday"]);
 });
 
 test("calendar starts on Monday and handles leap years and year boundaries", () => {

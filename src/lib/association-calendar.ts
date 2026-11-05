@@ -5,10 +5,32 @@ export function upcomingCompetitions(events: AssociationEvent[], today: string) 
     .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 }
 
-export function calendarDefaultDate(today: string, events: AssociationEvent[] = []) {
-  const next = upcomingCompetitions(events, today);
-  if (next.some(event => event.start <= `${today.slice(0, 7)}-31` && (event.end ?? event.start) >= `${today.slice(0, 7)}-01`)) return today;
-  return next[0]?.start ?? today;
+export function shiftCalendarDate(day: string, offset: number) {
+  const date = new Date(`${day}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+
+export function calendarDefaultDate(today: string) {
+  const weekday = (new Date(`${today}T12:00:00Z`).getUTCDay() + 6) % 7;
+  return shiftCalendarDate(today, -weekday);
+}
+
+export function weekDays(day: string) {
+  const monday = calendarDefaultDate(day);
+  return Array.from({ length: 7 }, (_, index) => shiftCalendarDate(monday, index));
+}
+
+export function eventsInWeek(events: AssociationEvent[], day: string) {
+  const days = weekDays(day);
+  return events.filter(event => event.start <= days[6] && (event.end ?? event.start) >= days[0])
+    .sort((a, b) => a.start.localeCompare(b.start));
+}
+
+export function formatCalendarWeek(day: string) {
+  const days = weekDays(day);
+  const start = days[0].slice(0, 7) === days[6].slice(0, 7) ? Number(days[0].slice(-2)) : formatCalendarDate(days[0]);
+  return `Du ${start} au ${formatCalendarDate(days[6])}`;
 }
 
 export function isPastEvent(event: AssociationEvent, today: string) {
