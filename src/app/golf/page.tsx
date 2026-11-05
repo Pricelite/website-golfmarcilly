@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CourseCard } from "@/components/ui/course-card";
 import { CourseVariantCard } from "@/components/course-variant-card";
 import { CourseFlyoverModal } from "@/components/course-flyover-modal";
@@ -6,6 +7,7 @@ import { siteConfig } from "@/data/site";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { courses } from "@/data/courses";
+import { golfPhotos } from "@/data/golf-photos";
 import { pricingSections, type PricingSection } from "@/data/pricing";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -91,6 +93,15 @@ export default function GolfPage() {
                 action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}
               />)}
         </div>
+        <section id="galerie" aria-label="Le golf en images" className="mt-16 scroll-mt-28">
+          <SectionTitle as="h2" eyebrow="Au fil du domaine" title="Le golf en images" description="Des greens bordés d’arbres aux départs ouverts sur le parcours, découvrez le cadre du Golf de Marcilly." />
+          <div className="mt-8 columns-1 gap-5 sm:columns-2 lg:columns-3">
+            {golfPhotos.map(photo => <figure key={photo.src} className="mb-5 break-inside-avoid overflow-hidden rounded-[26px] border border-emerald-950/10 bg-white">
+              <Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" className="h-auto w-full" />
+              <figcaption className="px-5 py-4 text-sm text-emerald-950/80">{photo.caption}</figcaption>
+            </figure>)}
+          </div>
+        </section>
         <aside className="mt-8 rounded-3xl border border-emerald-950/15 bg-emerald-50/60 p-6">
           <h2 className="font-serif text-2xl">Avant de choisir votre départ</h2>
           <p className="mt-3 text-sm leading-7 text-emerald-950/85">La licence de golf est obligatoire pour accéder au grand parcours. Vous venez pour la première fois ? Contactez l’accueil pour préparer votre venue, choisir votre parcours et connaître les possibilités de location de matériel.</p>
