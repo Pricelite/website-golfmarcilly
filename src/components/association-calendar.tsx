@@ -54,13 +54,12 @@ function subscribeScreen(callback: () => void) {
 export function AssociationCalendar({ initialDate, events: associationEvents }: { initialDate: string; events: AssociationEvent[] }) {
   const today = useSyncExternalStore(subscribeToDate, currentParisDate, () => initialDate);
   const [view, setView] = useState<{ year: number; month: number } | null>(null);
-  const defaultDate = calendarDefaultDate(today, associationEvents);
+  const defaultDate = calendarDefaultDate(today);
   const mobile = useSyncExternalStore(subscribeScreen, () => window.matchMedia("(max-width: 767px)").matches, () => false);
   const [display, setDisplay] = useState<"list" | "calendar" | null>(null);
   const listView = (display ?? (mobile ? "list" : "calendar")) === "list";
   const year = view?.year ?? Number(defaultDate.slice(0, 4));
   const month = view?.month ?? Number(defaultDate.slice(5, 7)) - 1;
-  const showingNextCompetitionMonth = view === null && defaultDate.slice(0, 7) !== today.slice(0, 7);
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [zone, setZone] = useState<"all" | "A" | "B" | "C">("B");
@@ -91,7 +90,6 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div aria-live="polite" aria-atomic="true">
           <h3 className="font-serif text-3xl">{months[month]} {year}</h3>
-          {showingNextCompetitionMonth ? <p className="mt-1 text-sm font-medium text-emerald-800">Aucune compétition à venir ce mois-ci. Prochaine compétition publiée en {months[month].toLocaleLowerCase("fr-FR")} {year}.</p> : null}
           <p className="mt-1 text-sm text-emerald-900/70">{monthCompetitions} compétition{monthCompetitions > 1 ? "s" : ""} ou créneau{monthCompetitions > 1 ? "x" : ""} · {monthMarkers} repère{monthMarkers > 1 ? "s" : ""}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -118,6 +116,7 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
       <p className="px-4 pb-4 text-xs leading-5 text-slate-600 sm:px-6">
         Bleu : à confirmer ou créneau libre ; jaune : option ; vert : confirmé. Les vacances, fêtes et jours fériés apparaissent en gris clair comme repères.
       </p>
+      {events.length === 0 && !listView ? <p className="border-t border-emerald-950/10 px-4 py-4 text-sm sm:px-6">Aucune date publiée pour ce mois.</p> : null}
       <div hidden={listView}>
       <div className="grid grid-cols-7 border-y border-emerald-950/10 bg-stone-50 text-center text-xs font-semibold text-emerald-800">
         {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map(day => <div key={day} className="py-3">{day}</div>)}

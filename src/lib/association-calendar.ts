@@ -5,10 +5,8 @@ export function upcomingCompetitions(events: AssociationEvent[], today: string) 
     .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 }
 
-export function calendarDefaultDate(today: string, events: AssociationEvent[] = []) {
-  const next = upcomingCompetitions(events, today);
-  if (next.some(event => event.start <= `${today.slice(0, 7)}-31` && (event.end ?? event.start) >= `${today.slice(0, 7)}-01`)) return today;
-  return next[0]?.start ?? today;
+export function calendarDefaultDate(today: string) {
+  return today;
 }
 
 export function isPastEvent(event: AssociationEvent, today: string) {
