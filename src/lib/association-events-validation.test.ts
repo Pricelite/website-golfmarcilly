@@ -26,6 +26,13 @@ test("calendar markers accept their category and school zone", () => {
   assert.equal(parsed.event.internalNote, "Préparation locale");
 });
 
+test("calendar accepts the November 2026 programme and rejects earlier dates", () => {
+  for (const start of ["2026-11-01", "2026-11-08", "2026-11-22", "2026-12-31", "2027-01-01"]) {
+    assert.equal(parseEventInput({ title: "Rendez-vous du club", start, status: "confirmed" }).ok, true);
+  }
+  assert.equal(parseEventInput({ title: "Avant le programme", start: "2026-10-31" }).ok, false);
+});
+
 test("competition input rejects invalid dates, reversed ranges and invalid fields", () => {
   const base = { title: "Coupe", start: "2027-09-16" };
   for (const input of [null, [], { ...base, title: " " }, { ...base, title: "x".repeat(161) },
