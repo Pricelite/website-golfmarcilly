@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import type { AssociationEvent } from "@/data/association-events";
+import { associationCalendarStartsOn, type AssociationEvent } from "@/data/association-events";
 import { formatCalendarDate } from "@/lib/association-calendar";
 
 const inputClass = "mt-1 block w-full rounded-xl border border-emerald-950/25 bg-white px-3 py-2 text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-700";
@@ -75,8 +75,8 @@ export function CompetitionManager({ initialEvents, localMode = false }: { initi
         <h2 className="font-serif text-2xl">{editing ? "Modifier la date du programme" : "Ajouter une date au programme"}</h2>
         <fieldset disabled={busy || Boolean(deleting)} className="mt-5 grid gap-4 sm:grid-cols-2 disabled:opacity-60">
           <label className="text-sm sm:col-span-2">Nom de l’événement *<input autoComplete="off" className={inputClass} name="title" required maxLength={160} defaultValue={editing?.title ?? ""} /></label>
-          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min="2027-01-01" max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
-          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min="2027-01-01" max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
+          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min={associationCalendarStartsOn} max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
+          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min={associationCalendarStartsOn} max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
           <label className="text-sm">Horaire (facultatif)<input className={inputClass} type="time" name="time" defaultValue={editing?.time ?? ""} /></label>
           <label className="text-sm">Statut de l’épreuve<select className={inputClass} name="status" defaultValue={editing?.status ?? ""}><option value="">Au programme</option><option value="confirmed">Confirmée</option><option value="unconfirmed">À confirmer</option><option value="provisional">En option</option><option value="private">Épreuve privée</option></select></label>
           <label className="text-sm">Catégorie<select className={inputClass} name="category" defaultValue={editing?.category ?? (editing?.title === "Créneau à définir" ? "open_slot" : "competition")}><option value="competition">Compétition</option><option value="open_slot">Créneau libre</option><option value="holiday">Jour férié</option><option value="vacation">Vacances scolaires</option><option value="celebration">Fête ou autre repère</option></select></label>
