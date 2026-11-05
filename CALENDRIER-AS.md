@@ -12,14 +12,15 @@ En mode développement, la page publique et `/admin/competitions` utilisent
 toujours le calendrier local : aucune mutation de compétition ne part vers
 Supabase, même si `.env.local` pointe vers une base distante. Au premier
 chargement, sans `.local-association-events-2027.json`, le programme de secours
-fournit les 73 épreuves ou créneaux et les 33 repères scolaires et calendaires.
+fournit les 73 épreuves ou créneaux 2027, les 33 repères scolaires et calendaires,
+ainsi que les 25 rendez-vous supplémentaires de novembre 2026 à décembre 2027.
 La première modification crée ce fichier à la racine du projet ; les suivantes
 y sont enregistrées. Il est ignoré par Git. Le retirer réinitialise l'affichage
 local au programme de secours et ne transfère rien à Supabase. Sauvegarder ce
 fichier séparément pour conserver les modifications locales. Le mode local est
 inactif en production.
 
-Le fichier local déjà préparé sur ce poste contient 106 entrées après les
+Le fichier local déjà préparé sur ce poste contient 131 entrées après les
 corrections visibles sur la capture du propriétaire. Les notes de préparation
 conservées restent dans sa note interne, visible uniquement dans l'éditeur
 local. Les indications de formule de jeu utiles au public apparaissent dans
@@ -41,8 +42,8 @@ la description des épreuves concernées.
    Cette migration ajoute les statuts 2027 et importe les 47 compétitions
    nommées du fichier fourni par le propriétaire. Ne pas la lancer sur la
    production sans validation explicite. Elle conserve les données de 2026
-   en archive dans la table, mais le calendrier public et l'administration
-   n'affichent que les événements à partir de 2027. Exécuter enfin
+   en archive dans la table. Le calendrier public et l'administration affichent
+   désormais les événements à partir du 1er novembre 2026. Exécuter enfin
    `supabase/migrations/20261010_association_2027_open_slots.sql` pour ajouter
    les 27 créneaux du fichier initial. Exécuter ensuite
    `supabase/migrations/20261011_association_2027_calendar_alignment.sql` :
@@ -100,10 +101,27 @@ leurs marqueurs empêchent qu'une réexécution restaure les entrées supprimée
 ## Données du programme initial
 
 Le fichier `src/data/association-events.ts` assemble le programme 2027 de
-secours et ses 33 repères. Les données 2026 encore présentes dans Supabase sont conservées
-pour un éventuel retour arrière, sans être affichées ni modifiables dans
-l'administration courante.
+secours, ses 33 repères et les ajouts du club du fichier
+`src/data/association-club-events-2026-2027.json`. Les données antérieures au
+1er novembre 2026 restent archivées dans Supabase.
 Après activation de Supabase, modifier les compétitions dans l'administration.
+
+## Compléments demandés le 5 novembre 2026
+
+- Animation seniors : les neuf jeudis du 5 novembre au 31 décembre 2026.
+- Conviviales femmes : le premier vendredi de chaque mois, du 6 novembre 2026
+  au 3 décembre 2027, soit quatorze dates.
+- Brégent et La Bergerie : le 8 novembre 2026, scramble à 4.
+- Coupe Beaujolais : le 22 novembre 2026, scramble à 2.
+
+Ces 25 rendez-vous sont confirmés et apparaissent en vert jusqu'à leur date,
+puis en gris selon la règle des événements passés. Aucun horaire n'a été fourni.
+Les deux anciennes entrées de novembre 2026 doivent être mises à jour dans
+l'administration, sans doublon. Les autres dates sont ajoutées après contrôle
+du calendrier existant. Cette édition de contenu ne demande aucune migration
+SQL. Le programme de secours ne remplace pas une base configurée, même vide.
+En cas de retour au code précédent, les données restent stockées ; les entrées
+de 2026 seront simplement masquées de nouveau.
 
 - `start` : premier jour, au format `YYYY-MM-DD`.
 - `end` : dernier jour inclus, facultatif.
@@ -112,8 +130,8 @@ Après activation de Supabase, modifier les compétitions dans l'administration.
 - `status` : `private`, `provisional`, `unconfirmed` ou `confirmed` si nécessaire.
 
 Une épreuve sur plusieurs jours apparaît chaque jour et n'est comptée qu'une fois
-dans la liste mensuelle. Le calendrier commence le lundi et s'ouvre sur janvier
-2027 tant que l'année n'a pas commencé, puis sur le mois courant à Paris. La
+dans la liste mensuelle. Le calendrier commence le lundi et s'ouvre sur le mois
+courant à Paris. La
 navigation entre les mois reste disponible.
 Les cases deviennent grises dès le lendemain du dernier jour de l'épreuve,
 selon la date à Paris ; les détails restent consultables.

@@ -1,5 +1,5 @@
 import "server-only";
-import { associationEvents, type AssociationEvent } from "@/data/association-events";
+import { associationCalendarStartsOn, associationEvents, type AssociationEvent } from "@/data/association-events";
 import { createContentAdminClient } from "@/lib/supabase/content";
 import { ScopedContentError, scopedContentRequest, scopedContentSyncEnabled } from "@/lib/supabase/scoped-content-sync";
 import { deleteLocalEvent, localCalendarEnabled, readLocalCalendar, saveLocalEvent } from "./association-events-local";
@@ -47,7 +47,7 @@ export async function listAssociationEvents(): Promise<AssociationEvent[]> {
   // Supabase limite les réponses : parcourir toutes les pages du programme actif.
   for (let offset = 0; ; offset += 500) {
     const { data, error } = await db.from("association_events").select(columns)
-      .gte("start_date", "2027-01-01")
+      .gte("start_date", associationCalendarStartsOn)
       .order("start_date").order("id").range(offset, offset + 499);
     checkError(error);
     const rows = (data ?? []) as EventRow[];

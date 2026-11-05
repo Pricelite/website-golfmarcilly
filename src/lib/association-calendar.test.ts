@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { calendarDefaultDate, monthDays, eventsOnDay, eventsInMonth, isPastEvent, upcomingCompetitions } from "./association-calendar";
-import { associationEvents, associationEvents2027 } from "../data/association-events";
+import { associationCalendar2027, associationClubEvents, associationEvents, associationEvents2027 } from "../data/association-events";
 
 test("events become past only after their inclusive final day", () => {
   const single = { id: "single", title: "Coupe", start: "2026-09-16" };
@@ -55,17 +55,38 @@ test("competitions appear before calendar markers on a shared day", () => {
   assert.deepEqual(eventsOnDay(events, "2027-05-05").map(event => event.id), ["competition", "holiday"]);
 });
 
-test("published programme contains only valid unique 2027 dates", () => {
+test("original 2027 programme keeps valid unique dates and its 33 context markers", () => {
   assert.equal(new Set(associationEvents.map(event => event.id)).size, associationEvents.length);
-  for (const event of associationEvents) {
+  for (const event of associationCalendar2027) {
     assert.equal(new Date(`${event.start}T12:00:00Z`).toISOString().slice(0, 10), event.start);
     assert.ok(event.start.startsWith("2027-"));
     if (event.end) assert.ok(event.end >= event.start);
   }
-  assert.equal(associationEvents.length, 106);
+  assert.equal(associationCalendar2027.length, 106);
   assert.equal(associationEvents.filter(event => ["holiday", "vacation", "celebration"].includes(event.category ?? "")).length, 33);
   assert.equal(eventsOnDay(associationEvents, "2027-03-28").map(event => event.title).includes("Pâques"), true);
   assert.equal(eventsOnDay(associationEvents, "2027-03-28").map(event => event.title).includes("Goltechnic"), false);
+});
+
+test("owner additions contain nine Thursdays, fourteen first Fridays and the two confirmed November competitions", () => {
+  const seniors = associationClubEvents.filter(event => event.title === "Animation seniors");
+  const women = associationClubEvents.filter(event => event.title === "Conviviales femmes");
+  assert.equal(seniors.length, 9);
+  assert.equal(seniors[0].start, "2026-11-05");
+  assert.equal(seniors.at(-1)?.start, "2026-12-31");
+  assert.ok(seniors.every(event => new Date(`${event.start}T12:00:00Z`).getUTCDay() === 4));
+  assert.equal(women.length, 14);
+  assert.equal(new Set(women.map(event => event.start.slice(0, 7))).size, 14);
+  assert.equal(women[0].start, "2026-11-06");
+  assert.equal(women.at(-1)?.start, "2027-12-03");
+  assert.ok(women.every(event => new Date(`${event.start}T12:00:00Z`).getUTCDay() === 5 && Number(event.start.slice(-2)) <= 7));
+  assert.equal(associationClubEvents.length, 25);
+  assert.ok(associationClubEvents.every(event => event.status === "confirmed" && event.category === "competition"));
+  assert.deepEqual(associationClubEvents.filter(event => event.id.startsWith("2026-")).map(event => [event.start, event.title, event.note]), [
+    ["2026-11-08", "Brégent et La Bergerie", "Scramble à 4."],
+    ["2026-11-22", "Coupe Beaujolais", "Scramble à 2."],
+  ]);
+  assert.equal(new Set(associationEvents.map(event => event.id)).size, associationEvents.length);
 });
 
 test("2027 owner agenda keeps named competitions, open dates and their publication statuses", () => {
