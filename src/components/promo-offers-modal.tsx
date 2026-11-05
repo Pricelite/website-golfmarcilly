@@ -14,23 +14,15 @@ import {
   type TouchEvent,
 } from "react";
 
-import { blackFriday2026OpensAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
+import { blackFriday2026ClosesAt, upcomingOfferPosters, type SiteOffer } from "@/data/offers";
+import { formatOfferCountdown, getBlackFriday2026Timing } from "@/lib/offer-campaign";
 
 const AUTOPLAY_DELAY_MS = 5000;
 const CLOSE_ANIMATION_MS = 350;
 const SWIPE_THRESHOLD_PX = 48;
-const BLACK_FRIDAY_OPENS_AT_MS = Date.parse(blackFriday2026OpensAt);
-
-function formatCountdown(remainingMs: number): string {
-  const totalSeconds = Math.ceil(remainingMs / 1000);
-  const days = Math.floor(totalSeconds / 86_400);
-  const hours = Math.floor((totalSeconds % 86_400) / 3_600);
-  const minutes = Math.floor((totalSeconds % 3_600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${days} j ${String(hours).padStart(2, "0")} h ${String(minutes).padStart(2, "0")} min ${String(seconds).padStart(2, "0")} s`;
-}
 
 type PromoOffersModalProps = {
+  initialNow: number;
   label?: string;
   offers: SiteOffer[];
 };
@@ -43,14 +35,14 @@ function getFocusableElements(container: HTMLElement) {
   ).filter((element) => !element.hasAttribute("disabled") && element.tabIndex !== -1);
 }
 
-export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
+export function PromoOffersModal({ initialNow, label, offers }: PromoOffersModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchCurrentX, setTouchCurrentX] = useState<number | null>(null);
-  const [now, setNow] = useState<number | null>(null);
+  const [now, setNow] = useState(initialNow);
   const closeTimeoutRef = useRef<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -63,16 +55,18 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
   const planLabel = hasMultipleOffers ? "Bons plans" : "Bon plan";
   const offerActionLabel = hasMultipleOffers ? "Voir les offres" : "Voir l’offre";
   const isBlackFridayPreview = totalOffers === 0;
-  const canOpen = !isBlackFridayPreview || (now !== null && now >= BLACK_FRIDAY_OPENS_AT_MS);
-  const remainingMs = now === null ? null : Math.max(0, BLACK_FRIDAY_OPENS_AT_MS - now);
+  const campaignTiming = getBlackFriday2026Timing(now);
+  const isCampaignExpired = isBlackFridayPreview && campaignTiming.phase === "ended";
+  const canOpen = !isBlackFridayPreview || campaignTiming.phase === "active";
+  const showDialog = isMounted && !isCampaignExpired;
 
   useEffect(() => {
-    if (!isBlackFridayPreview) return;
+    if (!isBlackFridayPreview || isCampaignExpired) return;
     const updateNow = () => setNow(Date.now());
     updateNow();
     const interval = window.setInterval(updateNow, 1000);
     return () => window.clearInterval(interval);
-  }, [isBlackFridayPreview]);
+  }, [isBlackFridayPreview, isCampaignExpired]);
 
   const particles = useMemo(
     () =>
@@ -85,15 +79,15 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     [],
   );
 
-  const clearCloseTimeout = () => {
+  const clearCloseTimeout = useCallback(() => {
     if (closeTimeoutRef.current !== null) {
       window.clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
-  };
+  }, []);
 
   const openModal = () => {
-    if (isBlackFridayPreview && Date.now() < BLACK_FRIDAY_OPENS_AT_MS) return;
+    if (isBlackFridayPreview && getBlackFriday2026Timing(Date.now()).phase !== "active") return;
     clearCloseTimeout();
     setIsMounted(true);
     requestAnimationFrame(() => {
@@ -101,12 +95,12 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     });
   };
 
-  const completeClose = () => {
+  const completeClose = useCallback(() => {
     setIsMounted(false);
     setIsVisible(false);
     setIsPaused(false);
     triggerRef.current?.focus();
-  };
+  }, []);
 
   const closeModal = useCallback(() => {
     clearCloseTimeout();
@@ -114,7 +108,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     closeTimeoutRef.current = window.setTimeout(() => {
       completeClose();
     }, CLOSE_ANIMATION_MS);
-  }, []);
+  }, [clearCloseTimeout, completeClose]);
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -153,10 +147,10 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       clearCloseTimeout();
     };
-  }, []);
+  }, [clearCloseTimeout]);
 
   useEffect(() => {
-    if (!isMounted) {
+    if (!showDialog) {
       return;
     }
 
@@ -167,10 +161,10 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [isMounted]);
+  }, [showDialog]);
 
   useEffect(() => {
-    if (!isMounted || isPaused || totalOffers <= 1) {
+    if (!showDialog || isPaused || totalOffers <= 1) {
       return;
     }
 
@@ -181,10 +175,10 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       window.clearInterval(interval);
     };
-  }, [goToNext, isMounted, isPaused, totalOffers]);
+  }, [goToNext, showDialog, isPaused, totalOffers]);
 
   useEffect(() => {
-    if (!isMounted) {
+    if (!showDialog) {
       return;
     }
 
@@ -237,7 +231,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeModal, goToNext, goToPrevious, isMounted, totalOffers]);
+  }, [closeModal, goToNext, goToPrevious, showDialog, totalOffers]);
 
   const handleOverlayMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -277,13 +271,15 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
     setTouchCurrentX(null);
   };
 
+  if (isCampaignExpired) return null;
+
   return (
     <>
       <button
         aria-haspopup={canOpen ? "dialog" : undefined}
         aria-expanded={canOpen ? isMounted : undefined}
         aria-disabled={!canOpen}
-        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 9 h, heure de Paris${remainingMs !== null ? `, dans ${formatCountdown(remainingMs)}` : ""}` : undefined}
+        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 9 h, heure de Paris, dans ${formatOfferCountdown(campaignTiming.remainingMs)}` : undefined}
         className={`group relative block w-full overflow-hidden border-y border-amber-400/60 bg-[#f4d77b] text-left text-emerald-950 shadow-[0_4px_16px_rgba(120,80,10,0.08)] focus-visible:z-10 focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-emerald-800 ${canOpen ? "transition-colors hover:bg-[#f8df94]" : "cursor-default"}`}
         onClick={openModal}
         ref={triggerRef}
@@ -301,8 +297,8 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
             <span className="text-sm leading-snug sm:text-base">
               {label ? `${label} · ` : ""}{slideCount} {hasMultipleOffers ? "offres" : "offre"} à découvrir
             </span>
-            {isBlackFridayPreview && !canOpen ? <span aria-hidden="true" className="text-xs font-semibold tabular-nums text-emerald-950/75">
-              {remainingMs === null ? "Ouverture le 1er nov. 2026 à 9 h" : formatCountdown(remainingMs)}
+            {isBlackFridayPreview ? <span className="mt-1 text-sm font-bold leading-snug text-emerald-950">
+              {canOpen ? <>Plus que <span className="tabular-nums">{formatOfferCountdown(campaignTiming.remainingMs)}</span> pour profiter {hasMultipleOffers ? "des offres" : "de l’offre"}.</> : <>Ouverture dans <span className="tabular-nums">{formatOfferCountdown(campaignTiming.remainingMs)}</span></>}
             </span> : null}
           </span>
           <span className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-emerald-950 px-6 py-3 text-base font-bold text-white shadow-md transition-colors group-hover:bg-emerald-900 sm:w-auto">
@@ -311,7 +307,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
         </span>
       </button>
 
-      {isMounted ? createPortal(
+      {showDialog ? createPortal(
         <div
           aria-hidden={!isVisible}
           className={`fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 ${
@@ -374,6 +370,7 @@ export function PromoOffersModal({ label, offers }: PromoOffersModalProps) {
                   >
                     {totalOffers ? (hasMultipleOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez notre offre exclusive disponible pour une durée limitée.") : "Découvrez les offres Black Friday de novembre 2026."}
                   </p>
+                  {isBlackFridayPreview ? <p className="mt-3 text-sm font-semibold text-emerald-900">Jusqu’au <time dateTime={blackFriday2026ClosesAt}>lundi 30 novembre 2026 à 20 h</time>, heure de Paris.</p> : null}
                 </div>
 
                 <button
