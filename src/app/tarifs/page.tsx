@@ -34,7 +34,7 @@ export default function PricingPage() {
         <nav aria-label="Catégories de tarifs" className="mt-8">
           <p className="mb-3 text-sm font-medium text-emerald-950/75">Accès direct aux tarifs</p>
           <div className="flex flex-wrap gap-2">
-            {[["decouverte", "Découverte"], ["green-fees", "Green fees"], ["practice", "Practice"], ["abonnements", "Abonnements"], ["location", "Location"]].map(([id, label]) => <a key={id} href={`#${id}`} className="site-button rounded-full px-4 py-3 text-sm font-semibold">{label}</a>)}
+            {[["decouverte", "Découverte"], ["green-fees", "Découverte et Kaleka"], ["grand-parcours", "Grand Parcours"], ["practice", "Practice"], ["abonnements", "Abonnements"], ["location", "Location"]].map(([id, label]) => <a key={id} href={`#${id}`} className="site-button rounded-full px-4 py-3 text-sm font-semibold">{label}</a>)}
           </div>
         </nav>
         <div className="mt-10 grid gap-6 xl:grid-cols-2">

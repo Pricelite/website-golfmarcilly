@@ -71,7 +71,7 @@ export default function BeginnerGolfPage() {
             <article key={formula.label} className="flex flex-col rounded-[28px] border border-emerald-950/15 bg-white p-6 sm:p-8">
               <h2 className="font-serif text-3xl text-emerald-950">{formula.label}</h2>
               <p className="mt-2 text-sm text-emerald-950/70">{index === 0 ? initiationExperience.withoutMealDuration : initiationExperience.withMealDuration}{index === 1 ? " · repas à La Bergerie" : ""}</p>
-              <p className="my-5 font-serif text-5xl text-emerald-950">{nonbreakingEuro(formula.values[1])} <span className="font-sans text-sm">/ personne</span></p>
+              <p className="my-5 font-serif text-5xl text-emerald-950">{nonbreakingEuro(formula.values[1] ?? formula.values[0])} <span className="font-sans text-sm">/ personne</span></p>
               <p className="mb-6 flex-1 text-sm leading-7 text-emerald-950/75">{formula.values[0]}</p>
               <CTAButton href={`/initiation/reservation?formule=${index === 0 ? "sans-repas" : "avec-repas"}`} className="self-start">Choisir un créneau</CTAButton>
             </article>

@@ -52,18 +52,6 @@ export function isWeekdaySpecialDate(menuDate: string, now = new Date()): boolea
   return weekday !== "Sat" && weekday !== "Sun";
 }
 
-export function isDailyMenuDisplayTime(now = new Date()): boolean {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Europe/Paris",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(now);
-  const value = (type: string) => Number(parts.find((part) => part.type === type)?.value ?? -1);
-  const minutes = value("hour") * 60 + value("minute");
-  return minutes >= 10 * 60 && minutes < 15 * 60;
-}
-
 export function formatDailyMenuDate(date: string): string {
   return new Intl.DateTimeFormat("fr-FR", {
     weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
