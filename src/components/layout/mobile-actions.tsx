@@ -29,7 +29,6 @@ export function MobileActions() {
         <Link className={actionClass} href={action.href}>
           {action.label}
         </Link>}
-      {pathname !== "/restaurant" && action.href === siteConfig.bookingEngineUrl ? <Link className="site-button site-button-secondary flex min-h-12 flex-[1.5] items-center justify-center rounded-full px-2 py-3 text-center text-sm font-semibold" href={siteConfig.externalReservationUrl}>Extérieurs</Link> : null}
     </div>
   </nav>;
 }

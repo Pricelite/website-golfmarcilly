@@ -38,7 +38,6 @@ export const siteConfig = {
   postalCode: "45240",
   alternateReservationUrl: "https://marcilly.reservations-golf.fr/",
   bookingEngineUrl: "https://marcilly.reservations-golf.fr/",
-  externalReservationUrl: "https://golf-marcilly.book.teeitup.com/",
   flashGolfUrl: "https://www.flashgolf.app/",
   mapImageUrl:
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=2.005,47.777,2.031,47.787&bboxSR=4326&imageSR=4326&size=1280,840&format=jpg&f=image",
