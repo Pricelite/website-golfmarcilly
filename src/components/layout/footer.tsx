@@ -90,10 +90,6 @@ export function Footer() {
               <p className="text-xs text-stone-100/65">Pour une première initiation</p>
               <Link className="hover:text-stone-100/75" href="/initiation/reservation">Demander un créneau</Link>
             </div>
-            <div>
-              <p className="text-xs text-stone-100/65">Pour les golfeurs extérieurs</p>
-              <Link className="hover:text-stone-100/75" href={siteConfig.externalReservationUrl}>Réservation extérieurs</Link>
-            </div>
           </div>
         </div>
       </div>
