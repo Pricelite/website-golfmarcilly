@@ -41,7 +41,7 @@ export default function RestaurantPage() {
       <section className="relative isolate overflow-hidden bg-emerald-950 text-stone-50">
         <Image src="/restaurant/hero.jpg" alt="" fill priority sizes="100vw" className="-z-20 object-cover object-center" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(3,31,24,0.96)_0%,rgba(3,31,24,0.88)_48%,rgba(3,31,24,0.52)_100%)]" />
-        <div className="mx-auto grid min-h-[42rem] max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.75fr)] lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)] lg:px-8">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#dbe9b4]">Restaurant du Golf de Marcilly-Orléans</p>
             <h1 className="mt-6 font-serif text-5xl leading-[0.94] sm:text-6xl lg:text-7xl">
@@ -51,11 +51,20 @@ export default function RestaurantPage() {
             <p className="mt-7 max-w-2xl text-base leading-8 text-stone-100/90 sm:text-lg">Une cuisine simple et gourmande, un cadre paisible et le plaisir de se retrouver à table après une partie ou simplement pour déjeuner.</p>
             <div className="mt-9 flex flex-wrap gap-3">
               <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full bg-stone-50 px-5 py-3 text-sm font-semibold text-emerald-950 shadow-lg shadow-black/10 transition hover:bg-[#dbe9b4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-50 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950" />
-              <CTAButton href="#menus" variant="secondary">Découvrir les menus</CTAButton>
+              <CTAButton href="#carte-du-jour" variant="secondary">Voir la carte</CTAButton>
               <CTAButton href="tel:+33238761173" variant="secondary">02 38 76 11 73</CTAButton>
             </div>
           </div>
-          <DailyMenuSection />
+          <aside aria-label="Préparer votre déjeuner" className="rounded-3xl border border-white/25 bg-emerald-950/65 p-6">
+            <h2 className="font-serif text-2xl">Votre déjeuner à La Bergerie</h2>
+            <p className="mt-3 text-sm leading-6 text-stone-100/85">Ouvert à tous, même sans jouer au golf. Plats selon disponibilité.</p>
+            <dl className="mt-5 space-y-3 text-sm">
+              <div className="flex justify-between gap-4"><dt>Lundi, mercredi–vendredi</dt><dd className="shrink-0 font-semibold">{restaurantData.hours[0].hours}</dd></div>
+              <div className="flex justify-between gap-4"><dt>Samedi et dimanche</dt><dd className="shrink-0 font-semibold">{restaurantData.hours[5].hours}</dd></div>
+              <div className="flex justify-between gap-4"><dt>Mardi</dt><dd className="font-semibold">{restaurantData.hours[1].hours}</dd></div>
+            </dl>
+            <a href="#horaires-restaurant" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">Tous les horaires du restaurant et du bar</a>
+          </aside>
         </div>
       </section>
 
@@ -68,32 +77,7 @@ export default function RestaurantPage() {
       </nav>
 
       <div>
-        <section className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 lg:px-8">
-          <div className="relative min-h-[28rem] overflow-hidden rounded-[32px] sm:min-h-[36rem]">
-            <Image src="/images/bar-la-bergerie-seminaire.jpeg" alt="Le bar et la salle du restaurant La Bergerie" fill sizes="(max-width: 1024px) calc(100vw - 32px), 530px" className="object-cover" />
-            <div className="absolute inset-x-5 bottom-5 rounded-2xl bg-emerald-950/90 p-5 text-stone-50 backdrop-blur-sm sm:inset-x-7 sm:bottom-7 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#dbe9b4]">La Bergerie au quotidien</p>
-              <p className="mt-2 font-serif text-2xl">Un lieu chaleureux pour déjeuner et se retrouver.</p>
-            </div>
-          </div>
-
-          <div>
-            <SectionTitle eyebrow="Une pause gourmande" title="Déjeuner au vert, même sans jouer au golf" description="La Bergerie accueille les golfeurs, les visiteurs et les groupes dans un cadre ouvert sur le domaine de Marcilly." />
-            <div className="mt-7 space-y-4 text-base leading-8 text-emerald-950/80">
-              {restaurantData.intro.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            </div>
-            <div className="mt-9 grid gap-5 sm:grid-cols-3">
-              {restaurantData.services.map((service, index) => (
-                <article key={service.title} className="border-t border-emerald-950/20 pt-4">
-                  <span aria-hidden="true" className="font-serif text-2xl text-emerald-700">0{index + 1}</span>
-                  <h3 className="mt-3 font-serif text-xl text-emerald-950">{service.title}</h3>
-                  {service.description ? <p className="mt-2 text-sm leading-6 text-emerald-950/70">{service.description}</p> : null}
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"><DailyMenuSection /></div>
         <section id="horaires-restaurant" aria-labelledby="horaires-restaurant-title" className="scroll-mt-28 bg-emerald-950 py-10 text-stone-50 sm:py-12">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-stretch lg:gap-0 lg:px-8">
             <div className="flex flex-col rounded-t-[28px] bg-[#123f35] p-6 sm:p-7 lg:rounded-l-[28px] lg:rounded-tr-none">
@@ -122,7 +106,33 @@ export default function RestaurantPage() {
           </div>
         </section>
 
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8"><RestaurantMenus /></div>
+        <section className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 lg:px-8">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[32px]">
+            <Image src="/images/bar-la-bergerie-seminaire.jpeg" alt="Le bar et la salle du restaurant La Bergerie" fill sizes="(max-width: 1024px) calc(100vw - 32px), 530px" className="object-cover" />
+            <div className="absolute inset-x-5 bottom-5 rounded-2xl bg-emerald-950/90 p-5 text-stone-50 backdrop-blur-sm sm:inset-x-7 sm:bottom-7 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#dbe9b4]">La Bergerie au quotidien</p>
+              <p className="mt-2 font-serif text-2xl">Un lieu chaleureux pour déjeuner et se retrouver.</p>
+            </div>
+          </div>
+
+          <div>
+            <SectionTitle eyebrow="Une pause gourmande" title="Déjeuner au vert, même sans jouer au golf" description="La Bergerie accueille les golfeurs, les visiteurs et les groupes dans un cadre ouvert sur le domaine de Marcilly." />
+            <div className="mt-7 space-y-4 text-base leading-8 text-emerald-950/80">
+              {restaurantData.intro.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </div>
+            <div className="mt-9 grid gap-5 sm:grid-cols-3">
+              {restaurantData.services.map((service, index) => (
+                <article key={service.title} className="border-t border-emerald-950/20 pt-4">
+                  <span aria-hidden="true" className="font-serif text-2xl text-emerald-700">0{index + 1}</span>
+                  <h3 className="mt-3 font-serif text-xl text-emerald-950">{service.title}</h3>
+                  {service.description ? <p className="mt-2 text-sm leading-6 text-emerald-950/70">{service.description}</p> : null}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8"><RestaurantMenus /></div>
 
         <section className="bg-[#f7f4e9] py-16 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:px-8">

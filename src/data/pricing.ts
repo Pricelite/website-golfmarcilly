@@ -4,7 +4,7 @@ import { initiationExperience, initiationInclusions } from "./initiation-experie
 
 export type PricingRow = {
   label: string;
-  values: [string, string];
+  values: [string] | [string, string];
   note?: string;
 };
 
@@ -13,7 +13,7 @@ export type PricingSection = {
   cta?: { href: string; label: string };
   title: string;
   description?: string;
-  columns: [string, string];
+  columns: [string] | [string, string];
   rows: PricingRow[];
   footnotes?: string[];
 };
@@ -60,6 +60,7 @@ export const pricingSections: PricingSection[] = [
     title: "Green fees",
     id: "green-fees",
     cta: { href: siteConfig.bookingEngineUrl, label: "Réserver un départ" },
+    description: "Parcours découverte, Footgolf et Kaleka course.",
     columns: ["Non licencié", "Licencié"],
     rows: [
       { label: "9 trous Découverte ou Footgolf", values: ["10 €", "10 €"] },
@@ -70,19 +71,29 @@ export const pricingSections: PricingSection[] = [
         values: ["25 €", "23 €"],
         note: "Deux parcours distincts : 9 trous aller + 9 trous retour. Jeunes de moins de 20 ans : 20 € sans licence ou 18 € avec licence.",
       },
+    ],
+  },
+  {
+    title: "Green fees · Grand Parcours",
+    id: "grand-parcours",
+    description: "Licence de golf obligatoire pour accéder au Grand Parcours.",
+    cta: { href: siteConfig.bookingEngineUrl, label: "Réserver un départ" },
+    columns: ["Licencié"],
+    footnotes: ["Licence de golf obligatoire pour accéder au Grand Parcours."],
+    rows: [
       {
         label: "9 trous Grand Parcours",
-        values: ["44 €", "39 €"],
-        note: "Jeunes de moins de 20 ans : 30 € sans licence ou 25 € avec licence.",
+        values: ["39 €"],
+        note: "Jeunes de moins de 20 ans : 25 € avec licence.",
       },
       {
         label: "18 trous Grand Parcours",
-        values: ["64 €", "59 €"],
-        note: "Jeunes de moins de 20 ans : 40 € sans licence ou 30 € avec licence.",
+        values: ["59 €"],
+        note: "Jeunes de moins de 20 ans : 30 € avec licence.",
       },
       {
         label: "18 trous après 16 h 00",
-        values: ["44 €", "39 €"],
+        values: ["39 €"],
       },
     ],
   },
