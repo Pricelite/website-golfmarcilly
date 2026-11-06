@@ -31,6 +31,12 @@ export const restaurantFaqs = [
 
 export const restaurantGallery = [
   {
+    "src": "/restaurant/gallery/mille-feuille-tatin.webp",
+    "alt": "Mille-feuille façon Tatin servi dans une assiette blanche à La Bergerie",
+    "title": "Mille-feuille façon Tatin",
+    "description": "Le mille-feuille façon Tatin de La Bergerie, photographié au restaurant."
+  },
+  {
     "src": "/restaurant/gallery/bar.webp",
     "alt": "Comptoir en bois et tabourets du bar de La Bergerie",
     "title": "Le bar de La Bergerie",

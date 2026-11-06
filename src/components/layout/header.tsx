@@ -62,8 +62,8 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-4 xl:flex">
-          <div className="hidden flex-col items-end gap-1 2xl:flex">
+        <div className="hidden shrink-0 items-center gap-2 xl:flex">
+          <div className="hidden flex-col items-end gap-1 min-[1700px]:flex">
             <a
               className="whitespace-nowrap text-sm font-medium text-emerald-950"
               href={`tel:${siteConfig.phoneHref}`}
@@ -72,7 +72,8 @@ export function Header() {
             </a>
             <HeaderMarcillyClock />
           </div>
-          <CTAButton href={siteConfig.bookingEngineUrl}>Réserver un départ</CTAButton>
+          <CTAButton className="whitespace-nowrap px-3 text-xs" href={siteConfig.bookingEngineUrl}>Réserver un départ</CTAButton>
+          <CTAButton className="whitespace-nowrap px-3 text-xs" href={siteConfig.externalReservationUrl} variant="secondary">Réservation extérieurs</CTAButton>
         </div>
 
         <div className="ml-auto flex items-center gap-2 xl:hidden">
@@ -124,6 +125,11 @@ export function Header() {
                 variant="primary"
               >
                 Réserver un départ
+              </CTAButton>
+            </li>
+            <li>
+              <CTAButton className="w-full" href={siteConfig.externalReservationUrl} variant="secondary">
+                Réservation extérieurs
               </CTAButton>
             </li>
           </ul>
