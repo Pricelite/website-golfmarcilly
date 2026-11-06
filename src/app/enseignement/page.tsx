@@ -30,10 +30,15 @@ export default function TeachingPage() {
         <div className={`${sectionClass} grid items-center gap-10 lg:grid-cols-2`}>
           <div>
             <SectionTitle as="h1" eyebrow="Enseignement · Golf de Marcilly" title="Le plaisir d’apprendre, à tout âge" description="Un premier swing, une nouvelle envie de jouer, un geste à améliorer : trouvez votre point de départ à Marcilly, près d’Orléans." />
+            <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
+              <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">École de golf dès 4 ans</dt><dd className="mt-1">{nonbreakingEuro(juniorPrograms[0].price)} / saison · licence incluse</dd><dd className="mt-1 text-emerald-950/75">Mercredi ou samedi · <a href="#ecole-de-golf" className={linkClass}>voir les horaires</a></dd></div>
+              <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">Cours collectifs adultes</dt><dd className="mt-1">200 € · 20 séances d’une heure</dd><dd className="mt-1 text-emerald-950/75">Balles en supplément · dates auprès des pros</dd></div>
+            </dl>
             <div className="mt-7 flex flex-wrap gap-3">
               <CTAButton href="#ecole-de-golf">L’école de golf</CTAButton>
               <CTAButton href="#adultes" variant="secondary">Les cours adultes</CTAButton>
               <CTAButton href="/initiation/reservation" variant="secondary">Voir les dates d’initiation</CTAButton>
+              <CTAButton href="#enseignants" variant="secondary">Contacter un enseignant</CTAButton>
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px]">
@@ -101,22 +106,6 @@ export default function TeachingPage() {
           </div>
         </div>
       </section>
-      <section className="bg-[#f7f4e9]">
-        <div className={sectionClass}>
-          <SectionTitle eyebrow="Informations pratiques" title="L’affiche des cours adultes" description="Ouvrez l’affiche des cours collectifs adultes pour la lire en grand. Les informations à jour de l’école de golf figurent ci-dessus." />
-          <div className="mt-8 max-w-xl">
-            <article className="flex flex-col rounded-[28px] border border-emerald-950/10 bg-white p-5 shadow-sm shadow-emerald-950/5 sm:p-7">
-              <h3 className="font-serif text-2xl text-emerald-950">Cours collectifs adultes</h3>
-              <a href={adultCollectiveCoursePosterSrc} target="_blank" rel="noopener noreferrer" aria-label="Voir l’affiche des cours collectifs adultes en grand (nouvel onglet)" className="group mt-5 block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
-                <span className="relative mx-auto block aspect-[2/3] w-full max-w-sm overflow-hidden rounded-2xl bg-[#f7f4e9]">
-                  <Image src={adultCollectiveCoursePosterSrc} alt="Affiche des cours collectifs adultes : 20 séances d’une heure, 200 €" fill sizes="(max-width: 768px) calc(100vw - 72px), 384px" className="object-contain" />
-                </span>
-                <span className="mt-4 block text-sm font-semibold text-emerald-950 underline underline-offset-4 group-hover:text-emerald-700">Voir l’affiche en grand <span aria-hidden="true">↗</span></span>
-              </a>
-            </article>
-          </div>
-        </div>
-      </section>
       <section id="enseignants" className={sectionClass}>
         <SectionTitle eyebrow="Nos pros" title="Un contact direct avec votre enseignant" description="Pour un cours particulier, appelez ou écrivez directement au pro de votre choix. Vous pouvez aussi consulter ses formules et tarifs sur son site." />
         <div className="mt-8 grid gap-6 md:grid-cols-3">
@@ -138,10 +127,30 @@ export default function TeachingPage() {
           ))}
         </div>
       </section>
+      <section className="bg-[#f7f4e9]">
+        <div className={sectionClass}>
+          <details className="rounded-3xl border border-emerald-950/15 bg-white p-5 sm:p-7">
+          <summary className="cursor-pointer font-serif text-2xl text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4">Voir l’affiche des cours collectifs adultes</summary>
+          <div className="mt-8 max-w-xl">
+            <article className="flex flex-col rounded-[28px] border border-emerald-950/10 bg-white p-5 shadow-sm shadow-emerald-950/5 sm:p-7">
+              <h3 className="font-serif text-2xl text-emerald-950">Cours collectifs adultes</h3>
+              <a href={adultCollectiveCoursePosterSrc} target="_blank" rel="noopener noreferrer" aria-label="Voir l’affiche des cours collectifs adultes en grand (nouvel onglet)" className="group mt-5 block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+                <span className="relative mx-auto block aspect-[2/3] w-full max-w-sm overflow-hidden rounded-2xl bg-[#f7f4e9]">
+                  <Image src={adultCollectiveCoursePosterSrc} alt="Affiche des cours collectifs adultes : 20 séances d’une heure, 200 €" fill sizes="(max-width: 768px) calc(100vw - 72px), 384px" className="object-contain" />
+                </span>
+                <span className="mt-4 block text-sm font-semibold text-emerald-950 underline underline-offset-4 group-hover:text-emerald-700">Voir l’affiche en grand <span aria-hidden="true">↗</span></span>
+              </a>
+            </article>
+          </div>
+          </details>
+        </div>
+      </section>
       <section id="label-sportif" className="scroll-mt-28 bg-[#f7f4e9]">
         <div className={sectionClass}>
           <SectionTitle eyebrow="École de golf" title="Six repères pour accompagner les jeunes" />
-          <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <details className="mt-6 rounded-2xl border border-emerald-950/15 bg-white p-5">
+            <summary className="cursor-pointer text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-4">Découvrir les six repères de l’école de golf</summary>
+          <ol className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sportingLabelCriteria.map((criterion, index) => (
               <li key={criterion} className="border-t border-emerald-950/20 pt-5">
                 <span aria-hidden="true" className="font-serif text-3xl text-emerald-700">0{index + 1}</span>
@@ -149,6 +158,7 @@ export default function TeachingPage() {
               </li>
             ))}
           </ol>
+          </details>
         </div>
       </section>
       <section id="inscription" className={`${sectionClass} grid gap-10 lg:grid-cols-2`}>

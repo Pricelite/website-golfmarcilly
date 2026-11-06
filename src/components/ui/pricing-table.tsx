@@ -9,15 +9,14 @@ export function PricingTable({ section, id }: { section: PricingSection; id?: st
         <h2 className="font-serif text-2xl text-emerald-950">{section.title}</h2>
         {section.description ? <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p> : null}
       </div>
-      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{nonbreakingEuro(row.values[1])} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{nonbreakingEuro(row.note)}</p> : null}<p className="my-3 text-sm leading-6">{nonbreakingEuro(row.values[0])}</p><CTAButton href="/initiation/reservation">Demander un créneau</CTAButton></article>)}</div> : null}
+      {section.title === "Découverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{nonbreakingEuro(row.values[1] ?? row.values[0])} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{nonbreakingEuro(row.note)}</p> : null}<p className="my-3 text-sm leading-6">{nonbreakingEuro(row.values[0])}</p><CTAButton href="/initiation/reservation">Demander un créneau</CTAButton></article>)}</div> : null}
       <div className={section.title === "Découverte" ? "hidden overflow-x-auto sm:block" : "overflow-x-auto"}>
         <table className="min-w-full text-left text-sm">
           <caption className="sr-only">{section.title} — tarifs 2026</caption>
           <thead className="bg-emerald-950 text-stone-50">
             <tr>
               <th scope="col" className="px-3 py-4 font-medium sm:px-6">Offre</th>
-              <th scope="col" className="px-3 py-4 font-medium sm:px-6">{section.columns[0]}</th>
-              <th scope="col" className="px-3 py-4 font-medium sm:px-6">{section.columns[1]}</th>
+              {section.columns.map(column => <th key={column} scope="col" className="px-3 py-4 font-medium sm:px-6">{column}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -34,8 +33,7 @@ export function PricingTable({ section, id }: { section: PricingSection; id?: st
                     </div>
                   ) : null}
                 </th>
-                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{nonbreakingEuro(row.values[0])}</td>
-                <td className="px-3 py-4 text-emerald-950/85 sm:px-6">{nonbreakingEuro(row.values[1])}</td>
+                {row.values.map((value, index) => <td key={index} className="px-3 py-4 text-emerald-950/85 sm:px-6">{nonbreakingEuro(value)}</td>)}
               </tr>
             ))}
           </tbody>

@@ -22,6 +22,7 @@ export const metadata = buildMetadata({
 export default function GolfPage() {
   const practicePricing = pricingSections.find(section => section.title === "Practice");
   const greenFees = pricingSections.find(section => section.title === "Green fees");
+  const grandParcoursPrices = pricingSections.find(section => section.id === "grand-parcours");
   const coursePrices = (labels: string[], displayLabel?: string): PricingSection | undefined => greenFees ? {
     ...greenFees,
     rows: greenFees.rows.filter(row => labels.includes(row.label)).map(row => displayLabel ? { ...row, label: displayLabel } : row),
@@ -36,7 +37,7 @@ export default function GolfPage() {
       rows: greenFees.rows.filter(row => ["9 trous Kaleka course aller", kalekaCombinedLabel].includes(row.label))
         .map(row => ({ ...row, label: row.label === kalekaCombinedLabel ? "18 trous" : "9 trous (aller ou retour)" })),
     } : undefined,
-    "parcours-competitions-18-trous": coursePrices(["9 trous Grand Parcours", "18 trous Grand Parcours", "18 trous après 16 h 00"]),
+    "parcours-competitions-18-trous": grandParcoursPrices,
   };
   const orderedCourses = [
     courses.find((course) => course.slug === "practice"),
