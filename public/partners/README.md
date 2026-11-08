@@ -15,6 +15,9 @@ proviennent de leurs sites officiels ou de leurs supports professionnels.
 Le logo Maserati provient de Wikimedia Commons (version 2020).
 Le logo Audilab provient du site officiel d’Audilab.
 Le logo SwingFlow a été fourni par le propriétaire du Golf de Marcilly.
+Le logo Greens Grappes Copains (GGC) a été fourni par le propriétaire le
+8 novembre 2026. Sa version WebP conserve le visuel complet et les couleurs
+d’origine. Aucun lien n’est associé en l’absence d’une adresse fournie.
 Le logo Loir & Flip provient du site officiel de Loir & Flip.
 Les logos US Orléans et Rugby Club Orléans proviennent des sites officiels
 orleansloiretfoot.com et rugbycluborleans.com (19 octobre 2026).
