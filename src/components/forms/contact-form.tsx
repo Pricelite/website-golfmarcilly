@@ -1,5 +1,7 @@
 "use client";
 
+import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
+
 import { useRef, useState } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
@@ -63,19 +65,19 @@ export function ContactForm({
 
   return (
     <form
-      className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
+      className={`${formPanelClass} space-y-5`}
       onSubmit={handleSubmit}
       aria-busy={state === "loading"}
     >
       <input name="context" type="hidden" value={context} />
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">
             Prénom
           </span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="firstName"
             autoComplete="given-name"
             maxLength={80}
@@ -84,10 +86,10 @@ export function ContactForm({
             type="text"
           />
         </label>
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Nom</span>
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">Nom</span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="lastName"
             autoComplete="family-name"
             maxLength={80}
@@ -99,12 +101,12 @@ export function ContactForm({
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">
             Téléphone
           </span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="phone"
             autoComplete="tel"
             maxLength={30}
@@ -112,10 +114,10 @@ export function ContactForm({
             type="tel"
           />
         </label>
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Email</span>
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">Email</span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="email"
             autoComplete="email"
             maxLength={160}
@@ -126,10 +128,10 @@ export function ContactForm({
         </label>
       </div>
 
-      <label className="block text-sm font-medium text-emerald-950">
-        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Objet</span>
+      <label className={formLabelClass}>
+        <span className="text-sm font-semibold text-emerald-950">Objet</span>
         <input
-          className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+          className={formFieldClass}
           name="subject"
           maxLength={160}
           placeholder={subjectPlaceholder}
@@ -137,10 +139,10 @@ export function ContactForm({
         />
       </label>
 
-      <label className="block text-sm font-medium text-emerald-950">
-        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">Message</span>
+      <label className={formLabelClass}>
+        <span className="text-sm font-semibold text-emerald-950">Message</span>
         <textarea
-          className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+          className={`${formFieldClass} min-h-40`}
           name="message"
           maxLength={4000}
           placeholder={messagePlaceholder}
@@ -150,9 +152,9 @@ export function ContactForm({
 
       <FormPrivacyNotice purpose="traiter et répondre à votre demande" />
 
-      <div className="flex justify-end">
+      <div className="flex justify-start">
         <button
-          className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm disabled:cursor-wait disabled:opacity-60"
+          className={formSubmitClass}
           disabled={state === "loading"}
           type="submit"
         >
@@ -161,13 +163,13 @@ export function ContactForm({
       </div>
 
       {state === "success" ? (
-        <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p role="status" className={formSuccessClass}>
           {confirmationMessage}
         </p>
       ) : null}
 
       {state === "error" ? (
-        <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p role="alert" className={formErrorClass}>
           {errorMessage || "Une erreur est survenue. Merci de réessayer."}
         </p>
       ) : null}

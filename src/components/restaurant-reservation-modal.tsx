@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass } from "@/components/forms/form-styles";
+
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
@@ -333,7 +335,7 @@ export default function RestaurantReservationModal({
               aria-modal="true"
               aria-labelledby={titleId}
               aria-describedby={descriptionId}
-              className="w-full max-w-5xl overflow-y-auto rounded-3xl border border-emerald-900/15 bg-white p-5 shadow-2xl max-h-[95dvh] sm:p-6"
+              className={`${formPanelClass} w-full max-w-5xl max-h-[95dvh] overflow-y-auto shadow-2xl`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -357,7 +359,7 @@ export default function RestaurantReservationModal({
               <form className="mt-5" onSubmit={handleSubmit} aria-busy={isSubmitting} noValidate>
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                   <section>
-                    <p className="text-sm font-semibold text-emerald-900">Dates souhaitées (7 jours)</p>
+                    <p className={formLabelClass}>Dates souhaitées (7 jours)</p>
                     <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                       {dayOptions.map((day) => {
                         const isSelected = day.iso === selectedDay;
@@ -412,7 +414,7 @@ export default function RestaurantReservationModal({
                   <section className="space-y-3">
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div>
-                        <label htmlFor="reservation-name" className="text-sm font-semibold text-emerald-900">
+                        <label htmlFor="reservation-name" className={formLabelClass}>
                           Nom *
                         </label>
                         <input
@@ -423,12 +425,12 @@ export default function RestaurantReservationModal({
                           maxLength={120}
                           value={form.name}
                           onChange={(event) => updateField("name", event.target.value)}
-                          className="mt-1.5 w-full rounded-xl border border-emerald-900/20 px-4 py-2.5 text-sm text-emerald-950 outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-300"
+                          className={formFieldClass}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="reservation-email" className="text-sm font-semibold text-emerald-900">
+                        <label htmlFor="reservation-email" className={formLabelClass}>
                           Email *
                         </label>
                         <input
@@ -439,14 +441,14 @@ export default function RestaurantReservationModal({
                           maxLength={160}
                           value={form.email}
                           onChange={(event) => updateField("email", event.target.value)}
-                          className="mt-1.5 w-full rounded-xl border border-emerald-900/20 px-4 py-2.5 text-sm text-emerald-950 outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-300"
+                          className={formFieldClass}
                         />
                       </div>
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div>
-                        <label htmlFor="reservation-phone" className="text-sm font-semibold text-emerald-900">
+                        <label htmlFor="reservation-phone" className={formLabelClass}>
                           Téléphone
                         </label>
                         <input
@@ -456,12 +458,12 @@ export default function RestaurantReservationModal({
                           maxLength={30}
                           value={form.phone}
                           onChange={(event) => updateField("phone", event.target.value)}
-                          className="mt-1.5 w-full rounded-xl border border-emerald-900/20 px-4 py-2.5 text-sm text-emerald-950 outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-300"
+                          className={formFieldClass}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="reservation-party-size" className="text-sm font-semibold text-emerald-900">
+                        <label htmlFor="reservation-party-size" className={formLabelClass}>
                           Nombre de personnes *
                         </label>
                         <input
@@ -472,13 +474,13 @@ export default function RestaurantReservationModal({
                           max={30}
                           value={form.partySize}
                           onChange={(event) => updateField("partySize", event.target.value)}
-                          className="mt-1.5 w-full rounded-xl border border-emerald-900/20 px-4 py-2.5 text-sm text-emerald-950 outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-300"
+                          className={formFieldClass}
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="reservation-message" className="text-sm font-semibold text-emerald-900">
+                      <label htmlFor="reservation-message" className={formLabelClass}>
                         Message
                       </label>
                       <textarea
@@ -487,7 +489,7 @@ export default function RestaurantReservationModal({
                         maxLength={1200}
                         value={form.message}
                         onChange={(event) => updateField("message", event.target.value)}
-                        className="mt-1.5 w-full rounded-xl border border-emerald-900/20 px-4 py-2.5 text-sm text-emerald-950 outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-300"
+                        className={formFieldClass}
                       />
                     </div>
                   </section>
@@ -515,7 +517,7 @@ export default function RestaurantReservationModal({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="site-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+                    className={formSubmitClass}
                   >
                     {isSubmitting ? "Envoi…" : "Envoyer la demande"}
                   </button>

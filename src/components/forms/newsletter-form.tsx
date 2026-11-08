@@ -1,5 +1,7 @@
 "use client";
 
+import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
+
 import { useRef, useState } from "react";
 import { FORM_NETWORK_ERROR } from "@/lib/api/form-feedback";
 
@@ -47,11 +49,11 @@ export function NewsletterForm() {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-3" aria-busy={pending}>
-      <label className="block text-sm text-stone-100/88">
+    <form action={handleSubmit} className={`${formPanelClass} space-y-5`} aria-busy={pending}>
+      <label className={formLabelClass}>
         Email
         <input
-          className="mt-2 w-full rounded-full border border-stone-100/18 bg-stone-50/10 px-4 py-3 text-stone-50 placeholder:text-stone-100/45"
+          className={formFieldClass}
           name="email"
           placeholder="vous@entreprise.fr"
           required
@@ -59,17 +61,17 @@ export function NewsletterForm() {
         />
       </label>
       <button
-        className="site-button rounded-full px-4 py-3 text-sm font-semibold"
+        className={formSubmitClass}
         type="submit"
         disabled={pending || status === "success"}
       >
         {pending ? "Envoi…" : "S’inscrire"}
       </button>
       {status === "success" ? (
-        <p role="status" className="text-sm text-emerald-200">{confirmationMessage}</p>
+        <p role="status" className={formSuccessClass}>{confirmationMessage}</p>
       ) : null}
       {status === "error" ? (
-        <p role="alert" className="text-sm text-red-200">
+        <p role="alert" className={formErrorClass}>
           {errorMessage || "Impossible d’enregistrer votre e-mail pour le moment."}
         </p>
       ) : null}

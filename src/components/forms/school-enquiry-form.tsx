@@ -1,5 +1,7 @@
 "use client";
 
+import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
+
 import { useRef, useState } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { juniorPrograms } from "@/data/teaching";
@@ -8,8 +10,8 @@ import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback
 type ProgramKey = (typeof juniorPrograms)[number]["key"];
 type FormState = "idle" | "loading" | "success" | "error";
 
-const inputClass = "mt-2 w-full rounded-2xl border border-emerald-950/15 bg-stone-50 px-4 py-3 text-emerald-950 outline-none focus:border-emerald-800 focus:bg-white";
-const labelClass = "block text-sm font-medium text-emerald-950";
+const inputClass = formFieldClass;
+const labelClass = formLabelClass;
 
 export function SchoolEnquiryForm({ initialProgramKey }: { initialProgramKey: ProgramKey }) {
   const [programKey, setProgramKey] = useState<ProgramKey>(initialProgramKey);
@@ -70,7 +72,7 @@ export function SchoolEnquiryForm({ initialProgramKey }: { initialProgramKey: Pr
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-busy={state === "loading"} className="space-y-5 rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-sm sm:p-8">
+    <form onSubmit={handleSubmit} aria-busy={state === "loading"} className={`${formPanelClass} space-y-5`}>
       <h2 className="font-serif text-2xl text-emerald-950">Votre demande pour un jeune</h2>
       <p className="text-sm text-emerald-950/70">Les champs marqués d’un astérisque sont obligatoires.</p>
 
@@ -123,11 +125,11 @@ export function SchoolEnquiryForm({ initialProgramKey }: { initialProgramKey: Pr
         <textarea name="notes" maxLength={2000} rows={4} placeholder="Expérience du golf, questions ou disponibilités…" className={inputClass} />
       </label>
       <FormPrivacyNotice purpose="traiter votre demande concernant l’école de golf et vous répondre" />
-      <button type="submit" disabled={state === "loading"} className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold disabled:cursor-wait disabled:opacity-60">
+      <button type="submit" disabled={state === "loading"} className={formSubmitClass}>
         {state === "loading" ? "Envoi en cours…" : "Envoyer ma demande au golf"}
       </button>
-      {state === "success" ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{feedback}</p> : null}
-      {state === "error" ? <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{feedback}</p> : null}
+      {state === "success" ? <p role="status" className={formSuccessClass}>{feedback}</p> : null}
+      {state === "error" ? <p role="alert" className={formErrorClass}>{feedback}</p> : null}
     </form>
   );
 }
