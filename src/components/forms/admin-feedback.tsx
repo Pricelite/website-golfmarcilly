@@ -1,5 +1,7 @@
 "use client";
 
+import { formPanelClass, formFieldClass, formSubmitClass } from "@/components/forms/form-styles";
+
 import Link from "next/link";
 import { useId, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { feedbackPromotionEndsAt, isFeedbackPromotionActive } from "@/data/feedback-promotion";
@@ -64,7 +66,7 @@ export function AdminFeedback({ variant = "footer" }: { variant?: "footer" | "mo
       setError("L’envoi a échoué. Vérifiez votre connexion puis réessayez. Votre texte est conservé.");
     } finally { sending.current = false; setBusy(false); }
   }
-  const field = "mt-2 block w-full rounded-xl border border-emerald-950/25 bg-white px-3 py-3 text-base text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
+  const field = formFieldClass;
   return <>
     {showPromotion && <button type="button" onClick={open} aria-haspopup="dialog" aria-label="Contacter l’administrateur : une remarque ou un bug ?"
       className={`${variant === "mobile" ? "flex min-h-12 w-14 shrink-0 flex-col justify-center gap-0.5 rounded-full px-1 py-1 text-center" : "fixed right-6 bottom-6 z-50 hidden max-w-[calc(100%-2rem)] gap-3 rounded-2xl px-4 py-3 text-left shadow-xl lg:flex"} items-center border border-emerald-950/20 bg-[#f4d77c] text-emerald-950 transition hover:bg-[#ffe39a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700`}>
@@ -74,7 +76,7 @@ export function AdminFeedback({ variant = "footer" }: { variant?: "footer" | "mo
     {variant === "footer" && <button type="button" onClick={open} aria-haspopup="dialog" className="min-h-11 rounded-full border border-stone-100/40 px-4 py-2 text-sm text-stone-100 transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Contacter l’administrateur</button>}
     <dialog ref={dialog} aria-labelledby={`${id}-title`} aria-describedby={`${id}-description`}
       onClose={() => { document.body.style.overflow = previousOverflow.current; }}
-      className="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-3xl border border-emerald-950/15 bg-[#f8f5eb] p-5 text-left text-emerald-950 shadow-2xl backdrop:bg-emerald-950/65 sm:p-8">
+      className={`${formPanelClass} fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto text-left text-emerald-950 shadow-2xl backdrop:bg-emerald-950/65`}>
       <div className="flex items-start justify-between gap-4">
         <h2 id={`${id}-title`} className="font-serif text-2xl sm:text-3xl">Contacter l’administrateur</h2>
         <button type="button" onClick={() => dialog.current?.close()} aria-label="Fermer le formulaire" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-emerald-950/20 text-xl focus-visible:outline-2 focus-visible:outline-emerald-700">×</button>
@@ -92,7 +94,7 @@ export function AdminFeedback({ variant = "footer" }: { variant?: "footer" | "mo
           </fieldset>
           <p className="text-xs leading-5 text-emerald-950/75">Le message, la page consultée et la date sont transmis à l’administrateur pour traiter votre retour. <Link href="/politique-de-confidentialite" onClick={() => dialog.current?.close()} className="underline underline-offset-2">Confidentialité</Link>.</p>
           {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-900">{error}</p>}
-          <button disabled={busy} type="submit" className="site-button site-button-primary inline-flex min-h-11 w-full items-center justify-center rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-wait disabled:opacity-60">{busy ? "Envoi en cours…" : "Envoyer le message"}</button>
+          <button disabled={busy} type="submit" className={formSubmitClass}>{busy ? "Envoi en cours…" : "Envoyer le message"}</button>
         </form>}
     </dialog>
   </>;

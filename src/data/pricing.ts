@@ -20,7 +20,7 @@ export type PricingSection = {
 
 export const pricingSections: PricingSection[] = [
   {
-    title: "Découverte",
+    title: "Initiation",
     id: "decouverte",
     cta: { href: "/initiation/reservation", label: "Voir les dates d’initiation" },
     description: "Tarifs 2026 officiels pour découvrir le golf à Marcilly.",

@@ -1,5 +1,7 @@
 "use client";
 
+import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
+
 import { useRef, useState, type FormEvent } from "react";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { parisDateKey } from "@/lib/site-conditions";
@@ -58,19 +60,19 @@ export function QuoteForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 rounded-[36px] border border-emerald-950/10 bg-white/92 p-6 shadow-xl shadow-emerald-950/8 backdrop-blur sm:p-8"
+      className={`${formPanelClass} space-y-5`}
     >
       <div className="rounded-[24px] border border-emerald-950/8 bg-stone-50 px-4 py-4 text-sm leading-7 text-emerald-950/72">
         Décrivez votre projet en quelques mots. Notre équipe prendra contact avec vous pour préciser les possibilités.
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">
             Entreprise / Organisateur
           </span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="company"
             autoComplete="organization"
             maxLength={160}
@@ -79,12 +81,12 @@ export function QuoteForm() {
             type="text"
           />
         </label>
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">
             Email
           </span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="email"
             autoComplete="email"
             maxLength={160}
@@ -96,12 +98,12 @@ export function QuoteForm() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-sm font-medium text-emerald-950">
-            <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+        <label className={formLabelClass}>
+            <span className="text-sm font-semibold text-emerald-950">
             Type d&apos;événement
           </span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="eventType"
             maxLength={120}
             placeholder="Séminaire, mariage, team building…"
@@ -109,12 +111,12 @@ export function QuoteForm() {
             type="text"
           />
         </label>
-        <label className="text-sm font-medium text-emerald-950">
-          <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+        <label className={formLabelClass}>
+          <span className="text-sm font-semibold text-emerald-950">
             Nombre de participants
           </span>
           <input
-            className="mt-2 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+            className={formFieldClass}
             name="participants"
             min={1}
             required
@@ -123,16 +125,16 @@ export function QuoteForm() {
         </label>
       </div>
 
-      <label className="block text-sm font-medium text-emerald-950">Date souhaitée (facultatif)
-        <input type="date" name="desiredDate" min={parisDateKey(new Date())} className="mt-2 block min-h-12 w-full min-w-0 rounded-2xl border border-emerald-950/20 bg-stone-50 px-4 py-3" />
+      <label className={formLabelClass}>Date souhaitée (facultatif)
+        <input type="date" name="desiredDate" min={parisDateKey(new Date())} className={formFieldClass} />
         <span className="mt-1 block text-xs text-emerald-950/75">Laissez vide si votre date reste à définir.</span>
       </label>
-      <label className="block text-sm font-medium text-emerald-950">
-        <span className="text-xs uppercase tracking-[0.2em] text-emerald-700">
+      <label className={formLabelClass}>
+        <span className="text-sm font-semibold text-emerald-950">
           Besoin détaillé
         </span>
         <textarea
-          className="mt-2 min-h-40 w-full rounded-2xl border border-emerald-950/12 bg-stone-50/70 px-4 py-3 outline-none transition placeholder:text-emerald-950/35 focus:border-emerald-800 focus:bg-white"
+          className={`${formFieldClass} min-h-40`}
           name="details"
           maxLength={4000}
           placeholder="Date souhaitée, ambiance, restauration, objectifs…"
@@ -142,13 +144,13 @@ export function QuoteForm() {
 
       <FormPrivacyNotice purpose="étudier votre projet et vous répondre au sujet du devis demandé" />
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col items-start gap-4">
         <p className="max-w-md text-xs leading-6 text-emerald-950/55">
           Date, restauration, activité golf : partagez ce qui compte pour vous dans votre message.
         </p>
         <button
           disabled={state === "loading" || state === "success"}
-          className="site-button site-button-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm"
+          className={formSubmitClass}
           type="submit"
         >
           {state === "loading" ? "Envoi…" : "Demander mon devis"}
@@ -156,13 +158,13 @@ export function QuoteForm() {
       </div>
 
       {state === "success" ? (
-        <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p role="status" className={formSuccessClass}>
             {confirmationMessage}
         </p>
       ) : null}
 
       {state === "error" ? (
-        <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p role="alert" className={formErrorClass}>
           {errorMessage || "Une erreur est survenue. Merci de réessayer."}
         </p>
       ) : null}
