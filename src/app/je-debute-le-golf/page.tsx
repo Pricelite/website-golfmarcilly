@@ -24,7 +24,7 @@ export const metadata = buildMetadata({
 });
 
 export default function BeginnerGolfPage() {
-  const discovery = pricingSections.find(section => section.title === "Découverte")!;
+  const discovery = pricingSections.find(section => section.id === "decouverte")!;
   const practice = pricingSections.find(section => section.title === "Practice")!;
   const buckets = practice.rows[0];
 
