@@ -4,11 +4,10 @@ export type Partner = {
   removeWhiteBackground?: boolean;
   website?: string;
   showInMarquee?: boolean;
-  showNameWithLogo?: boolean;
 };
 
 export const partners: Partner[] = [
-  { name: "Greens Grappes Copains", logo: "/partners/greens-grappes-copains.webp", removeWhiteBackground: false, showNameWithLogo: true },
+  { name: "Greens Grappes Copains", logo: "/partners/greens-grappes-copains.webp", removeWhiteBackground: false },
   { name: "Citya", logo: "/partners/citya.png", website: "https://www.citya.com/" },
   { name: "Rotary", logo: "/partners/rotary.png", website: "https://www.rotary.org/fr-fr", showInMarquee: false },
   { name: "Eden Park", logo: "/partners/eden-park-logo.png", website: "https://www.eden-park.com/" },

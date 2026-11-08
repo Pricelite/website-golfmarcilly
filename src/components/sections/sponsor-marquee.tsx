@@ -17,14 +17,13 @@ export function SponsorMarquee() {
                 const content = partner.logo ? <>
                   <Image
                     src={partner.logo}
-                    alt={duplicate || partner.showNameWithLogo ? "" : partner.name}
-                    width={partner.showNameWithLogo ? 56 : 160}
+                    alt={duplicate ? "" : partner.name}
+                    width={160}
                     height={56}
-                    sizes={partner.showNameWithLogo ? "56px" : "160px"}
+                    sizes="160px"
                     loading="eager"
-                    className={`${partner.showNameWithLogo ? "h-14 w-14 shrink-0 rounded-md" : partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain${partner.removeWhiteBackground === false ? "" : " mix-blend-multiply"}`}
+                    className={`${partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain${partner.removeWhiteBackground === false ? "" : " mix-blend-multiply"}`}
                   />
-                  {partner.showNameWithLogo ? <span className="text-left text-xs font-semibold leading-4 text-emerald-950">{partner.name}</span> : null}
                 </> : <span className="text-center font-serif text-2xl font-semibold tracking-wide text-emerald-950">{partner.name}</span>;
                 const contentClass = "flex h-full w-full items-center justify-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-700";
                 return (
