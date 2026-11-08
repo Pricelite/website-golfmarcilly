@@ -67,6 +67,13 @@ export function parisDateKey(date: Date): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
-export function visibleCondition(condition: SiteCondition): SiteCondition {
+export function isRestaurantWeeklyClosed(now = new Date()): boolean {
+  return new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Paris", weekday: "short" }).format(now) === "Tue";
+}
+
+export function visibleCondition(condition: SiteCondition, now = new Date()): SiteCondition {
+  if (condition.id === "restaurant" && condition.status !== "closed" && isRestaurantWeeklyClosed(now)) {
+    return { ...condition, status: "closed", stateLabel: null, reason: "Fermeture hebdomadaire du mardi." };
+  }
   return condition;
 }

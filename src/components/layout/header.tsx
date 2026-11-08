@@ -22,7 +22,7 @@ export function Header() {
       if (event.key !== "Escape") return;
       if (open) { setOpen(false); menuButton.current?.focus(); }
     }} className="sticky top-0 z-50 flex max-h-dvh flex-col border-b border-emerald-950/10 bg-[#f7f4e9]/95 backdrop-blur-lg">
-      <div className="mx-auto flex w-full max-w-7xl shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+      <div className="mx-auto flex w-full max-w-[96rem] shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
         <div className="shrink-0">
           <div className="flex items-center gap-2 sm:gap-3">
             <Link className="flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700" href="/" aria-label="Golf de Marcilly — Accueil">
@@ -48,7 +48,7 @@ export function Header() {
           aria-label="Navigation principale"
           className="hidden min-w-0 flex-1 xl:block"
         >
-          <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-emerald-950">
+          <ul className="flex flex-nowrap items-center justify-center gap-2 text-[13px] text-emerald-950 2xl:gap-3 2xl:text-sm">
             {desktopNavigation.map((item) => (
               <li key={item.href}>
                 <Link

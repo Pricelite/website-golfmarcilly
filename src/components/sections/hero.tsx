@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { HeroPhotoCarousel } from "@/components/hero-photo-carousel";
 import { CTAButton } from "@/components/ui/cta-button";
+import { associationLinks } from "@/data/association";
 
 type HeroProps = {
   eyebrow: string;
@@ -25,6 +26,7 @@ export function Hero({ eyebrow, title, subtitle, playCta, appCta }: HeroProps) {
             <CTAButton href={playCta.href}>{playCta.label}</CTAButton>
             <CTAButton href="/je-debute-le-golf" variant="secondary">Débuter</CTAButton>
             <CTAButton href="/restaurant" variant="secondary">Déjeuner</CTAButton>
+            <CTAButton href={associationLinks.starts} variant="secondary">Départs compétitions</CTAButton>
           </div>
         </div>
         <div className="relative h-[220px] sm:h-[340px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-auto lg:min-h-[520px]">
