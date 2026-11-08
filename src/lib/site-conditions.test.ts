@@ -24,9 +24,36 @@ test("grand parcours, Kaleka course aller and Kaleka course have separate states
 
 test("manual closures remain until changed, including on following Paris days", () => {
   const condition = { ...emptyConditions().find(item => item.id === "restaurant")!, status: "closed" as const, reason: "Travaux", updatedAt: "2026-01-01T21:30:00Z" };
-  assert.deepEqual(visibleCondition(condition), condition);
+  assert.deepEqual(visibleCondition(condition, new Date("2026-11-10T12:00:00Z")), condition);
   const reopened = { ...condition, status: "open" as const, reason: null, updatedAt: "2026-10-16T12:00:00Z" };
-  assert.deepEqual(visibleCondition(reopened), reopened);
+  assert.deepEqual(visibleCondition(reopened, new Date("2026-11-11T12:00:00Z")), reopened);
+});
+
+test("restaurant closes every Tuesday in Paris without changing its saved state", () => {
+  const condition = { ...emptyConditions().find(item => item.id === "restaurant")!, status: "open" as const, stateLabel: "Service normal" };
+  for (const [before, tuesday, after] of [
+    ["2026-11-09T22:59:59Z", "2026-11-09T23:00:00Z", "2026-11-10T23:00:00Z"],
+    ["2027-07-05T21:59:59Z", "2027-07-05T22:00:00Z", "2027-07-06T22:00:00Z"],
+  ]) {
+    assert.deepEqual(visibleCondition(condition, new Date(before)), condition);
+    const closed = visibleCondition(condition, new Date(tuesday));
+    assert.equal(closed.status, "closed");
+    assert.equal(closed.stateLabel, null);
+    assert.equal(closed.reason, "Fermeture hebdomadaire du mardi.");
+    assert.deepEqual(visibleCondition(condition, new Date(after)), condition);
+  }
+  assert.equal(condition.status, "open");
+});
+
+test("Tuesday closure covers unknown restaurant status while preserving manual closures and other equipment", () => {
+  const tuesday = new Date("2026-11-10T12:00:00Z");
+  const restaurant = emptyConditions().find(item => item.id === "restaurant")!;
+  assert.equal(visibleCondition(restaurant, tuesday).status, "closed");
+  const manual = { ...restaurant, status: "closed" as const, reason: "Travaux", stateLabel: "Fermeture exceptionnelle" };
+  assert.deepEqual(visibleCondition(manual, tuesday), manual);
+  assert.deepEqual(visibleCondition(manual, new Date("2026-11-11T12:00:00Z")), manual);
+  const practice = { ...emptyConditions().find(item => item.id === "practice")!, status: "open" as const };
+  assert.deepEqual(visibleCondition(practice, tuesday), practice);
 });
 
 test("unset equipment remains unconfirmed while the preview keeps its demo states", () => {
