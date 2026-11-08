@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { SiteCondition } from "@/data/site-conditions";
 import { getGolfOpeningSchedule, siteConfig } from "@/data/site";
 import { homeAds, visibleHomeAds } from "@/data/home-ads";
-import { parisDateKey, visibleCondition } from "@/lib/site-conditions";
+import { isRestaurantWeeklyClosed, parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { HomeAdSlot } from "./home-ad-slot";
 import { SiteConditionControl } from "./site-condition-control";
 import { RefreshStaleHome } from "./refresh-stale-home";
@@ -11,7 +11,8 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
   const now = new Date();
   const today = parisDateKey(now);
   const dateLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(now);
-  const displayed = conditions.map(condition => unavailable ? condition : visibleCondition(condition));
+  const restaurantWeeklyClosed = isRestaurantWeeklyClosed(now);
+  const displayed = conditions.map(condition => visibleCondition(condition, now));
   const openCount = displayed.filter(condition => condition.status === "open").length;
   const adaptedCount = displayed.filter(condition => condition.status === "open" && (condition.reason || condition.stateLabel)).length;
   const closedCount = displayed.filter(condition => condition.status === "closed").length;
@@ -22,7 +23,7 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
     return <li key={item.id} className="border-b border-emerald-950/10 py-2.5">
       <div className="flex items-center justify-between gap-3">
         <Link href={item.href} className="min-w-0 text-sm font-semibold leading-6 text-emerald-950 hover:underline focus-visible:underline">{item.label}</Link>
-        <SiteConditionControl condition={condition} label={item.label} editable={editable && !unavailable} />
+        <SiteConditionControl condition={condition} label={item.label} editable={editable && !unavailable && !(item.id === "restaurant" && restaurantWeeklyClosed)} />
       </div>
       {condition.reason && condition.status !== "unknown" && !(condition.status === "open" && (condition.stateLabel === "Carotté" || condition.reason === "Carotté")) ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
     </li>;
