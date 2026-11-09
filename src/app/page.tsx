@@ -1,3 +1,4 @@
+import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
@@ -13,7 +14,7 @@ import { getActiveSiteOffers } from "@/data/offers";
 import { pricingSections } from "@/data/pricing";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
-import { buildBreadcrumbSchema } from "@/lib/schema";
+import { buildWebsiteSchema } from "@/lib/schema";
 import { listSiteConditions } from "@/lib/site-conditions-store";
 import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
@@ -21,12 +22,7 @@ import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 import { getBlackFriday2026Timing } from "@/lib/offer-campaign";
 import { publicHomeAds } from "@/lib/home-ads-store";
 
-export const metadata = buildMetadata({
-  title: "Golf de Marcilly : 45 trous près d’Orléans",
-  description:
-    "Découvrez les parcours, le restaurant La Bergerie, les cours et les événements du Golf de Marcilly, aux portes d’Orléans.",
-  path: "/",
-});
+export const metadata = buildMetadata(publicPageSeo.home);
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +46,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }])} />
+      <JsonLd data={buildWebsiteSchema()} />
 
       {showOffers ? <PromoOffersModal initialNow={offersNow} label={activeOffers.length > 0 ? undefined : "Black Friday 2026"} offers={activeOffers} /> : null}
 
@@ -59,7 +55,7 @@ export default async function HomePage() {
         playCta={{ label: "Jouer", href: "/golf" }}
         appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
         subtitle="Jouez, découvrez le golf ou déjeunez à La Bergerie. À Marcilly-en-Villette, le domaine accueille golfeurs, débutants et visiteurs."
-        title="45 trous aux portes d’Orléans"
+        title="Golf de Marcilly : 45 trous près d’Orléans"
       />
 
       <SiteConditions conditions={conditions} editable={canEditConditions} ads={ads} unavailable={conditionsUnavailable} preview={process.env.PREVIEW_MODE === "true"} />

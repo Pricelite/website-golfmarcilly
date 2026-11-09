@@ -21,7 +21,7 @@ export function SponsorMarquee() {
                     width={160}
                     height={56}
                     sizes="160px"
-                    loading="eager"
+                    loading="lazy"
                     className={`${partner.name === "T’Libre Max" ? "h-16 w-44" : "h-14 w-40"} object-contain${partner.removeWhiteBackground === false ? "" : " mix-blend-multiply"}`}
                   />
                 </> : <span className="text-center font-serif text-2xl font-semibold tracking-wide text-emerald-950">{partner.name}</span>;
