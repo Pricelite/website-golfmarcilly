@@ -17,13 +17,11 @@ export default async function AdminSiteConditionsPage() {
   let unavailable = false;
   try { conditions = await listSiteConditions(); }
   catch { unavailable = true; }
-  return <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+  return <div className="w-full">
     <div className="flex flex-wrap items-center justify-between gap-4">
       <h1 className="font-serif text-3xl text-emerald-950">État du golf</h1>
-      <form action="/admin/logout" method="post"><button className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" type="submit">Déconnexion</button></form>
     </div>
     <nav className="mt-4 flex flex-wrap gap-5 text-sm text-emerald-900" aria-label="Administration">
-      <Link className="underline underline-offset-4" href="/admin">Administration</Link>
       <Link className="underline underline-offset-4" href="/" target="_blank" rel="noreferrer">Voir l’accueil ↗</Link>
     </nav>
     {sharedContentSyncEnabled() ? <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Données partagées activées : les changements effectués ici sont publiés sur le site public.</p> : null}

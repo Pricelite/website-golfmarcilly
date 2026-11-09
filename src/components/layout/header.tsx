@@ -41,12 +41,12 @@ export function Header() {
               <Image src="/images/leclubgolf.png" alt="LeClub Golf" fill sizes="48px" unoptimized className="scale-[3] object-cover" />
             </a> : null}
           </div>
-          <span className="mt-1 block xl:hidden"><HeaderMarcillyClock /></span>
+          <span className="mt-1 block min-[1440px]:hidden"><HeaderMarcillyClock /></span>
         </div>
 
         <nav
           aria-label="Navigation principale"
-          className="hidden min-w-0 flex-1 xl:block"
+          className="hidden min-w-0 flex-1 min-[1440px]:block"
         >
           <ul className="flex flex-nowrap items-center justify-center gap-2 text-[13px] text-emerald-950 2xl:gap-3 2xl:text-sm">
             {desktopNavigation.map((item) => (
@@ -62,8 +62,8 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-4 xl:flex">
-          <div className="hidden flex-col items-end gap-1 2xl:flex">
+        <div className="hidden shrink-0 items-center gap-4 min-[1440px]:flex">
+          <div className="hidden flex-col items-end gap-1 min-[1800px]:flex">
             <a
               className="whitespace-nowrap text-sm font-medium text-emerald-950"
               href={`tel:${siteConfig.phoneHref}`}
@@ -72,10 +72,11 @@ export function Header() {
             </a>
             <HeaderMarcillyClock />
           </div>
-          <CTAButton href={siteConfig.bookingEngineUrl}>Réserver un départ</CTAButton>
+          <CTAButton href={siteConfig.bookingEngineUrl} className="whitespace-nowrap px-4">Réserver un départ</CTAButton>
+          <CTAButton href={siteConfig.teeItUpBookingUrl} variant="secondary" className="whitespace-nowrap px-4">Réserver via TeeItUp</CTAButton>
         </div>
 
-        <div className="ml-auto flex items-center gap-2 xl:hidden">
+        <div className="ml-auto flex items-center gap-2 min-[1440px]:hidden">
           <a
             aria-label="Appeler le Golf de Marcilly"
             className="site-button inline-flex rounded-full px-3 py-2 text-sm font-semibold lg:hidden"
@@ -100,7 +101,7 @@ export function Header() {
       <div
         id="mobile-navigation"
         className={cn(
-          "min-h-0 overflow-y-auto overscroll-contain border-t border-emerald-950/10 bg-[#f7f4e9] xl:hidden",
+          "min-h-0 overflow-y-auto overscroll-contain border-t border-emerald-950/10 bg-[#f7f4e9] min-[1440px]:hidden",
           open ? "block" : "hidden",
         )}
       >
@@ -126,6 +127,7 @@ export function Header() {
                 Réserver un départ
               </CTAButton>
             </li>
+            <li><CTAButton className="w-full" href={siteConfig.teeItUpBookingUrl} variant="secondary">Réserver via TeeItUp</CTAButton></li>
           </ul>
         </nav>
       </div>
