@@ -33,7 +33,7 @@ export default async function AdminArchivesPage({ searchParams }: { searchParams
   try { result = await listArchivedReservations(page); }
   catch { /* The current administration remains usable when the historic table is absent. */ }
 
-  return <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+  return <section className="w-full">
     <Link href="/admin" className="text-sm font-semibold text-emerald-900 underline underline-offset-4">← Retour à l’administration</Link>
     <h1 className="mt-6 font-serif text-3xl text-emerald-950">Archives des initiations</h1>
     <p className="mt-3 text-sm leading-7 text-emerald-900/75">Anciennes réservations conservées dans Supabase. Cette liste est en lecture seule ; les demandes actuelles se suivent par e-mail.</p>
@@ -61,5 +61,5 @@ export default async function AdminArchivesPage({ searchParams }: { searchParams
         {page * ARCHIVE_PAGE_SIZE < result.total && <Link className="underline underline-offset-4" href={`/admin/archives?page=${page + 1}`}>Page suivante</Link>}
       </nav>
     </>}
-  </main>;
+  </section>;
 }
