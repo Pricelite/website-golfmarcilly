@@ -55,7 +55,7 @@ export default async function HomePage() {
         playCta={{ label: "Jouer", href: "/golf" }}
         appCta={{ label: "Télécharger FlashGolf", href: siteConfig.flashGolfUrl }}
         subtitle="Jouez, découvrez le golf ou déjeunez à La Bergerie. À Marcilly-en-Villette, le domaine accueille golfeurs, débutants et visiteurs."
-        title="Golf de Marcilly : 45 trous près d’Orléans"
+        title={"Golf de Marcilly\u00a0: 45\u00a0trous près\u00a0d’Orléans"}
       />
 
       <SiteConditions conditions={conditions} editable={canEditConditions} ads={ads} unavailable={conditionsUnavailable} preview={process.env.PREVIEW_MODE === "true"} />
