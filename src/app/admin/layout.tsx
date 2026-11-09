@@ -17,6 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/competitions", label: "Calendrier", detail: "Compétitions et animations" },
     { href: "/admin/restaurant", label: "Restaurant", detail: "Carte et plat du jour" },
     { href: "/admin/site-conditions", label: "État du golf", detail: "Parcours et services" },
+    { href: "/admin/publicites", label: "Publicités", detail: "Visuels et diffusion sur l’accueil" },
     { href: "/admin/statistiques", label: "Statistiques", detail: "Fréquentation du site" },
     { href: "/admin/archives", label: "Archives des initiations", detail: "Consulter les anciens dossiers" },
   ] });
