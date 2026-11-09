@@ -38,7 +38,7 @@ export function Header() {
             </span>
             </Link>
             {pathname === "/" ? <a href="https://leclub-golf.com/fr" target="_blank" rel="noopener noreferrer" aria-label="LeClub Golf (nouvel onglet)" className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:h-12 sm:w-12">
-              <Image src="/images/leclubgolf.png" alt="LeClub Golf" fill sizes="48px" unoptimized className="scale-[3] object-cover" />
+              <Image src="/images/leclubgolf.png" alt="LeClub Golf" fill sizes="(min-width: 640px) 144px, 120px" className="scale-[3] object-cover" />
             </a> : null}
           </div>
           <span className="mt-1 block min-[1440px]:hidden"><HeaderMarcillyClock /></span>

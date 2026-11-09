@@ -11,8 +11,11 @@ import { buildOrganizationSchema } from "../lib/schema";
 test("sitemap includes editorial entry points and current offers, without transaction pages", async () => {
   const urls = (await sitemap()).map(item => item.url);
   assert.equal(new Set(urls).size, urls.length);
-  for (const path of ["/je-debute-le-golf", "/reserver-un-cours", "/partenaires", "/association-sportive/equipes", ...getActiveSiteOffers().map(offer => `/offres/${offer.slug}`)]) {
+  for (const path of ["/", "/golf", "/tarifs", "/enseignement", "/restaurant", "/evenements", "/contact", "/je-debute-le-golf", "/reserver-un-cours", "/partenaires", "/association-sportive/equipes", ...getActiveSiteOffers().map(offer => `/offres/${offer.slug}`)]) {
     assert.ok(urls.includes(new URL(path, siteConfig.url).href), path);
+  }
+  for (const path of ["/enseignement/inscription", "/initiation/reservation", "/initiation/confirmation", "/admin", "/api/reservations"]) {
+    assert.ok(!urls.includes(new URL(path, siteConfig.url).href), path);
   }
   for (const url of urls) {
     assert.equal(new URL(url).origin, new URL(siteConfig.url).origin);

@@ -1,3 +1,4 @@
+import { publicPageSeo } from "@/data/seo";
 import { ContactForm } from "@/components/forms/contact-form";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
@@ -7,12 +8,7 @@ import { getGolfOpeningHours, siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
-export const metadata = buildMetadata({
-  title: "Contact",
-  description:
-    "Adresse, téléphone, email, horaires, accès et formulaire de contact du Golf de Marcilly.",
-  path: "/contact",
-});
+export const metadata = buildMetadata(publicPageSeo.contact);
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +30,7 @@ export default function ContactPage() {
               Contact
             </p>
             <h1 className="mt-5 font-serif text-5xl leading-[0.95] text-stone-50 sm:text-6xl">
-              Contactez le Golf de Marcilly
+              Contact et accès au Golf de Marcilly
             </h1>
             <div className="mt-8 flex flex-wrap gap-3">
               <CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">
@@ -111,8 +107,8 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="mt-16">
-          <SectionTitle eyebrow="Carte" title="Accès et OpenStreetMap" />
+        <div id="acces" className="mt-16 scroll-mt-28">
+          <SectionTitle eyebrow="Carte et accès" title="Venir à Marcilly-en-Villette" description={`Le Golf de Marcilly se situe au ${siteConfig.addressLine1}, ${siteConfig.addressLine2}, dans le Loiret. Retrouvez le domaine sur la carte pour préparer votre venue.`} />
           <div className="mt-8">
             <MapEmbed src={siteConfig.mapImageUrl} href={siteConfig.mapExternalUrl} title="Accès Golf de Marcilly" />
           </div>

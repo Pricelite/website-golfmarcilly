@@ -48,6 +48,11 @@ body:has(.admin-dialog[open]) {
   overflow: hidden;
 }
 
+/* A recorded choice hides the server-rendered prompt before hydration. Preferences can still reopen it. */
+html[data-analytics-consent] .analytics-consent-banner:not([data-preferences-open]) {
+  display: none;
+}
+
 .site-button {
   border: 1px solid rgba(6, 78, 59, 0.25);
   background: #fff;

@@ -1,4 +1,6 @@
+import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
+import Link from "next/link";
 import { CTAButton } from "@/components/ui/cta-button";
 import { FAQAccordion } from "@/components/ui/faq-accordion";
 import { JsonLd } from "@/components/ui/json-ld";
@@ -17,11 +19,7 @@ const beginnerFaqs = [
   { question: "Comment se passe la réservation ?", answer: "Choisissez un créneau et envoyez votre demande. L’équipe confirme la disponibilité par e-mail. Le paiement se fait sur place." },
 ] as const;
 
-export const metadata = buildMetadata({
-  title: "Je débute le golf",
-  description: "Découvrez le golf à Marcilly près d’Orléans : pratique libre au practice ou initiation encadrée à 25 € ou 48 € avec repas.",
-  path: "/je-debute-le-golf",
-});
+export const metadata = buildMetadata(publicPageSeo.beginners);
 
 export default function BeginnerGolfPage() {
   const discovery = pricingSections.find(section => section.id === "decouverte")!;
@@ -36,7 +34,7 @@ export default function BeginnerGolfPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-2 lg:gap-12 lg:px-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Golf de Marcilly · Premiers pas</p>
-            <h1 className="mt-4 font-serif text-4xl leading-tight text-emerald-950 sm:text-6xl">Le golf, ça s’essaie.</h1>
+            <h1 className="mt-4 font-serif text-4xl leading-tight text-emerald-950 sm:text-6xl">Votre initiation au golf près d’Orléans</h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-emerald-950/75">Envie de découvrir ? Choisissez une initiation avec un pro ou essayez quelques balles au practice. Aucun niveau n’est requis.</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <CTAButton href="/initiation/reservation">Demander un créneau</CTAButton>
@@ -69,7 +67,7 @@ export default function BeginnerGolfPage() {
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {discovery.rows.map((formula, index) => (
             <article key={formula.label} className="flex flex-col rounded-[28px] border border-emerald-950/15 bg-white p-6 sm:p-8">
-              <h2 className="font-serif text-3xl text-emerald-950">{formula.label}</h2>
+              <h3 className="font-serif text-3xl text-emerald-950">{formula.label}</h3>
               <p className="mt-2 text-sm text-emerald-950/70">{index === 0 ? initiationExperience.withoutMealDuration : initiationExperience.withMealDuration}{index === 1 ? " · repas à La Bergerie" : ""}</p>
               <p className="my-5 font-serif text-5xl text-emerald-950">{nonbreakingEuro(formula.values[1] ?? formula.values[0])} <span className="font-sans text-sm">/ personne</span></p>
               <p className="mb-6 flex-1 text-sm leading-7 text-emerald-950/75">{formula.values[0]}</p>
@@ -83,6 +81,7 @@ export default function BeginnerGolfPage() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <SectionTitle eyebrow="Avant de venir" title="Vos questions, nos réponses" />
         <div className="mt-7 max-w-3xl"><FAQAccordion items={beginnerFaqs} /></div>
+        <p className="mt-7 max-w-3xl text-sm leading-7 text-emerald-950/75">Pour poursuivre après votre découverte, retrouvez les <Link href="/enseignement" className="font-semibold underline underline-offset-4">cours et l’école de golf</Link>, les <Link href="/golf" className="font-semibold underline underline-offset-4">parcours de Marcilly</Link> et les <Link href="/tarifs" className="font-semibold underline underline-offset-4">tarifs du practice et des abonnements</Link>.</p>
       </section>
     </>
   );

@@ -1,3 +1,4 @@
+import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
 import { CourseCard } from "@/components/ui/course-card";
 import { CourseVariantCard } from "@/components/course-variant-card";
@@ -12,12 +13,7 @@ import { pricingSections, type PricingSection } from "@/data/pricing";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
-export const metadata = buildMetadata({
-  title: "Golf / Parcours",
-  description:
-    "Parcours 18 trous, 9 trous, Kaleka course 18 trous, practice et formats loisirs pour jouer au golf près d’Orléans dans le Loiret.",
-  path: "/golf",
-});
+export const metadata = buildMetadata(publicPageSeo.golf);
 
 export default function GolfPage() {
   const practicePricing = pricingSections.find(section => section.title === "Practice");
@@ -58,9 +54,9 @@ export default function GolfPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionTitle
           as="h1"
-          description="Le domaine propose plusieurs façons de jouer et de progresser : grand parcours, format court, entraînement et activités de groupe."
+          description="À Marcilly-en-Villette, près d’Orléans, découvrez 45 trous répartis entre le Grand Parcours, les deux parcours Kaleka et le parcours découverte, ainsi que le practice."
           eyebrow="Golf de Marcilly-Orléans"
-          title="Des parcours complémentaires pour tous les niveaux"
+          title="Parcours et practice à Marcilly-en-Villette"
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           {orderedCourses.map((course) => course.slug === "parcours-decouverte-9-trous" && footgolf
@@ -109,7 +105,7 @@ export default function GolfPage() {
         <aside className="mt-8 rounded-3xl border border-emerald-950/15 bg-emerald-50/60 p-6">
           <h2 className="font-serif text-2xl">Avant de choisir votre départ</h2>
           <p className="mt-3 text-sm leading-7 text-emerald-950/85">La licence de golf est obligatoire pour accéder au grand parcours. Vous venez pour la première fois ? Contactez l’accueil pour préparer votre venue, choisir votre parcours et connaître les possibilités de location de matériel.</p>
-          <div className="mt-4"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton></div>
+          <div className="mt-4 flex flex-wrap gap-3"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">Appeler l’accueil</CTAButton><CTAButton href="/je-debute-le-golf" variant="secondary">Découvrir les initiations</CTAButton><CTAButton href="/enseignement" variant="ghost">Cours et école de golf</CTAButton></div>
         </aside>
         <div className="mt-8 flex flex-wrap gap-3">
           <CTAButton href="/tarifs">Consulter les tarifs</CTAButton>

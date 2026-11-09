@@ -35,13 +35,13 @@ export function HomeAdSlot({ ads, label: slotLabel = "Espace publicitaire" }: { 
 
   const creative = ad ? <>
     <span className={`relative block h-72 w-full 2xl:h-auto 2xl:min-h-0 2xl:flex-1 ${isPoster ? "bg-emerald-950/5" : ""}`}>
-      <Image src={ad.image} alt={ad.imageAlt} fill sizes="(max-width: 640px) 100vw, (max-width: 1535px) 100vw, 192px" className={isExample ? "object-cover" : "object-contain"} />
+      <Image src={ad.image} alt={ad.imageAlt} fill sizes="(min-width: 1536px) 192px, (min-width: 640px) 50vw, 100vw" className={isExample ? "object-cover" : "object-contain"} />
     </span>
     <span className="p-2.5 text-center text-sm font-semibold leading-tight">{ad.advertiser}{ad.url ? <span aria-hidden="true"> {ad.kind === "event" || !ad.kind ? "↗" : "→"}</span> : null}{ad.caption ? <span className="mt-1 block text-xs font-normal">{ad.caption}</span> : null}</span>
   </> : null;
 
   return <aside aria-label={slotLabel} className="flex h-full min-h-28 flex-col overflow-hidden rounded-2xl border border-emerald-950/10 bg-white/75 p-3 text-emerald-950 2xl:min-h-[430px]">
-    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-950/60">{label}</span>
+    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-800">{label}</span>
     {ad ? <>
       {ad.url ? <Link href={ad.url} target={ad.kind === "event" || !ad.kind ? "_blank" : undefined} rel={ad.kind === "event" ? "noopener noreferrer" : !ad.kind ? "noopener noreferrer sponsored" : undefined} aria-label={`${ad.advertiser}${ad.kind === "event" || !ad.kind ? " (nouvel onglet)" : ""}`} className="mt-2 flex flex-1 flex-col overflow-hidden rounded-xl border border-emerald-950/10 bg-[#f7f5ed] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">{creative}</Link>
         : <div className="mt-2 flex flex-1 flex-col overflow-hidden rounded-xl border border-emerald-950/10 bg-[#f7f5ed]">{creative}</div>}
