@@ -1,3 +1,4 @@
+import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
 
 import { ContactForm } from "@/components/forms/contact-form";
@@ -10,17 +11,12 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { restaurantGallery } from "@/data/restaurant";
-import { getGolfOpeningSchedule } from "@/data/site";
+import { getGolfOpeningSchedule, siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { restaurantData } from "@/lib/restaurant-data";
-import { buildBreadcrumbSchema } from "@/lib/schema";
+import { buildBreadcrumbSchema, buildRestaurantSchema } from "@/lib/schema";
 
-export const metadata = buildMetadata({
-  title: "La Bergerie, restaurant à Marcilly-en-Villette",
-  description: "Restaurant golf de Marcilly-Orléans : carte du jour, menus, groupes, séminaires, privatisation et réservation pour La Bergerie au Golf de Marcilly.",
-  path: "/restaurant",
-  image: "/restaurant/hero.jpg",
-});
+export const metadata = buildMetadata(publicPageSeo.restaurant);
 
 export const revalidate = 30;
 
@@ -37,6 +33,7 @@ export default function RestaurantPage() {
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }, { name: "Restaurant", path: "/restaurant" }])} />
+      <JsonLd data={buildRestaurantSchema()} />
 
       <section className="relative isolate overflow-hidden bg-emerald-950 text-stone-50">
         <Image src="/restaurant/hero.jpg" alt="" fill priority sizes="100vw" className="-z-20 object-cover object-center" />
@@ -46,13 +43,13 @@ export default function RestaurantPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#dbe9b4]">Restaurant du Golf de Marcilly-Orléans</p>
             <h1 className="mt-6 font-serif text-5xl leading-[0.94] sm:text-6xl lg:text-7xl">
               La Bergerie,
-              <span className="mt-2 block italic text-[#dbe9b4]">une table au cœur du golf.</span>
+              <span className="mt-2 block italic text-[#dbe9b4]">restaurant au cœur du golf.</span>
             </h1>
-            <p className="mt-7 max-w-2xl text-base leading-8 text-stone-100/90 sm:text-lg">Une cuisine simple et gourmande, un cadre paisible et le plaisir de se retrouver à table après une partie ou simplement pour déjeuner.</p>
+            <p className="mt-7 max-w-2xl text-base leading-8 text-stone-100/90 sm:text-lg">À Marcilly-en-Villette, près d’Orléans, La Bergerie accueille les golfeurs et les visiteurs extérieurs pour le déjeuner : une cuisine simple et gourmande dans le cadre paisible du domaine.</p>
             <div className="mt-9 flex flex-wrap gap-3">
               <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full bg-stone-50 px-5 py-3 text-sm font-semibold text-emerald-950 shadow-lg shadow-black/10 transition hover:bg-[#dbe9b4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-50 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950" />
               <CTAButton href="#carte-du-jour" variant="secondary">Voir la carte</CTAButton>
-              <CTAButton href="tel:+33238761173" variant="secondary">02 38 76 11 73</CTAButton>
+              <CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">{siteConfig.phoneDisplay}</CTAButton>
             </div>
           </div>
           <aside aria-label="Préparer votre déjeuner" className="rounded-3xl border border-white/25 bg-emerald-950/65 p-6">

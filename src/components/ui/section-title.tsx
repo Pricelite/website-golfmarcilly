@@ -21,7 +21,7 @@ export function SectionTitle({
   return (
     <div className={alignClass}>
       {eyebrow ? (
-        <p className={`text-xs font-semibold uppercase tracking-[0.28em] ${tone === "inverse" ? "text-stone-200" : "text-emerald-700"}`}>
+        <p className={`text-xs font-semibold uppercase tracking-[0.28em] ${tone === "inverse" ? "text-stone-200" : "text-emerald-800"}`}>
           {eyebrow}
         </p>
       ) : null}

@@ -16,6 +16,7 @@ export function HeroPhotoCarousel() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState<boolean | null>(null);
   const [loaded, setLoaded] = useState<Set<number>>(() => new Set());
+  const [requested, setRequested] = useState<number | null>(null);
   const reducedMotion = useSyncExternalStore(subscribeMotion, () => window.matchMedia(motionQuery).matches, () => true);
   const isPaused = paused ?? reducedMotion;
   const next = (active + 1) % heroPhotos.length;
@@ -30,10 +31,10 @@ export function HeroPhotoCarousel() {
   }, [isPaused, ready, next]);
 
   return (
-    <div role="region" aria-roledescription="carrousel" aria-label="Photos du Golf de Marcilly" className="absolute inset-0 overflow-hidden bg-emerald-950">
+    <div role="region" aria-roledescription="carrousel" aria-label="Photos du Golf de Marcilly" aria-busy={requested !== null} className="absolute inset-0 overflow-hidden bg-emerald-950">
       {heroPhotos.map((photo, index) => (
         <div key={photo.src} role="group" aria-roledescription="diapositive" aria-label={`${index + 1} sur ${heroPhotos.length}`} aria-hidden={active !== index} className={`absolute inset-0 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${active === index ? "opacity-100" : "opacity-0"}`}>
-          <Image src={photo.src} alt={photo.alt} fill priority={index === 0} sizes="(max-width: 1023px) 100vw, (max-width: 1600px) 50vw, 800px" className="object-cover object-center" onLoad={() => setLoaded(current => new Set(current).add(index))} />
+          {index === active || index === requested || loaded.has(index) || (!isPaused && loaded.has(active) && index === next) ? <Image src={photo.src} alt={photo.alt} fill preload={index === 0} loading={index === 0 ? undefined : "eager"} sizes="(max-width: 1023px) 100vw, (max-width: 1600px) 50vw, 800px" className="object-cover object-center" onLoad={() => { setLoaded(current => new Set(current).add(index)); if (requested === index) { setActive(index); setRequested(null); } }} onError={() => { if (requested === index) setRequested(null); }} /> : null}
         </div>
       ))}
       <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center px-0.5 text-white">
@@ -42,7 +43,7 @@ export function HeroPhotoCarousel() {
           <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-xs text-emerald-950 group-hover:bg-white">{isPaused ? "▶" : "Ⅱ"}</span>
         </button>
         {heroPhotos.map((photo, index) => (
-          <button key={photo.src} type="button" aria-label={`Afficher la photo ${index + 1} : ${photo.alt}`} aria-pressed={active === index} className="group relative flex h-11 w-8 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => { setActive(index); setPaused(true); }}>
+          <button key={photo.src} type="button" aria-label={`Afficher la photo ${index + 1} : ${photo.alt}`} aria-pressed={active === index} className="group relative flex h-11 w-8 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={() => { setPaused(true); if (loaded.has(index)) { setActive(index); setRequested(null); } else setRequested(index); }}>
             <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full bg-white/90 group-hover:bg-white">
               <span className={`h-1.5 rounded-full bg-emerald-950 transition-all motion-reduce:transition-none ${active === index ? "w-3" : "w-1.5 opacity-45"}`} />
             </span>

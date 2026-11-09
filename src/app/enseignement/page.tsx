@@ -1,4 +1,5 @@
-﻿import Image from "next/image";
+import { publicPageSeo } from "@/data/seo";
+import Image from "next/image";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/contact-form";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -10,11 +11,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
-export const metadata = buildMetadata({
-  title: "Cours et école de golf près d’Orléans",
-  description: "École de golf de 4 à 18 ans, cours collectifs et particuliers pour adultes, et contacts des enseignants du Golf de Marcilly près d’Orléans.",
-  path: "/enseignement",
-});
+export const metadata = buildMetadata(publicPageSeo.teaching);
 
 const sectionClass = "mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8";
 const linkClass = "underline underline-offset-4 hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-4";
@@ -29,7 +26,7 @@ export default function TeachingPage() {
       <section className="bg-[#f7f4e9]">
         <div className={`${sectionClass} grid items-center gap-10 lg:grid-cols-2`}>
           <div>
-            <SectionTitle as="h1" eyebrow="Enseignement · Golf de Marcilly" title="Le plaisir d’apprendre, à tout âge" description="Un premier swing, une nouvelle envie de jouer, un geste à améliorer : trouvez votre point de départ à Marcilly, près d’Orléans." />
+            <SectionTitle as="h1" eyebrow="Enseignement · Golf de Marcilly" title="Cours et école de golf près d’Orléans" description="Un premier swing, une nouvelle envie de jouer, un geste à améliorer : trouvez votre point de départ à Marcilly-en-Villette, près d’Orléans." />
             <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
               <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">École de golf dès 4 ans</dt><dd className="mt-1">{nonbreakingEuro(juniorPrograms[0].price)} / saison · licence incluse</dd><dd className="mt-1 text-emerald-950/75">Mercredi ou samedi · <a href="#ecole-de-golf" className={linkClass}>voir les horaires</a></dd></div>
               <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">Cours collectifs adultes</dt><dd className="mt-1">200 € · 20 séances d’une heure</dd><dd className="mt-1 text-emerald-950/75">Balles en supplément · dates auprès des pros</dd></div>
@@ -89,7 +86,7 @@ export default function TeachingPage() {
           <div className="mt-8 grid gap-6 lg:grid-cols-3">
             <article className="flex flex-col rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
               <h3 className="font-serif text-2xl text-stone-50">Vous débutez ?</h3>
-              <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Commencez par une journée découverte pour faire vos premiers pas dans le golf.</p>
+              <p className="mb-6 mt-3 flex-1 text-sm leading-7 text-stone-50/80">Commencez par une <Link href="/je-debute-le-golf#initiations" className="font-semibold underline underline-offset-4">initiation avec matériel fourni</Link> pour faire vos premiers pas dans le golf.</p>
               <CTAButton href="/initiation/reservation" variant="secondary" className="self-start">Voir les dates d’initiation</CTAButton>
             </article>
             <article className="flex flex-col items-start rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">

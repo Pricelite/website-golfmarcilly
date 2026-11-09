@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { siteConfig } from "@/data/site";
 import { absoluteUrl } from "@/lib/metadata";
 import { buildOrganizationSchema } from "@/lib/schema";
+import { analyticsConsentBootstrap } from "@/lib/analytics/consent";
 import "./globals.css";
 import "../../styles/prose.css";
 
@@ -17,9 +18,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  alternates: {
-    canonical: siteConfig.url,
-  },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,
@@ -48,7 +46,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" data-scroll-behavior="smooth">
+    <html lang="fr" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head><script id="analytics-consent-initial-state" dangerouslySetInnerHTML={{ __html: analyticsConsentBootstrap }} /></head>
       <body className="text-emerald-950 antialiased">
         <JsonLd data={buildOrganizationSchema()} />
         <a
