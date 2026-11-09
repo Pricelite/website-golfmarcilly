@@ -8,7 +8,7 @@ import styles from "./home-ad-slot.module.css";
 
 const ROTATION_MS = 6_000;
 
-export function HomeAdSlot({ ads }: { ads: HomeAd[] }) {
+export function HomeAdSlot({ ads, label: slotLabel = "Espace publicitaire" }: { ads: HomeAd[]; label?: string }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -40,7 +40,7 @@ export function HomeAdSlot({ ads }: { ads: HomeAd[] }) {
     <span className="p-2.5 text-center text-sm font-semibold leading-tight">{ad.advertiser}{ad.url ? <span aria-hidden="true"> {ad.kind === "event" || !ad.kind ? "↗" : "→"}</span> : null}{ad.caption ? <span className="mt-1 block text-xs font-normal">{ad.caption}</span> : null}</span>
   </> : null;
 
-  return <aside aria-label="Espace publicitaire" className="flex min-h-28 flex-col overflow-hidden rounded-2xl border border-emerald-950/10 bg-white/75 p-3 text-emerald-950 2xl:min-h-[430px]">
+  return <aside aria-label={slotLabel} className="flex h-full min-h-28 flex-col overflow-hidden rounded-2xl border border-emerald-950/10 bg-white/75 p-3 text-emerald-950 2xl:min-h-[430px]">
     <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-950/60">{label}</span>
     {ad ? <>
       {ad.url ? <Link href={ad.url} target={ad.kind === "event" || !ad.kind ? "_blank" : undefined} rel={ad.kind === "event" ? "noopener noreferrer" : !ad.kind ? "noopener noreferrer sponsored" : undefined} aria-label={`${ad.advertiser}${ad.kind === "event" || !ad.kind ? " (nouvel onglet)" : ""}`} className="mt-2 flex flex-1 flex-col overflow-hidden rounded-xl border border-emerald-950/10 bg-[#f7f5ed] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">{creative}</Link>

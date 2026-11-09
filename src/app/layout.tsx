@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 
 import { AnalyticsTracker } from "@/components/analytics/tracker";
 import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
-import { MobileActions } from "@/components/layout/mobile-actions";
+import { SiteFrame } from "@/components/layout/site-frame";
 import { JsonLd } from "@/components/ui/json-ld";
 import { siteConfig } from "@/data/site";
 import { absoluteUrl } from "@/lib/metadata";
@@ -50,7 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" data-scroll-behavior="smooth">
-      <body className="pb-[calc(6rem+env(safe-area-inset-bottom))] text-emerald-950 antialiased lg:pb-0">
+      <body className="text-emerald-950 antialiased">
         <JsonLd data={buildOrganizationSchema()} />
         <a
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-emerald-950 focus:px-4 focus:py-2 focus:text-stone-50"
@@ -58,13 +57,9 @@ export default function RootLayout({
         >
           Aller au contenu
         </a>
-        <Header />
-        {process.env.PREVIEW_MODE === "true" ? <aside className="border-b border-amber-300 bg-amber-50 px-4 py-3 text-center text-sm leading-6 text-emerald-950">
+        <SiteFrame footer={<Footer />} preview={process.env.PREVIEW_MODE === "true" ? <aside className="border-b border-amber-300 bg-amber-50 px-4 py-3 text-center text-sm leading-6 text-emerald-950">
           <strong>Préversion privée — démonstration uniquement.</strong> Les envois et l’administration sont désactivés. Les créneaux et la carte sont des exemples. Les liens externes ouvrent les services réels.
-        </aside> : null}
-        <main id="main-content">{children}</main>
-        <Footer />
-        <MobileActions />
+        </aside> : null}>{children}</SiteFrame>
         <AnalyticsTracker />
       </body>
     </html>

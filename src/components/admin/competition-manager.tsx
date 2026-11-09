@@ -1,111 +1,124 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { associationCalendarStartsOn, type AssociationEvent } from "@/data/association-events";
-import { formatCalendarDate } from "@/lib/association-calendar";
+import { eventsInMonth, eventsOnDay, formatCalendarDate, monthDays } from "@/lib/association-calendar";
+import { EventEditor } from "./event-editor";
+import { AdminDialog } from "./dialog";
 
-const inputClass = "mt-1 block w-full rounded-xl border border-emerald-950/25 bg-white px-3 py-2 text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-700";
-const buttonClass = "rounded-full border border-emerald-950/25 px-4 py-2 text-sm font-semibold disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2";
+export const calendarButton = "inline-flex min-h-11 items-center justify-center rounded-full border border-emerald-950/20 bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
+const months = Array.from({ length: 12 }, (_, month) => new Intl.DateTimeFormat("fr-FR", { month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(2026, month, 1))));
+const weekdays = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+function subscribeMobile(change: () => void) {
+  const media = window.matchMedia("(max-width: 767px)");
+  media.addEventListener("change", change);
+  return () => media.removeEventListener("change", change);
+}
+function mobileSnapshot() { return window.matchMedia("(max-width: 767px)").matches; }
+function desktopSnapshot() { return false; }
+export function eventLabel(event: AssociationEvent) {
+  if (event.category === "holiday") return "Jour férié";
+  if (event.category === "vacation") return "Vacances scolaires";
+  if (event.category === "celebration") return "Fête / repère";
+  if (event.category === "open_slot" || event.title === "Créneau à définir") return "Créneau libre";
+  return event.status === "private" ? "Épreuve privée" : event.status === "provisional" ? "En option" : event.status === "unconfirmed" ? "À confirmer" : event.status === "confirmed" ? "Confirmée" : "Au programme";
+}
+function eventColor(event: AssociationEvent) {
+  if (["holiday", "vacation", "celebration"].includes(event.category ?? "")) return "border-stone-300 bg-stone-100 text-stone-700";
+  if (event.status === "confirmed") return "border-emerald-300 bg-emerald-100 text-emerald-950";
+  if (event.status === "provisional") return "border-amber-300 bg-amber-100 text-amber-950";
+  return "border-sky-200 bg-sky-50 text-sky-950";
+}
 
-export function CompetitionManager({ initialEvents, localMode = false }: { initialEvents: AssociationEvent[]; localMode?: boolean }) {
+export function CompetitionManager({ initialEvents, initialDate, localMode = false }: { initialEvents: AssociationEvent[]; initialDate: string; localMode?: boolean }) {
   const [events, setEvents] = useState(initialEvents);
-  const [editing, setEditing] = useState<AssociationEvent | null>(null);
-  const [deleting, setDeleting] = useState<AssociationEvent | null>(null);
+  const [month, setMonth] = useState(initialDate.slice(0, 7));
+  const [view, setView] = useState<"calendar" | "list" | null>(null);
+  const mobile = useSyncExternalStore(subscribeMobile, mobileSnapshot, desktopSnapshot);
+  const listView = view === "list" || (view === null && mobile);
+  const [filter, setFilter] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  const [editor, setEditor] = useState<{ event: AssociationEvent | null; day: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [filter, setFilter] = useState("");
-  const [formKey, setFormKey] = useState(0);
-  const formRef = useRef<HTMLFormElement>(null);
-  const deleteRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (deleting) deleteRef.current?.focus();
-  }, [deleting]);
-  const visible = events.filter(event => event.title.toLocaleLowerCase("fr").includes(filter.toLocaleLowerCase("fr")))
-    .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
-
+  const submitting = useRef(false);
+  const [year, monthNumber] = month.split("-").map(Number);
+  const monthlyEvents = eventsInMonth(events, year, monthNumber - 1);
+  const visible = monthlyEvents.filter(event => event.title.toLocaleLowerCase("fr").includes(filter.trim().toLocaleLowerCase("fr")));
+  const days = monthDays(year, monthNumber - 1);
+  const monthTitle = `${months[monthNumber - 1]} ${year}`;
+  function openEditor(event: AssociationEvent | null, day: string) {
+    setError(""); setMessage(""); setEditor({ event, day });
+  }
+  function moveMonth(offset: number) {
+    setMonth(new Date(Date.UTC(year, monthNumber - 1 + offset, 1)).toISOString().slice(0, 7));
+  }
   async function request(method: string, payload: unknown) {
     const result = await fetch("/api/admin/competitions", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    const data = await result.json();
-    if (!result.ok) throw new Error(data.error || "L’opération a échoué. Réessayez.");
+    const data = await result.json().catch(() => null);
+    if (!result.ok || !data) throw new Error(data?.error || "L’opération a échoué. Réessayez. Votre saisie est conservée.");
     return data;
   }
-
-  function resetForm() {
-    setEditing(null);
-    setFormKey(key => key + 1);
-  }
-
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy) return;
+    if (submitting.current || !editor) return;
     const fields = Object.fromEntries(new FormData(event.currentTarget));
-    setBusy(true); setError(""); setMessage("");
+    submitting.current = true; setBusy(true); setError(""); setMessage("");
     try {
-      const data = await request(editing ? "PATCH" : "POST", { ...fields, ...(editing ? { id: editing.id } : {}) });
+      const data = await request(editor.event ? "PATCH" : "POST", { ...fields, ...(editor.event ? { id: editor.event.id } : {}) });
+      if (!data.event?.id) throw new Error("Enregistrement non confirmé. Rechargez le calendrier avant de réessayer.");
       const saved = data.event as AssociationEvent;
       setEvents(current => [...current.filter(item => item.id !== saved.id), saved]);
-      setMessage(localMode
-        ? editing ? "Date modifiée dans la prévisualisation locale." : "Date ajoutée à la prévisualisation locale."
-        : editing ? "Date modifiée. Le calendrier public est à jour." : "Date ajoutée. Le calendrier public est à jour.");
-      resetForm();
-    } catch (error) { setError(error instanceof Error ? error.message : "Enregistrement impossible. Réessayez."); }
-    finally { setBusy(false); }
+      setMonth(saved.start.slice(0, 7)); setFilter(""); setEditor(null);
+      setMessage(localMode ? "Date enregistrée dans la prévisualisation locale." : "Date enregistrée. Le calendrier public est à jour.");
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Enregistrement impossible. Réessayez. Votre saisie est conservée."); }
+    finally { submitting.current = false; setBusy(false); }
   }
-
   async function remove() {
-    if (!deleting || busy) return;
-    setBusy(true); setError(""); setMessage("");
+    if (!editor?.event || submitting.current) return;
+    submitting.current = true; setBusy(true); setError(""); setMessage("");
     try {
-      await request("DELETE", { id: deleting.id });
-      setEvents(current => current.filter(item => item.id !== deleting.id));
-      if (editing?.id === deleting.id) resetForm();
-      setDeleting(null);
+      await request("DELETE", { id: editor.event.id });
+      setEvents(current => current.filter(item => item.id !== editor.event!.id)); setEditor(null);
       setMessage(localMode ? "Date supprimée de la prévisualisation locale." : "Date supprimée du calendrier public.");
-    } catch (error) { setError(error instanceof Error ? error.message : "Suppression impossible. Réessayez."); }
-    finally { setBusy(false); }
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Suppression impossible. Réessayez."); }
+    finally { submitting.current = false; setBusy(false); }
   }
-
-  return (
-    <div className="mt-8 space-y-8 text-emerald-950">
-      {localMode ? <p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950">Prévisualisation locale : vos modifications sont enregistrées uniquement sur cet ordinateur. Elles sont visibles sur le calendrier public local et ne sont pas envoyées à Supabase.</p> : null}
-      <div aria-live="polite" role="status">{message ? <p className="rounded-xl bg-emerald-50 p-4">{message}</p> : null}</div>
-      {error ? <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-800">{error}</p> : null}
-      <form key={formKey} ref={formRef} onSubmit={save} className="rounded-3xl border border-emerald-950/15 bg-white p-6">
-        <h2 className="font-serif text-2xl">{editing ? "Modifier la date du programme" : "Ajouter une date au programme"}</h2>
-        <fieldset disabled={busy || Boolean(deleting)} className="mt-5 grid gap-4 sm:grid-cols-2 disabled:opacity-60">
-          <label className="text-sm sm:col-span-2">Nom de l’événement *<input autoComplete="off" className={inputClass} name="title" required maxLength={160} defaultValue={editing?.title ?? ""} /></label>
-          <label className="text-sm">Date de début *<input className={inputClass} type="date" name="start" required min={associationCalendarStartsOn} max="2199-12-31" defaultValue={editing?.start ?? ""} /></label>
-          <label className="text-sm">Date de fin (si plusieurs jours)<input className={inputClass} type="date" name="end" min={associationCalendarStartsOn} max="2199-12-31" defaultValue={editing?.end ?? ""} /></label>
-          <label className="text-sm">Horaire (facultatif)<input className={inputClass} type="time" name="time" defaultValue={editing?.time ?? ""} /></label>
-          <label className="text-sm">Statut de l’épreuve<select className={inputClass} name="status" defaultValue={editing?.status ?? ""}><option value="">Au programme</option><option value="confirmed">Confirmée</option><option value="unconfirmed">À confirmer</option><option value="provisional">En option</option><option value="private">Épreuve privée</option></select></label>
-          <label className="text-sm">Catégorie<select className={inputClass} name="category" defaultValue={editing?.category ?? (editing?.title === "Créneau à définir" ? "open_slot" : "competition")}><option value="competition">Compétition</option><option value="open_slot">Créneau libre</option><option value="holiday">Jour férié</option><option value="vacation">Vacances scolaires</option><option value="celebration">Fête ou autre repère</option></select></label>
-          <label className="text-sm">Zone scolaire<select className={inputClass} name="zone" defaultValue={editing?.zone ?? "all"}><option value="all">Toutes les zones</option><option value="A">Zone A</option><option value="B">Zone B</option><option value="C">Zone C</option></select></label>
-          <label className="text-sm sm:col-span-2">Description / précisions<textarea className={inputClass} name="note" rows={3} maxLength={2000} defaultValue={editing?.note ?? ""} /></label>
-          {localMode ? <label className="text-sm sm:col-span-2">Note de préparation (visible seulement ici)<textarea className={inputClass} name="internalNote" rows={3} maxLength={2000} defaultValue={editing?.internalNote ?? ""} /></label> : null}
-          <p className="text-xs leading-6 text-emerald-950/70 sm:col-span-2">* Champs obligatoires. Les précisions sont visibles sur le calendrier public. Une date devient grise après son dernier jour.</p>
-          <div className="flex flex-wrap gap-3 sm:col-span-2">
-            <button type="submit" className={`${buttonClass} bg-emerald-900 text-white`}>{busy ? "Enregistrement…" : editing ? "Enregistrer les modifications" : "Ajouter au calendrier"}</button>
-            {editing ? <button type="button" onClick={() => { resetForm(); setError(""); }} className={buttonClass}>Annuler la modification</button> : null}
+  function calendar(fullscreen: boolean) {
+    return <section aria-label="Calendrier mensuel administrable" className="min-w-0 overflow-hidden rounded-3xl border border-emerald-950/15 bg-white">
+      <div className={`space-y-3 border-b border-emerald-950/10 p-4 ${fullscreen ? "" : "sm:p-6"}`}>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div><h2 className="font-serif text-3xl capitalize">{monthTitle}</h2><p className="mt-1 text-sm text-emerald-950/65">{monthlyEvents.length} rendez-vous ce mois-ci{filter.trim() ? ` · ${visible.length} résultat${visible.length > 1 ? "s" : ""}` : ""}</p></div>
+          <div className="flex flex-wrap gap-2"><button type="button" className={calendarButton} onClick={() => setExpanded(!fullscreen)}>{fullscreen ? "Réduire le calendrier" : "Agrandir le calendrier"}</button><button type="button" className={`${calendarButton} !bg-emerald-900 text-white`} onClick={() => openEditor(null, month === initialDate.slice(0, 7) ? initialDate : `${month}-01`)}>+ Ajouter une date</button></div>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" aria-label="Mois précédent" disabled={month <= associationCalendarStartsOn.slice(0, 7)} className={`${calendarButton} !px-3`} onClick={() => moveMonth(-1)}>←</button>
+            <button type="button" className={calendarButton} onClick={() => setMonth(initialDate.slice(0, 7))}>Ce mois-ci</button>
+            <button type="button" aria-label="Mois suivant" disabled={month >= "2199-12"} className={`${calendarButton} !px-3`} onClick={() => moveMonth(1)}>→</button>
+            <label className="text-xs">Mois affiché<input aria-label="Mois affiché" type="month" min="2026-11" max="2199-12" value={month} className="ml-2 min-h-11 max-w-full rounded-xl border border-emerald-950/20 px-3 text-sm" onChange={event => { if (/^\d{4}-(0[1-9]|1[0-2])$/.test(event.target.value) && event.target.value >= "2026-11" && event.target.value <= "2199-12") setMonth(event.target.value); }} /></label>
           </div>
-        </fieldset>
-      </form>
-      <section>
-        <h2 className="font-serif text-2xl">Les dates du programme ({events.length})</h2>
-        <label className="mt-4 block max-w-md text-sm">Rechercher par nom<input type="search" className={inputClass} value={filter} onChange={event => setFilter(event.target.value)} /></label>
-        {deleting ? <div ref={deleteRef} tabIndex={-1} role="alert" className="my-5 scroll-mt-28 rounded-2xl border border-red-200 bg-red-50 p-5 focus:outline-2 focus:outline-red-800">
-          <p className="font-semibold">Supprimer « {deleting.title} » du {formatCalendarDate(deleting.start)} ?</p>
-          <p className="mt-2 text-sm">Cette action retire définitivement cette date du calendrier.</p>
-          <div className="mt-4 flex flex-wrap gap-3"><button type="button" disabled={busy} onClick={remove} className={`${buttonClass} bg-red-800 text-white`}>{busy ? "Suppression…" : "Confirmer la suppression"}</button><button type="button" disabled={busy} onClick={() => setDeleting(null)} className={buttonClass}>Annuler</button></div>
-        </div> : null}
-        <ul className="mt-5 space-y-3">
-          {visible.map(event => <li key={event.id} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-emerald-950/15 bg-white p-4">
-            <div className="min-w-0"><h3 className="break-words font-semibold">{event.title}</h3><p className="mt-1 text-sm">{formatCalendarDate(event.start)}{event.end ? ` au ${formatCalendarDate(event.end)}` : ""}{event.time ? ` · ${event.time}` : ""}</p><p className="mt-1 text-xs">{event.category === "holiday" ? "Jour férié" : event.category === "vacation" ? "Vacances scolaires" : event.category === "celebration" ? "Fête / repère" : event.category === "open_slot" ? "Créneau libre" : event.status === "private" ? "Épreuve privée" : event.status === "provisional" ? "En option" : event.status === "unconfirmed" ? "À confirmer" : event.status === "confirmed" ? "Confirmée" : "Au programme"}{event.zone && event.zone !== "all" ? ` · Zone ${event.zone}` : ""}</p>{localMode && event.internalNote ? <p className="mt-2 text-xs text-slate-600">Note interne : {event.internalNote}</p> : null}</div>
-            <div className="flex gap-2"><button type="button" disabled={busy || Boolean(deleting)} aria-label={`Modifier ${event.title}`} className={buttonClass} onClick={() => { setEditing(event); setFormKey(key => key + 1); setError(""); setMessage(""); requestAnimationFrame(() => { formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); formRef.current?.querySelector<HTMLInputElement>('input[name="title"]')?.focus({ preventScroll: true }); }); }}>Modifier</button><button type="button" disabled={busy || Boolean(deleting)} aria-label={`Supprimer ${event.title}`} className={`${buttonClass} text-red-800`} onClick={() => { setDeleting(event); setError(""); setMessage(""); }}>Supprimer</button></div>
-          </li>)}
-        </ul>
-        {visible.length === 0 ? <p className="mt-5 text-sm">{events.length ? "Aucune date ne correspond à cette recherche." : "Aucune date. Ajoutez la première avec le formulaire."}</p> : null}
-      </section>
-    </div>
-  );
+          <div className="flex flex-wrap items-center gap-2">{fullscreen ? <label className="text-xs"><span className="sr-only">Rechercher dans ce mois</span><input type="search" aria-label="Rechercher dans ce mois" placeholder="Rechercher un rendez-vous" className="min-h-11 w-52 rounded-xl border border-emerald-950/20 px-3 text-sm" value={filter} onChange={event => setFilter(event.target.value)} /></label> : null}<div role="group" aria-label="Affichage du calendrier" className="flex gap-2"><button type="button" aria-pressed={!listView} className={`${calendarButton} ${!listView ? "!bg-emerald-50" : ""}`} onClick={() => setView("calendar")}>Vue calendrier</button><button type="button" aria-pressed={listView} className={`${calendarButton} ${listView ? "!bg-emerald-50" : ""}`} onClick={() => setView("list")}>Vue liste</button></div></div>
+        </div>
+        {!fullscreen ? <div className="flex flex-wrap items-center justify-between gap-3"><p className="max-w-xl text-sm leading-6 text-emerald-950/70">Cliquez sur un événement pour le modifier, ou sur le + d’un jour pour ajouter une date. Tous les rendez-vous du mois sont affichés.</p><label className="block w-full text-xs sm:w-60">Rechercher dans ce mois<input type="search" className="mt-1 min-h-11 w-full rounded-xl border border-emerald-950/20 px-3 text-base" value={filter} onChange={event => setFilter(event.target.value)} /></label></div> : null}
+        <p className="text-xs leading-6 text-emerald-950/65">Vert : confirmé · Jaune : en option · Bleu : au programme ou à confirmer · Gris : jours fériés, vacances et repères.</p>
+        <div role="status" aria-live="polite" className={message ? undefined : "sr-only"}>{message ? <p className="rounded-xl bg-emerald-50 p-3 text-sm">{message}</p> : null}</div>
+      </div>
+      {listView ? <div className="p-4 sm:p-6"><ul className="space-y-3">{visible.map(event => <li key={event.id}><button type="button" aria-label={`Modifier ${event.title}, ${formatCalendarDate(event.start)}`} onClick={() => openEditor(event, event.start)} className={`w-full rounded-2xl border p-4 text-left focus-visible:outline-2 focus-visible:outline-emerald-700 ${eventColor(event)}`}><span className="block break-words font-semibold">{event.title}</span><span className="mt-1 block text-sm">{formatCalendarDate(event.start)}{event.end ? ` au ${formatCalendarDate(event.end)}` : ""}{event.time ? ` · ${event.time}` : ""}</span><span className="mt-1 block text-xs">{eventLabel(event)}{event.zone && event.zone !== "all" ? ` · Zone ${event.zone}` : ""}</span><span className="mt-3 block text-xs font-semibold underline underline-offset-4">Modifier le rendez-vous →</span></button></li>)}</ul>{!visible.length ? <p className="py-8 text-center text-sm">{filter.trim() ? "Aucun rendez-vous ne correspond à cette recherche dans ce mois." : "Aucun rendez-vous pour ce mois. Vous pouvez ajouter une date."}</p> : null}</div> : <div className="overflow-x-auto" tabIndex={0} aria-label="Grille du mois, défilement horizontal sur petit écran">
+        <div role="table" aria-label={monthTitle} className="min-w-[42rem]">
+          <div role="row" className="grid grid-cols-7 border-b border-emerald-950/10 bg-stone-50">{weekdays.map(day => <div role="columnheader" key={day} className="py-3 text-center text-xs font-semibold">{day}</div>)}</div>
+          {Array.from({ length: days.length / 7 }, (_, week) => <div role="row" key={week} className="grid grid-cols-7">{days.slice(week * 7, week * 7 + 7).map((day, index) => <div role="cell" key={day ?? `empty-${index}`} className={`min-w-0 border-r border-b border-emerald-950/10 p-2 last:border-r-0 ${fullscreen ? "min-h-12" : "min-h-28"} ${day === initialDate ? "bg-emerald-50/70" : day ? "" : "bg-stone-50"}`}>
+            {day ? <><div className={`${fullscreen ? "mb-1" : "mb-2"} flex items-center justify-between gap-1`}><time dateTime={day} aria-label={formatCalendarDate(day)} aria-current={day === initialDate ? "date" : undefined} className={`flex h-8 w-8 items-center justify-center rounded-full text-sm ${day === initialDate ? "bg-emerald-900 font-bold text-white" : "text-emerald-950/65"}`}>{Number(day.slice(-2))}</time><button type="button" aria-label={`Ajouter un événement le ${formatCalendarDate(day)}`} className="flex h-9 w-9 items-center justify-center rounded-full text-lg text-emerald-800 hover:bg-emerald-100 focus-visible:outline-2" onClick={() => openEditor(null, day)}>+</button></div><div className="space-y-1.5">{eventsOnDay(visible, day).map(event => <button type="button" key={event.id} onClick={() => openEditor(event, event.start)} aria-label={`Modifier ${event.title}, ${formatCalendarDate(day)}`} className={`block w-full break-words rounded-lg border px-2 ${fullscreen ? "py-1 text-[11px] leading-4" : "py-2 text-xs leading-5"} text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${eventColor(event)}`}><span className="block font-semibold">{event.time ? `${event.time} · ` : ""}{event.title}</span><span className="block text-[10px]">{eventLabel(event)}{event.zone && event.zone !== "all" ? ` · ${event.zone}` : ""}</span></button>)}</div></> : null}
+          </div>)}</div>)}
+        </div>
+      </div>}
+    </section>;
+  }
+  return <div className="mt-6 space-y-5 text-emerald-950">
+    {localMode ? <p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950">Prévisualisation locale : les modifications sont enregistrées uniquement sur cet ordinateur. Elles ne sont pas envoyées au site public.</p> : null}
+    {!expanded ? calendar(false) : null}
+    {expanded ? <AdminDialog label="Calendrier agrandi" wide onClose={() => setExpanded(false)}>{calendar(true)}</AdminDialog> : null}
+    {editor ? <EventEditor event={editor.event} day={editor.day} localMode={localMode} busy={busy} error={error} onSave={save} onDelete={remove} onClose={() => { if (!submitting.current) { setEditor(null); setError(""); } }} /> : null}
+  </div>;
 }
