@@ -1,13 +1,13 @@
 import Link from "next/link";
 import type { SiteCondition } from "@/data/site-conditions";
 import { getGolfOpeningSchedule, siteConfig } from "@/data/site";
-import { homeAds, visibleHomeAds } from "@/data/home-ads";
+import { managedAdsForSide, type ManagedHomeAd } from "@/data/home-ads";
 import { isRestaurantWeeklyClosed, parisDateKey, visibleCondition } from "@/lib/site-conditions";
 import { HomeAdSlot } from "./home-ad-slot";
 import { SiteConditionControl } from "./site-condition-control";
 import { RefreshStaleHome } from "./refresh-stale-home";
 
-export function SiteConditions({ conditions, editable, unavailable = false, preview = false }: { conditions: SiteCondition[]; editable: boolean; unavailable?: boolean; preview?: boolean }) {
+export function SiteConditions({ conditions, editable, ads, unavailable = false, preview = false }: { conditions: SiteCondition[]; editable: boolean; ads: ManagedHomeAd[]; unavailable?: boolean; preview?: boolean }) {
   const now = new Date();
   const today = parisDateKey(now);
   const dateLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(now);
@@ -32,7 +32,7 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
   return <section aria-labelledby="conditions-title" className="border-y border-emerald-950/10 bg-[#efeadd]/50 py-6 sm:py-7">
     <RefreshStaleHome />
     <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8 2xl:grid-cols-[12rem_minmax(0,1fr)_12rem] 2xl:items-stretch">
-      <div className="order-2 min-w-0 2xl:order-1"><HomeAdSlot ads={visibleHomeAds(homeAds.left, today)} label="Espace publicitaire gauche" /></div>
+      <div className="order-2 min-w-0 2xl:order-1"><HomeAdSlot ads={managedAdsForSide(ads, "left", today)} label="Espace publicitaire gauche" /></div>
       <div className="order-1 min-w-0 rounded-[24px] border border-emerald-950/10 bg-white p-4 shadow-sm shadow-emerald-950/5 sm:col-span-2 sm:px-6 sm:py-5 2xl:order-2 2xl:col-span-1">
         <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <div>
@@ -71,7 +71,7 @@ export function SiteConditions({ conditions, editable, unavailable = false, prev
         </footer>
         {unknownCount ? <p className="mt-3 text-sm leading-6 text-emerald-950/80">Un renseignement ? Appelez le <a className="font-semibold underline underline-offset-2" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>.</p> : null}
       </div>
-      <div className="order-3 min-w-0"><HomeAdSlot ads={visibleHomeAds(homeAds.right, today)} label="Espace publicitaire droit" /></div>
+      <div className="order-3 min-w-0"><HomeAdSlot ads={managedAdsForSide(ads, "right", today)} label="Espace publicitaire droit" /></div>
     </div>
   </section>;
 }

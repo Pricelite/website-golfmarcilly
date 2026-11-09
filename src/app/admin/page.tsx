@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 type AdminPageProps = { searchParams: Promise<{ error?: string; next?: string }> };
-const adminDestinations = ["/admin/competitions", "/admin/restaurant", "/admin/site-conditions", "/admin/archives", "/admin/statistiques"] as const;
+const adminDestinations = ["/admin/competitions", "/admin/restaurant", "/admin/site-conditions", "/admin/archives", "/admin/statistiques", "/admin/publicites"] as const;
 
 function AdminLogin({ error, next }: { error?: string; next?: string }) {
   const message = error === "rate_limited"
@@ -61,6 +61,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           { href: "/admin/competitions", title: "Calendrier", text: "Voir le mois entier, ajouter une compétition ou modifier une animation." },
           { href: "/admin/restaurant", title: "Restaurant La Bergerie", text: "Actualiser la carte, les prix et le plat du jour." },
           { href: "/admin/site-conditions", title: "État du golf", text: "Mettre à jour les conditions des parcours et des services." },
+          { href: "/admin/publicites", title: "Publicités", text: "Modifier les visuels, les liens et les dates de diffusion sur l’accueil." },
           { href: "/admin/statistiques", title: "Statistiques", text: "Consulter la fréquentation du site et les connexions." },
           { href: "/admin/archives", title: "Archives des initiations", text: "Retrouver les anciens dossiers en lecture seule." },
           { href: "/admin/contenu", title: "Pages et médias", text: "Ouvrir l’espace de contenu avec votre compte personnel." },
