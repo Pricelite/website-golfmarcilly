@@ -31,6 +31,18 @@ export const restaurantFaqs = [
 
 export const restaurantGallery = [
   {
+    src: "/restaurant/gallery/entree-creme-herbes.webp",
+    alt: "Entrée dans une assiette blanche, avec une quenelle de crème, des herbes et des traits de sauce",
+    title: "Une entrée tout en fraîcheur",
+    description: "Une assiette dressée avec crème et herbes, photographiée à La Bergerie.",
+  },
+  {
+    src: "/restaurant/gallery/cordon-bleu-frites.webp",
+    alt: "Cordon-bleu découpé, accompagné de frites et de salade à La Bergerie",
+    title: "Cordon-bleu et frites",
+    description: "Un cordon-bleu découpé à l’assiette, accompagné de frites et de salade.",
+  },
+  {
     "src": "/restaurant/gallery/mille-feuille-tatin.webp",
     "alt": "Mille-feuille façon Tatin servi dans une assiette blanche à La Bergerie",
     "title": "Mille-feuille façon Tatin",
