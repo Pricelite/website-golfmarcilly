@@ -1,5 +1,6 @@
 /** Publicités de l'accueil. Les images doivent être placées dans public/. */
 export type HomeAd = {
+  id?: string;
   advertiser: string;
   image: string;
   imageAlt: string;
@@ -11,6 +12,25 @@ export type HomeAd = {
   startsOn?: string;
   endsOn?: string;
 };
+
+export type ManagedHomeAd = HomeAd & {
+  id: string;
+  side: "left" | "right" | "both";
+  enabled: boolean;
+  position: number;
+};
+
+export function defaultManagedHomeAds(): ManagedHomeAd[] {
+  return [
+    ...homeAds.left.map((ad, index) => ({ ...ad, id: `default-left-${index}`, side: "left" as const, enabled: true, position: index * 10 })),
+    ...homeAds.right.map((ad, index) => ({ ...ad, id: `default-right-${index}`, side: "right" as const, enabled: true, position: index * 10 })),
+  ];
+}
+
+export function managedAdsForSide(ads: ManagedHomeAd[], side: "left" | "right", today: string): HomeAd[] {
+  return ads.filter(ad => ad.enabled && (ad.side === side || ad.side === "both") && visibleHomeAd(ad, today))
+    .sort((a, b) => a.position - b.position || a.id.localeCompare(b.id));
+}
 
 export const homeAds: { left: HomeAd[]; right: HomeAd[] } = {
   left: [

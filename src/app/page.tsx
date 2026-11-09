@@ -19,6 +19,7 @@ import { emptyConditions } from "@/data/site-conditions";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 import { getBlackFriday2026Timing } from "@/lib/offer-campaign";
+import { publicHomeAds } from "@/lib/home-ads-store";
 
 export const metadata = buildMetadata({
   title: "Golf de Marcilly : 45 trous près d’Orléans",
@@ -30,6 +31,7 @@ export const metadata = buildMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
+  const adsPromise = publicHomeAds();
   const activeOffers = getActiveSiteOffers();
   const practiceBuckets = pricingSections.find(section => section.id === "practice")?.rows[0];
   let conditions = emptyConditions();
@@ -40,6 +42,7 @@ export default async function HomePage() {
     conditions = conditions.map(condition => ({ ...condition, status: "unknown" }));
   }
   const canEditConditions = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
+  const ads = await adsPromise;
   // This dynamic Server Component supplies one request timestamp to the client for hydration.
   // eslint-disable-next-line react-hooks/purity
   const offersNow = Date.now();
@@ -59,7 +62,7 @@ export default async function HomePage() {
         title="45 trous aux portes d’Orléans"
       />
 
-      <SiteConditions conditions={conditions} editable={canEditConditions} unavailable={conditionsUnavailable} preview={process.env.PREVIEW_MODE === "true"} />
+      <SiteConditions conditions={conditions} editable={canEditConditions} ads={ads} unavailable={conditionsUnavailable} preview={process.env.PREVIEW_MODE === "true"} />
 
       <section aria-labelledby="discovery-title" className="border-y border-emerald-950/10 bg-emerald-50/70 py-10 sm:py-14">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_0.8fr] lg:px-8">
