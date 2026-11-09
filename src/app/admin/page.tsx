@@ -52,18 +52,19 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   if (adminDestinations.includes(params.next as typeof adminDestinations[number])) redirect(params.next!);
 
   const inbox = process.env.EMAIL_TO?.trim() || "golf@marcilly.com";
-  return <div className="mx-auto w-full max-w-5xl px-6 py-10">
-    <section className="rounded-3xl border border-emerald-900/10 bg-white/90 p-6 shadow-xl shadow-emerald-900/10">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-serif text-3xl text-emerald-950">Administration du golf</h1>
-        <form action="/admin/logout" method="post"><button type="submit" className="rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-50">Déconnexion</button></form>
-      </div>
-      <div className="mt-6 flex flex-wrap gap-3">
-        <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/competitions">Gérer les compétitions</Link>
-        <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/restaurant">Modifier la carte du jour</Link>
-        <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/site-conditions">État du golf</Link>
-        <Link className="rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-white" href="/admin/statistiques">Statistiques</Link>
-        <Link className="rounded-full border border-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-900" href="/admin/archives">Archives des initiations</Link>
+  return <div className="w-full">
+    <section>
+      <h1 className="font-serif text-3xl text-emerald-950 sm:text-4xl">Votre tableau de bord</h1>
+      <p className="mt-3 text-sm leading-7 text-emerald-950/70">Retrouvez les outils du golf dans le menu latéral et accédez directement aux mises à jour du quotidien.</p>
+      <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {[
+          { href: "/admin/competitions", title: "Calendrier", text: "Voir le mois entier, ajouter une compétition ou modifier une animation." },
+          { href: "/admin/restaurant", title: "Restaurant La Bergerie", text: "Actualiser la carte, les prix et le plat du jour." },
+          { href: "/admin/site-conditions", title: "État du golf", text: "Mettre à jour les conditions des parcours et des services." },
+          { href: "/admin/statistiques", title: "Statistiques", text: "Consulter la fréquentation du site et les connexions." },
+          { href: "/admin/archives", title: "Archives des initiations", text: "Retrouver les anciens dossiers en lecture seule." },
+          { href: "/admin/contenu", title: "Pages et médias", text: "Ouvrir l’espace de contenu avec votre compte personnel." },
+        ].map(item => <Link key={item.href} href={item.href} className="group flex flex-col rounded-3xl border border-emerald-950/10 bg-white p-6 shadow-sm transition hover:border-emerald-600 focus-visible:outline-2 focus-visible:outline-emerald-700"><h2 className="font-serif text-2xl">{item.title}</h2><p className="mt-3 flex-1 text-sm leading-7 text-emerald-950/70">{item.text}</p><span className="mt-5 text-sm font-semibold text-emerald-800">Ouvrir la rubrique →</span></Link>)}
       </div>
       <section className="mt-8 rounded-2xl border border-emerald-900/10 bg-emerald-50/50 p-5" aria-labelledby="initiation-inbox">
         <h2 id="initiation-inbox" className="font-serif text-2xl text-emerald-950">Demandes d’initiation</h2>

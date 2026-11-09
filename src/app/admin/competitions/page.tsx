@@ -7,6 +7,7 @@ import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { CalendarStoreError, listAssociationEvents } from "@/lib/association-events-db";
 import { localCalendarEnabled } from "@/lib/association-events-local";
 import { sharedContentSyncEnabled } from "@/lib/supabase/content";
+import { parisDateKey } from "@/data/daily-menu";
 
 export const metadata: Metadata = { title: "Administration des compétitions", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -21,16 +22,14 @@ export default async function AdminCompetitionsPage() {
       ? "La gestion du calendrier doit être activée : configurez Supabase et appliquez la migration des compétitions indiquée dans CALENDRIER-AS.md. Le programme actuel reste visible sur le site."
       : "Le calendrier est temporairement indisponible. Rechargez la page pour réessayer.";
   }
-  return <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+  return <div className="w-full">
     <div className="flex flex-wrap items-center justify-between gap-4">
       <h1 className="font-serif text-3xl text-emerald-950">Gestion des compétitions</h1>
-      <form action="/admin/logout" method="post"><button className="rounded-full border border-emerald-950/20 px-4 py-2 text-sm" type="submit">Déconnexion</button></form>
     </div>
     <nav className="mt-4 flex flex-wrap gap-5 text-sm text-emerald-900" aria-label="Administration">
-      <Link className="underline underline-offset-4" href="/admin">Réservations initiation</Link>
       <Link className="underline underline-offset-4" href="/association-sportive#competitions" target="_blank" rel="noreferrer">Voir le calendrier public ↗</Link>
     </nav>
     {sharedContentSyncEnabled() ? <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Données partagées activées : les changements effectués ici sont publiés sur le calendrier public.</p> : null}
-    {error ? <p role="alert" className="mt-8 rounded-2xl bg-amber-50 p-5 text-amber-950">{error}</p> : <CompetitionManager initialEvents={events ?? []} localMode={localCalendarEnabled()} />}
+    {error ? <p role="alert" className="mt-8 rounded-2xl bg-amber-50 p-5 text-amber-950">{error}</p> : <CompetitionManager initialEvents={events ?? []} initialDate={parisDateKey()} localMode={localCalendarEnabled()} />}
   </div>;
 }

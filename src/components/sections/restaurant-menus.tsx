@@ -6,8 +6,7 @@ import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 export function RestaurantMenus() {
   const seminar = restaurantData.seminarMenu;
   return (
-    <>
-      <section id="menus" className="scroll-mt-28">
+      <section id="menus" className="scroll-mt-28 overflow-hidden rounded-[28px] border border-emerald-950/15 bg-white p-5 shadow-sm sm:p-8">
         <SectionTitle eyebrow="À partager à La Bergerie" title="Nos menus de groupes" description="Retrouvez les entrées, plats et desserts de chaque formule, puis contactez-nous pour préparer votre repas, sur devis uniquement." />
         <div className="mt-8 grid items-start gap-6 lg:grid-cols-3">
           {restaurantData.groupMenus.items.map((menu) => (
@@ -37,16 +36,7 @@ export function RestaurantMenus() {
             </article>
           ))}
         </div>
-      <div className="mt-8 flex flex-col items-start gap-5 rounded-2xl bg-emerald-950 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 className="font-serif text-2xl text-stone-50">Votre repas, un seul devis</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-100/85">Menu, boissons, séminaire ou location de salle : regroupez vos envies dans une seule demande.</p>
-        </div>
-        <CTAButton href="#devis-restaurant" variant="secondary" className="shrink-0">Demander un devis global</CTAButton>
-      </div>
-      </section>
-
-      <section id="menu-seminaire" className="mt-12 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/20 bg-[#e8f4ed] shadow-sm shadow-emerald-950/10">
+      <section id="menu-seminaire" className="mt-8 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#e8f4ed]">
         <div className="flex flex-wrap items-center justify-between gap-5 border-b border-emerald-950/15 bg-emerald-950 px-6 py-7 text-stone-50 sm:px-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">Formule Entreprises</p>
@@ -80,6 +70,13 @@ export function RestaurantMenus() {
           </div>
         </div>
       </section>
-    </>
+      <div className="mt-8 flex flex-col items-start gap-5 border-t border-emerald-950/15 pt-7 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <h2 className="font-serif text-2xl">Votre repas, un seul devis</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-emerald-950/75">Menu, boissons, séminaire ou location de salle : regroupez vos envies dans une seule demande.</p>
+        </div>
+        <CTAButton href="#devis-restaurant" className="shrink-0">Demander un devis global</CTAButton>
+      </div>
+      </section>
   );
 }

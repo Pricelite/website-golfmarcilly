@@ -44,6 +44,10 @@ img {
   display: block;
 }
 
+body:has(.admin-dialog[open]) {
+  overflow: hidden;
+}
+
 .site-button {
   border: 1px solid rgba(6, 78, 59, 0.25);
   background: #fff;
