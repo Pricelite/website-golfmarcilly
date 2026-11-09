@@ -1,3 +1,4 @@
+import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,13 +11,7 @@ import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
-export const metadata = buildMetadata({
-  title: "Séminaires et événements près d’Orléans",
-  description:
-    "Organisez un séminaire, un team building ou une réception au Golf de Marcilly, près d’Orléans. Découvrez les espaces, les activités et demandez un devis.",
-  path: "/evenements",
-  image: "/images/practice-golf-og.jpg",
-});
+export const metadata = buildMetadata(publicPageSeo.events);
 
 export default function EventsPage() {
   return (
@@ -44,11 +39,11 @@ export default function EventsPage() {
               Séminaires & événements · près d’Orléans
             </p>
             <h1 className="mt-6 font-serif text-5xl leading-[1.04] sm:text-6xl lg:text-7xl">
-              Sortez du cadre.
-              <span className="block italic text-[#dbe9b4]">Rassemblez vos équipes.</span>
+              Événements et séminaires
+              <span className="block italic text-[#dbe9b4]">près d’Orléans.</span>
             </h1>
             <p className="mt-7 max-w-2xl text-base leading-8 text-stone-100/90 sm:text-lg">
-              Une journée de travail, un moment à partager, un repas qui prolonge les échanges : composez votre événement au Golf de Marcilly.
+              À Marcilly-en-Villette, composez votre événement au Golf de Marcilly : une salle de réunion équipée, une activité golf et un repas à La Bergerie selon les prestations souhaitées.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <CTAButton href="#devis" variant="secondary">Parlons de votre projet <span aria-hidden="true" className="ml-2">↗</span></CTAButton>

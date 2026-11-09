@@ -1,3 +1,5 @@
+import { publicPageSeo } from "@/data/seo";
+import Link from "next/link";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { PricingTable } from "@/components/ui/pricing-table";
@@ -6,12 +8,7 @@ import { pricingSections } from "@/data/pricing";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
-export const metadata = buildMetadata({
-  title: "Tarifs golf près d’Orléans : green fees et initiations",
-  description:
-    "Tarifs 2026 du Golf de Marcilly : découverte, practice, green fees, location et abonnements.",
-  path: "/tarifs",
-});
+export const metadata = buildMetadata(publicPageSeo.pricing);
 
 export default function PricingPage() {
   return (
@@ -27,10 +24,11 @@ export default function PricingPage() {
           <SectionTitle
             as="h1"
             eyebrow="Tarifs 2026"
-            title="Le golf à Marcilly, à votre rythme"
+            title="Tarifs du golf : green-fees et abonnements"
           />
           <CTAButton href="/contact#reservation" variant="secondary">Besoin d’un conseil ?</CTAButton>
         </div>
+        <p className="mt-5 max-w-3xl text-sm leading-7 text-emerald-950/75">Choisissez votre formule après avoir découvert nos <Link href="/golf" className="font-semibold underline underline-offset-4">parcours et notre practice</Link>. Pour un premier essai, les <Link href="/je-debute-le-golf#initiations" className="font-semibold underline underline-offset-4">initiations avec matériel fourni</Link> permettent de commencer sans expérience préalable.</p>
         <nav aria-label="Catégories de tarifs" className="mt-8">
           <p className="mb-3 text-sm font-medium text-emerald-950/75">Accès direct aux tarifs</p>
           <div className="flex flex-wrap gap-2">
