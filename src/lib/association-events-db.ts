@@ -64,7 +64,8 @@ export async function listAssociationEvents(): Promise<AssociationEvent[]> {
       ({ data, error } = await query(legacyColumns));
     }
     checkError(error);
-    const rows = (data ?? []) as EventRow[];
+    // Dynamic column selection supports both schema versions; PostgREST cannot infer its row type.
+    const rows = (data ?? []) as unknown as EventRow[];
     events.push(...rows.map(fromRow));
     if (rows.length < 500) return events;
   }
