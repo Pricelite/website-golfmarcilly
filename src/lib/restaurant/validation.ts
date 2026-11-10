@@ -24,7 +24,7 @@ const PARIS_TIME_ZONE = "Europe/Paris";
 export function getRestaurantTimeSlots(day: string): string[] {
   const weekday = new Date(`${day}T12:00:00Z`).getUTCDay();
   if (weekday === 2 || Number.isNaN(weekday)) return [];
-  return generateTimeSlots("12:00", weekday === 0 || weekday === 6 ? "14:30" : "13:30", 30);
+  return generateTimeSlots("12:00", weekday === 0 || weekday === 6 ? "14:30" : "14:00", 30);
 }
 
 function getParisDateTimeKey(date: Date): string {

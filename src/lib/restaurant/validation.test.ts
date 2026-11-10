@@ -22,7 +22,8 @@ test("restaurant enforces thirty minutes notice in Paris", () => {
   assert.equal(parseReservationPayload(valid, new Date("2026-09-16T09:31:00Z")).ok, false);
   assert.equal(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T09:30:00Z")).includes("12:00"), true);
   assert.equal(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T09:31:00Z")).includes("12:00"), false);
-  assert.deepEqual(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T11:26:00Z")), []);
+  assert.deepEqual(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T11:26:00Z")), ["14:00"]);
+  assert.deepEqual(getAvailableRestaurantTimeSlots("2026-09-16", new Date("2026-09-16T11:31:00Z")), []);
   assert.deepEqual(getAvailableRestaurantTimeSlots("2026-09-17", new Date("2026-09-16T11:26:00Z")), getRestaurantTimeSlots("2026-09-17"));
 });
 
@@ -38,5 +39,6 @@ test("restaurant excludes Tuesday and closes earlier on weekdays", () => {
   assert.deepEqual(getRestaurantTimeSlots("2026-09-15"), []);
   assert.equal(parseReservationPayload({ ...valid, day: "2026-09-15" }, new Date("2026-09-14T09:00:00Z")).ok, false);
   assert.equal(parseReservationPayload({ ...valid, time: "14:30" }, now).ok, false);
+  assert.equal(parseReservationPayload({ ...valid, time: "14:00" }, now).ok, true);
   assert.equal(getRestaurantTimeSlots("2026-09-19").includes("14:30"), true);
 });

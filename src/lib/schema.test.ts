@@ -37,7 +37,7 @@ test("local schemas share the verified identity and distinguish restaurant servi
   assert.equal(buildWebsiteSchema().publisher["@id"], golf["@id"]);
   assert.equal(restaurant.openingHoursSpecification.length, 6);
   assert.ok(!restaurant.openingHoursSpecification.some(slot => slot.dayOfWeek.endsWith("Tuesday")));
-  assert.equal(restaurant.openingHoursSpecification.find(slot => slot.dayOfWeek.endsWith("Monday"))?.closes, "14:00");
+  assert.equal(restaurant.openingHoursSpecification.find(slot => slot.dayOfWeek.endsWith("Monday"))?.closes, "14:30");
   assert.equal(restaurant.openingHoursSpecification.find(slot => slot.dayOfWeek.endsWith("Sunday"))?.closes, "15:00");
   for (const schema of [golf, restaurant]) {
     assert.ok(!("aggregateRating" in schema));
