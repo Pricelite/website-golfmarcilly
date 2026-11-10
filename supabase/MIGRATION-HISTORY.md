@@ -28,6 +28,30 @@ Le 31 octobre 2026, l'intégration a été activée avec ces réglages. Un nouve
 
 Pour les déploiements Vercel Preview issus de `develop`, `vercel.json` lance `scripts/wait-for-staging-supabase.mjs` avant `pnpm build`. Ce script attend le check GitHub `Supabase Preview` émis par l'application Supabase pour le SHA exact du commit. Il bloque le build si le check échoue, manque après dix minutes ou si GitHub refuse la vérification. Les previews des autres branches et la production Vercel ne sont pas soumises à ce verrou Staging. Le contrôle utilise l'API publique GitHub sans secret ; en cas de limitation de débit, le build échoue et doit être relancé après rétablissement de l'accès. Vérifier le statut Supabase à chaque changement de schéma et ne pas publier le code dépendant d'une migration tant que ce statut n'est pas réussi. Le rapprochement complet des migrations historiques de Golf Prod avec la CLI reste décrit ci-dessous et n'est pas effectué par cette intégration Staging.
 
+## Agenda de l’association sportive 2027 — 10 novembre 2026
+
+La migration `20261110150000_align_association_agenda_2027_and_game_format.sql`
+a été appliquée automatiquement à Golf Staging par l’intégration Supabase,
+avec un check `Supabase Preview` réussi. Elle a ensuite été exécutée
+manuellement dans l’éditeur SQL de Golf Prod, après confirmation du propriétaire
+et sauvegarde ciblée des événements 2027, puis avant la fusion de la PR #166
+vers `main`. La CI et le déploiement Vercel Production de cette PR ont réussi.
+
+Avant l’exécution sur Golf Prod, la table contenait 110 événements commençant
+en 2027 et 73 en 2026. L’export CSV des 110 lignes, conservé hors Git dans les
+livrables Codex sous `golf-prod-agenda-2027-avant-migration.csv`, a l’empreinte
+SHA-256 `36C218D26FF49F8B0CF81CF83F223C92641FDAFD878F036BB572B52B1ECA5AE9`.
+La comparaison avec le fichier du club annonçait 17 suppressions et 14 ajouts.
+Après exécution, 107 événements commencent en 2027 et les 73 lignes 2026 sont
+toujours présentes. Le marqueur d’import unique et les colonnes `game_format`
+et `game_format_detail` ont été vérifiés. La page publique affiche les deux
+Goltechnic de mars 2027 en option et conserve les rendez-vous de novembre 2026.
+
+L’exécution manuelle sur Golf Prod n’inscrit pas cette version dans le registre
+Supabase CLI. Ne pas rejouer la migration par `supabase db push --include-all`.
+Pour revenir aux événements 2027 antérieurs, restaurer l’export ciblé ; un
+retour au code précédent peut conserver les nouvelles colonnes.
+
 ## Adoption ultérieure de la CLI
 
 1. Réaliser une sauvegarde PostgreSQL et valider sa restauration sur une cible
