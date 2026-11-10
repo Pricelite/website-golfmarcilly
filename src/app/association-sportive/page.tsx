@@ -100,7 +100,7 @@ export default async function AssociationPage() {
               </article>
             ))}
           </div>
-          <p className="mt-8 text-sm text-stone-100/80">Le calendrier s’ouvre sur le mois actuel. Parcourez les mois avec les flèches ou choisissez un mois et une année. Pour les vacances scolaires, sélectionnez la zone A, B ou C.</p>
+          <p className="mt-8 text-sm text-stone-100/80">Le calendrier 2027 s’ouvre sur mars. Parcourez les mois avec les flèches ou choisissez un mois et une année. Pour les vacances scolaires, sélectionnez la zone A, B ou C.</p>
           {calendar.unavailable ? <p role="status" className="mt-8 rounded-2xl bg-white p-6 text-emerald-950">Le calendrier est momentanément indisponible. Réessayez dans quelques instants ou contactez l’accueil au {siteConfig.phoneDisplay}.</p> : <AssociationCalendar events={calendar.events} initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />}
         </div>
       </section>
