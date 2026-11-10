@@ -35,6 +35,13 @@ function eventZone(event: AssociationEvent) {
   return event.zone && event.zone !== "all" ? ` · Zone ${event.zone}` : "";
 }
 
+function gameFormatLabel(event: AssociationEvent) {
+  if (event.gameFormat === "score_max") return "Score max";
+  if (event.gameFormat === "scramble_2") return "Scramble à 2";
+  if (event.gameFormat === "scramble_4") return "Scramble à 4";
+  return event.gameFormat === "other" ? event.gameFormatDetail : undefined;
+}
+
 function currentParisDate() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
@@ -151,8 +158,9 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
           <button className={buttonClass} type="button" onClick={() => setSelected(null)}>Fermer</button>
         </div>
         <p className="mt-3 text-sm">{formatCalendarDate(selected.start)}{selected.end ? ` au ${formatCalendarDate(selected.end)}` : ""}</p>
+        {gameFormatLabel(selected) ? <p className="mt-2 text-sm">Formule de jeu : {gameFormatLabel(selected)}</p> : null}
         {selected.category === "holiday" || selected.category === "vacation" || selected.category === "celebration" ? null : <p className="mt-2 text-sm">{selected.time ? `À partir de ${selected.time.replace(":", " h ")}` : "Horaire à préciser auprès de l’accueil."}</p>}
-        {selected.note ? <p className="mt-2 text-sm leading-6">{selected.note}</p> : null}
+        {selected.note && !(selected.gameFormat && /^scramble [aà] [24]$/i.test(selected.note.trim())) ? <p className="mt-2 text-sm leading-6">{selected.note}</p> : null}
         <a className="mt-4 inline-block text-sm font-semibold underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>Renseignements : {siteConfig.phoneDisplay}</a>
       </div> : null}
 

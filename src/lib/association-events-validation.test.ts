@@ -26,6 +26,22 @@ test("calendar markers accept their category and school zone", () => {
   assert.equal(parsed.event.internalNote, "Préparation locale");
 });
 
+test("competition format accepts listed choices and requires a description for other", () => {
+  for (const gameFormat of ["score_max", "scramble_2", "scramble_4"]) {
+    const parsed = parseEventInput({ title: "Coupe", start: "2027-10-03", gameFormat });
+    assert.ok(parsed.ok);
+    assert.equal(parsed.event.gameFormat, gameFormat);
+  }
+  const other = parseEventInput({ title: "Coupe", start: "2027-10-03", gameFormat: "other", gameFormatDetail: "Foursome" });
+  assert.ok(other.ok);
+  assert.equal(other.event.gameFormatDetail, "Foursome");
+  for (const input of [
+    { gameFormat: "other" },
+    { gameFormat: "scramble_3" },
+    { gameFormat: "other", gameFormatDetail: "x".repeat(161) },
+  ]) assert.equal(parseEventInput({ title: "Coupe", start: "2027-10-03", ...input }).ok, false);
+});
+
 test("calendar accepts the November 2026 programme and rejects earlier dates", () => {
   for (const start of ["2026-11-01", "2026-11-08", "2026-11-22", "2026-12-31", "2027-01-01"]) {
     assert.equal(parseEventInput({ title: "Rendez-vous du club", start, status: "confirmed" }).ok, true);

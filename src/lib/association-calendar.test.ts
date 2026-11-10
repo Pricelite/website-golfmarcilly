@@ -62,10 +62,10 @@ test("original 2027 programme keeps valid unique dates and its 33 context marker
     assert.ok(event.start.startsWith("2027-"));
     if (event.end) assert.ok(event.end >= event.start);
   }
-  assert.equal(associationCalendar2027.length, 106);
+  assert.equal(associationCalendar2027.length, 107);
   assert.equal(associationEvents.filter(event => ["holiday", "vacation", "celebration"].includes(event.category ?? "")).length, 33);
   assert.equal(eventsOnDay(associationEvents, "2027-03-28").map(event => event.title).includes("Pâques"), true);
-  assert.equal(eventsOnDay(associationEvents, "2027-03-28").map(event => event.title).includes("Goltechnic"), false);
+  assert.equal(eventsOnDay(associationEvents, "2027-03-28").map(event => event.title).includes("Goltechnic"), true);
 });
 
 test("owner additions contain nine Thursdays, fourteen first Fridays and the two confirmed November competitions", () => {
@@ -90,21 +90,24 @@ test("owner additions contain nine Thursdays, fourteen first Fridays and the two
 });
 
 test("2027 owner agenda keeps named competitions, open dates and their publication statuses", () => {
-  assert.equal(associationEvents2027.length, 73);
+  assert.equal(associationEvents2027.length, 74);
   assert.deepEqual(
     associationEvents2027.reduce<Record<string, number>>((counts, event) => {
       const status = event.status ?? "missing";
       counts[status] = (counts[status] ?? 0) + 1;
       return counts;
     }, {}),
-    { unconfirmed: 29, provisional: 6, confirmed: 34, missing: 4 },
+    { unconfirmed: 63, provisional: 7, confirmed: 4 },
   );
-  assert.deepEqual(associationEvents2027.filter(event => event.title === "Goltechnic").map(event => [event.start, event.status]), [["2027-03-21", "confirmed"]]);
+  assert.deepEqual(associationEvents2027.filter(event => event.title === "Goltechnic").map(event => [event.start, event.status]), [["2027-03-21", "provisional"], ["2027-03-28", "provisional"]]);
   assert.equal(associationEvents2027.filter(event => event.title === "Coupe de Classement").length, 33);
-  assert.ok(associationEvents2027.filter(event => event.title === "Coupe de Classement").every(event => event.status === "confirmed"));
-  assert.deepEqual(associationEvents2027.filter(event => event.title === "Coupe CITYA").map(event => [event.start, event.status]), [["2027-04-11", "provisional"]]);
-  assert.ok(associationEvents2027.every(event => event.start.startsWith("2027-") && !event.note?.includes("Référence 2026")));
-  assert.equal(associationEvents2027.filter(event => event.title === "Créneau à définir").length, 26);
-  assert.equal(new Set(associationEvents2027.map(event => event.id)).size, 73);
+  assert.ok(associationEvents2027.filter(event => event.title === "Coupe de Classement").every(event => event.status === "unconfirmed"));
+  assert.deepEqual(associationEvents2027.filter(event => event.id === "agenda-2027-source-12").map(event => [event.title, event.status]), [["Créneau à définir", "unconfirmed"]]);
+  assert.ok(associationEvents2027.every(event => event.start.startsWith("2027-")));
+  assert.equal(associationEvents2027.filter(event => event.title === "Créneau à définir").length, 27);
+  assert.equal(new Set(associationEvents2027.map(event => event.id)).size, 74);
+  assert.deepEqual(associationEvents2027.filter(event => event.gameFormat).map(event => [event.start, event.gameFormat]), [["2027-10-03", "scramble_2"], ["2027-11-07", "scramble_4"], ["2027-11-21", "scramble_2"]]);
+  assert.equal(associationEvents.filter(event => event.start.startsWith("2027-")).length, 107);
+  assert.equal(associationEvents.filter(event => event.start.startsWith("2026-")).length, 13);
   assert.equal(eventsOnDay(associationEvents, "2027-10-03")[0].title, "Coupe Octobre Rose");
 });
