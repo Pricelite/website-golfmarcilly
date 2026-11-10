@@ -3,6 +3,27 @@
 -- A one-time marker prevents later admin edits from being overwritten on rerun.
 begin;
 
+-- Staging predates the October 2027 calendar alignment; bring its table to
+-- the same additive schema before importing the owner's programme.
+alter table public.association_events add column if not exists category text not null default 'competition';
+alter table public.association_events add column if not exists zone text not null default 'all';
+alter table public.association_events drop constraint if exists association_events_status_check;
+alter table public.association_events add constraint association_events_status_check
+  check (status in ('private', 'provisional', 'unconfirmed', 'confirmed'));
+alter table public.association_events drop constraint if exists association_events_category_check;
+alter table public.association_events add constraint association_events_category_check
+  check (category in ('competition', 'open_slot', 'holiday', 'vacation', 'celebration'));
+alter table public.association_events drop constraint if exists association_events_zone_check;
+alter table public.association_events add constraint association_events_zone_check
+  check (zone in ('all', 'A', 'B', 'C'));
+create table if not exists public.association_event_imports (
+  import_key text primary key,
+  imported_at timestamptz not null default now()
+);
+alter table public.association_event_imports enable row level security;
+revoke all on table public.association_event_imports from public, anon, authenticated;
+grant select, insert on table public.association_event_imports to service_role;
+
 alter table public.association_events add column if not exists game_format text;
 alter table public.association_events add column if not exists game_format_detail text;
 alter table public.association_events drop constraint if exists association_events_game_format_check;
@@ -1224,4 +1245,5 @@ begin
   end if;
 end $sync$;
 
+notify pgrst, 'reload schema';
 commit;
