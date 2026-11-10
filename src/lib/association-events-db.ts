@@ -1,5 +1,5 @@
 import "server-only";
-import { associationCalendarStartsOn, associationEvents, type AssociationEvent } from "@/data/association-events";
+import { associationCalendarStartsOn, associationEvents, previewAssociationCalendar2027, type AssociationEvent } from "@/data/association-events";
 import { createContentAdminClient } from "@/lib/supabase/content";
 import { ScopedContentError, scopedContentRequest, scopedContentSyncEnabled } from "@/lib/supabase/scoped-content-sync";
 import { deleteLocalEvent, localCalendarEnabled, readLocalCalendar, saveLocalEvent } from "./association-events-local";
@@ -47,9 +47,9 @@ function toRow(event: EventInput) {
     category: event.category ?? "competition", zone: event.zone ?? "all" };
 }
 
-export async function listAssociationEvents(): Promise<AssociationEvent[]> {
-  if (localCalendarEnabled()) return readLocalCalendar();
-  if (scopedContentSyncEnabled()) return scopedContentRequest<AssociationEvent[]>("events:list");
+async function listAssociationEventsWithSchema(): Promise<{ events: AssociationEvent[]; legacySchema: boolean }> {
+  if (localCalendarEnabled()) return { events: await readLocalCalendar(), legacySchema: false };
+  if (scopedContentSyncEnabled()) return { events: await scopedContentRequest<AssociationEvent[]>("events:list"), legacySchema: false };
   const db = client();
   const events: AssociationEvent[] = [];
   let legacySchema = false;
@@ -67,22 +67,28 @@ export async function listAssociationEvents(): Promise<AssociationEvent[]> {
     // Dynamic column selection supports both schema versions; PostgREST cannot infer its row type.
     const rows = (data ?? []) as unknown as EventRow[];
     events.push(...rows.map(fromRow));
-    if (rows.length < 500) return events;
+    if (rows.length < 500) return { events, legacySchema };
   }
 }
 
-export async function publicAssociationEvents(): Promise<{ events: AssociationEvent[]; unavailable: boolean }> {
+export async function listAssociationEvents(): Promise<AssociationEvent[]> {
+  return (await listAssociationEventsWithSchema()).events;
+}
+
+export async function publicAssociationEvents(): Promise<{ events: AssociationEvent[]; unavailable: boolean; preview2027: boolean }> {
   try {
-    const events = (await listAssociationEvents()).map(event => {
+    const { events: storedEvents, legacySchema } = await listAssociationEventsWithSchema();
+    const preview2027 = legacySchema && process.env.NODE_ENV === "development";
+    const events = (preview2027 ? previewAssociationCalendar2027(storedEvents) : storedEvents).map(event => {
       const publicEvent = { ...event };
       delete publicEvent.internalNote;
       return publicEvent;
     });
-    return { events, unavailable: false };
+    return { events, unavailable: false, preview2027 };
   } catch (error) {
     // Repli uniquement avant installation. Une base vide signifie un calendrier vide.
-    if (error instanceof CalendarStoreError && error.reason === "setup") return { events: associationEvents, unavailable: false };
-    return { events: [], unavailable: true };
+    if (error instanceof CalendarStoreError && error.reason === "setup") return { events: associationEvents, unavailable: false, preview2027: false };
+    return { events: [], unavailable: true, preview2027: false };
   }
 }
 

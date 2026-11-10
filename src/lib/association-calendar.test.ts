@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { calendarDefaultDate, monthDays, eventsOnDay, eventsInMonth, isPastEvent, upcomingCompetitions } from "./association-calendar";
-import { associationCalendar2027, associationClubEvents, associationEvents, associationEvents2027 } from "../data/association-events";
+import { associationCalendar2027, associationClubEvents, associationEvents, associationEvents2027, previewAssociationCalendar2027 } from "../data/association-events";
 
 test("events become past only after their inclusive final day", () => {
   const single = { id: "single", title: "Coupe", start: "2026-09-16" };
@@ -110,4 +110,17 @@ test("2027 owner agenda keeps named competitions, open dates and their publicati
   assert.equal(associationEvents.filter(event => event.start.startsWith("2027-")).length, 107);
   assert.equal(associationEvents.filter(event => event.start.startsWith("2026-")).length, 13);
   assert.equal(eventsOnDay(associationEvents, "2027-10-03")[0].title, "Coupe Octobre Rose");
+});
+
+test("local 2027 preview replaces imported dates without changing 2026 or added appointments", () => {
+  const shared = [
+    { id: "2026-11-08-52", start: "2026-11-08", title: "Brégent et La Bergerie" },
+    { id: "agenda-2027-source-6", start: "2027-03-21", title: "Ancien statut", status: "confirmed" as const },
+    { id: "custom-2027", start: "2027-05-09", title: "Rendez-vous ajouté" },
+  ];
+  const preview = previewAssociationCalendar2027(shared);
+  assert.deepEqual(preview.filter(event => event.start.startsWith("2026-")), shared.slice(0, 1));
+  assert.equal(preview.find(event => event.id === "agenda-2027-source-6")?.status, "provisional");
+  assert.equal(preview.filter(event => event.id === "custom-2027").length, 1);
+  assert.equal(preview.length, 109);
 });
