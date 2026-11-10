@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { associationFaqs, associationGroups, associationLinks, associationPartner, associationRoles } from "@/data/association";
 import { associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
+import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -183,22 +184,51 @@ export default async function AssociationPage() {
         </div>
       </section>
 
-      <section id="equipe" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <SectionTitle eyebrow="Les personnes à votre écoute" title="L’équipe de l’association sportive" />
-        <figure className="mt-8">
-          <Image
-            src="/images/organigramme-association-sportive.webp"
-            alt="Organigramme de l’association sportive : bureau, commissions, membres de droit et invités permanents."
-            width={1025}
-            height={768}
-            sizes="(max-width: 1280px) 100vw, 1216px"
-            className="h-auto w-full rounded-3xl"
-          />
-          <figcaption className="mt-3 text-sm text-emerald-950/75">
-            <a className="underline underline-offset-4" href="/images/organigramme-association-sportive.webp" target="_blank" rel="noopener noreferrer">Ouvrir l’organigramme en grand</a>
-          </figcaption>
-        </figure>
-        <div className="mt-6"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="ghost">Contacter l’accueil : {siteConfig.phoneDisplay}</CTAButton></div>
+      <section id="equipe" className="scroll-mt-28 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Les personnes à votre écoute" title="L’équipe de l’association sportive" />
+
+          <div className="mt-8 rounded-[28px] bg-emerald-950 p-6 text-white sm:p-8">
+            <h3 className="font-serif text-2xl sm:text-3xl">Le bureau</h3>
+            <ul className="mt-6 grid gap-4 md:grid-cols-3">
+              {associationOffice.map((person) => (
+                <li key={person.role} className="rounded-2xl border border-white/20 bg-white/10 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e6d4a2]">{person.role}</p>
+                  <p className="mt-3 font-serif text-2xl">{person.name}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-10">
+            <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les commissions</h3>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {associationCommissions.map((person) => (
+                <li key={person.role} className="rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{person.role}</p>
+                  <p className="mt-3 font-serif text-xl text-emerald-950">{person.name}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_2fr]">
+            <div>
+              <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les membres de droit</h3>
+              <ul className="mt-5 divide-y divide-emerald-950/10 rounded-2xl border border-emerald-950/15 bg-white px-5">
+                {associationExOfficioMembers.map((name) => <li key={name} className="py-4 font-medium text-emerald-950">{name}</li>)}
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les invités permanents</h3>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                {associationPermanentGuests.map((name) => <li key={name} className="rounded-2xl border border-emerald-950/15 bg-white px-5 py-4 font-medium text-emerald-950">{name}</li>)}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="ghost">Contacter l’accueil : {siteConfig.phoneDisplay}</CTAButton></div>
+        </div>
       </section>
 
       <section id="presidents" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
