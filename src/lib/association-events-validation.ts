@@ -11,7 +11,7 @@ function validDate(value: string) {
 export function parseEventInput(value: unknown): { ok: true; event: EventInput } | { ok: false; error: string } {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false, error: "Compétition invalide." };
   const input = value as Record<string, unknown>;
-  for (const key of ["title", "start", "end", "time", "note", "internalNote", "status", "category", "zone"]) {
+  for (const key of ["title", "start", "end", "time", "note", "internalNote", "gameFormat", "gameFormatDetail", "status", "category", "zone"]) {
     if (input[key] !== undefined && typeof input[key] !== "string") return { ok: false, error: "Les champs doivent contenir du texte." };
   }
   const title = (input.title as string | undefined)?.trim() ?? "";
@@ -20,6 +20,8 @@ export function parseEventInput(value: unknown): { ok: true; event: EventInput }
   const time = (input.time as string | undefined) || undefined;
   const note = (input.note as string | undefined)?.trim() || undefined;
   const internalNote = (input.internalNote as string | undefined)?.trim() || undefined;
+  const gameFormat = (input.gameFormat as string | undefined) || undefined;
+  const gameFormatDetail = (input.gameFormatDetail as string | undefined)?.trim() || undefined;
   const status = (input.status as string | undefined) || undefined;
   const category = (input.category as string | undefined) || undefined;
   const zone = (input.zone as string | undefined) || undefined;
@@ -30,10 +32,13 @@ export function parseEventInput(value: unknown): { ok: true; event: EventInput }
   if (time && !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return { ok: false, error: "Indiquez un horaire valide." };
   if (note && note.length > 2000) return { ok: false, error: "La description est limitée à 2 000 caractères." };
   if (internalNote && internalNote.length > 2000) return { ok: false, error: "La note interne est limitée à 2 000 caractères." };
+  if (gameFormat !== undefined && !["score_max", "scramble_2", "scramble_4", "other"].includes(gameFormat)) return { ok: false, error: "Choisissez une formule de jeu valide." };
+  if (gameFormatDetail && gameFormatDetail.length > 160) return { ok: false, error: "La précision de la formule de jeu est limitée à 160 caractères." };
+  if (gameFormat === "other" && !gameFormatDetail) return { ok: false, error: "Précisez la formule de jeu choisie." };
   if (status !== undefined && !["private", "provisional", "unconfirmed", "confirmed"].includes(status)) return { ok: false, error: "Choisissez un statut valide." };
   if (category !== undefined && !["competition", "open_slot", "holiday", "vacation", "celebration"].includes(category)) return { ok: false, error: "Choisissez une catégorie valide." };
   if (zone !== undefined && !["all", "A", "B", "C"].includes(zone)) return { ok: false, error: "Choisissez une zone valide." };
-  return { ok: true, event: { title, start, end, time, note, internalNote, status: status as EventInput["status"], category: category as EventInput["category"], zone: zone as EventInput["zone"] } };
+  return { ok: true, event: { title, start, end, time, note, internalNote, gameFormat: gameFormat as EventInput["gameFormat"], gameFormatDetail: gameFormat === "other" ? gameFormatDetail : undefined, status: status as EventInput["status"], category: category as EventInput["category"], zone: zone as EventInput["zone"] } };
 }
 
 export function validEventId(value: unknown): value is string {

@@ -1,137 +1,90 @@
-# Calendrier de l'association sportive
+# Calendrier de l’association sportive
 
-Le calendrier est intégré dans `/association-sportive#competitions`.
-L'administration `/admin/competitions` permet l'ajout, la modification et la
-suppression avec confirmation. Les changements sont stockés dans Supabase et
-visibles à la prochaine consultation ou au rechargement de la page publique,
-sans redéploiement. Il n'y a pas de connexion à RMS9.
+Le calendrier public se trouve sur `/association-sportive#competitions`. L’éditeur
+est accessible aux administrateurs sur `/admin/competitions`. Les changements
+enregistrés dans Supabase sont visibles au prochain chargement de la page publique.
+Il n’y a pas de connexion à RMS9.
 
-## Prévisualisation locale sans toucher à Supabase
+## Programme 2027 fourni par le club
 
-En mode développement, la page publique et `/admin/competitions` utilisent
-toujours le calendrier local : aucune mutation de compétition ne part vers
-Supabase, même si `.env.local` pointe vers une base distante. Au premier
-chargement, sans `.local-association-events-2027.json`, le programme de secours
-fournit les 73 épreuves ou créneaux 2027, les 33 repères scolaires et calendaires,
-ainsi que les 25 rendez-vous supplémentaires de novembre 2026 à décembre 2027.
-La première modification crée ce fichier à la racine du projet ; les suivantes
-y sont enregistrées. Il est ignoré par Git. Le retirer réinitialise l'affichage
-local au programme de secours et ne transfère rien à Supabase. Sauvegarder ce
-fichier séparément pour conserver les modifications locales. Le mode local est
-inactif en production.
+Le fichier `Agenda_competitions_2027.html` remis le 10 novembre 2026 contient
+107 entrées pour 2027 : 47 compétitions, 27 créneaux libres et 33 repères
+(jours fériés, fêtes et vacances scolaires). Les dates, titres, statuts, zones
+et notes ont été repris dans `src/data/association-events-2027.json` et
+`src/data/association-calendar-context-2027.json`. Les deux dates « Goltechnic »
+des 21 et 28 mars restent en option dans ce fichier. Le 11 avril reste un
+« Créneau à définir ». Les indications « scramble à 2 » et « scramble à 4 »
+alimentent aussi le champ structuré « Formule de jeu ».
 
-Le fichier local déjà préparé sur ce poste contient 131 entrées après les
-corrections visibles sur la capture du propriétaire. Les notes de préparation
-conservées restent dans sa note interne, visible uniquement dans l'éditeur
-local. Les indications de formule de jeu utiles au public apparaissent dans
-la description des épreuves concernées.
+Le programme de secours assemble ces 107 entrées avec les 13 rendez-vous du
+club encore situés en 2026. Il n’ajoute pas les anciennes récurrences de 2027
+qui ne figurent pas dans le fichier fourni. Les données 2026 du programme du
+club et de Supabase ne sont pas modifiées.
 
-## Activer la gestion (une seule fois)
+## Formule de jeu
 
-1. Renseigner `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
-   `ADMIN_PASSWORD` et idéalement `ADMIN_SESSION_SECRET` dans `.env.local`
-   pour le développement, puis dans les variables du serveur de production.
-   Les clés privées ne doivent jamais porter le préfixe `NEXT_PUBLIC_`.
-   `SUPABASE_SERVICE_ROLE_KEY` accepte la clé serveur secrète actuelle
-   (`sb_secret_…`) ou la clé serveur historique `service_role` du projet.
-2. Dans le SQL Editor du projet Supabase, exécuter le fichier
-   `supabase/migrations/20260916_association_events.sql` dans son intégralité.
-   Il crée la table et importe les épreuves historiques de 2026 dans une
-   transaction. Une réexécution ne réimporte pas les événements supprimés.
-   Exécuter ensuite `supabase/migrations/20261009_association_events_2027.sql`.
-   Cette migration ajoute les statuts 2027 et importe les 47 compétitions
-   nommées du fichier fourni par le propriétaire. Ne pas la lancer sur la
-   production sans validation explicite. Elle conserve les données de 2026
-   en archive dans la table. Le calendrier public et l'administration affichent
-   désormais les événements à partir du 1er novembre 2026. Exécuter enfin
-   `supabase/migrations/20261010_association_2027_open_slots.sql` pour ajouter
-   les 27 créneaux du fichier initial. Exécuter ensuite
-   `supabase/migrations/20261011_association_2027_calendar_alignment.sql` :
-   cette migration ajoute les catégories et zones modifiables, corrige les
-   dates et statuts d'après la capture du propriétaire, puis importe les 33
-   repères. Elle ne remplace les anciennes valeurs que si elles n'ont pas été
-   modifiées dans l'administration. Appliquer les migrations avant de déployer
-   le code qui lit les nouvelles colonnes. En cas de retour au code
-   précédent, les données 2026 restent disponibles. Après sauvegarde, les
-   entrées `agenda-2027-source-*` peuvent être retirées si nécessaire ; ne
-   rétablir l'ancienne contrainte de statut que si `confirmed` et `unconfirmed`
-   ne sont plus utilisés.
-3. Redémarrer le serveur local après configuration, ou déployer le code et
-   les variables pour la première activation en production.
-4. Ouvrir `/admin/competitions`, se connecter avec le mot de passe administrateur,
-   puis gérer le planning. Un lien est également disponible depuis `/admin`.
+L’éditeur propose « Score max », « Scramble à 2 », « Scramble à 4 » et
+« Autres ». Le choix « Autres » demande une précision. La validation est faite
+côté serveur ; la formule enregistrée apparaît dans les détails publics de
+l’événement. Les anciennes entrées sans formule restent valides.
 
-La table utilise RLS et n'autorise que le rôle serveur `service_role`.
-Les mutations vérifient la session administrateur, l'origine de la requête,
-les dates, l'horaire et les limites des champs côté serveur.
-Les nouvelles colonnes `category` et `zone` ont des valeurs par défaut pour les
-anciennes lignes ; le code précédent peut continuer à les ignorer en cas de
-retour arrière applicatif. Pour annuler aussi les corrections de données après
-exécution de la migration, restaurer une sauvegarde de la base prise avant son
-application plutôt que de relancer les anciennes migrations.
-Les statuts « privée », « en option », « à confirmer » et « confirmée » restent des mentions publiques,
-pas des restrictions d'accès aux événements.
+## Stockage local et partagé
 
-Sans configuration ou avant création de la table, le programme local reste
-visible et l'administration n'autorise pas de fausse sauvegarde. Une base
-configurée mais indisponible affiche un message temporaire. Une table vide
-reste vide : les épreuves supprimées ne sont pas réimportées automatiquement.
+En développement, `CONTENT_SYNC_ENABLED=false` utilise le fichier local
+`.local-association-events-2027.json`, ignoré par Git. S’il n’existe pas,
+le programme de secours est utilisé. Le supprimer réinitialise les seules
+données locales : sauvegarder les modifications utiles auparavant.
 
-## Programme repris
+Avec `CONTENT_SYNC_ENABLED=true`, localhost lit les données partagées. Le jeton
+limité `CONTENT_SYNC_TOKEN` est recommandé ; sans ce jeton, les anciennes
+variables `CONTENT_SUPABASE_URL` et `CONTENT_SUPABASE_SERVICE_ROLE_KEY` donnent
+un accès serveur plus large. Ne jamais exposer ces valeurs au navigateur ni
+les placer dans `NEXT_PUBLIC_*`. Une base configurée mais indisponible affiche
+une erreur ; une base vide reste vide. Le programme de secours ne remplace pas
+silencieusement des données partagées.
 
-Le programme 2027 provient du fichier `Agenda_competitions_2027.html` fourni
-par le propriétaire. Ce fichier initial comprend 47 compétitions nommées
-(4 confirmées, 7 en option et 36 à confirmer) et 27 « créneaux à définir ».
-La capture transmise ensuite corrige le 21 mars (Goltechnic confirmé), retire
-Goltechnic du 28 mars et place Coupe CITYA en option le 11 avril. Le calendrier
-local, le programme de secours et la migration d'alignement reprennent ces
-trois corrections, soit 47 compétitions et 26 créneaux à définir.
-Le propriétaire précise qu'une seule compétition est confirmée dans son agenda
-actuel : Goltechnic le 21 mars. Les quatre anciennes mentions « Confirmé » du
-fichier HTML initial sont retirées du calendrier local et du secours ; leurs
-épreuves restent au programme sans statut affirmé jusqu'à réception de la
-sauvegarde complète à jour.
-Les noms 2026 et les notes de préparation associés à ces
-créneaux ne sont pas publiés. Les vacances, fêtes et jours fériés ne sont pas
-présentés comme des compétitions. Les compétitions sur deux jours restent deux
-entrées si leur statut diffère dans la source. Les modifications ultérieures se
-font dans `/admin/competitions` ; les migrations n'écrasent pas les éditions et
-leurs marqueurs empêchent qu'une réexécution restaure les entrées supprimées.
+Pendant que la base partagée utilise encore l’ancien schéma, localhost conserve
+ses rendez-vous 2026 et affiche uniquement les 107 entrées 2027 du fichier
+fourni. Un message « aperçu local » indique que cette présentation n’est pas
+encore publiée. Une
+fois la migration appliquée, les données partagées reprennent la main.
 
-## Données du programme initial
+## Migration et déploiement
 
-Le fichier `src/data/association-events.ts` assemble le programme 2027 de
-secours, ses 33 repères et les ajouts du club du fichier
-`src/data/association-club-events-2026-2027.json`. Les données antérieures au
-1er novembre 2026 restent archivées dans Supabase.
-Après activation de Supabase, modifier les compétitions dans l'administration.
+La nouvelle migration
+`supabase/migrations/20261110150000_align_association_agenda_2027_and_game_format.sql`
+ajoute `game_format` et `game_format_detail`, puis remplace les événements
+commençant en 2027 par les 107 entrées du fichier fourni. Elle utilise un
+marqueur unique pour ne pas écraser les changements ultérieurs lors d’une
+réexécution. La mise à jour des
+lignes existantes et la suppression des entrées absentes du fichier sont bornées
+aux dates commençant en 2027 ; aucune ligne de 2026 n’est modifiée. Elle est
+copiée à l’identique sous `staging/supabase/migrations`.
 
-## Compléments demandés le 5 novembre 2026
+Le schéma de Golf Staging précédait l’alignement d’octobre : la migration ajoute
+aussi, si nécessaire, les colonnes `category` et `zone`, leurs contraintes et
+les statuts de calendrier avant l’import. Elle crée la table de suivi des
+imports si elle manque. Ces ajouts ne modifient pas les événements 2026.
 
-- Animation seniors : les neuf jeudis du 5 novembre au 31 décembre 2026.
-- Conviviales femmes : le premier vendredi de chaque mois, du 6 novembre 2026
-  au 3 décembre 2027, soit quatorze dates.
-- Brégent et La Bergerie : le 8 novembre 2026, scramble à 4.
-- Coupe Beaujolais : le 22 novembre 2026, scramble à 2.
+Le déploiement de staging sur `develop` doit appliquer cette migration avec
+les accès propres à staging, dans l’ordre suivi par Supabase. Vérifier le check
+« Supabase Preview » du commit avant de considérer la version prête. Arrêter
+le déploiement si la migration échoue. Cette procédure ne s’applique pas à
+Golf Prod : ne pas y exécuter de migration ni publier le code dépendant des
+nouvelles colonnes sans demande explicite et vérification du schéma.
 
-Ces 25 rendez-vous sont confirmés et apparaissent en vert jusqu'à leur date,
-puis en gris selon la règle des événements passés. Aucun horaire n'a été fourni.
-Les deux anciennes entrées de novembre 2026 doivent être mises à jour dans
-l'administration, sans doublon. Les autres dates sont ajoutées après contrôle
-du calendrier existant. Cette édition de contenu ne demande aucune migration
-SQL. Le programme de secours ne remplace pas une base configurée, même vide.
-En cas de retour au code précédent, les données restent stockées ; les entrées
-de 2026 seront simplement masquées de nouveau.
+Le code peut lire l’ancien schéma sans les deux colonnes de formule afin de
+préserver l’affichage du calendrier pendant la transition. En revanche,
+l’enregistrement d’une formule exige que la migration soit appliquée sur la
+base utilisée. Pour revenir au code précédent, conserver les nouvelles
+colonnes : il les ignore. Pour revenir sur les données 2027 importées,
+restaurer une sauvegarde ciblée des lignes 2027 ; ne pas rejouer une ancienne
+migration. Les entrées 2026 restent indépendantes.
 
-- `start` : premier jour, au format `YYYY-MM-DD`.
-- `end` : dernier jour inclus, facultatif.
-- `title` : nom de l'épreuve.
-- `time` et `note` : précisions fournies par l'organisateur, facultatives.
-- `status` : `private`, `provisional`, `unconfirmed` ou `confirmed` si nécessaire.
+## Contrats et sécurité
 
-Une épreuve sur plusieurs jours apparaît chaque jour et n'est comptée qu'une fois
-dans la liste mensuelle. Le calendrier commence le lundi et s'ouvre sur le mois
-courant à Paris. La
-navigation entre les mois reste disponible.
-Les cases deviennent grises dès le lendemain du dernier jour de l'épreuve,
-selon la date à Paris ; les détails restent consultables.
+La table `association_events` utilise RLS et n’accorde pas d’accès direct aux
+rôles publics. Les mutations vérifient la session administrateur, l’origine
+de la requête, les dates et la longueur des champs côté serveur. Les statuts
+« privée », « en option », « à confirmer » et « confirmée » sont des mentions
+publiques, et non des restrictions d’accès aux événements.

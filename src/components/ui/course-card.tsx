@@ -56,7 +56,6 @@ export function CourseCard({
         />
       </div>
       <div className="flex h-full flex-col space-y-4 p-6">
-        {switcher}
         {showMeta ? (
           <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
             <span>{level}</span>
@@ -94,11 +93,12 @@ export function CourseCard({
           </div>
         ) : null}
         {ctaLabel && ctaHref ? (
-          <CTAButton className="mt-auto" href={ctaHref}>
+          <CTAButton className="mt-auto self-start" href={ctaHref}>
             {ctaLabel}
           </CTAButton>
         ) : null}
-        {action ? <div className="mt-auto">{action}</div> : null}
+        {action ? <div className="mt-auto self-start">{action}</div> : null}
+        {switcher}
       </div>
     </article>
   );

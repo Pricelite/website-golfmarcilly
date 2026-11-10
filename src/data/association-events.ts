@@ -12,6 +12,8 @@ export type AssociationEvent = {
   time?: string;
   note?: string;
   internalNote?: string; // Local planning note, never shown on the public calendar.
+  gameFormat?: "score_max" | "scramble_2" | "scramble_4" | "other";
+  gameFormatDetail?: string;
   status?: "private" | "provisional" | "unconfirmed" | "confirmed";
   category?: "competition" | "open_slot" | "holiday" | "vacation" | "celebration";
   zone?: "all" | "A" | "B" | "C";
@@ -22,4 +24,9 @@ export type AssociationEvent = {
 export const associationEvents2027: AssociationEvent[] = agenda2027 as AssociationEvent[];
 export const associationCalendar2027: AssociationEvent[] = [...associationEvents2027, ...context2027] as AssociationEvent[];
 export const associationClubEvents: AssociationEvent[] = clubProgramme as AssociationEvent[];
-export const associationEvents: AssociationEvent[] = [...associationCalendar2027, ...associationClubEvents];
+// The supplied 2027 agenda is complete; keep only the existing 2026 club dates alongside it.
+export const associationEvents: AssociationEvent[] = [...associationCalendar2027, ...associationClubEvents.filter(event => event.start.startsWith("2026-"))];
+
+export function previewAssociationCalendar2027(events: AssociationEvent[]): AssociationEvent[] {
+  return [...events.filter(event => !event.start.startsWith("2027-")), ...associationCalendar2027];
+}

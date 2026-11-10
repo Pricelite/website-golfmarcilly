@@ -25,7 +25,7 @@ export function CourseVariantCard({ id, first, second, firstLabel, secondLabel, 
     id={id}
     headingLevel={headingLevel}
     pricing={selected === "first" ? firstPricing : secondPricing}
-    switcher={<div role="group" aria-label="Choisir un parcours" className="flex flex-wrap gap-2">
+    switcher={<div role="group" aria-label="Choisir un parcours" className="flex flex-wrap self-start gap-2">
       {(["first", "second"] as const).map(value => <button
         key={value}
         type="button"

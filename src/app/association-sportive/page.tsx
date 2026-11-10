@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AssociationCalendar } from "@/components/association-calendar";
+import { AssociationPortrait } from "@/components/association-portrait";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { associationFaqs, associationGroups, associationLinks, associationPartner, associationRoles } from "@/data/association";
+import { associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
+import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
@@ -53,13 +56,18 @@ export default async function AssociationPage() {
             ["#competitions", "Compétitions et résultats"],
             ["#groupes", "Équipes et seniors"],
             ["/association-sportive/equipes", "Nos équipes 2026"],
+            ["#resultats-2026", "Résultats des équipes 2026"],
             ["#actualites", "Actualités"],
             ["#partenaire-as", "Suivi sportif"],
             ["#equipe", "L’équipe de l’AS"],
+            ["#presidents", "Présidents de l’AS"],
             ["#rejoindre", "Participer"],
-          ].map(([href, label]) => (
-            <Link key={href} href={href} className="py-2 text-sm font-medium text-emerald-950 underline decoration-emerald-950/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">{label}</Link>
-          ))}
+          ].map(([href, label]) => {
+            const className = "py-2 text-sm font-medium text-emerald-950 underline decoration-emerald-950/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4";
+            return href.startsWith("#")
+              ? <a key={href} href={href} className={className}>{label}</a>
+              : <Link key={href} href={href} className={className}>{label}</Link>;
+          })}
         </div>
       </nav>
 
@@ -79,6 +87,7 @@ export default async function AssociationPage() {
       <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
+          {calendar.preview2027 ? <p role="status" className="mt-6 rounded-xl border border-white/25 bg-white/10 p-4 text-sm text-white">Le programme 2027 fourni est affiché en aperçu local. Sa publication sur le site public reste à finaliser.</p> : null}
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {[
               { title: "Vérifier son départ", text: "Retrouvez les départs publiés pour les compétitions du club sur le service de la Fédération française de golf.", label: "Consulter les départs", href: associationLinks.starts },
@@ -112,6 +121,25 @@ export default async function AssociationPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="resultats-2026" className="scroll-mt-28 border-b border-emerald-950/10 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Saison 2026" title="Résultats des équipes de Marcilly" description="Le bilan des équipes de l’association sportive lors des championnats 2026." />
+          <ul className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {associationResults2026.map((entry) => (
+              <li key={entry.team} className="flex flex-col rounded-[24px] border border-emerald-950/15 bg-[#f7f4e9] p-6">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">{entry.category}</span>
+                  <span className="text-sm text-emerald-950/65">{entry.date}</span>
+                </div>
+                <h3 className="mt-4 font-serif text-2xl text-emerald-950">{entry.team}</h3>
+                <p className="mt-2 text-sm text-emerald-950/70">Lieu : {entry.venue}</p>
+                <p className="mt-5 border-t border-emerald-950/15 pt-4 text-sm font-semibold leading-6 text-emerald-950">{entry.result}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -158,22 +186,92 @@ export default async function AssociationPage() {
         </div>
       </section>
 
-      <section id="equipe" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <SectionTitle eyebrow="Les personnes à votre écoute" title="L’équipe de l’association sportive" />
-        <figure className="mt-8">
-          <Image
-            src="/images/organigramme-association-sportive.webp"
-            alt="Organigramme de l’association sportive : bureau, commissions, membres de droit et invités permanents."
-            width={1025}
-            height={768}
-            sizes="(max-width: 1280px) 100vw, 1216px"
-            className="h-auto w-full rounded-3xl"
-          />
-          <figcaption className="mt-3 text-sm text-emerald-950/75">
-            <a className="underline underline-offset-4" href="/images/organigramme-association-sportive.webp" target="_blank" rel="noopener noreferrer">Ouvrir l’organigramme en grand</a>
-          </figcaption>
-        </figure>
-        <div className="mt-6"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="ghost">Contacter l’accueil : {siteConfig.phoneDisplay}</CTAButton></div>
+      <section id="equipe" className="scroll-mt-28 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Les personnes à votre écoute" title="L’équipe de l’association sportive" />
+
+          <div className="mt-8 rounded-[28px] bg-emerald-950 p-6 text-white sm:p-8">
+            <h3 className="font-serif text-2xl sm:text-3xl">Le bureau</h3>
+            <ul className="mt-6 grid gap-4 md:grid-cols-3">
+              {associationOffice.map((person) => (
+                <li key={person.role} className="flex items-center gap-4 rounded-2xl border border-white/20 bg-white/10 p-5">
+                  <AssociationPortrait name={person.name} position={person.portrait} />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e6d4a2]">{person.role}</p>
+                    <p className="mt-2 font-serif text-2xl">{person.name}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-10">
+            <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les commissions</h3>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {associationCommissions.map((person) => (
+                <li key={person.role} className="flex items-center gap-4 rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-5">
+                  <AssociationPortrait name={person.name} position={person.portrait} />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{person.role}</p>
+                    <p className="mt-2 font-serif text-xl text-emerald-950">{person.name}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_2fr]">
+            <div>
+              <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les membres de droit</h3>
+              <ul className="mt-5 divide-y divide-emerald-950/10 rounded-2xl border border-emerald-950/15 bg-white px-5">
+                {associationExOfficioMembers.map((person) => (
+                  <li key={person.name} className="flex items-center gap-4 py-3 font-medium text-emerald-950">
+                    <AssociationPortrait name={person.name} position={person.portrait} />
+                    {person.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les invités permanents</h3>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                {associationPermanentGuests.map((person) => (
+                  <li key={person.name} className="flex items-center gap-4 rounded-2xl border border-emerald-950/15 bg-white px-5 py-4 font-medium text-emerald-950">
+                    <AssociationPortrait name={person.name} position={person.portrait} />
+                    {person.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8"><CTAButton href={`tel:${siteConfig.phoneHref}`} variant="ghost">Contacter l’accueil : {siteConfig.phoneDisplay}</CTAButton></div>
+        </div>
+      </section>
+
+      <section id="presidents" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Mémoire du club" title="Les présidents de l’association sportive" />
+          <div className="mt-8 max-w-3xl overflow-hidden rounded-[28px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
+            <table className="w-full text-left text-sm text-emerald-950 sm:text-base">
+              <caption className="sr-only">Périodes de présidence de l’association sportive du Golf de Marcilly</caption>
+              <thead className="bg-emerald-950 text-white">
+                <tr>
+                  <th scope="col" className="w-1/3 px-4 py-4 font-semibold sm:px-6">Période</th>
+                  <th scope="col" className="px-4 py-4 font-semibold sm:px-6">Président</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-emerald-950/10">
+                {associationPresidents.map((entry) => (
+                  <tr key={entry.period}>
+                    <th scope="row" className="px-4 py-3 font-medium sm:px-6">{entry.period}</th>
+                    <td className="px-4 py-3 sm:px-6">{entry.name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <section id="rejoindre" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
