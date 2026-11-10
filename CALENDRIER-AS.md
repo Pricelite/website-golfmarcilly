@@ -61,6 +61,11 @@ lignes existantes et la suppression des entrées absentes du fichier sont borné
 aux dates commençant en 2027 ; aucune ligne de 2026 n’est modifiée. Elle est
 copiée à l’identique sous `staging/supabase/migrations`.
 
+Le schéma de Golf Staging précédait l’alignement d’octobre : la migration ajoute
+aussi, si nécessaire, les colonnes `category` et `zone`, leurs contraintes et
+les statuts de calendrier avant l’import. Elle crée la table de suivi des
+imports si elle manque. Ces ajouts ne modifient pas les événements 2026.
+
 Le déploiement de staging sur `develop` doit appliquer cette migration avec
 les accès propres à staging, dans l’ordre suivi par Supabase. Vérifier le check
 « Supabase Preview » du commit avant de considérer la version prête. Arrêter
