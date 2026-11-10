@@ -16,6 +16,14 @@ des 21 et 28 mars restent en option dans ce fichier. Le 11 avril reste un
 « Créneau à définir ». Les indications « scramble à 2 » et « scramble à 4 »
 alimentent aussi le champ structuré « Formule de jeu ».
 
+L’affichage public 2027 reprend la présentation du fichier : ouverture sur
+mars 2027, six semaines affichées par mois, dates des mois voisins visibles,
+zone B sélectionnée et vues mois/liste. Les couleurs des événements suivent
+leurs statuts : bleu pour « À confirmer », jaune pour « Option », vert pour
+« Confirmé » et gris pour les repères. Les « Coupes de Classement » sont vertes,
+comme dans le fichier. La légende conserve les couleurs de catégories du
+document fourni. Le sélecteur d’année permet toujours de consulter 2026.
+
 Le programme de secours assemble ces 107 entrées avec les 13 rendez-vous du
 club encore situés en 2026. Il n’ajoute pas les anciennes récurrences de 2027
 qui ne figurent pas dans le fichier fourni. Les données 2026 du programme du
