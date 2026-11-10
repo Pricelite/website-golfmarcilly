@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AssociationCalendar } from "@/components/association-calendar";
+import { AssociationPortrait } from "@/components/association-portrait";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
@@ -192,9 +193,12 @@ export default async function AssociationPage() {
             <h3 className="font-serif text-2xl sm:text-3xl">Le bureau</h3>
             <ul className="mt-6 grid gap-4 md:grid-cols-3">
               {associationOffice.map((person) => (
-                <li key={person.role} className="rounded-2xl border border-white/20 bg-white/10 p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e6d4a2]">{person.role}</p>
-                  <p className="mt-3 font-serif text-2xl">{person.name}</p>
+                <li key={person.role} className="flex items-center gap-4 rounded-2xl border border-white/20 bg-white/10 p-5">
+                  <AssociationPortrait name={person.name} position={person.portrait} />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e6d4a2]">{person.role}</p>
+                    <p className="mt-2 font-serif text-2xl">{person.name}</p>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -204,9 +208,12 @@ export default async function AssociationPage() {
             <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les commissions</h3>
             <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {associationCommissions.map((person) => (
-                <li key={person.role} className="rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{person.role}</p>
-                  <p className="mt-3 font-serif text-xl text-emerald-950">{person.name}</p>
+                <li key={person.role} className="flex items-center gap-4 rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-5">
+                  <AssociationPortrait name={person.name} position={person.portrait} />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{person.role}</p>
+                    <p className="mt-2 font-serif text-xl text-emerald-950">{person.name}</p>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -216,13 +223,23 @@ export default async function AssociationPage() {
             <div>
               <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les membres de droit</h3>
               <ul className="mt-5 divide-y divide-emerald-950/10 rounded-2xl border border-emerald-950/15 bg-white px-5">
-                {associationExOfficioMembers.map((name) => <li key={name} className="py-4 font-medium text-emerald-950">{name}</li>)}
+                {associationExOfficioMembers.map((person) => (
+                  <li key={person.name} className="flex items-center gap-4 py-3 font-medium text-emerald-950">
+                    <AssociationPortrait name={person.name} position={person.portrait} />
+                    {person.name}
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
               <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Les invités permanents</h3>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                {associationPermanentGuests.map((name) => <li key={name} className="rounded-2xl border border-emerald-950/15 bg-white px-5 py-4 font-medium text-emerald-950">{name}</li>)}
+                {associationPermanentGuests.map((person) => (
+                  <li key={person.name} className="flex items-center gap-4 rounded-2xl border border-emerald-950/15 bg-white px-5 py-4 font-medium text-emerald-950">
+                    <AssociationPortrait name={person.name} position={person.portrait} />
+                    {person.name}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
