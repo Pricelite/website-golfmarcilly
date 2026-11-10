@@ -18,6 +18,30 @@ La migration `20261030160000_site_analytics.sql` a été exécutée manuellement
 
 Le propriétaire du projet a autorisé une exception pour cette publication : le workflow GitHub de staging, dépourvu d’accès PostgreSQL dédié, a été retiré de la PR après les vérifications manuelles. Cette exception ne vaut pas pour les prochaines migrations : configurer l’accès staging et rétablir l’application et les tests automatiques avant leur déploiement.
 
+## Agenda de l’association sportive 2027 — 10 novembre 2026
+
+La migration `20261110150000_align_association_agenda_2027_and_game_format.sql`
+a été appliquée automatiquement à Golf Staging par l’intégration Supabase,
+avec un check `Supabase Preview` réussi. Elle a ensuite été exécutée
+manuellement dans l’éditeur SQL de Golf Prod, après confirmation du propriétaire
+et sauvegarde ciblée des événements 2027, puis avant la fusion de la PR #166
+vers `main`. La CI et le déploiement Vercel Production de cette PR ont réussi.
+
+Avant l’exécution sur Golf Prod, la table contenait 110 événements commençant
+en 2027 et 73 en 2026. L’export CSV des 110 lignes, conservé hors Git dans les
+livrables Codex sous `golf-prod-agenda-2027-avant-migration.csv`, a l’empreinte
+SHA-256 `36C218D26FF49F8B0CF81CF83F223C92641FDAFD878F036BB572B52B1ECA5AE9`.
+La comparaison avec le fichier du club annonçait 17 suppressions et 14 ajouts.
+Après exécution, 107 événements commencent en 2027 et les 73 lignes 2026 sont
+toujours présentes. Le marqueur d’import unique et les colonnes `game_format`
+et `game_format_detail` ont été vérifiés. La page publique affiche les deux
+Goltechnic de mars 2027 en option et conserve les rendez-vous de novembre 2026.
+
+L’exécution manuelle sur Golf Prod n’inscrit pas cette version dans le registre
+Supabase CLI. Ne pas rejouer la migration par `supabase db push --include-all`.
+Pour revenir aux événements 2027 antérieurs, restaurer l’export ciblé ; un
+retour au code précédent peut conserver les nouvelles colonnes.
+
 ## Adoption ultérieure de la CLI
 
 1. Réaliser une sauvegarde PostgreSQL et valider sa restauration sur une cible
