@@ -1,5 +1,5 @@
 import "server-only";
-import { associationCalendarStartsOn, associationEvents, type AssociationEvent } from "@/data/association-events";
+import { associationCalendarStartsOn, associationEvents, previewAssociationCalendar2027, type AssociationEvent } from "@/data/association-events";
 import { createContentAdminClient } from "@/lib/supabase/content";
 import { ScopedContentError, scopedContentRequest, scopedContentSyncEnabled } from "@/lib/supabase/scoped-content-sync";
 import { deleteLocalEvent, localCalendarEnabled, readLocalCalendar, saveLocalEvent } from "./association-events-local";
@@ -14,9 +14,15 @@ export class CalendarStoreError extends Error {
 type EventRow = {
   id: string; title: string; start_date: string; end_date: string | null;
   start_time: string | null; note: string | null; status: AssociationEvent["status"] | null;
+  game_format?: AssociationEvent["gameFormat"] | null; game_format_detail?: string | null;
   category: AssociationEvent["category"]; zone: AssociationEvent["zone"];
 };
-const columns = "id,title,start_date,end_date,start_time,note,status,category,zone";
+const columns = "id,title,start_date,end_date,start_time,note,status,category,zone,game_format,game_format_detail";
+const legacyColumns = "id,title,start_date,end_date,start_time,note,status,category,zone";
+
+function missingFormatColumns(error: { code?: string; message?: string } | null) {
+  return error?.code === "42703" && /game_format/.test(error.message ?? "");
+}
 
 function client() {
   try { return createContentAdminClient(); }
@@ -30,44 +36,59 @@ function checkError(error: { code?: string } | null) {
 function fromRow(row: EventRow): AssociationEvent {
   return { id: row.id, title: row.title, start: row.start_date, end: row.end_date ?? undefined,
     time: row.start_time?.slice(0, 5), note: row.note ?? undefined, status: row.status ?? undefined,
+    gameFormat: row.game_format ?? undefined, gameFormatDetail: row.game_format_detail ?? undefined,
     category: row.category ?? "competition", zone: row.zone ?? "all" };
 }
 
 function toRow(event: EventInput) {
   return { title: event.title, start_date: event.start, end_date: event.end ?? null,
     start_time: event.time ?? null, note: event.note ?? null, status: event.status ?? null,
+    game_format: event.gameFormat ?? null, game_format_detail: event.gameFormatDetail ?? null,
     category: event.category ?? "competition", zone: event.zone ?? "all" };
 }
 
-export async function listAssociationEvents(): Promise<AssociationEvent[]> {
-  if (localCalendarEnabled()) return readLocalCalendar();
-  if (scopedContentSyncEnabled()) return scopedContentRequest<AssociationEvent[]>("events:list");
+async function listAssociationEventsWithSchema(): Promise<{ events: AssociationEvent[]; legacySchema: boolean }> {
+  if (localCalendarEnabled()) return { events: await readLocalCalendar(), legacySchema: false };
+  if (scopedContentSyncEnabled()) return { events: await scopedContentRequest<AssociationEvent[]>("events:list"), legacySchema: false };
   const db = client();
   const events: AssociationEvent[] = [];
+  let legacySchema = false;
   // Supabase limite les réponses : parcourir toutes les pages du programme actif.
   for (let offset = 0; ; offset += 500) {
-    const { data, error } = await db.from("association_events").select(columns)
+    const query = (selectedColumns: string) => db.from("association_events").select(selectedColumns)
       .gte("start_date", associationCalendarStartsOn)
       .order("start_date").order("id").range(offset, offset + 499);
+    let { data, error } = await query(legacySchema ? legacyColumns : columns);
+    if (!legacySchema && missingFormatColumns(error)) {
+      legacySchema = true;
+      ({ data, error } = await query(legacyColumns));
+    }
     checkError(error);
-    const rows = (data ?? []) as EventRow[];
+    // Dynamic column selection supports both schema versions; PostgREST cannot infer its row type.
+    const rows = (data ?? []) as unknown as EventRow[];
     events.push(...rows.map(fromRow));
-    if (rows.length < 500) return events;
+    if (rows.length < 500) return { events, legacySchema };
   }
 }
 
-export async function publicAssociationEvents(): Promise<{ events: AssociationEvent[]; unavailable: boolean }> {
+export async function listAssociationEvents(): Promise<AssociationEvent[]> {
+  return (await listAssociationEventsWithSchema()).events;
+}
+
+export async function publicAssociationEvents(): Promise<{ events: AssociationEvent[]; unavailable: boolean; preview2027: boolean }> {
   try {
-    const events = (await listAssociationEvents()).map(event => {
+    const { events: storedEvents, legacySchema } = await listAssociationEventsWithSchema();
+    const preview2027 = legacySchema && process.env.NODE_ENV === "development";
+    const events = (preview2027 ? previewAssociationCalendar2027(storedEvents) : storedEvents).map(event => {
       const publicEvent = { ...event };
       delete publicEvent.internalNote;
       return publicEvent;
     });
-    return { events, unavailable: false };
+    return { events, unavailable: false, preview2027 };
   } catch (error) {
     // Repli uniquement avant installation. Une base vide signifie un calendrier vide.
-    if (error instanceof CalendarStoreError && error.reason === "setup") return { events: associationEvents, unavailable: false };
-    return { events: [], unavailable: true };
+    if (error instanceof CalendarStoreError && error.reason === "setup") return { events: associationEvents, unavailable: false, preview2027: false };
+    return { events: [], unavailable: true, preview2027: false };
   }
 }
 
