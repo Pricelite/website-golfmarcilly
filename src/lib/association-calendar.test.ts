@@ -112,7 +112,7 @@ test("2027 owner agenda keeps named competitions, open dates and their publicati
   assert.equal(eventsOnDay(associationEvents, "2027-10-03")[0].title, "Coupe Octobre Rose");
 });
 
-test("local 2027 preview replaces imported dates without changing 2026 or added appointments", () => {
+test("local 2027 preview replaces every 2027 date without changing 2026", () => {
   const shared = [
     { id: "2026-11-08-52", start: "2026-11-08", title: "Brégent et La Bergerie" },
     { id: "agenda-2027-source-6", start: "2027-03-21", title: "Ancien statut", status: "confirmed" as const },
@@ -121,6 +121,6 @@ test("local 2027 preview replaces imported dates without changing 2026 or added 
   const preview = previewAssociationCalendar2027(shared);
   assert.deepEqual(preview.filter(event => event.start.startsWith("2026-")), shared.slice(0, 1));
   assert.equal(preview.find(event => event.id === "agenda-2027-source-6")?.status, "provisional");
-  assert.equal(preview.filter(event => event.id === "custom-2027").length, 1);
-  assert.equal(preview.length, 109);
+  assert.equal(preview.filter(event => event.id === "custom-2027").length, 0);
+  assert.equal(preview.length, 108);
 });
