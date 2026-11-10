@@ -44,20 +44,22 @@ une erreur ; une base vide reste vide. Le programme de secours ne remplace pas
 silencieusement des données partagées.
 
 Pendant que la base partagée utilise encore l’ancien schéma, localhost conserve
-ses rendez-vous 2026 et les autres rendez-vous ajoutés, mais affiche les
-identifiants importés de 2027 avec les valeurs du fichier fourni. Un message
-« aperçu local » indique que cette présentation n’est pas encore publiée. Une
+ses rendez-vous 2026 et affiche uniquement les 107 entrées 2027 du fichier
+fourni. Un message « aperçu local » indique que cette présentation n’est pas
+encore publiée. Une
 fois la migration appliquée, les données partagées reprennent la main.
 
 ## Migration et déploiement
 
 La nouvelle migration
 `supabase/migrations/20261110150000_align_association_agenda_2027_and_game_format.sql`
-ajoute `game_format` et `game_format_detail`, puis aligne les identifiants importés
-de 2027 sur le fichier fourni. Elle utilise un marqueur unique pour ne pas
-écraser les changements ultérieurs lors d’une réexécution. La mise à jour des
-lignes existantes est bornée aux dates de 2027 ; aucune ligne de 2026 n’est
-mise à jour. Elle est copiée à l’identique sous `staging/supabase/migrations`.
+ajoute `game_format` et `game_format_detail`, puis remplace les événements
+commençant en 2027 par les 107 entrées du fichier fourni. Elle utilise un
+marqueur unique pour ne pas écraser les changements ultérieurs lors d’une
+réexécution. La mise à jour des
+lignes existantes et la suppression des entrées absentes du fichier sont bornées
+aux dates commençant en 2027 ; aucune ligne de 2026 n’est modifiée. Elle est
+copiée à l’identique sous `staging/supabase/migrations`.
 
 Le déploiement de staging sur `develop` doit appliquer cette migration avec
 les accès propres à staging, dans l’ordre suivi par Supabase. Vérifier le check

@@ -28,5 +28,5 @@ export const associationClubEvents: AssociationEvent[] = clubProgramme as Associ
 export const associationEvents: AssociationEvent[] = [...associationCalendar2027, ...associationClubEvents.filter(event => event.start.startsWith("2026-"))];
 
 export function previewAssociationCalendar2027(events: AssociationEvent[]): AssociationEvent[] {
-  return [...events.filter(event => !event.id.startsWith("agenda-2027-")), ...associationCalendar2027];
+  return [...events.filter(event => !event.start.startsWith("2027-")), ...associationCalendar2027];
 }

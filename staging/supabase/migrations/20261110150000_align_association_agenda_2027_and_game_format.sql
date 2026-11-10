@@ -1,5 +1,5 @@
 -- Align the 2027 calendar with the owner's Agenda_competitions_2027.html.
--- All changes are restricted to imported 2027 IDs; 2026 rows remain untouched.
+-- Replace only events starting in 2027; 2026 rows remain untouched.
 -- A one-time marker prevents later admin edits from being overwritten on rerun.
 begin;
 
@@ -17,8 +17,7 @@ begin
   insert into public.association_event_imports (import_key)
   values ('agenda-2027-owner-html-20261110') on conflict do nothing;
   if found then
-    insert into public.association_events
-      (id, title, start_date, end_date, note, status, category, zone, game_format)
+    create temporary table agenda_2027_source on commit drop as
     select source.id, source.title, source.start_date, source.end_date, source.note,
            source.status, source.category, source.zone, source.game_format
     from jsonb_to_recordset($agenda$[
@@ -1202,13 +1201,26 @@ begin
 ]$agenda$::jsonb) as source(
       id text, title text, start_date date, end_date date, note text,
       status text, category text, zone text, game_format text
-    )
+    );
+
+    insert into public.association_events
+      (id, title, start_date, end_date, note, status, category, zone, game_format)
+    select source.id, source.title, source.start_date, source.end_date, source.note,
+           source.status, source.category, source.zone, source.game_format
+    from agenda_2027_source source
     on conflict (id) do update set
       title = excluded.title, start_date = excluded.start_date, end_date = excluded.end_date,
       start_time = null, note = excluded.note, status = excluded.status, category = excluded.category,
       zone = excluded.zone, game_format = excluded.game_format, game_format_detail = null
     where public.association_events.start_date >= date '2027-01-01'
       and public.association_events.start_date < date '2028-01-01';
+
+    delete from public.association_events existing
+    where existing.start_date >= date '2027-01-01'
+      and existing.start_date < date '2028-01-01'
+      and not exists (
+        select 1 from agenda_2027_source source where source.id = existing.id
+      );
   end if;
 end $sync$;
 
