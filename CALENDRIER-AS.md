@@ -43,6 +43,12 @@ les placer dans `NEXT_PUBLIC_*`. Une base configurée mais indisponible affiche
 une erreur ; une base vide reste vide. Le programme de secours ne remplace pas
 silencieusement des données partagées.
 
+Pendant que la base partagée utilise encore l’ancien schéma, localhost conserve
+ses rendez-vous 2026 et les autres rendez-vous ajoutés, mais affiche les
+identifiants importés de 2027 avec les valeurs du fichier fourni. Un message
+« aperçu local » indique que cette présentation n’est pas encore publiée. Une
+fois la migration appliquée, les données partagées reprennent la main.
+
 ## Migration et déploiement
 
 La nouvelle migration
