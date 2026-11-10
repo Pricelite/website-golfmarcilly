@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { AssociationEvent } from "@/data/association-events";
 import { calendarDefaultDate, eventsInMonth, eventsOnDay, formatCalendarDate, isPastEvent, monthDays } from "@/lib/association-calendar";
 import { siteConfig } from "@/data/site";
+import { AssociationAgenda2027 } from "./association-agenda-2027";
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const buttonClass = "site-button inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
@@ -65,8 +66,9 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
   const mobile = useSyncExternalStore(subscribeScreen, () => window.matchMedia("(max-width: 767px)").matches, () => false);
   const [display, setDisplay] = useState<"list" | "calendar" | null>(null);
   const listView = (display ?? (mobile ? "list" : "calendar")) === "list";
-  const year = view?.year ?? Number(defaultDate.slice(0, 4));
-  const month = view?.month ?? Number(defaultDate.slice(5, 7)) - 1;
+  const has2027 = associationEvents.some(event => event.start.startsWith("2027-"));
+  const year = view?.year ?? (has2027 ? 2027 : Number(defaultDate.slice(0, 4)));
+  const month = view?.month ?? (has2027 ? 2 : Number(defaultDate.slice(5, 7)) - 1);
   const [selected, setSelected] = useState<AssociationEvent | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [zone, setZone] = useState<"all" | "A" | "B" | "C">("B");
@@ -76,6 +78,16 @@ export function AssociationCalendar({ initialDate, events: associationEvents }: 
   useEffect(() => {
     if (selected) detailRef.current?.focus();
   }, [selected]);
+
+  if (year === 2027) {
+    return <AssociationAgenda2027
+      events={associationEvents}
+      month={month}
+      years={years}
+      onMonthChange={nextMonth => setView({ year: 2027, month: nextMonth })}
+      onYearChange={nextYear => { setView({ year: nextYear, month }); setSelected(null); setSelectedDay(null); }}
+    />;
+  }
 
   function changeMonth(delta: number) {
     const date = new Date(Date.UTC(year, month + delta, 1));
