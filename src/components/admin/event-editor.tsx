@@ -13,6 +13,7 @@ export function EventEditor({ event: editing, day, localMode, busy, error, onSav
 }) {
   const [deleting, setDeleting] = useState(false);
   const [discarding, setDiscarding] = useState(false);
+  const [gameFormat, setGameFormat] = useState(editing?.gameFormat ?? "");
   const dirty = useRef(false);
   useEffect(() => {
     function preventLoss(event: BeforeUnloadEvent) { if (dirty.current) { event.preventDefault(); event.returnValue = ""; } }
@@ -32,6 +33,8 @@ export function EventEditor({ event: editing, day, localMode, busy, error, onSav
         <label className="text-sm font-medium">Horaire (facultatif)<input className={inputClass} type="time" name="time" defaultValue={editing?.time ?? ""} /></label>
         <label className="text-sm font-medium">Statut de l’épreuve<select className={inputClass} name="status" defaultValue={editing?.status ?? ""}><option value="">Au programme</option><option value="confirmed">Confirmée</option><option value="unconfirmed">À confirmer</option><option value="provisional">En option</option><option value="private">Épreuve privée</option></select></label>
         <label className="text-sm font-medium">Catégorie<select className={inputClass} name="category" defaultValue={editing?.category ?? (editing?.title === "Créneau à définir" ? "open_slot" : "competition")}><option value="competition">Compétition</option><option value="open_slot">Créneau libre</option><option value="holiday">Jour férié</option><option value="vacation">Vacances scolaires</option><option value="celebration">Fête ou autre repère</option></select></label>
+        <label className="text-sm font-medium">Formule de jeu<select className={inputClass} name="gameFormat" value={gameFormat} onChange={event => setGameFormat(event.target.value)}><option value="">Non précisée</option><option value="score_max">Score max</option><option value="scramble_2">Scramble à 2</option><option value="scramble_4">Scramble à 4</option><option value="other">Autres</option></select></label>
+        {gameFormat === "other" ? <label className="text-sm font-medium">Préciser la formule *<input className={inputClass} name="gameFormatDetail" required maxLength={160} defaultValue={editing?.gameFormatDetail ?? ""} /></label> : null}
         <label className="text-sm font-medium">Zone scolaire<select className={inputClass} name="zone" defaultValue={editing?.zone ?? "all"}><option value="all">Toutes les zones</option><option value="A">Zone A</option><option value="B">Zone B</option><option value="C">Zone C</option></select></label>
         <label className="text-sm font-medium sm:col-span-2">Description / précisions<textarea className={inputClass} name="note" rows={3} maxLength={2000} defaultValue={editing?.note ?? ""} /></label>
         {localMode ? <label className="text-sm font-medium sm:col-span-2">Note de préparation (visible seulement ici)<textarea className={inputClass} name="internalNote" rows={3} maxLength={2000} defaultValue={editing?.internalNote ?? ""} /></label> : null}

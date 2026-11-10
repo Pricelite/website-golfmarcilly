@@ -119,6 +119,6 @@ export function CompetitionManager({ initialEvents, initialDate, localMode = fal
     {localMode ? <p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950">Prévisualisation locale : les modifications sont enregistrées uniquement sur cet ordinateur. Elles ne sont pas envoyées au site public.</p> : null}
     {!expanded ? calendar(false) : null}
     {expanded ? <AdminDialog label="Calendrier agrandi" wide onClose={() => setExpanded(false)}>{calendar(true)}</AdminDialog> : null}
-    {editor ? <EventEditor event={editor.event} day={editor.day} localMode={localMode} busy={busy} error={error} onSave={save} onDelete={remove} onClose={() => { if (!submitting.current) { setEditor(null); setError(""); } }} /> : null}
+    {editor ? <EventEditor key={editor.event?.id ?? editor.day} event={editor.event} day={editor.day} localMode={localMode} busy={busy} error={error} onSave={save} onDelete={remove} onClose={() => { if (!submitting.current) { setEditor(null); setError(""); } }} /> : null}
   </div>;
 }
