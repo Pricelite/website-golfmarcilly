@@ -13,6 +13,6 @@ test("preview requires the exact credentials and rejects missing or weak configu
 });
 
 test("preview blocks administrative and operational routes without hiding public forms", () => {
-  for (const path of ["/admin", "/admin/contenu", "/api/admin/daily-menu", "/api/backoffice/media", "/api/ops/fallback-queue", "/api/health"]) assert.equal(previewPathBlocked(path), true);
+  for (const path of ["/admin", "/admin/contenu", "/api/admin/daily-menu", "/api/backoffice/media", "/api/restaurant-admin/session", "/api/ops/fallback-queue", "/api/health"]) assert.equal(previewPathBlocked(path), true);
   for (const path of ["/", "/restaurant", "/initiation/reservation", "/api/initiation-options", "/partners/us-orleans.png"]) assert.equal(previewPathBlocked(path), false);
 });
