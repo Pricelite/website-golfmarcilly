@@ -49,7 +49,7 @@ export const siteConfig = {
     { label: "LinkedIn", href: "https://fr.linkedin.com/company/golf-de-marcilly" },
   ],
   hours: [
-    { label: "Restaurant", value: "Le lundi et du mercredi au vendredi : 12 h – 14 h 30. Samedi et dimanche : 12 h – 15 h. Fermé le mardi." },
+    { label: "Restaurant", value: "Le lundi et du mercredi au vendredi : 12h00 - 14h30. Samedi et dimanche : 12h00 - 15h00. Fermé le mardi." },
     { label: "Practice", value: "Tous les jours, de 7 h 30 à 20 h" },
   ],
 } as const;
