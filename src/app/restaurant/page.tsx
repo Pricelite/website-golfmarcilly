@@ -56,8 +56,8 @@ export default function RestaurantPage() {
             <h2 className="font-serif text-2xl">Votre déjeuner à La Bergerie</h2>
             <p className="mt-3 text-sm leading-6 text-stone-100/85">Ouvert à tous, même sans jouer au golf. Plats selon disponibilité.</p>
             <dl className="mt-5 space-y-3 text-sm">
-              <div className="flex justify-between gap-4"><dt>Lundi, mercredi–vendredi</dt><dd className="shrink-0 font-semibold">{restaurantData.hours[0].hours}</dd></div>
-              <div className="flex justify-between gap-4"><dt>Samedi et dimanche</dt><dd className="shrink-0 font-semibold">{restaurantData.hours[5].hours}</dd></div>
+              <div className="flex justify-between gap-4"><dt>Lundi, mercredi–vendredi</dt><dd className="shrink-0 font-semibold tabular-nums">{restaurantData.hours[0].hours}</dd></div>
+              <div className="flex justify-between gap-4"><dt>Samedi et dimanche</dt><dd className="shrink-0 font-semibold tabular-nums">{restaurantData.hours[5].hours}</dd></div>
               <div className="flex justify-between gap-4"><dt>Mardi</dt><dd className="font-semibold">{restaurantData.hours[1].hours}</dd></div>
             </dl>
             <a href="#horaires-restaurant" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">Tous les horaires du restaurant et du bar</a>
@@ -89,7 +89,7 @@ export default function RestaurantPage() {
                   <div key={day.label} className="grid grid-cols-[5rem_minmax(0,1fr)] gap-4 py-2.5 text-sm leading-5 sm:grid-cols-[7rem_minmax(0,1fr)]">
                     <dt className="font-semibold">{day.label}</dt>
                     <dd className="grid gap-1">
-                      <div className="flex justify-between gap-3"><span className="text-emerald-950/65">Restaurant</span><span className="whitespace-nowrap font-semibold">{day.hours}</span></div>
+                      <div className="flex justify-between gap-3"><span className="text-emerald-950/65">Restaurant</span><span className="whitespace-nowrap font-semibold tabular-nums">{day.hours}</span></div>
                       <div className="flex justify-between gap-3 text-emerald-800"><span className="text-emerald-950/65">Bar</span><span className="whitespace-nowrap font-semibold">{barHours[index < 5 ? 0 : 1]}</span></div>
                     </dd>
                   </div>
