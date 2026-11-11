@@ -158,6 +158,21 @@ Notes:
 
 ### Carte du jour du restaurant
 
+#### Accès personnel « Administrateur restaurant »
+
+Le site ne gère actuellement qu'un restaurant, La Bergerie. L'administration du restaurant comprend la carte du jour : lecture, publication, modification et retrait. Les demandes de réservation sont envoyées par e-mail ; il n'existe pas encore d'écran de gestion des réservations dans le back-office.
+
+Le super administrateur conserve son accès habituel. Pour donner un accès personnel limité au restaurant :
+
+1. Après déploiement de la migration `20261111120000_restaurant_staff_access.sql`, se connecter à `/admin` avec l'accès super administrateur.
+2. Ouvrir **Accès restaurant**, saisir le nom et l'adresse e-mail, puis créer le compte. Le rôle et le restaurant sont fixés à **Administrateur restaurant · La Bergerie**.
+3. Copier immédiatement le lien personnel affiché et le transmettre à la personne par un canal sûr. Il expire après 24 heures et ne peut servir qu'une fois. La personne définit son propre mot de passe d'au moins 14 caractères, puis se connecte sur `/admin/restaurant/connexion`.
+4. Depuis **Accès restaurant**, choisir **Révoquer l’accès ou l’invitation** pour désactiver le compte et ses sessions, ou **Créer un nouveau lien** pour réinviter la personne. La création d'un nouveau lien annule également les anciennes sessions.
+
+Les comptes, invitations et sessions sont dans Supabase, accessibles uniquement au serveur avec la clé de service. Aucune clé ou nouveau mot de passe partagé n'est ajouté au navigateur. Les routes de gestion des comptes sont réservées au super administrateur ; les routes de la carte vérifient la session restaurant à chaque requête. Le rôle et l'identifiant du restaurant sont contraints en base. `ADMIN_PASSWORD`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` et la limitation de débit Supabase existante doivent être configurés.
+
+La migration est copiée à l'identique dans `staging/supabase/migrations` pour l'intégration GitHub de Golf Staging. Le contrôle `Supabase Preview` doit confirmer son application avant le build de la préversion `develop`. **Ne pas appliquer la migration à Golf Prod sans demande explicite** ; l'appliquer avant le déploiement du code en production, puis vérifier l'activation, la révocation et les refus d'accès aux autres modules. Les tables sont nouvelles et ne modifient aucune carte existante. Pour revenir au code précédent, redéployer l'ancienne version et conserver les tables ; supprimer les tables nécessite une migration inverse après décision sur les comptes et les traces de session.
+
 - Appliquer `supabase/migrations/20260930110000_restaurant_daily_menu.sql` avant de publier cette version. La migration crée une table datée accessible uniquement via la clé de service côté serveur ; elle ne modifie pas les anciennes cartes ni les réservations.
 - Se connecter à `/admin`, ouvrir « Modifier la carte du jour », choisir la date, puis renseigner trois entrées, trois plats et trois desserts avec leurs prix. « Publier la carte » enregistre les choix ; « Retirer cette carte » supprime la publication de cette date.
 - La dernière carte publiée reste visible et dépliée à toute heure, avec sa date de publication, jusqu’à la prochaine mise à jour. Les plats sont proposés selon disponibilité. L’ardoise du plat du jour apparaît uniquement le jour de publication, du lundi au vendredi. En l’absence de carte ou si la lecture échoue, le site invite à appeler le restaurant. La lecture publique est limitée à quatre secondes et le cache est renouvelé toutes les trente secondes, avec invalidation lors d’une modification.

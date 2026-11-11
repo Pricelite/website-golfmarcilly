@@ -7,6 +7,7 @@ import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { deleteDailyMenu, getDailyMenu, saveDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { parseDailyMenu, validDailyMenuDate } from "@/lib/restaurant/daily-menu-validation";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
+import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
 
 export const runtime = "nodejs";
 
@@ -15,11 +16,13 @@ function response(data: unknown, status = 200) {
 }
 
 async function authorized() {
-  return Boolean(process.env.ADMIN_PASSWORD?.trim()) && isAdminAuthenticated(await cookies());
+  if (process.env.ADMIN_PASSWORD?.trim() && await isAdminAuthenticated(await cookies())) return true;
+  return Boolean(await currentRestaurantActor());
 }
 
 export async function GET(request: Request) {
-  if (!(await authorized())) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401);
+  try { if (!(await authorized())) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401); }
+  catch { return response({ error: "Vérification de l’accès momentanément indisponible." }, 503); }
   const date = new URL(request.url).searchParams.get("date");
   if (!validDailyMenuDate(date)) return response({ error: "Date invalide." }, 400);
   try { return response({ menu: await getDailyMenu(date) }); }
@@ -27,7 +30,8 @@ export async function GET(request: Request) {
 }
 
 async function mutate(request: Request) {
-  if (!(await authorized())) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401);
+  try { if (!(await authorized())) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401); }
+  catch { return response({ error: "Vérification de l’accès momentanément indisponible." }, 503); }
   if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return response({ error: "Origine non autorisée. Rechargez la page." }, 403);
   if (!request.headers.get("content-type")?.includes("application/json")) return response({ error: "Format de demande invalide." }, 415);
   const body = await readJsonBody<Record<string, unknown>>(request);

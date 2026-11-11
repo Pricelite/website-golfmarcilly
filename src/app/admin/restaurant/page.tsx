@@ -8,12 +8,14 @@ import { parisDateKey } from "@/data/daily-menu";
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { getDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { sharedContentSyncEnabled } from "@/lib/supabase/content";
+import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
 
 export const metadata: Metadata = { title: "Carte du jour — Administration", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminRestaurantPage() {
-  if (!process.env.ADMIN_PASSWORD?.trim() || !(await isAdminAuthenticated(await cookies()))) redirect("/admin?next=/admin/restaurant");
+  const superAdmin = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
+  if (!superAdmin && !(await currentRestaurantActor())) redirect("/admin/restaurant/connexion");
   const today = parisDateKey();
   let menu = null;
   let unavailable = false;
