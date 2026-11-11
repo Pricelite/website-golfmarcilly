@@ -73,7 +73,7 @@ export function buildRestaurantSchema() {
     acceptsReservations: true,
     containedInPlace: { "@id": golfId },
     openingHoursSpecification: restaurantData.hours.flatMap((day, index) => {
-      const parsed = day.hours.match(/^(\d+) h(?: (\d+))? – (\d+) h(?: (\d+))?$/);
+      const parsed = day.hours.match(/^(\d{1,2})h(\d{2}) - (\d{1,2})h(\d{2})$/);
       return parsed ? [{ "@type": "OpeningHoursSpecification", dayOfWeek: `https://schema.org/${weekDays[index]}`, opens: time(parsed[1], parsed[2]), closes: time(parsed[3], parsed[4]) }] : [];
     }),
   };
