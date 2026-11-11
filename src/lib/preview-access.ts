@@ -8,5 +8,5 @@ export function validPreviewCredentials(header: string | null, username: string,
 }
 
 export function previewPathBlocked(pathname: string): boolean {
-  return /^\/(?:admin|api\/(?:admin|backoffice|ops|health))(?:\/|$)/.test(pathname);
+  return /^\/(?:admin|api\/(?:admin|backoffice|restaurant-admin|ops|health))(?:\/|$)/.test(pathname);
 }

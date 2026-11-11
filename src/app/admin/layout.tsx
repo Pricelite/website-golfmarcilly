@@ -5,6 +5,7 @@ import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { COOKIE_NAME, actorFromToken } from "@/lib/backoffice/auth";
 import { openDb, parseUserGrants } from "@/lib/backoffice/db";
 import { can } from "@/lib/backoffice/model";
+import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -16,15 +17,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin", label: "Tableau de bord", detail: "Les accès essentiels" },
     { href: "/admin/competitions", label: "Calendrier", detail: "Compétitions et animations" },
     { href: "/admin/restaurant", label: "Restaurant", detail: "Carte et plat du jour" },
+    { href: "/admin/restaurant/acces", label: "Accès restaurant", detail: "Invitations et révocations" },
     { href: "/admin/site-conditions", label: "État du golf", detail: "Parcours et services" },
     { href: "/admin/publicites", label: "Publicités", detail: "Visuels et diffusion sur l’accueil" },
     { href: "/admin/statistiques", label: "Statistiques", detail: "Fréquentation du site" },
     { href: "/admin/archives", label: "Archives des initiations", detail: "Consulter les anciens dossiers" },
   ] });
+  let restaurantSession = false;
+  if (!golfSession) {
+    try { restaurantSession = Boolean(await currentRestaurantActor()); }
+    catch { /* La page restaurant signale l'indisponibilité du stockage. */ }
+    if (restaurantSession) groups.push({ label: "Restaurant", items: [{ href: "/admin/restaurant", label: "Carte du jour", detail: "Gérer La Bergerie" }] });
+  }
   let contentSession = false;
   // Navigation only: each page and API keeps its own authorization checks.
   const token = jar.get(COOKIE_NAME)?.value;
-  if (token) {
+  if (token && !restaurantSession) {
     try {
       const db = openDb();
       try {
@@ -43,5 +51,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     } catch { /* The content pages report their own storage/configuration errors. */ }
   }
   if (golfSession && !contentSession) groups.push({ label: "Contenu du site · accès dédié", items: [{ href: "/admin/contenu/connexion", label: "Pages et médias", detail: "Connexion personnelle" }] });
-  return <AdminShell groups={groups} golfSession={golfSession} contentSession={contentSession}>{children}</AdminShell>;
+  return <AdminShell groups={groups} golfSession={golfSession} contentSession={contentSession} restaurantSession={restaurantSession}>{children}</AdminShell>;
 }

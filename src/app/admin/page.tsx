@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
 import { absoluteUrl } from "@/lib/metadata";
+import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
 
 export const metadata: Metadata = {
   title: "Administration du golf",
@@ -43,10 +44,17 @@ function AdminLogin({ error, next }: { error?: string; next?: string }) {
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams;
+  const superAdmin = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
+  if (!superAdmin) {
+    let restaurantActor = false;
+    try { restaurantActor = Boolean(await currentRestaurantActor()); }
+    catch { /* La connexion super administrateur reste accessible si le stockage restaurant est indisponible. */ }
+    if (restaurantActor) redirect("/admin/restaurant");
+  }
   if (!process.env.ADMIN_PASSWORD?.trim()) {
     return <div className="mx-auto max-w-xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><p className="mt-4">L’accès administrateur n’est pas encore configuré.</p></div>;
   }
-  if (!(await isAdminAuthenticated(await cookies()))) {
+  if (!superAdmin) {
     return <AdminLogin error={params.error} next={params.next} />;
   }
   if (adminDestinations.includes(params.next as typeof adminDestinations[number])) redirect(params.next!);
@@ -60,6 +68,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         {[
           { href: "/admin/competitions", title: "Calendrier", text: "Voir le mois entier, ajouter une compétition ou modifier une animation." },
           { href: "/admin/restaurant", title: "Restaurant La Bergerie", text: "Actualiser la carte, les prix et le plat du jour." },
+          { href: "/admin/restaurant/acces", title: "Accès restaurant", text: "Inviter ou révoquer un administrateur du restaurant." },
           { href: "/admin/site-conditions", title: "État du golf", text: "Mettre à jour les conditions des parcours et des services." },
           { href: "/admin/publicites", title: "Publicités", text: "Modifier les visuels, les liens et les dates de diffusion sur l’accueil." },
           { href: "/admin/statistiques", title: "Statistiques", text: "Consulter la fréquentation du site et les connexions." },
