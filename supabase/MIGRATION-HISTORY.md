@@ -42,6 +42,29 @@ Supabase CLI. Ne pas rejouer la migration par `supabase db push --include-all`.
 Pour revenir aux événements 2027 antérieurs, restaurer l’export ciblé ; un
 retour au code précédent peut conserver les nouvelles colonnes.
 
+## Accès administrateur restaurant — 11 novembre 2026
+
+La migration `20261111120000_restaurant_staff_access.sql` a été appliquée
+automatiquement à Golf Staging par l’intégration Supabase : le check
+`Supabase Preview` du commit `9ade2a3` a réussi. Le parcours du compte personnel
+et les opérations de la carte y ont été testés avec un compte temporaire,
+supprimé après vérification.
+
+Après confirmation du propriétaire, la migration du dépôt a été exécutée
+manuellement dans l’éditeur SQL de **Golf Prod** avant la publication du code
+par la PR #176. Avant exécution, les trois tables et les deux fonctions étaient
+absentes. Après exécution, le contrôle SQL a confirmé les trois tables avec
+RLS, les deux fonctions, l’absence de droits directs pour `anon` et
+`authenticated`, les droits du `service_role` et l’absence de comptes créés.
+Une lecture PostgREST avec la clé serveur de Golf Prod a répondu HTTP 200.
+La migration ne modifie ni les cartes ni les réservations existantes.
+
+Cette exécution manuelle n’inscrit pas la version dans le registre Supabase
+CLI de Golf Prod. Ne pas relancer les migrations historiques par
+`supabase db push --include-all`. En cas de retour au code précédent, conserver
+les nouvelles tables ; leur suppression nécessiterait une migration inverse
+après examen des comptes et des sessions éventuellement créés.
+
 ## Adoption ultérieure de la CLI
 
 1. Réaliser une sauvegarde PostgreSQL et valider sa restauration sur une cible
