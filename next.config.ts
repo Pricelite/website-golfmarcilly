@@ -10,9 +10,9 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
   "style-src 'self' 'unsafe-inline'",
-  `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
-  "connect-src 'self' https://api.open-meteo.com https://api.brevo.com",
-  "frame-src 'self' https://calendar.google.com https://www.flyovergreen.com",
+  `script-src 'self' 'unsafe-inline' https://sdk.zenchef.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  "connect-src 'self' https://api.open-meteo.com https://api.brevo.com https://*.zenchef.com",
+  "frame-src 'self' https://calendar.google.com https://www.flyovergreen.com https://*.zenchef.com",
 ].join("; ");
 
 const nextConfig: NextConfig = {
