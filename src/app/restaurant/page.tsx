@@ -35,7 +35,7 @@ export default function RestaurantPage() {
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }, { name: "Restaurant", path: "/restaurant" }])} />
       <JsonLd data={buildRestaurantSchema()} />
-      <div className="zc-widget-config" data-restaurant={ZENCHEF_RESTAURANT_ID} data-hide-button="true" />
+      <div className="zc-widget-config" data-restaurant={ZENCHEF_RESTAURANT_ID} data-hide-default-button="true" />
       <Script id="zenchef-sdk" src="https://sdk.zenchef.com/v1/sdk.min.js" strategy="afterInteractive" />
 
       <section className="relative isolate overflow-hidden bg-emerald-950 text-stone-50">
