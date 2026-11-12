@@ -1,10 +1,11 @@
 import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
+import Script from "next/script";
 
 import { ContactForm } from "@/components/forms/contact-form";
 import { RestaurantDishesCarousel } from "@/components/restaurant-dishes-carousel";
 import { RestaurantLiveClock } from "@/components/restaurant-live-clock";
-import RestaurantReservationModal from "@/components/restaurant-reservation-modal";
+import { ZenchefReservationLink, ZENCHEF_RESTAURANT_ID } from "@/components/zenchef-reservation-link";
 import { DailyMenuSection } from "@/components/sections/daily-menu";
 import { RestaurantMenus } from "@/components/sections/restaurant-menus";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -34,6 +35,8 @@ export default function RestaurantPage() {
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }, { name: "Restaurant", path: "/restaurant" }])} />
       <JsonLd data={buildRestaurantSchema()} />
+      <div className="zc-widget-config" data-restaurant={ZENCHEF_RESTAURANT_ID} data-hide-button="true" />
+      <Script id="zenchef-sdk" src="https://sdk.zenchef.com/v1/sdk.min.js" strategy="afterInteractive" />
 
       <section className="relative isolate overflow-hidden bg-emerald-950 text-stone-50">
         <Image src="/restaurant/hero.jpg" alt="" fill priority sizes="100vw" className="-z-20 object-cover object-center" />
@@ -47,7 +50,7 @@ export default function RestaurantPage() {
             </h1>
             <p className="mt-7 max-w-2xl text-base leading-8 text-stone-100/90 sm:text-lg">À Marcilly-en-Villette, près d’Orléans, La Bergerie accueille les golfeurs et les visiteurs extérieurs pour le déjeuner : une cuisine simple et gourmande dans le cadre paisible du domaine.</p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <RestaurantReservationModal triggerClassName="inline-flex items-center justify-center rounded-full bg-stone-50 px-5 py-3 text-sm font-semibold text-emerald-950 shadow-lg shadow-black/10 transition hover:bg-[#dbe9b4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-50 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950" />
+              <ZenchefReservationLink className="inline-flex items-center justify-center rounded-full bg-stone-50 px-5 py-3 text-sm font-semibold text-emerald-950 shadow-lg shadow-black/10 transition hover:bg-[#dbe9b4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-50 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950" />
               <CTAButton href="#carte-du-jour" variant="secondary">Voir la carte</CTAButton>
               <CTAButton href={`tel:${siteConfig.phoneHref}`} variant="secondary">{siteConfig.phoneDisplay}</CTAButton>
             </div>
@@ -97,7 +100,7 @@ export default function RestaurantPage() {
               </dl>
               <div className="border-t border-emerald-950/15 py-4">
                 <p className="text-sm font-semibold">Restaurant ouvert aux golfeurs et aux visiteurs extérieurs.</p>
-                <div className="mt-4"><RestaurantReservationModal /></div>
+                <div className="mt-4"><ZenchefReservationLink className="site-button-primary inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2" /></div>
               </div>
             </div>
           </div>
