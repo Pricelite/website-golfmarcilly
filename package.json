@@ -14,11 +14,16 @@
     "preflight": "node scripts/preflight.mjs"
   },
   "dependencies": {
+    "@opentelemetry/api-logs": "^0.223.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.301.1",
+    "@opentelemetry/resources": "^3.1.1",
+    "@opentelemetry/sdk-logs": "^3.1.1",
     "@supabase/supabase-js": "^2.93.3",
     "framer-motion": "^12.40.0",
     "next": "16.4.5",
     "node-ical": "^0.27.2",
     "nodemailer": "^10.3.1",
+    "posthog-js": "^1.447.12",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "server-only": "^0.0.1",

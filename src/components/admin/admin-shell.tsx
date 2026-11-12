@@ -2,17 +2,45 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import posthog from "posthog-js";
 import { LogoutButton } from "@/components/backoffice/logout-button";
 
 export type AdminNavigationGroup = { label: string; items: { href: string; label: string; detail: string }[] };
+type AnalyticsIdentity = { id: string; email: string; name: string; role: string };
 
-export function AdminShell({ children, groups, golfSession, contentSession, restaurantSession }: {
-  children: ReactNode; groups: AdminNavigationGroup[]; golfSession: boolean; contentSession: boolean; restaurantSession: boolean;
+export function AdminShell({ children, groups, golfSession, contentSession, restaurantSession, analyticsIdentity }: {
+  children: ReactNode; groups: AdminNavigationGroup[]; golfSession: boolean; contentSession: boolean; restaurantSession: boolean; analyticsIdentity?: AnalyticsIdentity;
 }) {
   const pathname = usePathname();
   const [openPath, setOpenPath] = useState<string | null>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const identifiedId = useRef<string | null>(null);
+  const posthogEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST);
+
+  useEffect(() => {
+    if (!posthogEnabled) return;
+    if (!analyticsIdentity) {
+      if (identifiedId.current) {
+        posthog.reset();
+        identifiedId.current = null;
+      }
+      return;
+    }
+    if (identifiedId.current && identifiedId.current !== analyticsIdentity.id) posthog.reset();
+    if (identifiedId.current !== analyticsIdentity.id) {
+      posthog.identify(analyticsIdentity.id, {
+        email: analyticsIdentity.email,
+        name: analyticsIdentity.name,
+        role: analyticsIdentity.role,
+      });
+      identifiedId.current = analyticsIdentity.id;
+    }
+  }, [analyticsIdentity, posthogEnabled]);
+
+  const resetAnalytics = () => {
+    if (posthogEnabled) posthog.reset();
+  };
   const open = openPath === pathname;
   const connection = pathname === "/admin/contenu/connexion" || pathname === "/admin/contenu/activer" || pathname === "/admin/restaurant/connexion" || pathname === "/admin/restaurant/activer";
   if (connection || (!golfSession && !contentSession && !restaurantSession)) return <div className="min-h-dvh bg-[#f7f5ed]">
@@ -41,7 +69,7 @@ export function AdminShell({ children, groups, golfSession, contentSession, rest
       <header className="flex min-h-20 flex-wrap items-center justify-between gap-3 border-b border-emerald-950/10 bg-white px-4 py-4 sm:px-7">
         <div><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-emerald-700">Administration</p><p className="mt-1 text-sm font-semibold">{active?.label ?? "Gestion du contenu"}</p></div>
         <div className="flex items-center gap-4"><Link href="/" target="_blank" rel="noreferrer" className="text-sm underline underline-offset-4 lg:hidden">Voir le site ↗</Link>
-          {contentArea && contentSession ? <LogoutButton /> : golfSession ? <form action="/admin/logout" method="post"><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : restaurantSession ? <form action="/api/restaurant-admin/logout" method="post"><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : <LogoutButton />}
+          {contentArea && contentSession ? <LogoutButton /> : golfSession ? <form action="/admin/logout" method="post" onSubmit={resetAnalytics}><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : restaurantSession ? <form action="/api/restaurant-admin/logout" method="post" onSubmit={resetAnalytics}><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : <LogoutButton />}
         </div>
       </header>
       <div className="px-4 py-7 sm:px-7 sm:py-9 2xl:px-10">{children}</div>

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { getFormErrorMessage } from "@/lib/api/form-feedback";
 
+import {
+  logFormMailDeliveryCompleted,
+  logFormMailDeliveryFailed,
+} from "@/lib/api/posthog-logs";
 import { readJsonBody } from "@/lib/api/request-body";
 import {
   isNonEmptyWithinLength,
@@ -87,11 +91,14 @@ export async function POST(request: Request) {
       },
     });
 
+    logFormMailDeliveryCompleted("newsletter", result.queued);
     return NextResponse.json({ ok: true, email, queued: result.queued, message: result.queued
       ? "Votre demande d’inscription a été enregistrée en secours et sera transmise au golf après le rétablissement de la messagerie."
       : "Votre demande d’inscription a été transmise au golf." }, { status: result.queued ? 202 : 200 });
   } catch (error) {
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
+    const apiError = buildMailApiErrorResponse(error);
+    logFormMailDeliveryFailed("newsletter", apiError.code);
+    return NextResponse.json(apiError, { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 

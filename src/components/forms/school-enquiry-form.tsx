@@ -3,6 +3,7 @@
 import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
 
 import { useRef, useState } from "react";
+import posthog from "posthog-js";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { juniorPrograms } from "@/data/teaching";
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
@@ -60,6 +61,7 @@ export function SchoolEnquiryForm({ initialProgramKey }: { initialProgramKey: Pr
         setFeedback(getFormErrorMessage(response.status));
         return;
       }
+      posthog.capture("school_enquiry_submitted", { program: selected.key });
       form.reset();
       setState("success");
       setFeedback(result.message);

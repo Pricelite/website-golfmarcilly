@@ -3,6 +3,7 @@
 import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass } from "@/components/forms/form-styles";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import posthog from "posthog-js";
 import { createPortal } from "react-dom";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 
@@ -293,6 +294,7 @@ export default function RestaurantReservationModal({
         return;
       }
 
+      posthog.capture("restaurant_reservation_requested", { party_size: partySize });
       setLastSubmittedFingerprint(fingerprint);
       setSuccessMessage(result.queued && result.message ? result.message : result.acknowledgementSent === false
         ? `${SUCCESS_MESSAGE} L’accusé de réception par email n’a pas pu vous être envoyé ; inutile de renvoyer votre demande.`
