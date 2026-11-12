@@ -22,15 +22,21 @@ export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("application/json")) return reply({ error: "Format invalide." }, 415);
   const body = await readJsonBody<Record<string, unknown>>(request, 2048);
   if (!body.ok) return reply({ error: "Demande invalide." }, body.tooLarge ? 413 : 400);
-  const { name, email, restaurantId } = body.data;
+  const { name, email, username, restaurantId } = body.data;
+  const normalizedEmail = typeof email === "string" && email.trim() ? email.trim().toLowerCase() : null;
+  const normalizedUsername = typeof username === "string" && username.trim() ? username.trim().toLowerCase() : null;
   if (typeof name !== "string" || !name.trim() || name.trim().length > 100 ||
-      typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254 ||
+      (email != null && typeof email !== "string") ||
+      (username != null && typeof username !== "string") ||
+      (!normalizedEmail && !normalizedUsername) ||
+      (normalizedEmail !== null && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || normalizedEmail.length > 254)) ||
+      (normalizedUsername !== null && !/^[a-z][a-z0-9._-]{2,49}$/.test(normalizedUsername)) ||
       restaurantId !== RESTAURANT_ID) return reply({ error: "Compte ou restaurant invalide." }, 400);
   try {
-    const result = await createRestaurantStaff(name, email);
+    const result = await createRestaurantStaff(name, normalizedEmail, normalizedUsername);
     return reply({ id: result.id, activationPath: `/admin/restaurant/activer?token=${result.token}` }, 201);
   } catch (error) {
-    if (String(error).includes("23505") || String(error).includes("duplicate key")) return reply({ error: "Cette adresse possède déjà un compte." }, 409);
+    if (String(error).includes("23505") || String(error).includes("duplicate key")) return reply({ error: "Cet identifiant ou cette adresse possède déjà un compte." }, 409);
     return reply({ error: "Création du compte impossible." }, 503);
   }
 }

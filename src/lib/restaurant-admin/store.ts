@@ -12,7 +12,8 @@ const INVITE_SECONDS = 24 * 60 * 60;
 
 type StaffRow = {
   id: string;
-  email: string;
+  email: string | null;
+  username: string | null;
   name: string;
   password_hash: string | null;
   role: string;
@@ -33,15 +34,14 @@ export function restaurantSessionCookieOptions() {
 }
 
 export async function listRestaurantStaff() {
-  const { data, error } = await accountTable().select("id,email,name,role,restaurant_id,active,created_at").order("created_at");
+  const { data, error } = await accountTable().select("id,email,username,name,role,restaurant_id,active,created_at").order("created_at");
   if (error) throw error;
-  return (data ?? []).map(row => ({ id: row.id, email: row.email, name: row.name, role: row.role, restaurantId: row.restaurant_id, active: row.active, createdAt: row.created_at }));
+  return (data ?? []).map(row => ({ id: row.id, email: row.email, username: row.username, name: row.name, role: row.role, restaurantId: row.restaurant_id, active: row.active, createdAt: row.created_at }));
 }
 
-export async function createRestaurantStaff(name: string, email: string) {
+export async function createRestaurantStaff(name: string, email: string | null, username: string | null) {
   const id = randomUUID();
-  const normalizedEmail = email.trim().toLowerCase();
-  const { error } = await accountTable().insert({ id, name: name.trim(), email: normalizedEmail, role: RESTAURANT_ADMIN_ROLE, restaurant_id: RESTAURANT_ID, active: false });
+  const { error } = await accountTable().insert({ id, name: name.trim(), email: email?.trim().toLowerCase() ?? null, username: username?.trim().toLowerCase() ?? null, role: RESTAURANT_ADMIN_ROLE, restaurant_id: RESTAURANT_ID, active: false });
   if (error) throw error;
   try { return { id, token: await issueRestaurantInvite(id) }; }
   catch (error) { await accountTable().delete().eq("id", id); throw error; }
@@ -70,19 +70,21 @@ export async function revokeRestaurantStaff(id: string): Promise<boolean> {
 }
 
 export async function activateRestaurantStaff(token: string, password: string): Promise<boolean> {
-  const passwordHash = hashPassword(password);
+  const passwordHash = hashPassword(password, 13);
   const { data, error } = await createContentAdminClient().rpc("activate_restaurant_staff", { p_token_hash: hashToken(token), p_password_hash: passwordHash });
   if (error) throw error;
   return data === true;
 }
 
-export async function authenticateRestaurantStaff(email: string, password: string): Promise<RestaurantActor | null> {
-  const { data, error } = await accountTable().select("id,email,name,password_hash,role,restaurant_id,active,created_at").eq("email", email.trim().toLowerCase()).maybeSingle();
+export async function authenticateRestaurantStaff(identifier: string, password: string): Promise<RestaurantActor | null> {
+  const normalized = identifier.trim().toLowerCase();
+  const field = normalized.includes("@") ? "email" : "username";
+  const { data, error } = await accountTable().select("id,email,username,name,password_hash,role,restaurant_id,active,created_at").eq(field, normalized).maybeSingle();
   if (error) throw error;
   const account = data as StaffRow | null;
   const dummy = "scrypt$0000000000000000000000000000000000000000000000000000000000000000$0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
   const valid = verifyPassword(password, account?.password_hash ?? dummy);
-  const actor = account && { id: account.id, email: account.email, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active };
+  const actor = account && { id: account.id, email: account.email, username: account.username, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active };
   return valid && canManageRestaurant(actor, RESTAURANT_ID) ? actor : null;
 }
 
@@ -99,10 +101,10 @@ export async function restaurantActorFromToken(token: string | undefined): Promi
   const { data: session, error: sessionError } = await sessionTable().select("account_id").eq("token_hash", hashToken(token)).gt("expires_at", new Date().toISOString()).maybeSingle();
   if (sessionError) throw sessionError;
   if (!session) return null;
-  const { data: account, error: accountError } = await accountTable().select("id,email,name,role,restaurant_id,active").eq("id", session.account_id).maybeSingle();
+  const { data: account, error: accountError } = await accountTable().select("id,email,username,name,role,restaurant_id,active").eq("id", session.account_id).maybeSingle();
   if (accountError) throw accountError;
   if (!account) return null;
-  const actor = { id: account.id, email: account.email, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active };
+  const actor = { id: account.id, email: account.email, username: account.username, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active };
   return canManageRestaurant(actor, RESTAURANT_ID) ? actor : null;
 }
 
