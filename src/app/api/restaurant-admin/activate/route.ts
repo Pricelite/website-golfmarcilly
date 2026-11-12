@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const fields = new URLSearchParams(body.text);
   const token = fields.get("token") ?? "";
   const password = fields.get("password") ?? "";
-  if (!/^[A-Za-z0-9_-]{43}$/.test(token) || password.length < 14 || password.length > 256) return reply({ error: "Lien ou mot de passe invalide (14 caractères minimum)." }, 400);
+  if (!/^[A-Za-z0-9_-]{43}$/.test(token) || password.length < 13 || password.length > 256) return reply({ error: "Lien ou mot de passe invalide (13 caractères minimum)." }, 400);
   try {
     if (!(await activateRestaurantStaff(token, password))) return reply({ error: "Lien expiré ou déjà utilisé." }, 400);
     return NextResponse.redirect(new URL("/admin/restaurant/connexion?activated=1", request.url), 303);

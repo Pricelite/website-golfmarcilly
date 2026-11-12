@@ -15,11 +15,11 @@ export async function POST(request: Request) {
   const body = await readLimitedTextBody(request, 2048);
   if (!body.ok) return fail(request, "invalid");
   const fields = new URLSearchParams(body.text);
-  const email = fields.get("email") ?? "";
+  const identifier = fields.get("identifier") ?? fields.get("email") ?? "";
   const password = fields.get("password") ?? "";
-  if (email.length > 254 || password.length > 256 || !email || !password) return fail(request, "invalid");
+  if (identifier.length > 254 || password.length > 256 || !identifier.trim() || !password) return fail(request, "invalid");
   try {
-    const actor = await authenticateRestaurantStaff(email, password);
+    const actor = await authenticateRestaurantStaff(identifier, password);
     if (!actor) return fail(request, "invalid");
     const token = await issueRestaurantSession(actor);
     const response = NextResponse.redirect(new URL("/admin/restaurant", request.url), 303);

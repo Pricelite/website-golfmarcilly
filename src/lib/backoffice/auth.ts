@@ -7,8 +7,8 @@ import type { Db, UserRow } from "./db";
 export const COOKIE_NAME = "marcilly_backoffice";
 const SESSION_SECONDS = 8 * 60 * 60;
 
-export function hashPassword(password: string): string {
-  if (password.length < 14 || password.length > 256) throw new Error("Mot de passe invalide.");
+export function hashPassword(password: string, minimumLength = 14): string {
+  if (password.length < minimumLength || password.length > 256) throw new Error("Mot de passe invalide.");
   const salt = randomBytes(32);
   const hash = scryptSync(password, salt, 64, { N: 16384, r: 8, p: 1 });
   return `scrypt$${salt.toString("hex")}$${hash.toString("hex")}`;
