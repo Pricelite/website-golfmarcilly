@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { UserManager } from "@/components/backoffice/user-manager";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { listPages, openDb, type UserRow } from "@/lib/backoffice/db";
 
 export const metadata: Metadata = { title: "Utilisateurs et permissions", robots: { index: false, follow: false } };
@@ -12,10 +12,10 @@ export const runtime = "nodejs";
 export default async function UsersPage() {
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) redirect("/admin/contenu/connexion");
     if (actor.role !== "admin") notFound();
-    const users = db.prepare("SELECT id,email,name,role,grants_json,active FROM users ORDER BY created_at").all() as UserRow[];
+    const users = db.prepare("SELECT id,email,name,role,grants_json,active FROM users WHERE email NOT LIKE '%@internal.invalid' ORDER BY created_at").all() as UserRow[];
     const pages = listPages(db).map(page => ({ id: page.id, slug: page.slug }));
     const audit = (db.prepare("SELECT action,target,created_at FROM audit ORDER BY id DESC LIMIT 50").all() as { action: string; target: string; created_at: string }[])
       .map(({ action, target, created_at }) => ({ action, target, created_at }));

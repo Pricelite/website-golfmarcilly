@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { BlockContent } from "@/components/backoffice/block-content";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { getPage, openDb, parseUserGrants } from "@/lib/backoffice/db";
 import { can, parsePageContent } from "@/lib/backoffice/model";
 
@@ -14,7 +14,7 @@ export default async function PreviewPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) redirect("/admin/contenu/connexion");
     if (!can(parseUserGrants(actor), actor.role, "view", `page:${id}`)) notFound();
     const page = getPage(db, id);

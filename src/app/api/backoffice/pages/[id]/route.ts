@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { readJsonBody } from "@/lib/api/request-body";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { audit, getPage, openDb, parseUserGrants, publishPage, updateDraft } from "@/lib/backoffice/db";
 import { can, parsePageContent } from "@/lib/backoffice/model";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
@@ -15,7 +15,7 @@ export async function GET(_request: Request, context: Context) {
   const { id } = await context.params;
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor || !can(parseUserGrants(actor), actor.role, "view", `page:${id}`)) return denied();
     const page = getPage(db, id);
     if (!page) return NextResponse.json({ error: "Page introuvable." }, { status: 404 });
@@ -33,7 +33,7 @@ export async function PUT(request: Request, context: Context) {
   if (!value || !Number.isSafeInteger(value.expectedRevision) || (value.expectedRevision as number) < 1) return NextResponse.json({ error: "Révision invalide." }, { status: 400 });
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) return denied();
     const page = getPage(db, id);
     if (!page) return NextResponse.json({ error: "Page introuvable." }, { status: 404 });
@@ -83,7 +83,7 @@ export async function DELETE(request: Request, context: Context) {
   const { id } = await context.params;
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor || !can(parseUserGrants(actor), actor.role, "delete", `page:${id}`)) return denied();
     const page = getPage(db, id);
     if (!page) return NextResponse.json({ error: "Page introuvable." }, { status: 404 });

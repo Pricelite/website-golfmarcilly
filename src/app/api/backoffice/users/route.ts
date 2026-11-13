@@ -1,7 +1,8 @@
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { randomBytes, randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { currentActor, hashPassword, tokenHash } from "@/lib/backoffice/auth";
+import { hashPassword, tokenHash } from "@/lib/backoffice/auth";
 import { audit, openDb, type UserRow } from "@/lib/backoffice/db";
 import { parseGrants, type Role } from "@/lib/backoffice/model";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
@@ -12,9 +13,9 @@ const denied = () => NextResponse.json({ error: "Accès refusé." }, { status: 4
 export async function GET() {
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (actor?.role !== "admin") return denied();
-    const users = db.prepare("SELECT id,email,name,role,grants_json,active,created_at FROM users ORDER BY created_at").all() as UserRow[];
+    const users = db.prepare("SELECT id,email,name,role,grants_json,active,created_at FROM users WHERE email NOT LIKE '%@internal.invalid' ORDER BY created_at").all() as UserRow[];
     const auditLog = db.prepare("SELECT id,actor_id,action,target,created_at FROM audit ORDER BY id DESC LIMIT 50").all();
     return NextResponse.json({ users: users.map(user => ({ ...user, grants: JSON.parse(user.grants_json), grants_json: undefined })), audit: auditLog });
   } finally { db.close(); }
@@ -24,12 +25,12 @@ export async function POST(request: Request) {
   if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return denied();
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (actor?.role !== "admin") return denied();
     const body = await readJsonBody(request, 16_384);
     if (!body.ok) return NextResponse.json({ error: "Données invalides." }, { status: body.tooLarge ? 413 : 400 });
     const value = body.data as Record<string, unknown>;
-    if (!value || typeof value.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email) || value.email.length > 254 ||
+    if (!value || typeof value.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email) || value.email.length > 254 || value.email.toLowerCase().endsWith("@internal.invalid") ||
         typeof value.name !== "string" || !value.name.trim() || value.name.length > 100 ||
         !["admin", "editor", "contributor"].includes(value.role as string)) return NextResponse.json({ error: "Compte invalide." }, { status: 400 });
     const grants = parseGrants(value.grants);

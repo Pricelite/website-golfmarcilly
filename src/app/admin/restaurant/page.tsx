@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { DailyMenuManager } from "@/components/admin/daily-menu-manager";
 import { parisDateKey } from "@/data/daily-menu";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { getDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { sharedContentSyncEnabled } from "@/lib/supabase/content";
-import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
 
 export const metadata: Metadata = { title: "Carte du jour — Administration", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminRestaurantPage() {
-  const superAdmin = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
-  if (!superAdmin && !(await currentRestaurantActor())) redirect("/admin/restaurant/connexion");
+  if (!(await canAccessAdmin("restaurant"))) redirect("/admin/restaurant/connexion");
   const today = parisDateKey();
   let menu = null;
   let unavailable = false;

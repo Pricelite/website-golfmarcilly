@@ -1,13 +1,11 @@
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { readJsonBody } from "@/lib/api/request-body";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { deleteDailyMenu, getDailyMenu, saveDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { parseDailyMenu, validDailyMenuDate } from "@/lib/restaurant/daily-menu-validation";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
-import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
 
 export const runtime = "nodejs";
 
@@ -16,8 +14,7 @@ function response(data: unknown, status = 200) {
 }
 
 async function authorized() {
-  if (process.env.ADMIN_PASSWORD?.trim() && await isAdminAuthenticated(await cookies())) return true;
-  return Boolean(await currentRestaurantActor());
+  return canAccessAdmin("restaurant");
 }
 
 export async function GET(request: Request) {

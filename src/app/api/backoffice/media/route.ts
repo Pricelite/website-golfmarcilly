@@ -3,7 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
 import { readLimitedBytesBody } from "@/lib/api/request-body";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { audit, mediaDirectory, openDb, parseUserGrants, type MediaRow } from "@/lib/backoffice/db";
 import { can } from "@/lib/backoffice/model";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
@@ -14,7 +14,7 @@ const denied = () => NextResponse.json({ error: "Accès refusé." }, { status: 4
 export async function GET() {
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor || !can(parseUserGrants(actor), actor.role, "view", "media")) return denied();
     const media = db.prepare("SELECT id,filename,mime,size,created_at FROM media ORDER BY created_at DESC LIMIT 200").all() as MediaRow[];
     return NextResponse.json({ media });
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   if (Number(request.headers.get("content-length")) > 6_000_000) return NextResponse.json({ error: "Fichier trop volumineux." }, { status: 413 });
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor || !can(parseUserGrants(actor), actor.role, "create", "media")) return denied();
     const body = await readLimitedBytesBody(request, 6_000_000);
     if (!body.ok) return NextResponse.json({ error: body.tooLarge ? "Fichier trop volumineux." : "Fichier invalide." }, { status: body.tooLarge ? 413 : 400 });
