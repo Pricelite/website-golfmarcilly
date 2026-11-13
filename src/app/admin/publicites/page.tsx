@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { listManagedHomeAds } from "@/lib/home-ads-store";
 import { localContentStoreEnabled } from "@/lib/supabase/content";
 import { parisDateKey } from "@/data/daily-menu";
@@ -12,7 +11,7 @@ export const metadata: Metadata = { title: "Publicités — Administration", rob
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export default async function AdminHomeAdsPage() {
-  if (!process.env.ADMIN_PASSWORD?.trim() || !await isAdminAuthenticated(await cookies())) redirect("/admin?next=/admin/publicites");
+  if (!(await canAccessAdmin("publicites"))) redirect("/admin?next=/admin/publicites");
   let ads;
   try { ads = await listManagedHomeAds(); } catch { /* Render a useful error, never an empty editable catalogue. */ }
   return <section>

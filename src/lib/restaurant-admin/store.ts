@@ -4,7 +4,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { cookies } from "next/headers";
 import { hashPassword, verifyPassword } from "@/lib/backoffice/auth";
 import { createContentAdminClient } from "@/lib/supabase/content";
-import { canManageRestaurant, RESTAURANT_ADMIN_ROLE, RESTAURANT_ID, type RestaurantActor } from "./policy";
+import { canAccessAdminSection, RESTAURANT_ID, type AdminSection, type RestaurantActor } from "./policy";
 
 export const RESTAURANT_SESSION_COOKIE = "marcilly_restaurant_session";
 const SESSION_SECONDS = 8 * 60 * 60;
@@ -19,6 +19,7 @@ type StaffRow = {
   role: string;
   restaurant_id: string;
   active: boolean;
+  sections: AdminSection[];
   created_at: string;
 };
 
@@ -34,23 +35,23 @@ export function restaurantSessionCookieOptions() {
 }
 
 export async function listRestaurantStaff() {
-  const { data, error } = await accountTable().select("id,email,username,name,role,restaurant_id,active,created_at").order("created_at");
+  const { data, error } = await accountTable().select("id,email,username,name,role,restaurant_id,active,sections,created_at").order("created_at");
   if (error) throw error;
-  return (data ?? []).map(row => ({ id: row.id, email: row.email, username: row.username, name: row.name, role: row.role, restaurantId: row.restaurant_id, active: row.active, createdAt: row.created_at }));
+  return (data ?? []).map(row => ({ id: row.id, email: row.email, username: row.username, name: row.name, role: row.role, restaurantId: row.restaurant_id, active: row.active, sections: row.sections as AdminSection[], createdAt: row.created_at }));
 }
 
-export async function createRestaurantStaff(name: string, email: string | null, username: string | null) {
+export async function createRestaurantStaff(name: string, email: string | null, username: string | null, sections: AdminSection[] = ["restaurant"]) {
   const id = randomUUID();
-  const { error } = await accountTable().insert({ id, name: name.trim(), email: email?.trim().toLowerCase() ?? null, username: username?.trim().toLowerCase() ?? null, role: RESTAURANT_ADMIN_ROLE, restaurant_id: RESTAURANT_ID, active: false });
+  const { error } = await accountTable().insert({ id, name: name.trim(), email: email?.trim().toLowerCase() ?? null, username: username?.trim().toLowerCase() ?? null, role: "staff", restaurant_id: RESTAURANT_ID, active: false, sections });
   if (error) throw error;
   try { return { id, token: await issueRestaurantInvite(id) }; }
   catch (error) { await accountTable().delete().eq("id", id); throw error; }
 }
 
 export async function issueRestaurantInvite(id: string): Promise<string> {
-  const { data: account, error: lookupError } = await accountTable().select("id,restaurant_id").eq("id", id).maybeSingle();
+  const { data: account, error: lookupError } = await accountTable().select("id").eq("id", id).maybeSingle();
   if (lookupError) throw lookupError;
-  if (!account || account.restaurant_id !== RESTAURANT_ID) throw new Error("Compte introuvable.");
+  if (!account) throw new Error("Compte introuvable.");
   const { error: revokeError } = await accountTable().update({ active: false, password_hash: null, updated_at: new Date().toISOString() }).eq("id", id);
   if (revokeError) throw revokeError;
   const { error: sessionsError } = await sessionTable().delete().eq("account_id", id);
@@ -69,6 +70,21 @@ export async function revokeRestaurantStaff(id: string): Promise<boolean> {
   return data === true;
 }
 
+export async function updateStaffSections(id: string, sections: AdminSection[]): Promise<boolean> {
+  const { data, error } = await accountTable().update({ sections, updated_at: new Date().toISOString() }).eq("id", id).select("id").maybeSingle();
+  if (error) throw error;
+  if (!data) return false;
+  const { error: sessionsError } = await sessionTable().delete().eq("account_id", id);
+  if (sessionsError) throw sessionsError;
+  return true;
+}
+
+export async function deleteStaffAccount(id: string): Promise<boolean> {
+  const { data, error } = await accountTable().delete().eq("id", id).select("id").maybeSingle();
+  if (error) throw error;
+  return Boolean(data);
+}
+
 export async function activateRestaurantStaff(token: string, password: string): Promise<boolean> {
   const passwordHash = hashPassword(password, 13);
   const { data, error } = await createContentAdminClient().rpc("activate_restaurant_staff", { p_token_hash: hashToken(token), p_password_hash: passwordHash });
@@ -79,17 +95,17 @@ export async function activateRestaurantStaff(token: string, password: string): 
 export async function authenticateRestaurantStaff(identifier: string, password: string): Promise<RestaurantActor | null> {
   const normalized = identifier.trim().toLowerCase();
   const field = normalized.includes("@") ? "email" : "username";
-  const { data, error } = await accountTable().select("id,email,username,name,password_hash,role,restaurant_id,active,created_at").eq(field, normalized).maybeSingle();
+  const { data, error } = await accountTable().select("id,email,username,name,password_hash,role,restaurant_id,active,sections,created_at").eq(field, normalized).maybeSingle();
   if (error) throw error;
   const account = data as StaffRow | null;
   const dummy = "scrypt$0000000000000000000000000000000000000000000000000000000000000000$0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
   const valid = verifyPassword(password, account?.password_hash ?? dummy);
-  const actor = account && { id: account.id, email: account.email, username: account.username, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active };
-  return valid && canManageRestaurant(actor, RESTAURANT_ID) ? actor : null;
+  const actor = account && { id: account.id, email: account.email, username: account.username, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active, sections: account.sections };
+  return valid && actor && actor.sections.some(section => canAccessAdminSection(actor, section)) ? actor : null;
 }
 
 export async function issueRestaurantSession(actor: RestaurantActor): Promise<string> {
-  if (!canManageRestaurant(actor, RESTAURANT_ID)) throw new Error("Accès refusé.");
+  if (!actor.sections.some(section => canAccessAdminSection(actor, section))) throw new Error("Accès refusé.");
   const token = newToken();
   const { error } = await sessionTable().insert({ token_hash: hashToken(token), account_id: actor.id, expires_at: futureDate(SESSION_SECONDS) });
   if (error) throw error;
@@ -101,11 +117,11 @@ export async function restaurantActorFromToken(token: string | undefined): Promi
   const { data: session, error: sessionError } = await sessionTable().select("account_id").eq("token_hash", hashToken(token)).gt("expires_at", new Date().toISOString()).maybeSingle();
   if (sessionError) throw sessionError;
   if (!session) return null;
-  const { data: account, error: accountError } = await accountTable().select("id,email,username,name,role,restaurant_id,active").eq("id", session.account_id).maybeSingle();
+  const { data: account, error: accountError } = await accountTable().select("id,email,username,name,role,restaurant_id,active,sections").eq("id", session.account_id).maybeSingle();
   if (accountError) throw accountError;
   if (!account) return null;
-  const actor = { id: account.id, email: account.email, username: account.username, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active };
-  return canManageRestaurant(actor, RESTAURANT_ID) ? actor : null;
+  const actor = { id: account.id, email: account.email, username: account.username, name: account.name, role: account.role, restaurantId: account.restaurant_id, active: account.active, sections: account.sections as AdminSection[] };
+  return actor.sections.some(section => canAccessAdminSection(actor, section)) ? actor : null;
 }
 
 export async function currentRestaurantActor(): Promise<RestaurantActor | null> {

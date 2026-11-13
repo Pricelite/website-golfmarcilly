@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { createPage, listPages, openDb } from "@/lib/backoffice/db";
 import { can, parsePageContent } from "@/lib/backoffice/model";
 import { parseUserGrants } from "@/lib/backoffice/db";
@@ -12,10 +12,12 @@ const denied = () => NextResponse.json({ error: "Accès refusé." }, { status: 4
 export async function GET() {
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) return denied();
     const grants = parseUserGrants(actor);
-    const pages = listPages(db).filter(page => can(grants, actor.role, "view", `page:${page.id}`))
+    const allPages = listPages(db);
+    if (!can(grants, actor.role, "view", "pages") && !allPages.some(page => can(grants, actor.role, "view", `page:${page.id}`))) return denied();
+    const pages = allPages.filter(page => can(grants, actor.role, "view", `page:${page.id}`))
       .map(({ id, slug, draft_revision, published_revision, review_requested, updated_at }) => ({ id, slug, draftRevision: draft_revision, publishedRevision: published_revision, reviewRequested: Boolean(review_requested), updatedAt: updated_at }));
     return NextResponse.json({ pages });
   } finally { db.close(); }
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
   if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return denied();
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor || !can(parseUserGrants(actor), actor.role, "create", "pages")) return denied();
     const body = await readJsonBody(request, 300_000);
     if (!body.ok) return NextResponse.json({ error: "Données invalides." }, { status: body.tooLarge ? 413 : 400 });

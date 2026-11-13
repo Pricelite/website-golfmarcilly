@@ -1,6 +1,6 @@
 import { readFile, unlink } from "node:fs/promises";
 import { NextResponse } from "next/server";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { audit, mediaDirectory, openDb, parseUserGrants, type MediaRow } from "@/lib/backoffice/db";
 import { can } from "@/lib/backoffice/model";
 import { resolveMediaPath } from "@/lib/backoffice/media-path";
@@ -26,7 +26,7 @@ export async function GET(_request: Request, context: Context) {
       } catch { return false; }
     });
     if (!published) {
-      const actor = await currentActor(db);
+      const actor = await currentContentActor(db);
       if (!actor || !can(parseUserGrants(actor), actor.role, "view", "media")) return denied();
     }
     try {
@@ -43,7 +43,7 @@ export async function DELETE(request: Request, context: Context) {
   if (!filePath) return new Response(null, { status: 404 });
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor || !can(parseUserGrants(actor), actor.role, "delete", "media")) return denied();
     if (!db.prepare("SELECT id FROM media WHERE id=?").get(id)) return new Response(null, { status: 404 });
     if (db.prepare("SELECT id FROM pages WHERE draft_json LIKE ? OR published_json LIKE ? LIMIT 1").get(`%${id}%`, `%${id}%`)) return NextResponse.json({ error: "Cette image est utilisée par une page." }, { status: 409 });

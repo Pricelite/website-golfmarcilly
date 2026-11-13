@@ -1,7 +1,8 @@
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { currentActor, revokeUserSessions, tokenHash } from "@/lib/backoffice/auth";
+import { revokeUserSessions, tokenHash } from "@/lib/backoffice/auth";
 import { audit, getUser, openDb } from "@/lib/backoffice/db";
 import { parseGrants, type Role } from "@/lib/backoffice/model";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
@@ -15,10 +16,10 @@ export async function PATCH(request: Request, context: Context) {
   const { id } = await context.params;
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (actor?.role !== "admin") return denied();
     const target = getUser(db, id);
-    if (!target) return NextResponse.json({ error: "Compte introuvable." }, { status: 404 });
+    if (!target || target.email.endsWith("@internal.invalid")) return NextResponse.json({ error: "Compte introuvable." }, { status: 404 });
     const body = await readJsonBody(request, 16_384);
     if (!body.ok) return NextResponse.json({ error: "Données invalides." }, { status: body.tooLarge ? 413 : 400 });
     const value = body.data as Record<string, unknown>;

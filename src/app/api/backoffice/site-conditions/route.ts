@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { openDb } from "@/lib/backoffice/db";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 import { parseConditionInput, parseConditionItem, parseConditionState } from "@/lib/site-conditions";
@@ -12,7 +12,7 @@ const response = (value: unknown, status = 200) => NextResponse.json(value, { st
 
 async function authorized() {
   const db = openDb();
-  try { return (await currentActor(db))?.role === "admin"; }
+  try { return (await currentContentActor(db))?.role === "admin"; }
   finally { db.close(); }
 }
 

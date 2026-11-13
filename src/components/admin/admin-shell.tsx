@@ -49,7 +49,6 @@ export function AdminShell({ children, groups, golfSession, contentSession, rest
     {children}
   </div>;
   const active = groups.flatMap(group => group.items).filter(item => pathname === item.href || (item.href === "/admin/contenu" && pathname.startsWith("/admin/contenu/pages/")) || (item.href !== "/admin" && item.href !== "/admin/contenu" && pathname.startsWith(item.href + "/"))).at(-1);
-  const contentArea = pathname.startsWith("/admin/contenu");
   return <div className="min-h-dvh bg-[#f5f5ef] lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]" onKeyDown={event => {
     if (event.key === "Escape" && open) { setOpenPath(null); trigger.current?.focus(); }
   }}>
@@ -70,7 +69,7 @@ export function AdminShell({ children, groups, golfSession, contentSession, rest
       <header className="flex min-h-20 flex-wrap items-center justify-between gap-3 border-b border-emerald-950/10 bg-white px-4 py-4 sm:px-7">
         <div><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-emerald-700">Administration</p><p className="mt-1 text-sm font-semibold">{active?.label ?? "Gestion du contenu"}</p></div>
         <div className="flex items-center gap-4"><Link href="/" target="_blank" rel="noreferrer" className="text-sm underline underline-offset-4 lg:hidden">Voir le site ↗</Link>
-          {contentArea && contentSession ? <LogoutButton /> : golfSession ? <form action="/admin/logout" method="post" onSubmit={resetAnalytics}><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : restaurantSession ? <form action="/api/restaurant-admin/logout" method="post" onSubmit={resetAnalytics}><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : <LogoutButton />}
+          {golfSession ? <form action="/admin/logout" method="post" onSubmit={resetAnalytics}><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : restaurantSession ? <form action="/api/restaurant-admin/logout" method="post" onSubmit={resetAnalytics}><button type="submit" className="min-h-11 rounded-full border border-emerald-950/20 px-4 text-sm">Déconnexion</button></form> : <LogoutButton />}
         </div>
       </header>
       <div className="px-4 py-7 sm:px-7 sm:py-9 2xl:px-10">{children}</div>

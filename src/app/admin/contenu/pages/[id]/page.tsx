@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { PageEditor } from "@/components/backoffice/page-editor";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { getPage, openDb, parseUserGrants } from "@/lib/backoffice/db";
 import { can, parsePageContent } from "@/lib/backoffice/model";
 
@@ -14,7 +14,7 @@ export default async function EditPage({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) redirect("/admin/contenu/connexion");
     const grants = parseUserGrants(actor);
     if (!can(grants, actor.role, "view", `page:${id}`)) notFound();

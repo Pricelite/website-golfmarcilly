@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { ARCHIVE_PAGE_SIZE, listArchivedReservations } from "@/lib/initiation/archive";
 
 export const metadata: Metadata = { title: "Archives des initiations", robots: { index: false, follow: false } };
@@ -24,7 +23,7 @@ function formatDate(value: string): string {
 }
 
 export default async function AdminArchivesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  if (!process.env.ADMIN_PASSWORD?.trim() || !(await isAdminAuthenticated(await cookies()))) redirect("/admin?next=/admin/archives");
+  if (!(await canAccessAdmin("archives"))) redirect("/admin?next=/admin/archives");
 
   const rawPage = (await searchParams).page;
   const parsedPage = Number(rawPage);
