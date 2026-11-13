@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { needsNewVisit, publicPath, validUuid } from "@/lib/analytics/core";
-import { ANALYTICS_CONSENT_KEY, readAnalyticsConsent, type AnalyticsConsent } from "@/lib/analytics/consent";
+import { ANALYTICS_CONSENT_KEY, readAnalyticsConsent, saveAnalyticsConsent, type AnalyticsConsent } from "@/lib/analytics/consent";
 
 const CONSENT_KEY = ANALYTICS_CONSENT_KEY;
 const VISITOR_KEY = "marcilly_analytics_visitor";
@@ -72,7 +72,7 @@ export function AnalyticsTracker() {
 
   function choose(value: "yes" | "no") {
     try {
-      localStorage.setItem(CONSENT_KEY, value);
+      saveAnalyticsConsent(localStorage, value);
       if (value === "no") {
         lastTracked = "";
         localStorage.removeItem(VISITOR_KEY);
@@ -85,9 +85,9 @@ export function AnalyticsTracker() {
   }
 
   if (!publicPath(pathname) || (!open && consent !== null)) return null;
-  return <aside aria-label="Choix de mesure d’audience" data-preferences-open={open || undefined} className="analytics-consent-banner fixed inset-x-4 bottom-24 z-[90] mx-auto max-w-xl rounded-2xl border border-emerald-950/20 bg-white p-5 text-emerald-950 shadow-2xl lg:bottom-5">
-    <h2 className="font-serif text-xl">Mesure d’audience</h2>
-    <p className="mt-2 text-sm leading-6">Avec votre accord, nous comptons les visites et certaines actions sur le site pour l’améliorer. Un identifiant aléatoire est conservé dans ce navigateur. Nous utilisons également PostHog, qui reçoit des informations techniques liées à votre connexion. Vous pouvez changer ce choix dans le pied de page. <a href="/politique-de-confidentialite" className="underline underline-offset-4">En savoir plus</a>.</p>
-    <div className="mt-4 flex flex-wrap gap-3"><button type="button" onClick={() => choose("no")} className="rounded-full border border-emerald-950/25 px-4 py-2 text-sm font-semibold">Refuser</button><button type="button" onClick={() => choose("yes")} className="rounded-full bg-emerald-950 px-4 py-2 text-sm font-semibold text-white">Accepter</button></div>
+  return <aside aria-label="Choix des cookies" data-preferences-open={open || undefined} className="analytics-consent-banner fixed inset-x-4 bottom-24 z-[90] mx-auto max-w-xl rounded-2xl border border-emerald-950/20 bg-white p-5 text-emerald-950 shadow-2xl lg:bottom-5">
+    <h2 className="font-serif text-xl">Vos choix de cookies</h2>
+    <p className="mt-2 text-sm leading-6">Les cookies nécessaires au fonctionnement du site restent actifs. Avec votre accord, nous mesurons les visites et certaines actions avec un identifiant conservé dans ce navigateur et avec PostHog. Vous pouvez refuser sans perdre l’accès au site et changer d’avis à tout moment dans le pied de page. <a href="/politique-de-confidentialite" className="underline underline-offset-4">En savoir plus</a>.</p>
+    <div className="mt-4 grid grid-cols-2 gap-3"><button type="button" onClick={() => choose("no")} className="rounded-full border border-emerald-950 bg-emerald-950 px-4 py-2 text-sm font-semibold text-white focus-visible:ring-2 focus-visible:ring-emerald-950">Tout refuser</button><button type="button" onClick={() => choose("yes")} className="rounded-full border border-emerald-950 bg-emerald-950 px-4 py-2 text-sm font-semibold text-white focus-visible:ring-2 focus-visible:ring-emerald-950">Tout accepter</button></div>
   </aside>;
 }

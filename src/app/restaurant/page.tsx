@@ -1,11 +1,10 @@
 import { publicPageSeo } from "@/data/seo";
 import Image from "next/image";
-import Script from "next/script";
 
 import { ContactForm } from "@/components/forms/contact-form";
 import { RestaurantDishesCarousel } from "@/components/restaurant-dishes-carousel";
 import { RestaurantLiveClock } from "@/components/restaurant-live-clock";
-import { ZenchefReservationLink, ZENCHEF_RESTAURANT_ID } from "@/components/zenchef-reservation-link";
+import { ZenchefReservationLink } from "@/components/zenchef-reservation-link";
 import { DailyMenuSection } from "@/components/sections/daily-menu";
 import { RestaurantMenus } from "@/components/sections/restaurant-menus";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -35,8 +34,6 @@ export default function RestaurantPage() {
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }, { name: "Restaurant", path: "/restaurant" }])} />
       <JsonLd data={buildRestaurantSchema()} />
-      <div className="zc-widget-config" data-restaurant={ZENCHEF_RESTAURANT_ID} data-hide-default-button="true" />
-      <Script id="zenchef-sdk" src="https://sdk.zenchef.com/v1/sdk.min.js" strategy="afterInteractive" />
 
       <section className="relative isolate overflow-hidden bg-emerald-950 text-stone-50">
         <Image src="/restaurant/hero.jpg" alt="" fill priority sizes="100vw" className="-z-20 object-cover object-center" />
