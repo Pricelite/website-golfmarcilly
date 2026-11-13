@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { isSuperAdmin } from "@/lib/admin-access";
+import { contentBackofficeAvailable, isSuperAdmin } from "@/lib/admin-access";
 import { deleteStaffAccount, issueRestaurantInvite, revokeRestaurantStaff, updateStaffSections } from "@/lib/restaurant-admin/store";
 import { parseAdminSections } from "@/lib/restaurant-admin/policy";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
@@ -28,6 +28,7 @@ export async function PATCH(request: Request, context: Context) {
     if (body.data.action === "sections") {
       const sections = parseAdminSections(body.data.sections);
       if (!sections) return reply({ error: "Droits invalides." }, 400);
+      if (!contentBackofficeAvailable() && sections.some(section => section === "pages" || section === "media")) return reply({ error: "Les pages et médias nécessitent un stockage persistant sur cet hébergement." }, 409);
       return await updateStaffSections(id, sections) ? reply({ ok: true }) : reply({ error: "Compte introuvable." }, 404);
     }
     return reply({ error: "Action inconnue." }, 400);

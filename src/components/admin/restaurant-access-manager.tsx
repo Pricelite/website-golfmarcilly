@@ -6,7 +6,7 @@ import { adminSections, sectionLabels, RESTAURANT_ID, type AdminSection } from "
 type Staff = { id: string; email: string | null; username: string | null; name: string; role: string; restaurantId: string; active: boolean; sections: AdminSection[]; createdAt: string };
 const input = "mt-1 w-full rounded-lg border border-emerald-950/20 bg-white px-3 py-2 text-sm";
 
-export function RestaurantAccessManager({ initialUsers }: { initialUsers: Staff[] }) {
+export function RestaurantAccessManager({ initialUsers, contentAvailable }: { initialUsers: Staff[]; contentAvailable: boolean }) {
   const [users, setUsers] = useState(initialUsers);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
@@ -69,7 +69,10 @@ export function RestaurantAccessManager({ initialUsers }: { initialUsers: Staff[
   }
 
   function sectionChoices(value: AdminSection[], onChange: (value: AdminSection[]) => void) {
-    return <fieldset className="mt-4"><legend className="text-sm font-semibold">Rubriques autorisées</legend><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{adminSections.map(section => <label key={section} className="flex items-center gap-2 rounded-lg border border-emerald-950/10 p-3 text-sm"><input type="checkbox" checked={value.includes(section)} onChange={event => onChange(toggle(value, section, event.target.checked))} />{sectionLabels[section]}</label>)}</div></fieldset>;
+    return <fieldset className="mt-4"><legend className="text-sm font-semibold">Rubriques autorisées</legend><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{adminSections.map(section => {
+      const unavailable = !contentAvailable && (section === "pages" || section === "media");
+      return <label key={section} className="flex items-center gap-2 rounded-lg border border-emerald-950/10 p-3 text-sm"><input type="checkbox" disabled={unavailable} checked={value.includes(section)} onChange={event => onChange(toggle(value, section, event.target.checked))} />{sectionLabels[section]}{unavailable ? " (indisponible)" : ""}</label>;
+    })}</div>{!contentAvailable ? <p className="mt-2 text-xs text-amber-900">Les pages et médias seront attribuables lorsque le stockage persistant du back-office sera configuré sur cet hébergement.</p> : null}</fieldset>;
   }
 
   async function change(id: string, action: "revoke" | "invite") {
