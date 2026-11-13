@@ -24,6 +24,7 @@ const pageLinks = [
   { href: "#carte-du-jour", label: "Carte du jour" },
   { href: "#horaires-restaurant", label: "Horaires" },
   { href: "#menus", label: "Menus de groupes" },
+  { href: "#cocktails", label: "Cocktails et boissons" },
   { href: "#menu-seminaire", label: "Séminaires" },
   { href: "#devis-restaurant", label: "Demander un devis" },
 ] as const;
