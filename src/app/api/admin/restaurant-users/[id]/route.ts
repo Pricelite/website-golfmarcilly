@@ -1,8 +1,8 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
-import { issueRestaurantInvite, revokeRestaurantStaff } from "@/lib/restaurant-admin/store";
+import { isSuperAdmin } from "@/lib/admin-access";
+import { deleteStaffAccount, issueRestaurantInvite, revokeRestaurantStaff, updateStaffSections } from "@/lib/restaurant-admin/store";
+import { parseAdminSections } from "@/lib/restaurant-admin/policy";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 
 export const runtime = "nodejs";
@@ -10,7 +10,7 @@ type Context = { params: Promise<{ id: string }> };
 const reply = (data: unknown, status = 200) => NextResponse.json(data, { status, headers: { "Cache-Control": "no-store" } });
 
 export async function PATCH(request: Request, context: Context) {
-  if (!process.env.ADMIN_PASSWORD?.trim() || !(await isAdminAuthenticated(await cookies()))) return reply({ error: "Accès refusé." }, 403);
+  if (!(await isSuperAdmin())) return reply({ error: "Accès refusé." }, 403);
   if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return reply({ error: "Origine non autorisée." }, 403);
   const { id } = await context.params;
   if (!/^[a-f0-9-]{36}$/i.test(id)) return reply({ error: "Compte invalide." }, 400);
@@ -25,6 +25,20 @@ export async function PATCH(request: Request, context: Context) {
       const token = await issueRestaurantInvite(id);
       return reply({ activationPath: `/admin/restaurant/activer?token=${token}` });
     }
+    if (body.data.action === "sections") {
+      const sections = parseAdminSections(body.data.sections);
+      if (!sections) return reply({ error: "Droits invalides." }, 400);
+      return await updateStaffSections(id, sections) ? reply({ ok: true }) : reply({ error: "Compte introuvable." }, 404);
+    }
     return reply({ error: "Action inconnue." }, 400);
   } catch { return reply({ error: "Modification du compte impossible." }, 503); }
+}
+
+export async function DELETE(request: Request, context: Context) {
+  if (!(await isSuperAdmin())) return reply({ error: "Accès refusé." }, 403);
+  if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return reply({ error: "Origine non autorisée." }, 403);
+  const { id } = await context.params;
+  if (!/^[a-f0-9-]{36}$/i.test(id)) return reply({ error: "Compte invalide." }, 400);
+  try { return await deleteStaffAccount(id) ? reply({ ok: true }) : reply({ error: "Compte introuvable." }, 404); }
+  catch { return reply({ error: "Suppression du compte impossible." }, 503); }
 }

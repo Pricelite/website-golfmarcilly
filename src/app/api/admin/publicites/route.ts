@@ -1,7 +1,6 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders } from "@/lib/security/request-guards";
 import { readLimitedBytesBody } from "@/lib/api/request-body";
 import { homeAdsCacheTag, listManagedHomeAds, saveManagedHomeAd } from "@/lib/home-ads-store";
@@ -10,7 +9,7 @@ import { prepareHomeAdImage } from "@/lib/home-ad-image";
 
 export const runtime = "nodejs";
 const response = (data: unknown, status = 200) => NextResponse.json(data, { status, headers: { "Cache-Control": "no-store" } });
-async function authorized() { return Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies()); }
+async function authorized() { return canAccessAdmin("publicites"); }
 
 export async function GET() {
   if (!await authorized()) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401);

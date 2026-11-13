@@ -1,8 +1,7 @@
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 import { parseConditionInput } from "@/lib/site-conditions";
 import { listSiteConditions, saveSiteCondition } from "@/lib/site-conditions-store";
@@ -11,7 +10,7 @@ export const runtime = "nodejs";
 
 export async function PUT(request: Request) {
   const response = (data: unknown, status = 200) => NextResponse.json(data, { status, headers: { "Cache-Control": "no-store" } });
-  if (!process.env.ADMIN_PASSWORD?.trim() || !(await isAdminAuthenticated(await cookies()))) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401);
+  if (!(await canAccessAdmin("site_conditions"))) return response({ error: "Accès refusé." }, 403);
   if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return response({ error: "Origine non autorisée. Rechargez la page." }, 403);
   if (!request.headers.get("content-type")?.includes("application/json")) return response({ error: "Format de demande invalide." }, 415);
   const body = await readJsonBody(request);

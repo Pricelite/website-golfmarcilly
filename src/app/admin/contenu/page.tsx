@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { NewPageForm } from "@/components/backoffice/new-page-form";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { listPages, openDb, parseUserGrants } from "@/lib/backoffice/db";
 import { can } from "@/lib/backoffice/model";
 
@@ -13,10 +13,12 @@ export const runtime = "nodejs";
 export default async function BackOfficePage() {
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) redirect("/admin/contenu/connexion");
     const grants = parseUserGrants(actor);
-    const pages = listPages(db).filter(page => can(grants, actor.role, "view", `page:${page.id}`));
+    const allPages = listPages(db);
+    if (!can(grants, actor.role, "view", "pages") && !allPages.some(page => can(grants, actor.role, "view", `page:${page.id}`))) notFound();
+    const pages = allPages.filter(page => can(grants, actor.role, "view", `page:${page.id}`));
     return <section className="w-full">
       <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-emerald-700">Back-office · {actor.role}</p><h1 className="mt-2 font-serif text-4xl text-emerald-950">Gestion du contenu</h1><p className="mt-2 text-sm text-emerald-900/70">Connecté en tant que {actor.name}</p></div></div>
       <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950">Les pages, comptes et images de cette administration sont enregistrés sur le disque de cette installation. Ils ne sont pas synchronisés avec le site public depuis localhost. La publication en production nécessite un stockage persistant configuré sur l’hébergement.</p>

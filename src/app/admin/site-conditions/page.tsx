@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SiteConditionsManager } from "@/components/admin/site-conditions-manager";
 import { emptyConditions } from "@/data/site-conditions";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { listSiteConditions } from "@/lib/site-conditions-store";
 import { localContentStoreEnabled, sharedContentSyncEnabled } from "@/lib/supabase/content";
 
@@ -12,7 +11,7 @@ export const metadata: Metadata = { title: "État du golf — Administration", r
 export const dynamic = "force-dynamic";
 
 export default async function AdminSiteConditionsPage() {
-  if (!process.env.ADMIN_PASSWORD?.trim() || !(await isAdminAuthenticated(await cookies()))) redirect("/admin?next=/admin/site-conditions");
+  if (!(await canAccessAdmin("site_conditions"))) redirect("/admin?next=/admin/site-conditions");
   let conditions = emptyConditions();
   let unavailable = false;
   try { conditions = await listSiteConditions(); }
