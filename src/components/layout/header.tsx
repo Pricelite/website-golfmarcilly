@@ -73,7 +73,7 @@ export function Header() {
             <HeaderMarcillyClock />
           </div>
           <CTAButton href={siteConfig.bookingEngineUrl} className="whitespace-nowrap px-4">Réserver un départ</CTAButton>
-          <CTAButton href={siteConfig.teeItUpBookingUrl} variant="secondary" className="whitespace-nowrap px-4">Réserver via TeeItUp</CTAButton>
+          <CTAButton href={siteConfig.teeItUpBookingUrl} variant="secondary" className="whitespace-nowrap px-4">Réserver sans être membre</CTAButton>
         </div>
 
         <div className="ml-auto flex items-center gap-2 min-[1440px]:hidden">
@@ -127,7 +127,7 @@ export function Header() {
                 Réserver un départ
               </CTAButton>
             </li>
-            <li><CTAButton className="w-full" href={siteConfig.teeItUpBookingUrl} variant="secondary">Réserver via TeeItUp</CTAButton></li>
+            <li><CTAButton className="w-full" href={siteConfig.teeItUpBookingUrl} variant="secondary">Réserver sans être membre</CTAButton></li>
           </ul>
         </nav>
       </div>
