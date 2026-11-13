@@ -9,11 +9,12 @@ const contentSecurityPolicy = [
   "form-action 'self'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "style-src 'self' 'unsafe-inline' https://sdk.zenchef.com",
-  `script-src 'self' 'unsafe-inline' https://sdk.zenchef.com https://*.posthog.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
-  "connect-src 'self' https://api.open-meteo.com https://api.brevo.com https://*.zenchef.com https://*.posthog.com",
+  "style-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' https://*.posthog.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  "connect-src 'self' https://api.open-meteo.com https://api.brevo.com https://*.posthog.com",
   "worker-src 'self' blob:",
-  "frame-src 'self' https://calendar.google.com https://www.flyovergreen.com https://*.zenchef.com",
+  "frame-src 'self' https://calendar.google.com https://www.flyovergreen.com",
+  ...(!isDevelopment ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
 const nextConfig: NextConfig = {
@@ -33,6 +34,8 @@ const nextConfig: NextConfig = {
         headers: [
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-DNS-Prefetch-Control", value: "off" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
           { key: "Content-Security-Policy", value: contentSecurityPolicy },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
