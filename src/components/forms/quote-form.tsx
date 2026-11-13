@@ -3,6 +3,7 @@
 import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
 
 import { useRef, useState, type FormEvent } from "react";
+import { capturePostHog } from "@/lib/analytics/posthog-client";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { parisDateKey } from "@/lib/site-conditions";
 import { FORM_NETWORK_ERROR } from "@/lib/api/form-feedback";
@@ -46,6 +47,7 @@ export function QuoteForm() {
       }
 
       const result = await response.json().catch(() => null);
+      capturePostHog("quote_requested");
       if (typeof result?.message === "string") setConfirmationMessage(result.message);
       form.reset();
       setState("success");

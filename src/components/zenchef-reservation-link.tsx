@@ -1,6 +1,7 @@
 "use client";
 
 import type { MouseEvent } from "react";
+import { capturePostHog } from "@/lib/analytics/posthog-client";
 
 export const ZENCHEF_RESTAURANT_ID = "389706";
 
@@ -13,6 +14,7 @@ export function ZenchefReservationLink({ className, children = "Réserver une ta
   children?: string;
 }) {
   function openReservation(event: MouseEvent<HTMLAnchorElement>) {
+    capturePostHog("restaurant_booking_opened");
     const widget = (window as ZenchefWindow).ZenchefWidget;
     if (!widget) return;
     event.preventDefault();
