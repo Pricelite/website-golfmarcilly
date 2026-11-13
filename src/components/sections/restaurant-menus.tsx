@@ -1,4 +1,5 @@
 import { CTAButton } from "@/components/ui/cta-button";
+import { DrinkPackages } from "@/components/sections/drink-packages";
 import { SectionTitle } from "@/components/ui/section-title";
 import { restaurantData } from "@/lib/restaurant-data";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
@@ -7,16 +8,17 @@ export function RestaurantMenus() {
   const seminar = restaurantData.seminarMenu;
   return (
       <section id="menus" className="scroll-mt-28 overflow-hidden rounded-[28px] border border-emerald-950/15 bg-white p-5 shadow-sm sm:p-8">
-        <SectionTitle eyebrow="À partager à La Bergerie" title="Nos menus de groupes" description="Retrouvez les entrées, plats et desserts de chaque formule, puis contactez-nous pour préparer votre repas, sur devis uniquement." />
+        <SectionTitle eyebrow="À partager à La Bergerie" title="Nos menus de groupes" description="À partir de 11 personnes. Choisissez votre formule et communiquez vos choix à l’avance pour préparer votre repas." />
         <div className="mt-8 grid items-start gap-6 lg:grid-cols-3">
           {restaurantData.groupMenus.items.map((menu) => (
             <article key={menu.name} className="flex flex-col overflow-hidden rounded-2xl border border-emerald-950/20 bg-[#e8f4ed] text-center shadow-sm shadow-emerald-950/10">
               <div className="border-b border-emerald-950/15 bg-emerald-950 px-6 py-6 text-stone-50">
                 <h3 className="font-serif text-2xl">{menu.name}</h3>
                 <p className="mt-3"><span className="font-serif text-4xl">{nonbreakingEuro(menu.price)}</span><span className="ml-2 text-sm text-stone-100/85">/ personne</span></p>
+                {menu.description ? <p className="mt-3 text-sm text-stone-100/85">{menu.description}</p> : null}
               </div>
-              <details className="flex-1 px-6 text-left">
-                <summary className="cursor-pointer py-4 text-sm font-semibold text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2">Voir les entrées, plats et desserts</summary>
+              {menu.sections.length ? <details className="flex-1 px-6 text-left">
+                <summary className="cursor-pointer py-4 text-sm font-semibold text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2">Voir le détail du menu</summary>
                 <div className="divide-y divide-emerald-950/10">
                 {menu.sections.map((section) => (
                   <div key={section.title} className="py-5">
@@ -32,10 +34,12 @@ export function RestaurantMenus() {
                   </div>
                 ))}
                 </div>
-              </details>
+              </details> : null}
+              {menu.note ? <p className="px-6 pb-5 text-left text-sm text-emerald-950/75">{menu.note}</p> : null}
             </article>
           ))}
         </div>
+      <DrinkPackages />
       <section id="menu-seminaire" className="mt-8 scroll-mt-28 overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#e8f4ed]">
         <div className="flex flex-wrap items-center justify-between gap-5 border-b border-emerald-950/15 bg-emerald-950 px-6 py-7 text-stone-50 sm:px-8">
           <div>

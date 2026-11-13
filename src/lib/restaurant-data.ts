@@ -28,6 +28,8 @@ export type GroupMenuSection = {
 export type GroupMenu = {
   name: string;
   price: string;
+  description?: string;
+  note?: string;
   sections: GroupMenuSection[];
 };
 
@@ -159,14 +161,20 @@ export const restaurantData: RestaurantData = {
     ctaLabel: "Je demande un devis",
     items: [
       {
+        name: "Menu La Bergerie",
+        price: "24,90 €",
+        description: "Entrée et plat ou plat et dessert.",
+        sections: [],
+      },
+      {
         name: "Menu Tentation",
-        price: "25 €",
+        price: "29,90 €",
         sections: [
           {
             title: "Entrées",
             type: "choice",
             items: [
-              "Saucisson brioché, servi avec une sauce marchand de vin",
+              "Saucisson brioché, sauce marchand de vin",
               "Feuilleté de fruits de mer, émulsion safranée",
             ],
           },
@@ -174,45 +182,45 @@ export const restaurantData: RestaurantData = {
             title: "Plats",
             type: "choice",
             items: [
-              "Suprême de volaille, sauce suprême, accompagné d’un gratin dauphinois",
-              "Dos de lieu noir, sauce beurre blanc, accompagné de riz blanc et de légumes du moment",
+              "Suprême de volaille, gratin dauphinois",
+              "Dos de lieu noir, beurre blanc, riz et légumes",
             ],
           },
           {
             title: "Desserts",
             type: "choice",
             items: [
-              "Tarte fine aux pommes, glace vanille",
-              "Île flottante, sauce caramel",
+              "Tarte fine aux pommes",
+              "Île flottante",
             ],
           },
         ],
       },
       {
         name: "Menu Gourmand",
-        price: "30 €",
+        price: "32,90 €",
         sections: [
           {
             title: "Entrées",
             type: "choice",
             items: [
               "Tartare de deux saumons aux agrumes",
-              "Salade du Périgord (magret fumé, gésiers confits, pommes de terre, salade verte)",
+              "Salade du Périgord",
             ],
           },
           {
             title: "Plats",
             type: "choice",
             items: [
-              "Dos de cabillaud, sauce satay (Purée de pommes de terre & légumes du moment)",
-              "Médaillon de filet mignon, sauce marsala (Pommes de terre au four & flan de carottes)",
+              "Dos de cabillaud, sauce satay",
+              "Médaillon de filet mignon, sauce marsala",
             ],
           },
           {
             title: "Desserts",
             type: "choice",
             items: [
-              "Maxi profiterole au chocolat & amandes grillées",
+              "Maxi profiterole au chocolat",
               "Carpaccio d’ananas flambé, sorbet coco",
             ],
           },
@@ -220,32 +228,43 @@ export const restaurantData: RestaurantData = {
       },
       {
         name: "Menu Élégance",
-        price: "35 €",
+        price: "44,90 €",
+        note: "Café compris.",
         sections: [
           {
             title: "Entrées",
             type: "choice",
             items: [
-              "Terrine de foie gras de canard, confiture d’oignons et brioche parisienne",
-              "Carpaccio de Saint-Jacques, lait de coco & agrumes",
+              "Terrine de foie gras de canard",
+              "Saumon gravlax",
             ],
           },
           {
             title: "Plats",
             type: "choice",
             items: [
-              "Pavé de filet de bœuf, sauce aux morilles (pommes paillasson & poêlée de champignons)",
-              "Risotto de Saint-Jacques au chorizo (pointes d’asperges vertes)",
+              "Pavé de filet de bœuf, sauce aux morilles",
+              "Risotto de Saint-Jacques au chorizo et asperges",
             ],
           },
           {
             title: "Desserts",
             type: "choice",
             items: [
-              "Tarte citron / citron vert revisitée, meringue croustillante",
-              "Royal chocolat et croquant feuilleté",
+              "Tarte citron et citron vert revisitée",
+              "Royal chocolat",
             ],
           },
+        ],
+      },
+      {
+        name: "Menu Brasero",
+        price: "32,90 €",
+        note: "Café compris. Côte de bœuf et magret de canard sur devis.",
+        sections: [
+          { title: "Grillades", type: "list", items: ["Chipolatas", "Merguez", "Travers de porc marinés", "Hampe de bœuf"] },
+          { title: "Accompagnements", type: "list", items: ["Pommes de terre grenailles", "Piémontaise", "Salade de riz niçoise", "Salade de pâtes au pesto"] },
+          { title: "Desserts (buffet)", type: "list", items: ["Tarte aux pommes", "Riz au lait", "Panna cotta", "Brownie"] },
         ],
       },
     ],
