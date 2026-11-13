@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const jar = await cookies();
   const golfSession = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(jar);
   const groups: AdminNavigationGroup[] = [];
-  let analyticsIdentity: { id: string; email: string; name: string; role: string } | undefined;
+  let analyticsIdentity: { id: string; role: string } | undefined;
   if (golfSession) groups.push({ label: "Gestion du golf", items: [
     { href: "/admin", label: "Tableau de bord", detail: "Les accès essentiels" },
     { href: "/admin/competitions", label: "Calendrier", detail: "Compétitions et animations" },
@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     try {
       const actor = await currentRestaurantActor();
       restaurantSession = Boolean(actor);
-      if (actor) analyticsIdentity = { id: actor.id, email: actor.email, name: actor.name, role: actor.role };
+      if (actor) analyticsIdentity = { id: actor.id, role: actor.role };
     } catch { /* La page restaurant signale l'indisponibilité du stockage. */ }
     if (restaurantSession) groups.push({ label: "Restaurant", items: [{ href: "/admin/restaurant", label: "Carte du jour", detail: "Gérer La Bergerie" }] });
   }
@@ -43,7 +43,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         const actor = actorFromToken(db, token);
         if (actor) {
           contentSession = true;
-          analyticsIdentity = { id: actor.id, email: actor.email, name: actor.name, role: actor.role };
+          analyticsIdentity = { id: actor.id, role: actor.role };
           const items = [{ href: "/admin/contenu", label: "Pages du site", detail: "Rédiger et publier" }];
           if (can(parseUserGrants(actor), actor.role, "view", "media")) items.push({ href: "/admin/contenu/medias", label: "Médiathèque", detail: "Images et fichiers" });
           if (actor.role === "admin") {

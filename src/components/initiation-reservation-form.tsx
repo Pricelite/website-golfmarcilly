@@ -3,7 +3,7 @@
 import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass } from "@/components/forms/form-styles";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import posthog from "posthog-js";
+import { capturePostHog } from "@/lib/analytics/posthog-client";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { INITIATION_PRICE_PER_PERSON_CENTS, type InitiationMealOption } from "@/lib/initiation/constants";
 import type { InitiationOption } from "@/lib/initiation/calendar-options";
@@ -91,7 +91,7 @@ export default function InitiationReservationForm({ initialMeal = "WITHOUT_MEAL"
         }
         throw new Error(result.error || "L’envoi a échoué. Merci de réessayer.");
       }
-      posthog.capture("initiation_reservation_requested", {
+      capturePostHog("initiation_reservation_requested", {
         participants_count: participants,
         meal_option: meal,
       });

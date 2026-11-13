@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import posthog from "posthog-js";
+import { capturePostHog } from "@/lib/analytics/posthog-client";
 import { useEffect } from "react";
 
 export default function Error({
@@ -12,7 +12,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    posthog.captureException(error);
+    capturePostHog("client_error");
     console.error(error);
   }, [error]);
 

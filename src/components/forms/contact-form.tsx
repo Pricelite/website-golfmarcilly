@@ -3,7 +3,7 @@
 import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
 
 import { useRef, useState } from "react";
-import posthog from "posthog-js";
+import { capturePostHog } from "@/lib/analytics/posthog-client";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
 
@@ -53,7 +53,7 @@ export function ContactForm({
         return;
       }
 
-      posthog.capture("contact_request_submitted", { contact_context: context });
+      capturePostHog("contact_request_submitted", { contact_context: context });
       form.reset();
       setConfirmationMessage(payload?.queued === true ? payload.message : successMessage);
       setState("success");

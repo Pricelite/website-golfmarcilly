@@ -3,7 +3,7 @@
 import { formPanelClass, formFieldClass, formLabelClass, formSubmitClass, formErrorClass, formSuccessClass } from "@/components/forms/form-styles";
 
 import { useRef, useState } from "react";
-import posthog from "posthog-js";
+import { capturePostHog } from "@/lib/analytics/posthog-client";
 import { FORM_NETWORK_ERROR } from "@/lib/api/form-feedback";
 
 export function NewsletterForm() {
@@ -27,7 +27,7 @@ export function NewsletterForm() {
 
       if (response.ok) {
         const result = await response.json().catch(() => null);
-        posthog.capture("newsletter_subscribed");
+        capturePostHog("newsletter_subscribed");
         setConfirmationMessage(typeof result?.message === "string" ? result.message : "Votre demande d’inscription a été transmise au golf.");
         setStatus("success");
         return;

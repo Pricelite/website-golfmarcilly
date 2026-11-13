@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import posthog from "posthog-js";
+import { resetPostHogIdentity } from "@/lib/analytics/posthog-client";
 
 export function LogoutButton() {
   const router = useRouter();
   return <button type="button" onClick={async () => {
-    if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) posthog.reset();
+    resetPostHogIdentity();
     await fetch("/api/backoffice/session", { method: "DELETE" });
     router.push("/admin/contenu/connexion");
     router.refresh();

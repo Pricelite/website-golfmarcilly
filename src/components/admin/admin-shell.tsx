@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import posthog from "posthog-js";
+import { ANALYTICS_CONSENT_KEY } from "@/lib/analytics/consent";
+import { identifyPostHog, postHogConsentGranted, resetPostHogIdentity } from "@/lib/analytics/posthog-client";
 import { LogoutButton } from "@/components/backoffice/logout-button";
 
 export type AdminNavigationGroup = { label: string; items: { href: string; label: string; detail: string }[] };
-type AnalyticsIdentity = { id: string; email: string; name: string; role: string };
+type AnalyticsIdentity = { id: string; role: string };
 
 export function AdminShell({ children, groups, golfSession, contentSession, restaurantSession, analyticsIdentity }: {
   children: ReactNode; groups: AdminNavigationGroup[]; golfSession: boolean; contentSession: boolean; restaurantSession: boolean; analyticsIdentity?: AnalyticsIdentity;
@@ -16,30 +17,30 @@ export function AdminShell({ children, groups, golfSession, contentSession, rest
   const [openPath, setOpenPath] = useState<string | null>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const identifiedId = useRef<string | null>(null);
-  const posthogEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST);
-
+  const analyticsId = analyticsIdentity?.id;
+  const analyticsRole = analyticsIdentity?.role;
   useEffect(() => {
-    if (!posthogEnabled) return;
-    if (!analyticsIdentity) {
-      if (identifiedId.current) {
-        posthog.reset();
-        identifiedId.current = null;
-      }
-      return;
-    }
-    if (identifiedId.current && identifiedId.current !== analyticsIdentity.id) posthog.reset();
-    if (identifiedId.current !== analyticsIdentity.id) {
-      posthog.identify(analyticsIdentity.id, {
-        email: analyticsIdentity.email,
-        name: analyticsIdentity.name,
-        role: analyticsIdentity.role,
-      });
-      identifiedId.current = analyticsIdentity.id;
-    }
-  }, [analyticsIdentity, posthogEnabled]);
+    const syncIdentity = () => {
+      if (!postHogConsentGranted()) { identifiedId.current = null; return; }
+      const nextIdentity = analyticsId && analyticsRole && `${analyticsId}:${analyticsRole}`;
+      if (identifiedId.current === nextIdentity) return;
+      if (identifiedId.current) resetPostHogIdentity();
+      if (analyticsId && analyticsRole) identifyPostHog(analyticsId, analyticsRole);
+      identifiedId.current = nextIdentity ?? null;
+    };
+    const onStorage = (event: StorageEvent) => { if (event.key === ANALYTICS_CONSENT_KEY) syncIdentity(); };
+    syncIdentity();
+    window.addEventListener("analytics-consent-changed", syncIdentity);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("analytics-consent-changed", syncIdentity);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [analyticsId, analyticsRole]);
 
   const resetAnalytics = () => {
-    if (posthogEnabled) posthog.reset();
+    resetPostHogIdentity();
+    identifiedId.current = null;
   };
   const open = openPath === pathname;
   const connection = pathname === "/admin/contenu/connexion" || pathname === "/admin/contenu/activer" || pathname === "/admin/restaurant/connexion" || pathname === "/admin/restaurant/activer";

@@ -5,16 +5,6 @@ import { BatchLogRecordProcessor, LoggerProvider } from "@opentelemetry/sdk-logs
 const posthogToken = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN?.trim();
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim().replace(/\/$/, "");
 
-if ((!posthogToken || !posthogHost) && process.env.NODE_ENV !== "production") {
-  const missingVariable = !posthogToken
-    ? "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN"
-    : "NEXT_PUBLIC_POSTHOG_HOST";
-
-  console.warn(
-    `${missingVariable} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingVariable} is configured`
-  );
-}
-
 export const posthogLogProvider = posthogToken && posthogHost
   ? new LoggerProvider({
       resource: resourceFromAttributes({
