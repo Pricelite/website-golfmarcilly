@@ -56,14 +56,28 @@ export default function PrivacyPage() {
           <p>
             La mesure d’audience est facultative. Après votre accord, le site
             conserve dans votre navigateur un identifiant aléatoire de visiteur
-            et de visite. Il enregistre uniquement le chemin des pages consultées,
-            sans paramètres d’URL ni adresse IP. Une visite se termine après 30
-            minutes d’inactivité. Ces données sont conservées pendant 180 jours
-            par défaut ; cette durée peut être configurée entre 30 et 730 jours.
-            Vous pouvez refuser ou modifier votre choix à tout moment depuis le
-            pied de page. Les connexions à l’administration sont comptées
-            séparément. Les cookies de session des personnes autorisées servent
-            uniquement à maintenir leur accès à l’administration.
+            et de visite. Notre mesure interne enregistre uniquement le chemin
+            des pages consultées, sans paramètres d’URL ni adresse IP. Une visite
+            se termine après 30 minutes d’inactivité. Ces données internes sont
+            conservées pendant 180 jours par défaut ; cette durée peut être
+            configurée entre 30 et 730 jours.
+          </p>
+          <p>
+            Après votre accord, PostHog reçoit des événements limités à certaines
+            actions sur le site, comme l’ouverture d’une réservation ou l’envoi
+            d’un formulaire. Les champs des formulaires ne lui sont pas transmis.
+            PostHog peut recevoir des informations techniques liées à la connexion,
+            notamment l’adresse IP. Nous désactivons l’enregistrement de session,
+            le suivi automatique des clics et l’envoi des adresses complètes des
+            pages dans les événements. Dans l’administration, un identifiant de
+            compte et son rôle peuvent être associés aux événements si la mesure
+            d’audience a été acceptée. Vous pouvez refuser ou modifier votre choix
+            à tout moment depuis le pied de page.
+          </p>
+          <p>
+            Les connexions à l’administration sont comptées séparément. Les
+            cookies de session des personnes autorisées servent uniquement à
+            maintenir leur accès à l’administration.
           </p>
           <p>{legalContent.thirdPartyDetails}</p>
           <p>

@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { getFormErrorMessage } from "@/lib/api/form-feedback";
 
 import { logApiError } from "@/lib/api/logging";
+import {
+  logFormMailDeliveryCompleted,
+  logFormMailDeliveryFailed,
+} from "@/lib/api/posthog-logs";
 import { readJsonBody } from "@/lib/api/request-body";
 import {
   isNonEmptyWithinLength,
@@ -112,12 +116,15 @@ export async function POST(request: Request) {
         replyToName: emailContent.replyToName,
       },
     });
+    logFormMailDeliveryCompleted("contact", result.queued);
     return NextResponse.json(result.queued
       ? { ok: true, queued: true, message: "Votre demande a été enregistrée. Notre équipe la traitera dès le rétablissement de la messagerie." }
       : { ok: true }, { status: result.queued ? 202 : 200 });
   } catch (error) {
-    logApiError("api/contact", "delivery_failed", { code: buildMailApiErrorResponse(error).code });
-    return NextResponse.json(buildMailApiErrorResponse(error), { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
+    const apiError = buildMailApiErrorResponse(error);
+    logApiError("api/contact", "delivery_failed", { code: apiError.code });
+    logFormMailDeliveryFailed("contact", apiError.code);
+    return NextResponse.json(apiError, { status: mailFailureStatus(error), headers: mailFailureHeaders(error) });
   }
 }
 
