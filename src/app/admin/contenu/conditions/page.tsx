@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { ConditionsEditor } from "@/components/backoffice/conditions-editor";
-import { currentActor } from "@/lib/backoffice/auth";
+import { currentContentActor } from "@/lib/backoffice/content-access";
 import { openDb } from "@/lib/backoffice/db";
 import { listConditionStates, listSiteConditions } from "@/lib/site-conditions-store";
 import { localContentStoreEnabled, sharedContentSyncEnabled } from "@/lib/supabase/content";
@@ -14,7 +14,7 @@ export const runtime = "nodejs";
 export default async function ConditionsPage() {
   const db = openDb();
   try {
-    const actor = await currentActor(db);
+    const actor = await currentContentActor(db);
     if (!actor) redirect("/admin/contenu/connexion");
     if (actor.role !== "admin") notFound();
   } finally { db.close(); }

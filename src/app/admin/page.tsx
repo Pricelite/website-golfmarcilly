@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { currentStaffActor, isSuperAdmin } from "@/lib/admin-access";
 import { absoluteUrl } from "@/lib/metadata";
-import { currentRestaurantActor } from "@/lib/restaurant-admin/store";
+import { canAccessAdminSection } from "@/lib/restaurant-admin/policy";
 
 export const metadata: Metadata = {
   title: "Administration du golf",
@@ -38,18 +37,26 @@ function AdminLogin({ error, next }: { error?: string; next?: string }) {
         </label>
         <button className="inline-flex rounded-full bg-emerald-900 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800" type="submit">Se connecter</button>
       </form>
+      <Link href="/admin/restaurant/connexion" className="mt-5 inline-block text-sm font-semibold text-emerald-900 underline underline-offset-4">Connexion avec un compte personnel</Link>
     </section>
   </div>;
 }
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams;
-  const superAdmin = Boolean(process.env.ADMIN_PASSWORD?.trim()) && await isAdminAuthenticated(await cookies());
+  const superAdmin = await isSuperAdmin();
   if (!superAdmin) {
-    let restaurantActor = false;
-    try { restaurantActor = Boolean(await currentRestaurantActor()); }
-    catch { /* La connexion super administrateur reste accessible si le stockage restaurant est indisponible. */ }
-    if (restaurantActor) redirect("/admin/restaurant");
+    const actor = await currentStaffActor();
+    if (actor) {
+      const first = [
+        ["restaurant", "/admin/restaurant"], ["competitions", "/admin/competitions"],
+        ["site_conditions", "/admin/site-conditions"], ["publicites", "/admin/publicites"],
+        ["statistiques", "/admin/statistiques"], ["archives", "/admin/archives"],
+        ["pages", "/admin/contenu"], ["media", "/admin/contenu/medias"],
+      ] as const;
+      const destination = first.find(([section]) => canAccessAdminSection(actor, section))?.[1];
+      if (destination) redirect(destination);
+    }
   }
   if (!process.env.ADMIN_PASSWORD?.trim()) {
     return <div className="mx-auto max-w-xl px-6 py-12"><h1 className="font-serif text-3xl">Administration du golf</h1><p className="mt-4">L’accès administrateur n’est pas encore configuré.</p></div>;
@@ -68,7 +75,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         {[
           { href: "/admin/competitions", title: "Calendrier", text: "Voir le mois entier, ajouter une compétition ou modifier une animation." },
           { href: "/admin/restaurant", title: "Restaurant La Bergerie", text: "Actualiser la carte, les prix et le plat du jour." },
-          { href: "/admin/restaurant/acces", title: "Accès restaurant", text: "Inviter ou révoquer un administrateur du restaurant." },
+          { href: "/admin/restaurant/acces", title: "Comptes et accès", text: "Créer des comptes et attribuer les droits de chaque personne." },
           { href: "/admin/site-conditions", title: "État du golf", text: "Mettre à jour les conditions des parcours et des services." },
           { href: "/admin/publicites", title: "Publicités", text: "Modifier les visuels, les liens et les dates de diffusion sur l’accueil." },
           { href: "/admin/statistiques", title: "Statistiques", text: "Consulter la fréquentation du site et les connexions." },

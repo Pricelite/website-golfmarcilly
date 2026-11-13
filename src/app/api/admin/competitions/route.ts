@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 import { CalendarStoreError, deleteAssociationEvent, saveAssociationEvent } from "@/lib/association-events-db";
 import { parseEventInput, validEventId } from "@/lib/association-events-validation";
@@ -14,7 +13,7 @@ function response(data: unknown, status = 200) {
 
 async function mutate(request: Request) {
   try {
-    if (!process.env.ADMIN_PASSWORD || !(await isAdminAuthenticated(await cookies()))) return response({ error: "Connectez-vous à l’administration pour continuer." }, 401);
+    if (!(await canAccessAdmin("competitions"))) return response({ error: "Accès refusé." }, 403);
     if (!hasTrustedOrigin(request.headers, { fallbackHost: new URL(request.url).host })) return response({ error: "Origine non autorisée. Rechargez la page." }, 403);
     if (!request.headers.get("content-type")?.includes("application/json")) return response({ error: "Format de demande invalide." }, 415);
     const body = await readJsonBody(request);

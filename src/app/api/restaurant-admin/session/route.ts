@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { readLimitedTextBody } from "@/lib/api/request-body";
 import { authenticateRestaurantStaff, issueRestaurantSession, restaurantSessionCookieOptions, RESTAURANT_SESSION_COOKIE } from "@/lib/restaurant-admin/store";
+import { canAccessAdminSection } from "@/lib/restaurant-admin/policy";
 import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders } from "@/lib/security/request-guards";
 
 export const runtime = "nodejs";
@@ -22,7 +23,14 @@ export async function POST(request: Request) {
     const actor = await authenticateRestaurantStaff(identifier, password);
     if (!actor) return fail(request, "invalid");
     const token = await issueRestaurantSession(actor);
-    const response = NextResponse.redirect(new URL("/admin/restaurant", request.url), 303);
+    const destinations = [
+      ["restaurant", "/admin/restaurant"], ["competitions", "/admin/competitions"],
+      ["site_conditions", "/admin/site-conditions"], ["publicites", "/admin/publicites"],
+      ["statistiques", "/admin/statistiques"], ["archives", "/admin/archives"],
+      ["pages", "/admin/contenu"], ["media", "/admin/contenu/medias"],
+    ] as const;
+    const destination = destinations.find(([section]) => canAccessAdminSection(actor, section))?.[1] ?? "/admin";
+    const response = NextResponse.redirect(new URL(destination, request.url), 303);
     response.cookies.set(RESTAURANT_SESSION_COOKIE, token, restaurantSessionCookieOptions());
     return response;
   } catch { return fail(request, "unavailable"); }

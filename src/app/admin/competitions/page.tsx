@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CompetitionManager } from "@/components/admin/competition-manager";
-import { isAdminAuthenticated } from "@/lib/initiation/admin-auth";
+import { canAccessAdmin } from "@/lib/admin-access";
 import { CalendarStoreError, listAssociationEvents } from "@/lib/association-events-db";
 import { localCalendarEnabled } from "@/lib/association-events-local";
 import { sharedContentSyncEnabled } from "@/lib/supabase/content";
@@ -13,7 +12,7 @@ export const metadata: Metadata = { title: "Administration des compétitions", r
 export const dynamic = "force-dynamic";
 
 export default async function AdminCompetitionsPage() {
-  if (!process.env.ADMIN_PASSWORD || !(await isAdminAuthenticated(await cookies()))) redirect("/admin?next=/admin/competitions");
+  if (!(await canAccessAdmin("competitions"))) redirect("/admin?next=/admin/competitions");
   let events;
   let error = "";
   try { events = await listAssociationEvents(); }
