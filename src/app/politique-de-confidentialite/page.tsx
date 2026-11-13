@@ -54,6 +54,13 @@ export default function PrivacyPage() {
           <p>{legalContent.retentionDetails}</p>
           <h2>Cookies et services externes</h2>
           <p>
+            Vous pouvez accepter ou refuser la mesure d’audience depuis le bandeau
+            affiché lors de votre première visite. Votre choix, y compris un refus,
+            est conservé dans ce navigateur pendant six mois. Le lien « Gérer mes
+            cookies » du pied de page permet de le modifier à tout moment. Les
+            cookies de connexion à l’administration sont nécessaires à son usage.
+          </p>
+          <p>
             La mesure d’audience est facultative. Après votre accord, le site
             conserve dans votre navigateur un identifiant aléatoire de visiteur
             et de visite. Notre mesure interne enregistre uniquement le chemin
@@ -80,6 +87,12 @@ export default function PrivacyPage() {
             maintenir leur accès à l’administration.
           </p>
           <p>{legalContent.thirdPartyDetails}</p>
+          <p>
+            Sur la page du restaurant, aucun module Zenchef n’est chargé
+            automatiquement. Le bouton de réservation ouvre le service Zenchef
+            dans un nouvel onglet ; ce service applique ses propres règles de
+            confidentialité et de cookies.
+          </p>
           <p>
             Consultez la{" "}
             <a href="https://www.flyovergreen.com/pdfs/data_protection_policy_en.pdf" rel="noreferrer" target="_blank">
