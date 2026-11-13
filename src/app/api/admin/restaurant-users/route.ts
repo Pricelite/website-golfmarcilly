@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
-import { isSuperAdmin } from "@/lib/admin-access";
+import { contentBackofficeAvailable, isSuperAdmin } from "@/lib/admin-access";
 import { createRestaurantStaff, listRestaurantStaff } from "@/lib/restaurant-admin/store";
 import { parseAdminSections, RESTAURANT_ID } from "@/lib/restaurant-admin/policy";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
@@ -30,6 +30,7 @@ export async function POST(request: Request) {
       (normalizedEmail !== null && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || normalizedEmail.length > 254)) ||
       (normalizedUsername !== null && !/^[a-z][a-z0-9._-]{2,49}$/.test(normalizedUsername)) ||
       !sections || restaurantId !== RESTAURANT_ID) return reply({ error: "Compte, droits ou restaurant invalides." }, 400);
+  if (!contentBackofficeAvailable() && sections.some(section => section === "pages" || section === "media")) return reply({ error: "Les pages et médias nécessitent un stockage persistant sur cet hébergement." }, 409);
   try {
     const result = await createRestaurantStaff(name, normalizedEmail, normalizedUsername, sections);
     return reply({ id: result.id, activationPath: `/admin/restaurant/activer?token=${result.token}` }, 201);

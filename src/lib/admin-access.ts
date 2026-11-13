@@ -18,3 +18,7 @@ export async function canAccessAdmin(section: AdminSection): Promise<boolean> {
   if (await isSuperAdmin()) return true;
   return canAccessAdminSection(await currentStaffActor(), section);
 }
+
+export function contentBackofficeAvailable(): boolean {
+  return process.env.NODE_ENV !== "production" || Boolean(process.env.BACKOFFICE_DB_PATH?.trim());
+}
