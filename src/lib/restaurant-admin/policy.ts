@@ -4,7 +4,8 @@ export const RESTAURANT_ADMIN_ROLE = "restaurant_admin";
 
 export type RestaurantActor = {
   id: string;
-  email: string;
+  email: string | null;
+  username: string | null;
   name: string;
   role: string;
   restaurantId: string;
