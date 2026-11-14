@@ -72,8 +72,8 @@ export function Header() {
             </a>
             <HeaderMarcillyClock />
           </div>
-          <CTAButton href={siteConfig.bookingEngineUrl} className="whitespace-nowrap px-4">Réserver un départ</CTAButton>
-          <CTAButton href={siteConfig.teeItUpBookingUrl} variant="secondary" className="whitespace-nowrap px-4">Réserver sans être membre</CTAButton>
+          <CTAButton href={siteConfig.bookingEngineUrl} className="whitespace-nowrap px-4">Réservation membre</CTAButton>
+          <CTAButton href={siteConfig.teeItUpBookingUrl} variant="secondary" className="whitespace-nowrap px-4">Réservation non-membre</CTAButton>
         </div>
 
         <div className="ml-auto flex items-center gap-2 min-[1440px]:hidden">
@@ -124,10 +124,10 @@ export function Header() {
                 href={siteConfig.bookingEngineUrl}
                 variant="primary"
               >
-                Réserver un départ
+                Réservation membre
               </CTAButton>
             </li>
-            <li><CTAButton className="w-full" href={siteConfig.teeItUpBookingUrl} variant="secondary">Réserver sans être membre</CTAButton></li>
+            <li><CTAButton className="w-full" href={siteConfig.teeItUpBookingUrl} variant="secondary">Réservation non-membre</CTAButton></li>
           </ul>
         </nav>
       </div>
