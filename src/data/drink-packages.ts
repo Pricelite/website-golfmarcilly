@@ -7,6 +7,12 @@ export const cocktailPackages = [
   { name: "Eagle", price: "13,90 €", drinks: "Champagne et jus de fruits", food: "5 canapés sucrés-salés" },
 ] as const;
 
+export const drinkFormulas = [
+  { name: "Par", price: "6,00 €", description: "Vin rouge et blanc en pichet · ½ eau minérale · 1 café" },
+  { name: "Birdie", price: "10,00 €", description: "Vin rouge et blanc en bouteille · ½ eau minérale · 1 café" },
+  { name: "Eagle", price: "13,00 €", description: "Vin rouge et blanc supérieur · ½ eau minérale · 1 café" },
+] as const;
+
 export const cocktailDinner = {
   pieces: "16 pièces par personne : 8 salées froides, 5 salées chaudes et 3 sucrées.",
   options: [
