@@ -35,6 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       { section: "archives" as const, href: "/admin/archives", label: "Archives", detail: "Anciennes initiations" },
     ].filter(item => canAccessAdminSection(staff, item.section));
     if (items.length) groups.push({ label: "Gestion du golf", items });
+    groups.push({ label: "Compte personnel", items: [{ href: "/admin/mon-compte", label: "Mon compte", detail: "Changer mon mot de passe" }] });
   }
   let contentSession = false;
   // Navigation only: each page and API keeps its own authorization checks.
