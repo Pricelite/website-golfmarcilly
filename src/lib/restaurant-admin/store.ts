@@ -92,11 +92,10 @@ export async function activateRestaurantStaff(token: string, password: string): 
   return data === true;
 }
 
-export async function setActiveRestaurantStaffPassword(id: string, password: string): Promise<"updated" | "inactive" | "missing"> {
-  const { data: account, error: lookupError } = await accountTable().select("id,active").eq("id", id).maybeSingle();
+export async function setRestaurantStaffPassword(id: string, password: string): Promise<"updated" | "missing"> {
+  const { data: account, error: lookupError } = await accountTable().select("id").eq("id", id).maybeSingle();
   if (lookupError) throw lookupError;
   if (!account) return "missing";
-  if (!account.active) return "inactive";
 
   const passwordHash = hashPassword(password, 13);
   const tokenHash = hashToken(newToken());
