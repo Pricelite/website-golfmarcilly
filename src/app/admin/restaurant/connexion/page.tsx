@@ -19,7 +19,7 @@ export default async function RestaurantLoginPage({ searchParams }: { searchPara
     {params.activated === "1" ? <p role="status" className="mt-5 rounded-xl bg-emerald-50 p-3 text-sm">Compte activé. Vous pouvez vous connecter.</p> : null}
     {error ? <p role="alert" className="mt-5 rounded-xl bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
     <form action="/api/restaurant-admin/session" method="post" className="mt-6 space-y-4 rounded-2xl bg-white p-6">
-      <label className="block text-sm">Identifiant ou adresse e-mail<input name="identifier" type="text" autoComplete="username" required maxLength={254} className="mt-1 w-full rounded-lg border border-emerald-950/20 px-3 py-2" /></label>
+      <label className="block text-sm">Identifiant<input name="identifier" type="text" autoComplete="username" required maxLength={254} className="mt-1 w-full rounded-lg border border-emerald-950/20 px-3 py-2" /></label>
       <PasswordVisibilityField />
       <button type="submit" className="site-button">Se connecter</button>
     </form>
