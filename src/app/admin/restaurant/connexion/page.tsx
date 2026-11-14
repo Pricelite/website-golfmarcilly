@@ -6,7 +6,7 @@ import { PasswordVisibilityField } from "@/components/backoffice/password-visibi
 export const metadata: Metadata = { title: "Connexion — Restaurant", robots: { index: false, follow: false }, referrer: "no-referrer" };
 export const dynamic = "force-dynamic";
 
-export default async function RestaurantLoginPage({ searchParams }: { searchParams: Promise<{ error?: string; activated?: string }> }) {
+export default async function RestaurantLoginPage({ searchParams }: { searchParams: Promise<{ error?: string; activated?: string; password?: string }> }) {
   if (await currentRestaurantActor()) redirect("/admin");
   const params = await searchParams;
   const error = params.error === "rate" ? "Trop de tentatives. Réessayez dans quelques minutes." :
@@ -17,6 +17,7 @@ export default async function RestaurantLoginPage({ searchParams }: { searchPara
     <h1 className="font-serif text-4xl">Connexion à l’espace équipe</h1>
     <p className="mt-3 text-sm leading-6">Connectez-vous avec votre identifiant personnel et votre mot de passe. Vous verrez uniquement les rubriques qui vous ont été attribuées.</p>
     {params.activated === "1" ? <p role="status" className="mt-5 rounded-xl bg-emerald-50 p-3 text-sm">Compte activé. Vous pouvez vous connecter.</p> : null}
+    {params.password === "changed" ? <p role="status" className="mt-5 rounded-xl bg-emerald-50 p-3 text-sm">Mot de passe modifié. Reconnectez-vous avec le nouveau mot de passe.</p> : null}
     {error ? <p role="alert" className="mt-5 rounded-xl bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
     <form action="/api/restaurant-admin/session" method="post" className="mt-6 space-y-4 rounded-2xl bg-white p-6">
       <label className="block text-sm">Identifiant<input name="identifier" type="text" autoComplete="username" required maxLength={254} className="mt-1 w-full rounded-lg border border-emerald-950/20 px-3 py-2" /></label>
