@@ -92,6 +92,30 @@ export async function activateRestaurantStaff(token: string, password: string): 
   return data === true;
 }
 
+export async function setActiveRestaurantStaffPassword(id: string, password: string): Promise<"updated" | "inactive" | "missing"> {
+  const { data: account, error: lookupError } = await accountTable().select("id,active").eq("id", id).maybeSingle();
+  if (lookupError) throw lookupError;
+  if (!account) return "missing";
+  if (!account.active) return "inactive";
+
+  const passwordHash = hashPassword(password, 13);
+  const tokenHash = hashToken(newToken());
+  const { error: oldInvitesError } = await inviteTable().delete().eq("account_id", id);
+  if (oldInvitesError) throw oldInvitesError;
+  const { error: inviteError } = await inviteTable().insert({ token_hash: tokenHash, account_id: id, expires_at: futureDate(INVITE_SECONDS) });
+  if (inviteError) throw inviteError;
+
+  try {
+    const { data, error } = await createContentAdminClient().rpc("activate_restaurant_staff", { p_token_hash: tokenHash, p_password_hash: passwordHash });
+    if (error) throw error;
+    if (data !== true) throw new Error("Modification du mot de passe impossible.");
+    return "updated";
+  } catch (error) {
+    await inviteTable().delete().eq("token_hash", tokenHash);
+    throw error;
+  }
+}
+
 export async function authenticateRestaurantStaff(identifier: string, password: string): Promise<RestaurantActor | null> {
   const normalized = identifier.trim().toLowerCase();
   const field = normalized.includes("@") ? "email" : "username";
