@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
 import { contentBackofficeAvailable, isSuperAdmin } from "@/lib/admin-access";
-import { deleteStaffAccount, issueRestaurantInvite, revokeRestaurantStaff, setActiveRestaurantStaffPassword, updateStaffSections } from "@/lib/restaurant-admin/store";
+import { deleteStaffAccount, issueRestaurantInvite, revokeRestaurantStaff, setRestaurantStaffPassword, updateStaffSections } from "@/lib/restaurant-admin/store";
 import { parseAdminSections } from "@/lib/restaurant-admin/policy";
 import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders } from "@/lib/security/request-guards";
 
@@ -34,10 +34,8 @@ export async function PATCH(request: Request, context: Context) {
       }
       const rate = await consumeRateLimit({ namespace: "admin-staff-password", identifier: `${id}:${parseClientIpFromHeaders(request.headers)}`, limit: 5, windowMs: 10 * 60_000 });
       if (!rate.allowed) return reply({ error: rate.unavailable ? "Modification momentanément indisponible." : "Trop de tentatives. Réessayez plus tard." }, rate.unavailable ? 503 : 429);
-      const result = await setActiveRestaurantStaffPassword(id, password);
-      return result === "updated" ? reply({ ok: true }) :
-        result === "inactive" ? reply({ error: "Ce compte est inactif. Créez un nouveau lien d’activation." }, 409) :
-        reply({ error: "Compte introuvable." }, 404);
+      const result = await setRestaurantStaffPassword(id, password);
+      return result === "updated" ? reply({ ok: true }) : reply({ error: "Compte introuvable." }, 404);
     }
     if (body.data.action === "sections") {
       const sections = parseAdminSections(body.data.sections);
