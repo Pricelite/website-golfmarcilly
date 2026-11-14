@@ -43,7 +43,9 @@ export async function listManagedHomeAds(): Promise<ManagedHomeAd[]> {
   const { data, error } = await client.storage.from(bucket).list("records", { limit: MAX_MANAGED_ADS + 1 });
   if (error) throw error;
   const records = await Promise.all((data ?? []).filter(file => file.name.endsWith(".json") && validHomeAdId(file.name.slice(0, -5))).map(async file => {
-    const { data: blob, error } = await client.storage.from(bucket).download(`records/${file.name}`);
+    // Storage can serve an older JSON after an upsert; the object version changes its cache key.
+    const version = encodeURIComponent(file.updated_at ?? String(Date.now()));
+    const { data: blob, error } = await client.storage.from(bucket).download(`records/${file.name}?version=${version}`);
     if (error || !blob || blob.size > 16_384) throw error ?? new Error("Invalid ad record");
     const record = storedAd(JSON.parse(await blob.text()));
     if (`${record.id}.json` !== file.name) throw new Error("Ad identifier mismatch");
@@ -53,10 +55,10 @@ export async function listManagedHomeAds(): Promise<ManagedHomeAd[]> {
 }
 
 // No cookies or request data in the shared cache. Mutations expire this tag immediately.
-const cachedAds = unstable_cache(listManagedHomeAds, ["home-ads-v1"], { revalidate: 60, tags: [homeAdsCacheTag] });
+const cachedAds = unstable_cache(listManagedHomeAds, ["home-ads-v2"], { revalidate: 60, tags: [homeAdsCacheTag] });
 export async function publicHomeAds(): Promise<ManagedHomeAd[]> {
   if (process.env.PREVIEW_MODE === "true") return defaultManagedHomeAds();
-  try { return localContentStoreEnabled() ? await listManagedHomeAds() : await cachedAds(); }
+  try { return process.env.NODE_ENV === "development" ? await listManagedHomeAds() : await cachedAds(); }
   catch { return []; } // Never resurrect a disabled announcement when its current state cannot be read.
 }
 
