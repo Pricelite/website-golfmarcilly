@@ -1,5 +1,5 @@
 import { SectionTitle } from "@/components/ui/section-title";
-import { cocktailDinner, cocktailPackages } from "@/data/drink-packages";
+import { cocktailDinner, cocktailPackages, drinkFormulas } from "@/data/drink-packages";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export function DrinkPackages() {
@@ -10,6 +10,17 @@ export function DrinkPackages() {
         <div className="flex items-start justify-between gap-3"><h3 className="font-serif text-xl">{plan.name}</h3><p className="shrink-0 font-semibold">{nonbreakingEuro(plan.price)}</p></div>
         <p className="mt-3 text-sm leading-6 text-emerald-950/80">{plan.drinks} · {plan.food}</p>
       </article>)}
+    </div>
+    <div className="mt-9">
+      <h3 className="font-serif text-2xl">Formules boissons</h3>
+      <p className="mt-2 text-sm leading-6 text-emerald-950/75">Pour vos événements, tarifs par personne.</p>
+      <div className="mt-5 grid items-stretch gap-4 md:grid-cols-3">
+        {drinkFormulas.map(formula => <article key={formula.name} className="flex h-full flex-col rounded-2xl border border-emerald-950/15 bg-[#faf8f0] p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1"><h4 className="font-serif text-xl">Formule {formula.name}</h4><p className="shrink-0 font-semibold">{nonbreakingEuro(formula.price)}</p></div>
+          <p className="mt-3 text-sm leading-6 text-emerald-950/80">{formula.description}</p>
+        </article>)}
+      </div>
+      <p className="mt-3 text-xs text-emerald-950/70">Offres de groupes sur réservation.</p>
     </div>
     <div className="mt-8 overflow-hidden rounded-2xl border border-emerald-950/15 bg-[#faf8f0]">
       <div className="bg-emerald-950 px-6 py-5 text-stone-50"><h3 className="font-serif text-2xl">Cocktail dînatoire</h3><p className="mt-2 text-sm text-stone-100/85">{cocktailDinner.pieces}</p></div>

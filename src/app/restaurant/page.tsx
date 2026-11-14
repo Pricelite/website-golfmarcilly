@@ -140,6 +140,12 @@ export default function RestaurantPage() {
             </div>
             <div id="devis-restaurant" className="scroll-mt-28">
               <SectionTitle eyebrow="Groupes & privatisation" title="Construisons votre réception" description="Précisez la date, le nombre de personnes, le menu et les boissons souhaitées. Ajoutez vos besoins pour la salle ou le séminaire." />
+              <p className="mt-5 text-sm leading-6 text-emerald-950/75">Séminaires, anniversaires, réceptions, repas de groupes et événements privés : composez une offre adaptée à votre événement.</p>
+              <address className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm not-italic text-emerald-950/80">
+                <a className="underline underline-offset-4" href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phoneDisplay}</a>
+                <a className="underline underline-offset-4" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+                <span>{siteConfig.addressLine1}, {siteConfig.addressLine2}</span>
+              </address>
               <div className="mt-8">
                 <ContactForm context="restaurant" subjectPlaceholder="Devis : repas, boissons, réception…" messagePlaceholder="Date souhaitée, nombre de personnes, menu choisi, boissons souhaitées et besoins complémentaires…" submitLabel="Envoyer ma demande de devis" successMessage="Votre demande au restaurant a bien été reçue par le site." />
               </div>
