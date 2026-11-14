@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/request-body";
 import { contentBackofficeAvailable, isSuperAdmin } from "@/lib/admin-access";
-import { deleteStaffAccount, issueRestaurantInvite, revokeRestaurantStaff, updateStaffSections } from "@/lib/restaurant-admin/store";
+import { deleteStaffAccount, issueRestaurantInvite, revokeRestaurantStaff, setActiveRestaurantStaffPassword, updateStaffSections } from "@/lib/restaurant-admin/store";
 import { parseAdminSections } from "@/lib/restaurant-admin/policy";
-import { hasTrustedOrigin } from "@/lib/security/request-guards";
+import { consumeRateLimit, hasTrustedOrigin, parseClientIpFromHeaders } from "@/lib/security/request-guards";
 
 export const runtime = "nodejs";
 type Context = { params: Promise<{ id: string }> };
@@ -15,7 +15,7 @@ export async function PATCH(request: Request, context: Context) {
   const { id } = await context.params;
   if (!/^[a-f0-9-]{36}$/i.test(id)) return reply({ error: "Compte invalide." }, 400);
   if (!request.headers.get("content-type")?.includes("application/json")) return reply({ error: "Format invalide." }, 415);
-  const body = await readJsonBody<Record<string, unknown>>(request, 1024);
+  const body = await readJsonBody<Record<string, unknown>>(request, 4096);
   if (!body.ok) return reply({ error: "Demande invalide." }, body.tooLarge ? 413 : 400);
   try {
     if (body.data.action === "revoke") {
@@ -24,6 +24,20 @@ export async function PATCH(request: Request, context: Context) {
     if (body.data.action === "invite") {
       const token = await issueRestaurantInvite(id);
       return reply({ activationPath: `/admin/restaurant/activer?token=${token}` });
+    }
+    if (body.data.action === "password") {
+      const password = body.data.password;
+      const confirmation = body.data.confirmation;
+      if (typeof password !== "string" || typeof confirmation !== "string" ||
+          password.length < 13 || password.length > 256 || password !== confirmation) {
+        return reply({ error: "Saisissez deux mots de passe identiques d’au moins 13 caractères." }, 400);
+      }
+      const rate = await consumeRateLimit({ namespace: "admin-staff-password", identifier: `${id}:${parseClientIpFromHeaders(request.headers)}`, limit: 5, windowMs: 10 * 60_000 });
+      if (!rate.allowed) return reply({ error: rate.unavailable ? "Modification momentanément indisponible." : "Trop de tentatives. Réessayez plus tard." }, rate.unavailable ? 503 : 429);
+      const result = await setActiveRestaurantStaffPassword(id, password);
+      return result === "updated" ? reply({ ok: true }) :
+        result === "inactive" ? reply({ error: "Ce compte est inactif. Créez un nouveau lien d’activation." }, 409) :
+        reply({ error: "Compte introuvable." }, 404);
     }
     if (body.data.action === "sections") {
       const sections = parseAdminSections(body.data.sections);

@@ -17,6 +17,9 @@ export function RestaurantAccessManager({ initialUsers, contentAvailable }: { in
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [passwordUserId, setPasswordUserId] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
 
   async function refresh() {
     const response = await fetch("/api/admin/restaurant-users", { cache: "no-store" });
@@ -88,6 +91,29 @@ export function RestaurantAccessManager({ initialUsers, contentAvailable }: { in
     finally { setBusy(false); }
   }
 
+  function closePasswordForm() {
+    setPasswordUserId(null);
+    setPassword("");
+    setConfirmation("");
+  }
+
+  async function savePassword(event: FormEvent<HTMLFormElement>, user: Staff) {
+    event.preventDefault(); setError(""); setMessage("");
+    if (password !== confirmation) { setError("Les mots de passe ne correspondent pas."); return; }
+    setBusy(true);
+    try {
+      const response = await fetch(`/api/admin/restaurant-users/${user.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "password", password, confirmation }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Modification du mot de passe impossible.");
+      closePasswordForm();
+      setMessage(`Mot de passe de ${user.name} modifié. Ses anciennes sessions ont été fermées.`);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Modification du mot de passe impossible."); }
+    finally { setBusy(false); }
+  }
+
   return <div className="mt-7 space-y-8">
     {message ? <p role="status" className="rounded-xl bg-emerald-50 p-4 text-sm">{message}</p> : null}
     {error ? <p role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
@@ -107,7 +133,16 @@ export function RestaurantAccessManager({ initialUsers, contentAvailable }: { in
       {users.length ? <ul className="mt-4 space-y-3">{users.map(user => <li key={user.id} className="rounded-2xl bg-white p-5">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-semibold">{user.name}</p>{user.username ? <p className="text-sm text-emerald-900/70">Identifiant : {user.username}</p> : null}{user.email ? <p className="text-sm text-emerald-900/70">{user.email}</p> : null}</div><span className="text-sm">{user.active ? "Actif" : "Inactif ou en attente d’activation"}</span></div>
         {sectionChoices(draftSections[user.id] ?? user.sections, value => setDraftSections(current => ({ ...current, [user.id]: value })))}
-        <div className="mt-4 flex flex-wrap gap-3"><button type="button" disabled={busy || !draftSections[user.id]?.length} onClick={() => void saveSections(user.id)} className="site-button disabled:opacity-50">Enregistrer les droits</button><button type="button" disabled={busy} onClick={() => void change(user.id, "revoke")} className="rounded-full border px-4 py-2 text-sm disabled:opacity-50">Révoquer l’accès</button><button type="button" disabled={busy} onClick={() => void change(user.id, "invite")} className="rounded-full border px-4 py-2 text-sm">Créer un nouveau lien</button><button type="button" disabled={busy} onClick={() => void remove(user.id, user.name)} className="rounded-full border border-red-300 px-4 py-2 text-sm text-red-800">Supprimer le compte</button></div>
+        <div className="mt-4 flex flex-wrap gap-3"><button type="button" disabled={busy || !draftSections[user.id]?.length} onClick={() => void saveSections(user.id)} className="site-button disabled:opacity-50">Enregistrer les droits</button><button type="button" disabled={busy} onClick={() => void change(user.id, "revoke")} className="rounded-full border px-4 py-2 text-sm disabled:opacity-50">Révoquer l’accès</button><button type="button" disabled={busy} onClick={() => void change(user.id, "invite")} className="rounded-full border px-4 py-2 text-sm">Créer un nouveau lien</button><button type="button" disabled={busy || !user.active} onClick={() => { closePasswordForm(); setError(""); setPasswordUserId(user.id); }} className="rounded-full border px-4 py-2 text-sm disabled:opacity-50">Changer le mot de passe</button><button type="button" disabled={busy} onClick={() => void remove(user.id, user.name)} className="rounded-full border border-red-300 px-4 py-2 text-sm text-red-800">Supprimer le compte</button></div>
+        {passwordUserId === user.id ? <form onSubmit={event => void savePassword(event, user)} className="mt-4 rounded-xl border border-emerald-950/10 bg-emerald-50/50 p-4">
+          <h3 className="font-semibold">Nouveau mot de passe pour {user.name}</h3>
+          <p className="mt-1 text-xs">Au moins 13 caractères. Les anciennes sessions seront fermées. Communiquez le nouveau mot de passe à cette personne par un canal privé.</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">Nouveau mot de passe<input className={input} type="password" autoComplete="new-password" minLength={13} maxLength={256} required value={password} onChange={event => setPassword(event.target.value)} /></label>
+            <label className="text-sm">Confirmer le mot de passe<input className={input} type="password" autoComplete="new-password" minLength={13} maxLength={256} required value={confirmation} onChange={event => setConfirmation(event.target.value)} /></label>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3"><button type="submit" disabled={busy} className="site-button disabled:opacity-50">Enregistrer le nouveau mot de passe</button><button type="button" disabled={busy} onClick={closePasswordForm} className="rounded-full border px-4 py-2 text-sm">Annuler</button></div>
+        </form> : null}
       </li>)}</ul> : <p className="mt-3 text-sm">Aucun compte pour le moment.</p>}
     </section>
   </div>;
