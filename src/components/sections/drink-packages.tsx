@@ -5,8 +5,8 @@ import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 export function DrinkPackages() {
   return <section id="cocktails" className="mt-12 scroll-mt-28 border-t border-emerald-950/15 pt-9">
     <SectionTitle eyebrow="Pour vos réceptions" title="Cocktails et boissons" description="Des formules pour accueillir vos invités. Les tarifs sont indiqués par personne." />
-    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {cocktailPackages.map(plan => <article key={plan.name} className="rounded-2xl border border-emerald-950/15 bg-[#faf8f0] p-5">
+    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+      {cocktailPackages.map((plan, index) => <article key={plan.name} className={`rounded-2xl border border-emerald-950/15 bg-[#faf8f0] p-5 lg:col-span-2 ${cocktailPackages.length % 3 === 2 && index === cocktailPackages.length - 2 ? "lg:col-start-2" : ""}`}>
         <div className="flex items-start justify-between gap-3"><h3 className="font-serif text-xl">{plan.name}</h3><p className="shrink-0 font-semibold">{nonbreakingEuro(plan.price)}</p></div>
         <p className="mt-3 text-sm leading-6 text-emerald-950/80">{plan.drinks} · {plan.food}</p>
       </article>)}

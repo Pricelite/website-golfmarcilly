@@ -115,6 +115,21 @@ export async function setRestaurantStaffPassword(id: string, password: string): 
   }
 }
 
+export async function changeOwnRestaurantPassword(id: string, currentPassword: string, newPassword: string): Promise<"updated" | "invalid"> {
+  const { data, error } = await accountTable().select("password_hash,active").eq("id", id).maybeSingle();
+  if (error) throw error;
+  if (!data?.active || !data.password_hash || !verifyPassword(currentPassword, data.password_hash)) return "invalid";
+  const passwordHash = hashPassword(newPassword, 13);
+  const { data: updated, error: updateError } = await accountTable()
+    .update({ password_hash: passwordHash, updated_at: new Date().toISOString() })
+    .eq("id", id).eq("active", true).eq("password_hash", data.password_hash).select("id").maybeSingle();
+  if (updateError) throw updateError;
+  if (!updated) return "invalid";
+  const { error: sessionsError } = await sessionTable().delete().eq("account_id", id);
+  if (sessionsError) throw sessionsError;
+  return "updated";
+}
+
 export async function authenticateRestaurantStaff(identifier: string, password: string): Promise<RestaurantActor | null> {
   const normalized = identifier.trim().toLowerCase();
   const field = normalized.includes("@") ? "email" : "username";
