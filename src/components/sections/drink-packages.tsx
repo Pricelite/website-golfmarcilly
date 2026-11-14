@@ -15,9 +15,10 @@ export function DrinkPackages() {
       <h3 className="font-serif text-2xl">Formules boissons</h3>
       <p className="mt-2 text-sm leading-6 text-emerald-950/75">Pour vos événements, tarifs par personne.</p>
       <div className="mt-5 grid items-stretch gap-4 md:grid-cols-3">
-        {drinkFormulas.map(formula => <article key={formula.name} className="flex h-full flex-col rounded-2xl border border-emerald-950/15 bg-[#faf8f0] p-5">
+        {drinkFormulas.map(formula => <article key={formula.name} className="flex h-full min-h-44 flex-col rounded-2xl border border-emerald-950/15 bg-[#faf8f0] p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1"><h4 className="font-serif text-xl">Formule {formula.name}</h4><p className="shrink-0 font-semibold">{nonbreakingEuro(formula.price)}</p></div>
           <p className="mt-3 text-sm leading-6 text-emerald-950/80">{formula.description}</p>
+          <p className="mt-auto border-t border-emerald-950/10 pt-4 text-sm font-semibold text-emerald-950/85">{formula.serving}</p>
         </article>)}
       </div>
       <p className="mt-3 text-xs text-emerald-950/70">Offres de groupes sur réservation.</p>

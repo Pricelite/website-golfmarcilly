@@ -8,9 +8,9 @@ export const cocktailPackages = [
 ] as const;
 
 export const drinkFormulas = [
-  { name: "Par", price: "6,00 €", description: "Vin rouge et blanc en pichet · ½ eau minérale · 1 café" },
-  { name: "Birdie", price: "10,00 €", description: "Vin rouge et blanc en bouteille · ½ eau minérale · 1 café" },
-  { name: "Eagle", price: "13,00 €", description: "Vin rouge et blanc supérieur · ½ eau minérale · 1 café" },
+  { name: "Par", price: "6,00 €", description: "Vin rouge ou blanc · ½ eau minérale · 1 café", serving: "Vin servi en pichet." },
+  { name: "Birdie", price: "10,00 €", description: "Vin rouge ou blanc · ½ eau minérale · 1 café", serving: "1 bouteille de vin pour 4 personnes." },
+  { name: "Eagle", price: "13,00 €", description: "Vin rouge ou blanc supérieur · ½ eau minérale · 1 café", serving: "1 bouteille de vin pour 4 personnes." },
 ] as const;
 
 export const cocktailDinner = {
