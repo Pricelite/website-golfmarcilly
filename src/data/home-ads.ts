@@ -11,7 +11,12 @@ export type HomeAd = {
   /** Dates inclusives au format AAAA-MM-JJ, dans le fuseau Europe/Paris. */
   startsOn?: string;
   endsOn?: string;
+  /** Durée d’affichage d’une annonce dans le carrousel, en secondes. */
+  displaySeconds?: number;
 };
+
+export const DEFAULT_HOME_AD_SECONDS = 6;
+export const HOME_AD_DURATION_OPTIONS = [6, 10, 15, 20, 30, 60] as const;
 
 export type ManagedHomeAd = HomeAd & {
   id: string;
