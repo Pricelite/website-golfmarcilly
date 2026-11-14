@@ -1,4 +1,4 @@
-import { homeAds, type ManagedHomeAd } from "@/data/home-ads";
+import { DEFAULT_HOME_AD_SECONDS, homeAds, type ManagedHomeAd } from "@/data/home-ads";
 
 export const MAX_AD_IMAGE_BYTES = 5_000_000;
 export const validHomeAdId = (id: unknown): id is string => typeof id === "string" && /^(default-(left|right)-\d{1,2}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/.test(id);
@@ -31,6 +31,7 @@ export function parseManagedHomeAd(value: unknown): { ok: true; ad: Omit<Managed
   const startsOn = (data.startsOn as string | undefined) || undefined;
   const endsOn = (data.endsOn as string | undefined) || undefined;
   const kind = (data.kind as string | undefined) || undefined;
+  const displaySeconds = data.displaySeconds === undefined ? DEFAULT_HOME_AD_SECONDS : data.displaySeconds;
   if (!advertiser || advertiser.length > 120) return { ok: false, error: "Indiquez un titre de 1 à 120 caractères." };
   if (!imageAlt || imageAlt.length > 300) return { ok: false, error: "Décrivez le visuel en 1 à 300 caractères." };
   if (!validHomeAdImage(image)) return { ok: false, error: "Choisissez un visuel existant ou ajoutez une image." };
@@ -39,8 +40,9 @@ export function parseManagedHomeAd(value: unknown): { ok: true; ad: Omit<Managed
   if ((startsOn && !dateValid(startsOn)) || (endsOn && !dateValid(endsOn))) return { ok: false, error: "Indiquez des dates valides entre 2026 et 2199." };
   if (startsOn && endsOn && endsOn < startsOn) return { ok: false, error: "La fin de diffusion doit être postérieure ou égale au début." };
   if (kind && !["event", "house", "example"].includes(kind)) return { ok: false, error: "Choisissez un type d’annonce valide." };
+  if (!Number.isInteger(displaySeconds) || (displaySeconds as number) < 3 || (displaySeconds as number) > 60) return { ok: false, error: "Choisissez une durée d’affichage entre 3 et 60 secondes." };
   if (!["left", "right", "both"].includes(data.side as string) || typeof data.enabled !== "boolean" || !Number.isInteger(data.position) || (data.position as number) < 0 || (data.position as number) > 1000) return { ok: false, error: "Vérifiez l’emplacement, l’activation et l’ordre de l’annonce." };
-  return { ok: true, ad: { advertiser, image, imageAlt, url, caption, startsOn, endsOn, kind: kind as ManagedHomeAd["kind"], side: data.side as ManagedHomeAd["side"], enabled: data.enabled, position: data.position as number } };
+  return { ok: true, ad: { advertiser, image, imageAlt, url, caption, startsOn, endsOn, kind: kind as ManagedHomeAd["kind"], displaySeconds: displaySeconds as number, side: data.side as ManagedHomeAd["side"], enabled: data.enabled, position: data.position as number } };
 }
 
 export function adImageMime(bytes: Uint8Array): "image/jpeg" | "image/png" | "image/webp" | null {

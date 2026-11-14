@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { defaultManagedHomeAds, managedAdsForSide } from "../data/home-ads";
+import { DEFAULT_HOME_AD_SECONDS, defaultManagedHomeAds, managedAdsForSide } from "../data/home-ads";
 import { adImageMime, parseManagedHomeAd, validHomeAdId } from "./home-ads-validation";
 import { prepareHomeAdImage } from "./home-ad-image";
 import sharp from "sharp";
@@ -20,6 +20,10 @@ test("announcements keep the existing visuals and filter dates inclusively for e
   assert.equal(managedAdsForSide(ads, "left", "2026-11-13").length, 0);
 });
 test("advertising input validates link protocols, lengths, dates and activation", () => {
+  const defaultDuration = parseManagedHomeAd(valid);
+  assert.equal(defaultDuration.ok && defaultDuration.ad.displaySeconds, DEFAULT_HOME_AD_SECONDS);
+  const selectedDuration = parseManagedHomeAd({ ...valid, displaySeconds: 15 });
+  assert.equal(selectedDuration.ok && selectedDuration.ad.displaySeconds, 15);
   assert.equal(parseManagedHomeAd({ ...valid, url: "https://example.com/offre?source=golf" }).ok, true);
   assert.equal(parseManagedHomeAd({ ...valid, url: "/contact#reservation", startsOn: "2028-02-29" }).ok, true);
   for (const patch of [
@@ -28,6 +32,7 @@ test("advertising input validates link protocols, lengths, dates and activation"
     { startsOn: "2027-02-29" }, { startsOn: "2026-11-12", endsOn: "2026-11-11" },
     { advertiser: " " }, { imageAlt: "x".repeat(301) }, { caption: "x".repeat(241) },
     { side: "unknown" }, { position: -1 }, { position: 0.5 }, { enabled: "true" }, { kind: "unknown" },
+    { displaySeconds: 2 }, { displaySeconds: 61 }, { displaySeconds: "10" },
     { image: "https://example.com/tracking.png" }, { image: "/ads/../../secret" },
   ]) assert.equal(parseManagedHomeAd({ ...valid, ...patch }).ok, false, JSON.stringify(patch));
 });
