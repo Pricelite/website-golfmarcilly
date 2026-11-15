@@ -6,7 +6,7 @@ import { AssociationPortrait } from "@/components/association-portrait";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { associationFaqs, associationGroups, associationLinks, associationPartner, associationRoles } from "@/data/association";
+import { associationFaqs, associationGroups, associationLicences2027, associationLinks, associationPartner, associationRoles } from "@/data/association";
 import { associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
 import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
@@ -61,6 +61,7 @@ export default async function AssociationPage() {
             ["#partenaire-as", "Suivi sportif"],
             ["#equipe", "L’équipe de l’AS"],
             ["#presidents", "Présidents de l’AS"],
+            ["#licence-2027", "Licence 2027"],
             ["#rejoindre", "Participer"],
           ].map(([href, label]) => {
             const className = "py-2 text-sm font-medium text-emerald-950 underline decoration-emerald-950/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4";
@@ -272,6 +273,20 @@ export default async function AssociationPage() {
             </table>
           </div>
         </div>
+      </section>
+
+      <section id="licence-2027" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <SectionTitle eyebrow="Saison 2027" title="Licence ffgolf 2027" description="Les tarifs de la licence fédérale selon l’âge du joueur." />
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {associationLicences2027.map((licence) => (
+            <article key={licence.category} className="flex h-full flex-col rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-6">
+              <h3 className="font-serif text-xl text-emerald-950">{licence.category}</h3>
+              <p className="mt-1 text-sm text-emerald-950/70">{licence.age}</p>
+              <p className="mt-auto pt-6 font-serif text-3xl font-semibold tabular-nums text-emerald-950">{licence.price}</p>
+            </article>
+          ))}
+        </div>
+        <p className="mt-6 text-sm leading-6 text-emerald-950/75">Pour connaître les modalités de souscription et d’adhésion à l’association sportive, contactez l’accueil.</p>
       </section>
 
       <section id="rejoindre" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
