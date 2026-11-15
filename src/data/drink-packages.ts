@@ -8,9 +8,9 @@ export const cocktailPackages = [
 ] as const;
 
 export const drinkFormulas = [
-  { name: "Par", price: "6,00 €", description: "Vin rouge ou blanc · ½ eau minérale · 1 café", serving: "Vin servi en pichet." },
-  { name: "Birdie", price: "10,00 €", description: "Vin rouge ou blanc · ½ eau minérale · 1 café", serving: "1 bouteille de vin pour 4 personnes." },
-  { name: "Eagle", price: "13,00 €", description: "Vin rouge ou blanc supérieur · ½ eau minérale · 1 café", serving: "1 bouteille de vin pour 4 personnes." },
+  { name: "Par", price: "6,00 €", description: "Vin rouge ou blanc · 50 cl d’eau minérale · 1 café", serving: "Vin servi en pichet." },
+  { name: "Birdie", price: "10,00 €", description: "Vin rouge ou blanc · 50 cl d’eau minérale · 1 café", serving: "1 bouteille de vin pour 4 personnes." },
+  { name: "Eagle", price: "13,00 €", description: "Vin rouge ou blanc supérieur · 50 cl d’eau minérale · 1 café", serving: "1 bouteille de vin pour 4 personnes." },
 ] as const;
 
 export const cocktailDinner = {
@@ -20,9 +20,9 @@ export const cocktailDinner = {
     { name: "Prestige", description: "Boissons à volonté pendant 3 heures : crémant, vins, bières, softs, eaux et café." },
   ],
   prices: [
-    { guests: "10 à 20", classique: "55 €", prestige: "65 €" },
-    { guests: "20 à 30", classique: "54 €", prestige: "64 €" },
-    { guests: "30 à 40", classique: "53 €", prestige: "63 €" },
+    { guests: "10 à 19", classique: "55 €", prestige: "65 €" },
+    { guests: "20 à 29", classique: "54 €", prestige: "64 €" },
+    { guests: "30 à 39", classique: "53 €", prestige: "63 €" },
     { guests: "40 à 50", classique: "52 €", prestige: "62 €" },
   ],
 } as const;
