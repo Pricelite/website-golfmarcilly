@@ -8,6 +8,14 @@ export const associationLinks = {
   results: "https://pages.ffgolf.org/resultats/liste-competitions/5824d6b19f01d21a2e53b0249f2e9656",
 };
 
+// Tarifs 2027 communiqués par le propriétaire pour la licence ffgolf seule.
+export const associationLicences2027 = [
+  { category: "Adulte", age: "Plus de 25 ans", price: "63 €" },
+  { category: "Jeune adulte", age: "19 à 25 ans", price: "39 €" },
+  { category: "Jeune", age: "13 à 18 ans", price: "25 €" },
+  { category: "Enfant", age: "Moins de 13 ans", price: "22 €" },
+] as const;
+
 export const associationPartner = {
   name: "SwingFlow",
   href: "https://swingflow.fr/",
