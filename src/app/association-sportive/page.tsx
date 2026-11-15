@@ -6,7 +6,7 @@ import { AssociationPortrait } from "@/components/association-portrait";
 import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { associationFaqs, associationGroups, associationLicences2027, associationLinks, associationPartner, associationRoles } from "@/data/association";
+import { associationFaqs, associationGroups, associationLicences2027, associationLinks, associationMembership, associationPartner, associationRoles } from "@/data/association";
 import { associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
 import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
@@ -286,7 +286,26 @@ export default async function AssociationPage() {
             </article>
           ))}
         </div>
-        <p className="mt-6 text-sm leading-6 text-emerald-950/75">Pour connaître les modalités de souscription et d’adhésion à l’association sportive, contactez l’accueil.</p>
+        <div className="mt-8 grid overflow-hidden rounded-[28px] border border-emerald-950/15 bg-emerald-950 text-stone-50 shadow-lg shadow-emerald-950/10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+          <div className="flex flex-col p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#dbe9b4]">Faire vivre Marcilly ensemble</p>
+            <h3 className="mt-3 font-serif text-3xl">Rejoindre l’association sportive</h3>
+            <p className="mt-4 text-sm leading-7 text-stone-100/85">{associationMembership.description}</p>
+            <div className="mt-auto flex flex-wrap items-end gap-x-3 gap-y-1 pt-6">
+              <span className="font-serif text-4xl font-semibold tabular-nums">{associationMembership.price}</span>
+              <span className="pb-1 text-sm text-stone-100/85">Cotisation AS</span>
+            </div>
+          </div>
+          <div className="bg-[#e8f4ed] p-6 text-emerald-950 sm:p-8">
+            <h4 className="font-serif text-2xl">Ce que vous apporte l’AS</h4>
+            <ul className="mt-5 space-y-4 text-sm leading-6">
+              {associationMembership.benefits.map((benefit) => (
+                <li key={benefit} className="flex gap-3"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span><span>{benefit}</span></li>
+              ))}
+            </ul>
+            <p className="mt-6 border-t border-emerald-950/15 pt-4 text-xs leading-5 text-emerald-950/70">La cotisation AS est distincte du prix de la licence ffgolf indiqué ci-dessus. Pour adhérer, contactez l’accueil.</p>
+          </div>
+        </div>
       </section>
 
       <section id="rejoindre" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
