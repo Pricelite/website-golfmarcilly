@@ -11,12 +11,12 @@ export function RestaurantMenus() {
         <SectionTitle eyebrow="À partager à La Bergerie" title="Nos menus de groupes" description="À partir de 11 personnes. Choisissez votre formule et communiquez vos choix à l’avance pour préparer votre repas." />
         <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-6">
           {restaurantData.groupMenus.items.map((menu, index) => (
-            <article key={menu.name} className={`flex min-h-64 flex-col overflow-hidden rounded-2xl border border-emerald-950/20 bg-[#e8f4ed] shadow-sm shadow-emerald-950/10 lg:col-span-2 ${restaurantData.groupMenus.items.length % 3 === 2 && index === restaurantData.groupMenus.items.length - 2 ? "lg:col-start-2" : ""}`}>
+            <article key={menu.name} className={`flex flex-col overflow-hidden rounded-2xl border border-emerald-950/20 bg-[#e8f4ed] shadow-sm shadow-emerald-950/10 lg:col-span-2 lg:min-h-64 ${restaurantData.groupMenus.items.length % 3 === 2 && index === restaurantData.groupMenus.items.length - 2 ? "lg:col-start-2" : ""}`}>
               <div className="flex min-h-32 flex-col items-center justify-center border-b border-emerald-950/15 bg-emerald-950 px-6 py-5 text-center text-stone-50">
                 <h3 className="font-serif text-2xl">{menu.name}</h3>
                 <p className="mt-3"><span className="font-serif text-4xl">{nonbreakingEuro(menu.price)}</span><span className="ml-2 text-sm text-stone-100/85">/ personne</span></p>
               </div>
-              <div className="flex min-h-32 flex-1 flex-col px-6 py-4 text-left">
+              <div className="flex flex-1 flex-col px-6 py-4 text-left lg:min-h-32">
               {menu.description ? <p className="text-sm leading-6 text-emerald-950/85">{menu.description}</p> : null}
               {menu.sections.length ? <details>
                 <summary className="cursor-pointer text-sm font-semibold text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2">Voir le détail du menu</summary>
