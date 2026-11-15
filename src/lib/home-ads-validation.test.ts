@@ -5,7 +5,7 @@ import { adImageMime, parseManagedHomeAd, validHomeAdId } from "./home-ads-valid
 import { prepareHomeAdImage } from "./home-ad-image";
 import sharp from "sharp";
 
-const valid = { advertiser: "Partenaire", image: "/ads/horaires-hiver.svg", imageAlt: "Affiche du partenaire", side: "left", enabled: true, position: 10 };
+const valid = { advertiser: "Partenaire", image: "/ads/saumon-fume-la-bergerie.png", imageAlt: "Affiche du partenaire", side: "left", enabled: true, position: 10 };
 
 test("announcements keep the existing visuals and filter dates inclusively for each side", () => {
   const defaults = defaultManagedHomeAds();

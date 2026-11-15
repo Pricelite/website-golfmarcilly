@@ -37,7 +37,7 @@ export async function PUT(request: Request) {
   const file = fields.get("image");
   if (file !== null && (!(file instanceof File) || file.size < 1 || file.size > MAX_AD_IMAGE_BYTES)) return response({ error: "Ajoutez une image JPEG, PNG ou WebP de 5 Mo maximum." }, 400);
   // A new uploaded visual replaces this placeholder only after decoding and validation.
-  const parsed = parseManagedHomeAd(file instanceof File ? { ...input, image: "/ads/horaires-hiver.svg" } : input);
+  const parsed = parseManagedHomeAd(file instanceof File ? { ...input, image: "/ads/saumon-fume-la-bergerie.png" } : input);
   if (!parsed.ok) return response({ error: parsed.error }, 400);
   let imageBytes: Uint8Array | undefined;
   if (file instanceof File) {
