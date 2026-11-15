@@ -1,4 +1,4 @@
-// TODO propriétaire : coordonnées propres à l'AS, cotisation et bulletin
+// TODO propriétaire : coordonnées propres à l'AS et bulletin
 // d'adhésion, équipes/capitaines et documents validés de l'AS.
 // Sources consultées : https://www.marcilly.com/l-association
 // https://www.ffgolf.org/golf-amateur/jouer-en-competition
@@ -15,6 +15,16 @@ export const associationLicences2027 = [
   { category: "Jeune", age: "13 à 18 ans", price: "25 €" },
   { category: "Enfant", age: "Moins de 13 ans", price: "22 €" },
 ] as const;
+
+export const associationMembership = {
+  price: "40 €",
+  description: "Adhérer à l’AS, c’est prendre part à la vie de Marcilly : soutenir les compétitions et les animations, partager des moments avec les autres joueurs et porter les couleurs du club.",
+  benefits: [
+    "Participez aux rencontres et aux compétitions réservées aux adhérents, selon leurs conditions d’inscription.",
+    "Profitez des tarifs réservés aux membres de l’AS lorsqu’ils sont proposés.",
+    "Représentez Marcilly en compétition par équipes, sous réserve des conditions sportives et fédérales.",
+  ],
+} as const;
 
 export const associationPartner = {
   name: "SwingFlow",
@@ -58,7 +68,7 @@ export const associationGroups = [
 export const associationFaqs = [
   {
     question: "Comment rejoindre l’association ?",
-    answer: "Contactez l’accueil du golf pour être orienté vers l’association et connaître les modalités d’adhésion ainsi que la cotisation en vigueur.",
+    answer: "La cotisation à l’AS est de 40 €. Contactez l’accueil du golf pour connaître les modalités d’adhésion.",
   },
   {
     question: "Je souhaite jouer ma première compétition : par où commencer ?",
