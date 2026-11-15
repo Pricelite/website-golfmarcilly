@@ -31,6 +31,18 @@ export const restaurantFaqs = [
 
 export const restaurantGallery = [
   {
+    src: "/restaurant/gallery/assiette-volaille-legumes.png",
+    alt: "Cuisse de volaille en sauce, légumes et pommes de terre dressés sur une assiette blanche",
+    title: "Une assiette savoureuse",
+    description: "Une volaille accompagnée de légumes et de pommes de terre, présentée à l’assiette.",
+  },
+  {
+    src: "/restaurant/gallery/dessert-chocolat-fruits-rouges.png",
+    alt: "Dessert au chocolat décoré d’une feuille de chocolat et de fruits rouges",
+    title: "Une note chocolatée",
+    description: "Un dessert au chocolat et aux fruits rouges, soigné jusqu’au dressage.",
+  },
+  {
     src: "/restaurant/gallery/entree-creme-herbes.webp",
     alt: "Entrée dans une assiette blanche, avec une quenelle de crème, des herbes et des traits de sauce",
     title: "Une entrée tout en fraîcheur",
