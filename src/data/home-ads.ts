@@ -50,10 +50,11 @@ export const homeAds: { left: HomeAd[]; right: HomeAd[] } = {
   ],
   right: [
     {
-      advertiser: "Horaires d'hiver du golf",
-      image: "/ads/horaires-hiver.svg",
-      imageAlt: "Horaires d'hiver du 1er novembre au 10 mars : de 9 h à 18 h du lundi au vendredi et de 9 h à 19 h le samedi et le dimanche",
-      caption: "Du 1er novembre au 10 mars",
+      advertiser: "Saumon fumé maison · La Bergerie",
+      image: "/ads/saumon-fume-la-bergerie.png",
+      imageAlt: "Affiche du saumon fumé maison de La Bergerie : 500 g à 29,90 € et 1 kg à 55,90 €",
+      caption: "Saumon fumé maison · La Bergerie",
+      url: "/restaurant",
       kind: "house",
     },
   ],
