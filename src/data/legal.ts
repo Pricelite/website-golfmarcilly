@@ -1,11 +1,10 @@
 /**
- * TODO propriétaire : fournir et valider les informations ci-dessous avant publication.
  * Ne pas déduire l'identité juridique ou l'hébergeur du nom commercial ou des outils du projet.
- * Conserver reviewed=false tant que les deux pages n'ont pas été validées.
+ * Mentions légales et politique de confidentialité validées par le propriétaire le 15 novembre 2026.
  * Les valeurs vides ne sont jamais affichées aux visiteurs.
  */
 export const legalContent = {
-  reviewed: false,
+  reviewed: true,
   // Source : extrait Kbis à jour au 15 mai 2025, fourni par le propriétaire le 19 octobre 2026.
   publisherIdentity: "GOLF DE MARCILLY - ORLEANS, société par actions simplifiée à associé unique, au capital social de 30 489,80 €, immatriculée sous le numéro 334 925 419 RCS Orléans. Siège social : Domaine de la Plaine, 45240 Marcilly-en-Villette.",
   // Numéro recoupé le 21 octobre 2026 pour le SIREN 334925419 :
