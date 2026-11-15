@@ -53,7 +53,7 @@ export async function DailyMenuSection() {
         <a href={`tel:${siteConfig.phoneHref}`} className="mt-3 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">{siteConfig.phoneDisplay}</a>
       </div> : <>
       <p className="px-5 pt-4 text-sm leading-6 sm:px-6">Notre carte reste valable jusqu’à sa prochaine mise à jour. Les plats sont proposés selon disponibilité.</p>
-        <div className="divide-y divide-emerald-950/10 md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
+        <div className="divide-y divide-emerald-950/10 xl:grid xl:grid-cols-3 xl:divide-x xl:divide-y-0">
           {categories.map(({ key, title }) => (
             <div key={key} className="px-5 py-3 sm:px-6">
               <h3 className="font-serif text-lg text-emerald-950">{title}</h3>
