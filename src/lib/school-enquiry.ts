@@ -1,4 +1,5 @@
 import { juniorPrograms } from "@/data/teaching";
+import { clockRangeLabel } from "@/lib/clock-range-label";
 import { isNonEmptyWithinLength, isValidEmail, isWithinLength, parseTrimmedString } from "@/lib/api/public-form-validation";
 
 export type SchoolEnquiry = {
@@ -57,7 +58,7 @@ export function formatSchoolEnquiry(enquiry: SchoolEnquiry): string {
     `Prénom de l’enfant : ${enquiry.childFirstName}`,
     `Âge de l’enfant : ${enquiry.childAge} ans`,
     `Groupe souhaité : ${enquiry.programTitle}`,
-    `Créneau souhaité : ${enquiry.preferredSlot || "À définir avec l’accueil"}`,
+    `Créneau souhaité : ${enquiry.preferredSlot ? clockRangeLabel(enquiry.preferredSlot) : "À définir avec l’accueil"}`,
     `Précisions : ${enquiry.notes || "Aucune"}`,
     "",
     "Demande de renseignements ou d’inscription, à confirmer par l’équipe du golf.",

@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { capturePostHog } from "@/lib/analytics/posthog-client";
 import { FormPrivacyNotice } from "@/components/forms/form-privacy-notice";
 import { juniorPrograms } from "@/data/teaching";
+import { clockRangeLabel } from "@/lib/clock-range-label";
 import { FORM_NETWORK_ERROR, getFormErrorMessage } from "@/lib/api/form-feedback";
 
 type ProgramKey = (typeof juniorPrograms)[number]["key"];
@@ -97,7 +98,7 @@ export function SchoolEnquiryForm({ initialProgramKey }: { initialProgramKey: Pr
           <label className={labelClass}>Créneau préféré
             <select key={programKey} name="preferredSlot" defaultValue="" className={inputClass}>
               <option value="">À définir avec l’accueil</option>
-              {program.slots.map((slot) => <option key={slot} value={slot}>{slot}</option>)}
+              {program.slots.map((slot) => <option key={slot} value={slot}>{clockRangeLabel(slot)}</option>)}
             </select>
           </label>
         </div>

@@ -19,6 +19,7 @@ test("la demande école de golf valide le groupe et le créneau côté serveur",
   assert.ok(enquiry);
   assert.equal(enquiry.email, "camille@example.fr");
   assert.match(formatSchoolEnquiry(enquiry), /Groupe souhaité : Loisir/);
+  assert.match(formatSchoolEnquiry(enquiry), /Mercredi : 14h00 - 15h00/);
   assert.equal(parseSchoolEnquiry({ ...valid, program: "autre" }), null);
   assert.equal(parseSchoolEnquiry({ ...valid, preferredSlot: "Vendredi : 21 h" }), null);
 });
