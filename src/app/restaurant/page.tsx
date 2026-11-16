@@ -30,7 +30,7 @@ const pageLinks = [
 ] as const;
 
 export default function RestaurantPage() {
-  const barHours = getGolfOpeningSchedule().map(slot => slot.hours.replace(/^de /, "").replace(" à ", " – "));
+  const barHours = getGolfOpeningSchedule().map(slot => slot.hours);
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([{ name: "Accueil", path: "/" }, { name: "Restaurant", path: "/restaurant" }])} />

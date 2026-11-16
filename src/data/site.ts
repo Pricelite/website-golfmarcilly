@@ -1,10 +1,10 @@
 const currentGolfOpeningSchedule = [
-  { days: "Lundi au vendredi", hours: "de 8 h 30 à 19 h" },
-  { days: "Samedi et dimanche", hours: "de 8 h à 20 h" },
+  { days: "Lundi au vendredi", hours: "08h30 - 19h00" },
+  { days: "Samedi et dimanche", hours: "08h00 - 20h00" },
 ] as const;
 const winterGolfOpeningSchedule = [
-  { days: "Lundi au vendredi", hours: "de 9 h à 18 h" },
-  { days: "Samedi et dimanche", hours: "de 9 h à 19 h" },
+  { days: "Lundi au vendredi", hours: "09h00 - 18h00" },
+  { days: "Samedi et dimanche", hours: "09h00 - 19h00" },
 ] as const;
 
 /** Horaires d'hiver du 1er novembre au 10 mars inclus, chaque année, heure de Paris. */
@@ -17,7 +17,7 @@ export function getGolfOpeningSchedule(now = new Date()) {
 }
 
 export function getGolfOpeningHours(now = new Date()) {
-  return getGolfOpeningSchedule(now).map(slot => `${slot.days} ${slot.hours}`).join(". ");
+  return getGolfOpeningSchedule(now).map(slot => `${slot.days} : ${slot.hours}`).join(". ");
 }
 
 export const siteConfig = {
@@ -50,7 +50,7 @@ export const siteConfig = {
   ],
   hours: [
     { label: "Restaurant", value: "Le lundi et du mercredi au vendredi : 12h00 - 14h30. Samedi et dimanche : 12h00 - 15h00. Fermé le mardi." },
-    { label: "Practice", value: "Tous les jours, de 7 h 30 à 20 h" },
+    { label: "Practice", value: "Tous les jours : 07h30 - 20h00" },
   ],
 } as const;
 

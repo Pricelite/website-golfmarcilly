@@ -168,7 +168,7 @@ export function PromoOffersModal({ initialNow, label, offers }: PromoOffersModal
         aria-haspopup={canOpen ? "dialog" : undefined}
         aria-expanded={canOpen ? isMounted : undefined}
         aria-disabled={!canOpen}
-        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 9 h, heure de Paris, dans ${formatOfferCountdown(campaignTiming.remainingMs)}` : undefined}
+        aria-label={!canOpen ? `Black Friday 2026 : ouverture le 1er novembre à 09h00, heure de Paris, dans ${formatOfferCountdown(campaignTiming.remainingMs)}` : undefined}
         className={`group relative block w-full overflow-hidden border-y border-amber-400/60 bg-[#f4d77b] text-left text-emerald-950 shadow-[0_4px_16px_rgba(120,80,10,0.08)] focus-visible:z-10 focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-emerald-800 ${canOpen ? "transition-colors hover:bg-[#f8df94]" : "cursor-default"}`}
         onClick={openModal}
         ref={triggerRef}
@@ -246,7 +246,7 @@ export function PromoOffersModal({ initialNow, label, offers }: PromoOffersModal
                     <p className="mt-1 max-w-xl text-sm leading-6 text-emerald-950/75" id={descriptionId}>
                       {totalOffers ? (hasMultipleOffers ? "Découvrez nos offres exclusives disponibles pour une durée limitée." : "Découvrez notre offre exclusive disponible pour une durée limitée.") : "Découvrez les offres Black Friday de novembre 2026."}
                     </p>
-                    {isBlackFridayPreview ? <p className="mt-1 text-sm font-semibold text-emerald-900">Jusqu’au <time dateTime={blackFriday2026ClosesAt}>lundi 30 novembre 2026 à 20 h</time>, heure de Paris.</p> : null}
+                    {isBlackFridayPreview ? <p className="mt-1 text-sm font-semibold text-emerald-900">Jusqu’au <time dateTime={blackFriday2026ClosesAt}>lundi 30 novembre 2026 à 20h00</time>, heure de Paris.</p> : null}
                   </div>
                 </div>
 
