@@ -92,7 +92,7 @@ export const pricingSections: PricingSection[] = [
         note: "Jeunes de moins de 20 ans : 30 € avec licence.",
       },
       {
-        label: "18 trous après 16 h 00",
+        label: "18 trous après 16h00",
         values: ["39 €"],
       },
     ],

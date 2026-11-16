@@ -29,7 +29,7 @@ export function buildGolfOpeningHours(now = new Date()) {
     [`${year + 1}-11-01`, `${year + 2}-03-10`],
   ];
   return periods.flatMap(([validFrom, validThrough]) => getGolfOpeningSchedule(new Date(`${validFrom}T12:00:00Z`)).map((slot, index) => {
-    const parsed = slot.hours.match(/de (\d+) h(?: (\d+))? à (\d+) h(?: (\d+))?/);
+    const parsed = slot.hours.match(/^(\d{2})h(\d{2}) - (\d{2})h(\d{2})$/);
     if (!parsed) throw new Error("Invalid golf opening hours");
     return { "@type": "OpeningHoursSpecification", dayOfWeek: (index === 0 ? weekDays.slice(0, 5) : weekDays.slice(5)).map(day => `https://schema.org/${day}`), opens: time(parsed[1], parsed[2]), closes: time(parsed[3], parsed[4]), validFrom, validThrough };
   }));
