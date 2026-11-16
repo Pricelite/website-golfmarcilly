@@ -12,6 +12,7 @@ import { associationNews } from "@/data/association-news";
 import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 import { publicAssociationEvents } from "@/lib/association-events-db";
 
@@ -53,6 +54,7 @@ export default async function AssociationPage() {
         <div className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 px-4 py-3 sm:px-6 lg:px-8">
           {[
             ["#role", "Le rôle de l’AS"],
+            ["#licence-2027", "Licence 2027"],
             ["#competitions", "Compétitions et résultats"],
             ["#groupes", "Équipes et seniors"],
             ["/association-sportive/equipes", "Nos équipes 2026"],
@@ -61,7 +63,6 @@ export default async function AssociationPage() {
             ["#partenaire-as", "Suivi sportif"],
             ["#equipe", "L’équipe de l’AS"],
             ["#presidents", "Présidents de l’AS"],
-            ["#licence-2027", "Licence 2027"],
             ["#rejoindre", "Participer"],
           ].map(([href, label]) => {
             const className = "py-2 text-sm font-medium text-emerald-950 underline decoration-emerald-950/25 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4";
@@ -85,6 +86,39 @@ export default async function AssociationPage() {
         </div>
       </section>
 
+      <section id="licence-2027" className="mx-auto max-w-7xl scroll-mt-28 px-4 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
+        <SectionTitle eyebrow="Saison 2027" title="Licence ffgolf 2027" description="Les tarifs de la licence fédérale selon l’âge du joueur." />
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {associationLicences2027.map((licence) => (
+            <article key={licence.category} className="flex h-full flex-col rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-6">
+              <h3 className="font-serif text-xl text-emerald-950">{licence.category}</h3>
+              <p className="mt-1 text-sm text-emerald-950/70">{licence.age}</p>
+              <p className="mt-auto pt-6 font-serif text-3xl font-semibold tabular-nums text-emerald-950">{nonbreakingEuro(licence.price)}</p>
+            </article>
+          ))}
+        </div>
+        <div className="mt-8 grid overflow-hidden rounded-[28px] border border-emerald-950/15 bg-emerald-950 text-stone-50 shadow-lg shadow-emerald-950/10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+          <div className="flex flex-col p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#dbe9b4]">Faire vivre Marcilly ensemble</p>
+            <h3 className="mt-3 font-serif text-3xl">Rejoindre l’association sportive</h3>
+            <p className="mt-4 text-sm leading-7 text-stone-100/85">{associationMembership.description}</p>
+            <div className="mt-auto flex flex-wrap items-end gap-x-3 gap-y-1 pt-6">
+              <span className="font-serif text-4xl font-semibold tabular-nums">{nonbreakingEuro(associationMembership.price)}</span>
+              <span className="pb-1 text-sm text-stone-100/85">Cotisation AS</span>
+            </div>
+          </div>
+          <div className="bg-[#e8f4ed] p-6 text-emerald-950 sm:p-8">
+            <h4 className="font-serif text-2xl">Ce que vous apporte l’AS</h4>
+            <ul className="mt-5 space-y-4 text-sm leading-6">
+              {associationMembership.benefits.map((benefit) => (
+                <li key={benefit} className="flex gap-3"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span><span>{benefit}</span></li>
+              ))}
+            </ul>
+            <p className="mt-6 border-t border-emerald-950/15 pt-4 text-xs leading-5 text-emerald-950/70">La cotisation AS est distincte du prix de la licence ffgolf indiqué ci-dessus. Pour adhérer, contactez l’accueil.</p>
+          </div>
+        </div>
+      </section>
+
       <section id="competitions" className="scroll-mt-28 bg-emerald-950 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle eyebrow="Vos rendez-vous sportifs" tone="inverse" title="Le calendrier de l’association sportive" description="Retrouvez les compétitions, les créneaux à définir, les jours fériés, les fêtes et les vacances scolaires. Les dates et modalités des compétitions peuvent évoluer." />
@@ -101,7 +135,7 @@ export default async function AssociationPage() {
               </article>
             ))}
           </div>
-          <p className="mt-8 text-sm text-stone-100/80">Le calendrier 2027 s’ouvre sur mars. Parcourez les mois avec les flèches ou choisissez un mois et une année. Pour les vacances scolaires, sélectionnez la zone A, B ou C.</p>
+          <p className="mt-8 text-sm text-stone-100/80">Le calendrier s’ouvre sur le mois en cours. Parcourez les mois avec les flèches ou choisissez un mois et une année. Pour les vacances scolaires, sélectionnez la zone A, B ou C.</p>
           {calendar.unavailable ? <p role="status" className="mt-8 rounded-2xl bg-white p-6 text-emerald-950">Le calendrier est momentanément indisponible. Réessayez dans quelques instants ou contactez l’accueil au {siteConfig.phoneDisplay}.</p> : <AssociationCalendar events={calendar.events} initialDate={new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} />}
         </div>
       </section>
@@ -271,39 +305,6 @@ export default async function AssociationPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="licence-2027" className="mx-auto max-w-7xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <SectionTitle eyebrow="Saison 2027" title="Licence ffgolf 2027" description="Les tarifs de la licence fédérale selon l’âge du joueur." />
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {associationLicences2027.map((licence) => (
-            <article key={licence.category} className="flex h-full flex-col rounded-2xl border border-emerald-950/15 bg-[#f7f4e9] p-6">
-              <h3 className="font-serif text-xl text-emerald-950">{licence.category}</h3>
-              <p className="mt-1 text-sm text-emerald-950/70">{licence.age}</p>
-              <p className="mt-auto pt-6 font-serif text-3xl font-semibold tabular-nums text-emerald-950">{licence.price}</p>
-            </article>
-          ))}
-        </div>
-        <div className="mt-8 grid overflow-hidden rounded-[28px] border border-emerald-950/15 bg-emerald-950 text-stone-50 shadow-lg shadow-emerald-950/10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-          <div className="flex flex-col p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#dbe9b4]">Faire vivre Marcilly ensemble</p>
-            <h3 className="mt-3 font-serif text-3xl">Rejoindre l’association sportive</h3>
-            <p className="mt-4 text-sm leading-7 text-stone-100/85">{associationMembership.description}</p>
-            <div className="mt-auto flex flex-wrap items-end gap-x-3 gap-y-1 pt-6">
-              <span className="font-serif text-4xl font-semibold tabular-nums">{associationMembership.price}</span>
-              <span className="pb-1 text-sm text-stone-100/85">Cotisation AS</span>
-            </div>
-          </div>
-          <div className="bg-[#e8f4ed] p-6 text-emerald-950 sm:p-8">
-            <h4 className="font-serif text-2xl">Ce que vous apporte l’AS</h4>
-            <ul className="mt-5 space-y-4 text-sm leading-6">
-              {associationMembership.benefits.map((benefit) => (
-                <li key={benefit} className="flex gap-3"><span aria-hidden="true" className="font-bold text-emerald-700">✓</span><span>{benefit}</span></li>
-              ))}
-            </ul>
-            <p className="mt-6 border-t border-emerald-950/15 pt-4 text-xs leading-5 text-emerald-950/70">La cotisation AS est distincte du prix de la licence ffgolf indiqué ci-dessus. Pour adhérer, contactez l’accueil.</p>
           </div>
         </div>
       </section>

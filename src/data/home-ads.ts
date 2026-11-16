@@ -42,8 +42,8 @@ export const homeAds: { left: HomeAd[]; right: HomeAd[] } = {
     {
       advertiser: "Rugby et fléchettes au club-house",
       image: "/ads/rugby-france-afrique-du-sud-2026.png",
-      imageAlt: "Affiche de la retransmission France – Afrique du Sud le vendredi 13 novembre à 21 h 10 au club-house, avec une soirée fléchettes sur réservation",
-      caption: "Vendredi 13 novembre · 21 h 10",
+      imageAlt: "Affiche de la retransmission France – Afrique du Sud le vendredi 13 novembre à 21h10 au club-house, avec une soirée fléchettes sur réservation",
+      caption: "Vendredi 13 novembre · 21h10",
       kind: "event",
       endsOn: "2026-11-13",
     },

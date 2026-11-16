@@ -95,6 +95,16 @@
   font-weight: 600;
 }
 
+.today {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #245fd0;
+  border-radius: 50%;
+}
+
 .event {
   display: block;
   width: 100%;

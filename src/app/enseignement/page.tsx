@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { siteConfig } from "@/data/site";
 import { adultCollectiveCoursePosterSrc, juniorPrograms, sportingLabelCriteria, teachingFaqs, teachingPros } from "@/data/teaching";
 import { buildMetadata } from "@/lib/metadata";
+import { clockRangeLabel } from "@/lib/clock-range-label";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
@@ -62,7 +63,7 @@ export default function TeachingPage() {
                 {program.included.map((item) => <li key={item}>✓ {item}</li>)}
               </ul>
               <ul className="my-6 space-y-2 border-y border-emerald-950/10 py-5 text-sm text-emerald-950/80">
-                {program.slots.map((slot) => <li key={slot}>{slot}</li>)}
+                {program.slots.map((slot) => <li key={slot}>{clockRangeLabel(slot)}</li>)}
               </ul>
               <CTAButton href={`/enseignement/inscription?programme=${program.key}`} variant="secondary" className="mt-auto self-start">Renseignements et inscription</CTAButton>
             </article>
