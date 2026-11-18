@@ -14,10 +14,12 @@ type RestaurantSlide = {
 
 type RestaurantDishesCarouselProps = {
   items: readonly RestaurantSlide[];
+  compact?: boolean;
 };
 
 export function RestaurantDishesCarousel({
   items,
+  compact = false,
 }: RestaurantDishesCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -66,6 +68,40 @@ export function RestaurantDishesCarousel({
 
   if (items.length === 0) {
     return null;
+  }
+
+  if (compact) {
+    const activeItem = items[activeIndex];
+
+    return (
+      <div
+        aria-label="Aperçu des photos de La Bergerie"
+        className="overflow-hidden rounded-2xl border border-white/20 bg-emerald-950/75"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        role="region"
+      >
+        <div className="relative h-32 bg-emerald-950 sm:h-36">
+          <Image
+            alt={activeItem.alt}
+            className="object-contain"
+            fill
+            sizes="(max-width: 640px) calc(100vw - 80px), 380px"
+            src={activeItem.src}
+          />
+          {items.length > 1 ? (
+            <>
+              <button aria-label="Photo précédente" className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-emerald-950/75 text-xl text-white transition hover:bg-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={goToPrevious} type="button">‹</button>
+              <button aria-label="Photo suivante" className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-emerald-950/75 text-xl text-white transition hover:bg-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={goToNext} type="button">›</button>
+            </>
+          ) : null}
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-2 text-xs text-stone-100/90">
+          <span className="truncate">{activeItem.title}</span>
+          <span className="shrink-0 tabular-nums">{activeIndex + 1} / {items.length}</span>
+        </div>
+      </div>
+    );
   }
 
   return (
