@@ -7,7 +7,6 @@ import { useRef, useState } from "react";
 
 import { CTAButton } from "@/components/ui/cta-button";
 import { HeaderMarcillyClock } from "@/components/layout/header-marcilly-clock";
-import { ZenchefReservationLink } from "@/components/zenchef-reservation-link";
 import { navigationItems, siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -75,11 +74,9 @@ export function Header() {
           </div>
           <CTAButton href={siteConfig.bookingEngineUrl} className="whitespace-nowrap px-4">Réservation membre</CTAButton>
           <CTAButton href={siteConfig.teeItUpBookingUrl} variant="secondary" className="whitespace-nowrap px-4">Réservation non-membre</CTAButton>
-          <ZenchefReservationLink className="site-button site-button-primary inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-2.5 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" />
         </div>
 
         <div className="ml-auto flex items-center gap-2 min-[1440px]:hidden">
-          <ZenchefReservationLink className="site-button site-button-primary hidden items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 sm:inline-flex" />
           <a
             aria-label="Appeler le Golf de Marcilly"
             className="site-button inline-flex rounded-full px-3 py-2 text-sm font-semibold lg:hidden"
@@ -110,7 +107,6 @@ export function Header() {
       >
         <nav aria-label="Navigation mobile" className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <ul className="space-y-3">
-            <li><ZenchefReservationLink className="site-button site-button-primary flex w-full items-center justify-center rounded-2xl px-4 py-3 text-sm font-semibold" onClick={() => setOpen(false)} /></li>
             {navigationItems.map((item) => (
               <li key={item.href}>
                 <Link
