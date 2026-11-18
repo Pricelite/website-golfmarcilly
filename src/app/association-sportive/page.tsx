@@ -322,7 +322,7 @@ export default async function AssociationPage() {
               {associationFaqs.map((faq) => (
                 <details key={faq.question} className="py-4">
                   <summary className="cursor-pointer text-sm font-semibold leading-6 text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4">{faq.question}</summary>
-                  <p className="mt-3 text-sm leading-7 text-emerald-950/75">{faq.answer}</p>
+                  <p className="mt-3 text-sm leading-7 text-emerald-950/75">{nonbreakingEuro(faq.answer)}</p>
                 </details>
               ))}
             </div>

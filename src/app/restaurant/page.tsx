@@ -14,6 +14,7 @@ import { restaurantGallery } from "@/data/restaurant";
 import { getGolfOpeningSchedule, siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { restaurantData } from "@/lib/restaurant-data";
+import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 import { buildBreadcrumbSchema, buildRestaurantSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata(publicPageSeo.restaurant);
@@ -160,7 +161,7 @@ export default function RestaurantPage() {
               <p className="mt-5 text-sm leading-7 text-emerald-950/70">Les informations essentielles pour organiser votre repas, votre réception ou votre location de salle à La Bergerie.</p>
               <div className="mt-6 rounded-2xl border-l-4 border-emerald-700 bg-[#e8f4ed] p-5 shadow-sm shadow-emerald-950/10">
                 <h3 className="font-serif text-xl text-emerald-950">Location de salle seule</h3>
-                <p className="mt-2 text-sm font-semibold leading-7 text-emerald-950">{restaurantData.intro.roomRental}</p>
+                <p className="mt-2 text-sm font-semibold leading-7 text-emerald-950">{nonbreakingEuro(restaurantData.intro.roomRental)}</p>
                 <p className="mt-1 text-sm leading-7 text-emerald-950/70">{restaurantData.intro.roomRentalNote}</p>
               </div>
             </div>
@@ -168,7 +169,7 @@ export default function RestaurantPage() {
               {restaurantData.cgv.sections.map((section) => (
                 <details key={section.title} className="group py-5">
                   <summary className="cursor-pointer rounded-sm font-serif text-xl text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">{section.title}</summary>
-                  <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/75">{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
+                  <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-emerald-950/75">{section.items.map((item) => <li key={item}>{nonbreakingEuro(item)}</li>)}</ul>
                 </details>
               ))}
             </div>
