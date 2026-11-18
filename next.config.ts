@@ -9,11 +9,11 @@ const contentSecurityPolicy = [
   "form-action 'self'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "style-src 'self' 'unsafe-inline'",
-  `script-src 'self' 'unsafe-inline' https://*.posthog.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline' https://sdk.zenchef.com",
+  `script-src 'self' 'unsafe-inline' https://sdk.zenchef.com https://*.posthog.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
   "connect-src 'self' https://api.open-meteo.com https://api.brevo.com https://*.posthog.com",
   "worker-src 'self' blob:",
-  "frame-src 'self' https://calendar.google.com https://www.flyovergreen.com",
+  "frame-src 'self' https://bookings.zenchef.com https://calendar.google.com https://www.flyovergreen.com",
   ...(!isDevelopment ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 

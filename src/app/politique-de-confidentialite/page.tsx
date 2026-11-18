@@ -88,10 +88,9 @@ export default function PrivacyPage() {
           </p>
           <p>{legalContent.thirdPartyDetails}</p>
           <p>
-            Sur la page du restaurant, aucun module Zenchef n’est chargé
-            automatiquement. Le bouton de réservation ouvre le service Zenchef
-            dans un nouvel onglet ; ce service applique ses propres règles de
-            confidentialité et de cookies.
+            Le module de réservation Zenchef est chargé uniquement lorsque vous
+            cliquez sur « Réserver une table ». Il s’ouvre alors sur le site ;
+            Zenchef applique ses propres règles de confidentialité et de cookies.
           </p>
           <p>
             Consultez la{" "}
