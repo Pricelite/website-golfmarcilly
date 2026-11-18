@@ -30,7 +30,7 @@ export default function TeachingPage() {
             <SectionTitle as="h1" eyebrow="Enseignement · Golf de Marcilly" title="Cours et école de golf près d’Orléans" description="Un premier swing, une nouvelle envie de jouer, un geste à améliorer : trouvez votre point de départ à Marcilly-en-Villette, près d’Orléans." />
             <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
               <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">École de golf dès 4 ans</dt><dd className="mt-1">{nonbreakingEuro(juniorPrograms[0].price)} / saison · licence incluse</dd><dd className="mt-1 text-emerald-950/75">Mercredi ou samedi · <a href="#ecole-de-golf" className={linkClass}>voir les horaires</a></dd></div>
-              <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">Cours collectifs adultes</dt><dd className="mt-1">200 € · 20 séances d’une heure</dd><dd className="mt-1 text-emerald-950/75">Balles en supplément · dates auprès des pros</dd></div>
+              <div className="rounded-2xl border border-emerald-950/15 bg-white/70 p-4"><dt className="font-semibold">Cours collectifs adultes</dt><dd className="mt-1">{nonbreakingEuro("200 €")} · 20 séances d’une heure</dd><dd className="mt-1 text-emerald-950/75">Balles en supplément · dates auprès des pros</dd></div>
             </dl>
             <div className="mt-7 flex flex-wrap gap-3">
               <CTAButton href="#ecole-de-golf">L’école de golf</CTAButton>
@@ -93,7 +93,7 @@ export default function TeachingPage() {
             <article className="flex flex-col items-start rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Apprendre ensemble</p>
               <h3 className="mt-3 font-serif text-2xl text-stone-50">Cours collectifs adultes</h3>
-              <p className="mt-3 text-sm leading-7 text-stone-50/80">L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez les pros pour connaître les dates et les modalités.</p>
+              <p className="mt-3 text-sm leading-7 text-stone-50/80">{nonbreakingEuro("L’affiche présente 20 séances d’une heure pour 200 €. Les balles de practice sont à votre charge : 50 € pour 25 seaux. Contactez les pros pour connaître les dates et les modalités.")}</p>
               <CTAButton href="#enseignants" variant="secondary" className="mt-auto">Contacter les pros</CTAButton>
             </article>
             <article className="flex flex-col rounded-[28px] border border-white/25 bg-[#145449] p-6 shadow-lg shadow-black/10 sm:p-8">
