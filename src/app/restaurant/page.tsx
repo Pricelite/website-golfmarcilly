@@ -62,7 +62,7 @@ export default function RestaurantPage() {
               <div className="flex justify-between gap-4"><dt>Samedi et dimanche</dt><dd className="shrink-0 font-semibold tabular-nums">{restaurantData.hours[5].hours}</dd></div>
               <div className="flex justify-between gap-4"><dt>Mardi</dt><dd className="font-semibold">{restaurantData.hours[1].hours}</dd></div>
             </dl>
-            <div className="mt-5"><RestaurantDishesCarousel compact items={restaurantGallery} /></div>
+            <div className="mx-auto mt-5 max-w-sm"><RestaurantDishesCarousel compact items={restaurantGallery} /></div>
             <a href="#horaires-restaurant" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">Tous les horaires du restaurant et du bar</a>
           </aside>
         </div>
