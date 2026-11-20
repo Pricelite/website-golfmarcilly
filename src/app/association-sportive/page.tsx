@@ -7,7 +7,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { associationFaqs, associationGroups, associationLicences2027, associationLinks, associationMembership, associationPartner, associationRoles } from "@/data/association";
-import { associationPresidents, associationResults2026 } from "@/data/association-history";
+import { associationChampionPortraits2026, associationGuepyRecord, associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
 import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
 import { siteConfig } from "@/data/site";
@@ -59,6 +59,8 @@ export default async function AssociationPage() {
             ["#groupes", "Équipes et seniors"],
             ["/association-sportive/equipes", "Nos équipes 2026"],
             ["#resultats-2026", "Résultats des équipes 2026"],
+            ["#champions-2026", "Champions du club"],
+            ["#record-guepy", "Record de Jean-Louis Guépy"],
             ["#actualites", "Actualités"],
             ["#partenaire-as", "Suivi sportif"],
             ["#equipe", "L’équipe de l’AS"],
@@ -175,6 +177,49 @@ export default async function AssociationPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section id="champions-2026" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Palmarès 2026" title="Les champions du club" description="Un espace pour mettre à l’honneur les championnes et champions de Marcilly. Les noms et les portraits seront ajoutés après confirmation du palmarès." />
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {associationChampionPortraits2026.map((portrait) => (
+              <article key={portrait} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
+                <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 bg-[#e8f4ed] text-emerald-950/60">
+                  <span aria-hidden="true" className="font-serif text-6xl text-emerald-950/20">{portrait}</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em]">Portrait à venir</span>
+                </div>
+                <div className="p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Palmarès du club · 2026</p>
+                  <h3 className="mt-3 font-serif text-2xl text-emerald-950">Palmarès à compléter</h3>
+                  <p className="mt-2 text-sm leading-6 text-emerald-950/70">Nom et photo à venir.</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="record-guepy" className="scroll-mt-28 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="Mémoire sportive" title="Les dix birdies de Jean-Louis Guépy" description="Un moment marquant de l’histoire de l’Open international de Marcilly." />
+          <div className="mt-8 overflow-hidden rounded-[28px] border border-emerald-950/15 bg-emerald-950 text-white shadow-lg shadow-emerald-950/10 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <figure className="relative min-h-72 overflow-hidden bg-emerald-900 sm:min-h-96 lg:min-h-full">
+              <Image src={associationGuepyRecord.photo} alt="Jean-Louis Guépy devant le tableau des scores de l’Open de Marcilly" fill sizes="(max-width: 1023px) 100vw, 45vw" className="object-cover" />
+              <figcaption className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-6 pb-5 pt-12 text-xs text-white/90">Jean-Louis Guépy à l’Open de Marcilly · Photo : Alexis Orloff</figcaption>
+            </figure>
+            <div className="p-6 sm:p-8 lg:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#dbe9b4]">{associationGuepyRecord.event} · {associationGuepyRecord.date}</p>
+              <p className="mt-6 font-serif text-5xl text-[#dbe9b4] sm:text-6xl">10 birdies</p>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-stone-100/90">Du trou n° 1 au trou n° 10, Jean-Louis Guépy a enchaîné dix birdies consécutifs le 16 mai 2004. La Ligue de golf de Nouvelle-Calédonie présente cette performance comme un record du monde.</p>
+              <a href={associationGuepyRecord.source} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-[#dbe9b4] underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">Lire la source ↗</a>
+              <figure className="mt-7 overflow-hidden rounded-2xl border border-white/20 bg-white p-3">
+                <Image src={associationGuepyRecord.scorecard} alt="Carte de score de Jean-Louis Guépy du 16 mai 2004, montrant les dix birdies consécutifs" width={640} height={480} sizes="(max-width: 1023px) calc(100vw - 80px), 480px" className="h-auto w-full" />
+                <figcaption className="px-2 pb-1 pt-3 text-xs text-emerald-950/70">La carte de score de l’Open international de Marcilly, le 16 mai 2004.</figcaption>
+              </figure>
+            </div>
+          </div>
         </div>
       </section>
 
