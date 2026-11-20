@@ -86,3 +86,14 @@ export const associationResults2026 = [
     result: "Maintien en promotion.",
   },
 ] as const;
+
+// Les noms et les portraits seront renseignés après confirmation du palmarès.
+export const associationChampionPortraits2026 = ["01", "02", "03"] as const;
+
+export const associationGuepyRecord = {
+  date: "16 mai 2004",
+  event: "Open international de Marcilly",
+  photo: "/images/association/jean-louis-guepy-record.png",
+  scorecard: "/images/association/carte-jean-louis-guepy-2004.jpeg",
+  source: "https://www.ligue-de-golf.nc/Media/Default/PDF/GolfMag-web.pdf",
+} as const;
