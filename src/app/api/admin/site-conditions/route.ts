@@ -4,7 +4,7 @@ import { readJsonBody } from "@/lib/api/request-body";
 import { canAccessAdmin } from "@/lib/admin-access";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 import { parseConditionInput } from "@/lib/site-conditions";
-import { listSiteConditions, saveSiteCondition } from "@/lib/site-conditions-store";
+import { listConditionStates, listSiteConditions, saveSiteCondition } from "@/lib/site-conditions-store";
 
 export const runtime = "nodejs";
 
@@ -16,9 +16,10 @@ export async function PUT(request: Request) {
   const body = await readJsonBody(request);
   if (!body.ok) return response({ error: body.tooLarge ? "Demande trop volumineuse." : "Demande invalide." }, body.tooLarge ? 413 : 400);
   let ids: string[];
-  try { ids = (await listSiteConditions()).map(item => item.id); }
+  let states: Awaited<ReturnType<typeof listConditionStates>>;
+  try { [ids, states] = await Promise.all([listSiteConditions().then(items => items.map(item => item.id)), listConditionStates()]); }
   catch { return response({ error: "États indisponibles." }, 503); }
-  const parsed = parseConditionInput(body.data, ids);
+  const parsed = parseConditionInput(body.data, ids, states);
   if (!parsed.ok) return response({ error: parsed.error }, 400);
   try {
     const condition = await saveSiteCondition(parsed.condition);

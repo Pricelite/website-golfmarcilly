@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { isCarotteReason, parseConditionInput, parseConditionItem, parseConditionState, parseSyncedConditionInput, visibleCondition } from "./site-conditions";
-import { conditionItems, emptyConditions, previewConditions } from "../data/site-conditions";
+import { conditionItems, departureStates, emptyConditions, previewConditions } from "../data/site-conditions";
 
-test("a closed condition requires a short reason", () => {
+test("a closed condition accepts no reason but limits optional text", () => {
   const id = "grand-parcours-aller";
-  assert.equal(parseConditionInput({ id, status: "closed", reason: "" }).ok, false);
+  const withoutReason = parseConditionInput({ id, status: "closed", reason: "" });
+  assert.ok(withoutReason.ok);
+  assert.equal(withoutReason.condition.reason, null);
   assert.equal(parseConditionInput({ id, status: "closed", reason: "x".repeat(241) }).ok, false);
   assert.equal(parseConditionInput({ id, status: "restricted", reason: "Restriction" }).ok, false);
   assert.equal(parseConditionInput({ id: "other", status: "open" }).ok, false);
@@ -15,7 +17,7 @@ test("a closed condition requires a short reason", () => {
 });
 
 test("grand parcours, Kaleka course aller and Kaleka course have separate states", () => {
-  assert.equal(conditionItems.length, 9);
+  assert.equal(conditionItems.length, 10);
   assert.deepEqual(conditionItems.filter(item => item.id.startsWith("grand-parcours-")).map(item => item.label),
     ["Grand parcours aller", "Grand parcours retour"]);
   assert.deepEqual(conditionItems.filter(item => item.id === "pitch-and-putt" || item.id === "kaleke").map(item => item.label),
@@ -59,7 +61,8 @@ test("Tuesday closure covers unknown restaurant status while preserving manual c
 test("unset equipment remains unconfirmed while the preview keeps its demo states", () => {
   assert.ok(emptyConditions().every(condition => condition.status === "unknown"));
   assert.equal(visibleCondition(emptyConditions().find(item => item.id === "practice")!).status, "unknown");
-  assert.ok(previewConditions().every(condition => condition.status === "open"));
+  assert.ok(previewConditions().filter(condition => condition.id !== "departs").every(condition => condition.status === "open"));
+  assert.equal(previewConditions().find(condition => condition.id === "departs")?.status, "unknown");
   assert.equal(previewConditions().find(condition => condition.id === "grand-parcours-aller")?.stateLabel, "Carotté");
   const unknown = { ...emptyConditions().find(item => item.id === "practice")!, updatedAt: "2026-01-01T12:00:00Z" };
   assert.deepEqual(visibleCondition(unknown), unknown);
@@ -100,4 +103,17 @@ test("scoped synchronization accepts only a matching known state label", () => {
   assert.equal(valid.condition.stateLabel, "Carotté");
   assert.equal(parseSyncedConditionInput({ id, status: "open", stateLabel: "Privé", reason: null }, [id], states).ok, false);
   assert.equal(parseSyncedConditionInput({ id, status: "closed", stateLabel: "Carotté", reason: "Travaux" }, [id], states).ok, false);
+});
+
+test("winter and summer departure choices apply only to the departure row", () => {
+  const ids = conditionItems.map(item => item.id);
+  const winter = parseConditionInput({ id: "departs", status: "open", stateId: "depart-hiver", reason: "" }, ids, departureStates);
+  assert.ok(winter.ok);
+  assert.equal(winter.condition.stateLabel, "Départ d’hiver");
+  assert.equal(parseConditionInput({ id: "departs", status: "open", reason: "" }, ids, departureStates).ok, false);
+  assert.equal(parseConditionInput({ id: "practice", status: "open", stateId: "depart-ete" }, ids, departureStates).ok, false);
+  const synced = parseSyncedConditionInput({ id: "departs", status: "open", stateLabel: "Départ d’été", reason: null }, ids, departureStates);
+  assert.ok(synced.ok);
+  assert.equal(synced.condition.stateLabel, "Départ d’été");
+  assert.equal(parseSyncedConditionInput({ id: "practice", status: "open", stateLabel: "Départ d’été", reason: null }, ids, departureStates).ok, false);
 });
