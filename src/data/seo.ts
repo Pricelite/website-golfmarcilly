@@ -11,8 +11,8 @@ export const publicPageSeo = {
     path: "/golf",
   },
   pricing: {
-    title: "Tarifs 2026 : green-fees et abonnements",
-    description: "Consultez les tarifs 2026 du Golf de Marcilly : green-fees, practice, initiations, location de matériel et abonnements. Choisissez votre formule.",
+    title: "Tarifs 2026 : visiteurs et abonnements",
+    description: "Consultez les tarifs visiteurs 2026 du Golf de Marcilly, les formules practice, les initiations, la location de matériel et les abonnements.",
     path: "/tarifs",
   },
   beginners: {

@@ -26,7 +26,7 @@ export function SiteConditions({ conditions, editable, ads, unavailable = false,
         <Link href={item.href} className="min-w-0 text-sm font-semibold leading-6 text-emerald-950 hover:underline focus-visible:underline">{item.label}</Link>
         <SiteConditionControl condition={condition} label={item.label} editable={editable && !unavailable && !(item.id === "restaurant" && restaurantWeeklyClosed)} />
       </div>
-      {condition.reason && condition.status !== "unknown" && !(condition.status === "open" && (condition.stateLabel === "Carotté" || condition.reason === "Carotté")) ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
+      {condition.reason && condition.status === "open" && condition.stateLabel !== "Carotté" && condition.reason !== "Carotté" ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
     </li>;
   }
 
