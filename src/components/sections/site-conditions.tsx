@@ -13,10 +13,11 @@ export function SiteConditions({ conditions, editable, ads, unavailable = false,
   const dateLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(now);
   const restaurantWeeklyClosed = isRestaurantWeeklyClosed(now);
   const displayed = conditions.map(condition => visibleCondition(condition, now));
-  const openCount = displayed.filter(condition => condition.status === "open").length;
-  const adaptedCount = displayed.filter(condition => condition.status === "open" && (condition.reason || condition.stateLabel)).length;
-  const closedCount = displayed.filter(condition => condition.status === "closed").length;
-  const unknownCount = displayed.length - openCount - closedCount;
+  const accessConditions = displayed.filter(condition => condition.id !== "departs");
+  const openCount = accessConditions.filter(condition => condition.status === "open").length;
+  const adaptedCount = accessConditions.filter(condition => condition.status === "open" && (condition.reason || condition.stateLabel)).length;
+  const closedCount = accessConditions.filter(condition => condition.status === "closed").length;
+  const unknownCount = accessConditions.length - openCount - closedCount;
 
   function row(item: SiteCondition) {
     const condition = item;
@@ -25,7 +26,7 @@ export function SiteConditions({ conditions, editable, ads, unavailable = false,
         <Link href={item.href} className="min-w-0 text-sm font-semibold leading-6 text-emerald-950 hover:underline focus-visible:underline">{item.label}</Link>
         <SiteConditionControl condition={condition} label={item.label} editable={editable && !unavailable && !(item.id === "restaurant" && restaurantWeeklyClosed)} />
       </div>
-      {condition.reason && condition.status !== "unknown" && !(condition.status === "open" && (condition.stateLabel === "Carotté" || condition.reason === "Carotté")) ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
+      {condition.reason && condition.status === "open" && condition.stateLabel !== "Carotté" && condition.reason !== "Carotté" ? <p className="mt-2 text-sm leading-6 text-emerald-950/85">{condition.reason}</p> : null}
     </li>;
   }
 
@@ -42,7 +43,7 @@ export function SiteConditions({ conditions, editable, ads, unavailable = false,
             </div>
           </div>
           <p className={`rounded-full border px-3 py-2 text-sm font-semibold ${closedCount || unknownCount ? "border-stone-200 bg-stone-50 text-emerald-950" : adaptedCount ? "border-amber-200 bg-amber-50 text-amber-900" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}>
-            {openCount === displayed.length ? adaptedCount ? `Tous les espaces ouverts · ${adaptedCount} avec une information à consulter` : "✓ Tous les espaces sont ouverts" : `${openCount} ouverts${closedCount ? ` · ${closedCount} fermé${closedCount > 1 ? "s" : ""}` : ""}${unknownCount ? ` · ${unknownCount} à confirmer` : ""}`}
+            {openCount === accessConditions.length ? adaptedCount ? `Tous les espaces ouverts · ${adaptedCount} avec une information à consulter` : "✓ Tous les espaces sont ouverts" : `${openCount} ouverts${closedCount ? ` · ${closedCount} fermé${closedCount > 1 ? "s" : ""}` : ""}${unknownCount ? ` · ${unknownCount} à confirmer` : ""}`}
           </p>
         </header>
         <div className="mt-3 rounded-xl border border-emerald-950/10 bg-[#f7f5ed] px-3 py-2.5 sm:flex sm:items-center sm:gap-5">

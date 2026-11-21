@@ -57,7 +57,7 @@ export const pricingSections: PricingSection[] = [
     footnotes: ["Prêt d’un club par seau et par personne."],
   },
   {
-    title: "Green fees",
+    title: "Tarifs visiteurs · Découverte et Kaleka",
     id: "green-fees",
     cta: { href: siteConfig.bookingEngineUrl, label: "Réserver un départ" },
     description: "Parcours découverte, Footgolf et Kaleka course.",
@@ -74,7 +74,7 @@ export const pricingSections: PricingSection[] = [
     ],
   },
   {
-    title: "Green fees · Grand Parcours",
+    title: "Tarifs visiteurs · Grand Parcours",
     id: "grand-parcours",
     description: "Licence de golf obligatoire pour accéder au Grand Parcours.",
     cta: { href: siteConfig.bookingEngineUrl, label: "Réserver un départ" },

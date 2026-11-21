@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { conditionItems, type ConditionId, type SiteCondition } from "@/data/site-conditions";
+import { conditionItems, departureStates, type ConditionId, type SiteCondition } from "@/data/site-conditions";
 import { visibleCondition } from "@/lib/site-conditions";
 
 const selectClass = "mt-2 w-full rounded-xl border border-emerald-950/20 bg-white px-3 py-2 text-sm text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-700";
@@ -22,7 +22,9 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
     try {
       const response = await fetch("/api/admin/site-conditions", {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: selectedStatus === "carotte" ? "open" : selectedStatus, reason: selectedStatus === "carotte" ? "Carotté" : fields.get("reason") }),
+        body: JSON.stringify({ id, status: selectedStatus === "carotte" || departureStates.some(state => state.id === selectedStatus) ? "open" : selectedStatus,
+          stateId: departureStates.some(state => state.id === selectedStatus) ? selectedStatus : undefined,
+          reason: selectedStatus === "closed" ? "" : selectedStatus === "carotte" ? "Carotté" : fields.get("reason") }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Enregistrement impossible. Réessayez.");
@@ -36,7 +38,7 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
     {localMode ? <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Prévisualisation locale : les états sont enregistrés sur cet ordinateur et visibles sur l’accueil local. Aucune modification n’est envoyée à Supabase.</p> : null}
     {message ? <p role="status" className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900">{message}</p> : null}
     {error ? <p role="alert" className="mt-4 rounded-xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
-    <p className="mt-5 text-sm leading-6 text-emerald-950/75">Les équipements sont ouverts par défaut. Vos modifications restent appliquées jusqu’à votre prochaine intervention, même les jours suivants. Pour une fermeture, indiquez le motif visible sur l’accueil, puis repassez l’état à « Ouvert » lors de la réouverture.</p>
+    <p className="mt-5 text-sm leading-6 text-emerald-950/75">Vos modifications restent appliquées jusqu’à votre prochaine intervention, même les jours suivants. Le motif est facultatif. Pensez à repasser l’état à « Ouvert » lors de la réouverture.</p>
     <div className="mt-6 grid gap-4 md:grid-cols-2">
       {conditionItems.map(item => {
         const current = byId.get(item.id);
@@ -44,11 +46,16 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
           <h2 className="font-serif text-xl text-emerald-950">{item.label}</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="text-sm text-emerald-950">État
-              <select name="status" className={selectClass} defaultValue={current?.stateLabel === "Carotté" ? "carotte" : current?.status ?? "open"} disabled={Boolean(busy)}>
-                <option value="unknown">À confirmer</option><option value="open">Ouvert</option><option value="carotte">Carotté</option><option value="closed">Fermé</option>
+              <select name="status" className={selectClass} defaultValue={item.id === "departs" ? departureStates.find(state => state.label === current?.stateLabel)?.id ?? current?.status ?? "unknown" : current?.stateLabel === "Carotté" ? "carotte" : current?.status ?? "open"} disabled={Boolean(busy)} onChange={event => {
+                const reason = event.currentTarget.form?.elements.namedItem("reason");
+                if (reason instanceof HTMLInputElement) reason.value = "";
+              }}>
+                <option value="unknown">À confirmer</option>
+                {item.id === "departs" ? departureStates.map(state => <option key={state.id} value={state.id}>{state.label}</option>) : <><option value="open">Ouvert</option><option value="carotte">Carotté</option></>}
+                <option value="closed">Fermé</option>
               </select>
             </label>
-            <label className="text-sm text-emerald-950 sm:col-span-2">Motif ou précision (visible sur l’accueil)
+            <label className="text-sm text-emerald-950 sm:col-span-2">Précision facultative pour un état ouvert
               <input name="reason" className={selectClass} defaultValue={current?.reason ?? ""} maxLength={240} disabled={Boolean(busy)} placeholder="Ex. terrain détrempé, entretien, compétition…" />
             </label>
           </div>

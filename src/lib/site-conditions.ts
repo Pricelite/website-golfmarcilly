@@ -1,4 +1,4 @@
-import { conditionItems, type ConditionId, type ConditionState, type ConditionStatus, type SiteCondition } from "@/data/site-conditions";
+import { conditionItems, departureStates, type ConditionId, type ConditionState, type ConditionStatus, type SiteCondition } from "@/data/site-conditions";
 
 export type ConditionInput = { id: ConditionId; status: ConditionStatus; stateLabel: string | null; reason: string | null };
 
@@ -15,7 +15,6 @@ export function parseConditionInput(value: unknown, ids: readonly string[] = con
   if (input.reason !== undefined && typeof input.reason !== "string") return { ok: false, error: "Le motif doit être du texte." };
   const reason = typeof input.reason === "string" ? input.reason.trim() : "";
   if (reason.length > 240) return { ok: false, error: "Le motif est limité à 240 caractères." };
-  if (input.status === "closed" && !reason) return { ok: false, error: "Indiquez la raison de cette fermeture." };
   let stateLabel: string | null = null;
   if (input.stateId !== undefined) {
     if (typeof input.stateId !== "string" || !states) return { ok: false, error: "État personnalisé invalide." };
@@ -25,19 +24,23 @@ export function parseConditionInput(value: unknown, ids: readonly string[] = con
   } else if (input.status === "open" && isCarotteReason(reason)) {
     stateLabel = "Carotté";
   }
+  const isDepartureState = departureStates.some(state => state.label === stateLabel);
+  if (input.id === "departs" && input.status === "open" && !isDepartureState) return { ok: false, error: "Choisissez un départ d’hiver ou d’été." };
+  if (input.id !== "departs" && isDepartureState) return { ok: false, error: "Ce choix est réservé au type de départ." };
   return { ok: true, condition: { id: input.id, status: input.status as ConditionStatus, stateLabel, reason: input.status === "unknown" || (input.status === "open" && isCarotteReason(reason)) ? null : reason || null } };
 }
 
 export function parseSyncedConditionInput(value: unknown, ids: readonly string[], states: ConditionState[]): { ok: true; condition: ConditionInput } | { ok: false; error: string } {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { ok: false, error: "État invalide." };
   const input = value as Record<string, unknown>;
-  const parsed = parseConditionInput({ ...input, reason: input.reason ?? undefined }, ids);
-  if (!parsed.ok) return parsed;
   const label = input.stateLabel;
   if (label !== null && label !== undefined &&
-      (typeof label !== "string" || !states.some(state => state.label === label && state.status === parsed.condition.status))) {
+      (typeof label !== "string" || !states.some(state => state.label === label && state.status === input.status))) {
     return { ok: false, error: "État personnalisé invalide." };
   }
+  const state = states.find(item => item.label === label && item.status === input.status);
+  const parsed = parseConditionInput({ ...input, stateId: state?.id, reason: input.reason ?? undefined }, ids, states);
+  if (!parsed.ok) return parsed;
   return { ok: true, condition: { ...parsed.condition, stateLabel: typeof label === "string" ? label : null } };
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import type { ConditionState, SiteCondition } from "@/data/site-conditions";
+import { departureStates, type ConditionState, type SiteCondition } from "@/data/site-conditions";
 
 const field = "mt-1 w-full rounded-lg border border-emerald-950/20 bg-white px-3 py-2 text-sm";
 
@@ -38,7 +38,7 @@ export function ConditionsEditor({ initialConditions, initialStates, localMode }
     const state = states.find(item => item.id === data.get("stateId"));
     if (!state) { setError("Choisissez un état."); return; }
     const reason = data.get("reason");
-    await submit({ id: condition.id, stateId: state.id, status: state.status, reason: state.id !== "carotte" && reason === "Carotté" ? "" : reason }, "PUT");
+    await submit({ id: condition.id, stateId: state.id, status: state.status, reason: state.status === "closed" || (state.id !== "carotte" && reason === "Carotté") ? "" : reason }, "PUT");
   }
 
   async function editItem(event: FormEvent<HTMLFormElement>, id: string) {
@@ -65,11 +65,14 @@ export function ConditionsEditor({ initialConditions, initialStates, localMode }
     {localMode ? <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm">Mode local : les modifications sont enregistrées dans ce worktree uniquement. Elles ne changent pas les données du site publié.</p> : null}
     {message ? <p role="status" className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900">{message}</p> : null}
     {error ? <p role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
-    <p className="text-sm leading-6 text-emerald-950/75">Choisissez un état pour chaque espace. Les changements restent visibles jusqu’à la prochaine mise à jour. Une fermeture nécessite une précision affichée sur l’accueil.</p>
+    <p className="text-sm leading-6 text-emerald-950/75">Choisissez un état pour chaque espace. Les changements restent visibles jusqu’à la prochaine mise à jour. Le motif ou la précision est facultatif.</p>
     <section aria-labelledby="items-title">
       <h2 id="items-title" className="font-serif text-2xl">Parcours et services</h2>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {conditions.map(condition => {
+          const availableStates = condition.id === "departs"
+            ? states.filter(state => state.id === "unknown" || state.id === "closed" || departureStates.some(departure => departure.id === state.id))
+            : states.filter(state => !departureStates.some(departure => departure.id === state.id));
           const selected = states.find(state => state.label === condition.stateLabel && state.status === condition.status)?.id ??
             (condition.status === "open" && condition.reason === "Carotté" ? "carotte" : condition.status);
           return <div key={`${condition.id}-${condition.updatedAt ?? "empty"}`} className="rounded-2xl border border-emerald-950/15 bg-white p-5">
@@ -77,11 +80,14 @@ export function ConditionsEditor({ initialConditions, initialStates, localMode }
             <h3 className="font-serif text-xl">{condition.label}</h3>
             <p className="mt-1 text-xs text-emerald-900/60">{condition.group === "courses" ? "Parcours et practice" : "Service"} · <a className="underline" href={condition.href} target="_blank" rel="noreferrer">{condition.href}</a></p>
             <label className="mt-4 block text-sm">État
-              <select name="stateId" defaultValue={selected} className={field} disabled={busy}>
-                {states.map(state => <option key={state.id} value={state.id}>{state.label}</option>)}
+              <select name="stateId" defaultValue={selected} className={field} disabled={busy} onChange={event => {
+                const reason = event.currentTarget.form?.elements.namedItem("reason");
+                if (reason instanceof HTMLInputElement) reason.value = "";
+              }}>
+                {availableStates.map(state => <option key={state.id} value={state.id}>{state.label}</option>)}
               </select>
             </label>
-            <label className="mt-3 block text-sm">Motif ou précision visible sur l’accueil
+            <label className="mt-3 block text-sm">Précision facultative pour un état ouvert
               <input name="reason" defaultValue={condition.reason ?? ""} maxLength={240} className={field} disabled={busy} placeholder="Ex. terrain détrempé, entretien…" />
             </label>
             <button className="site-button mt-4" disabled={busy}>Enregistrer l’état</button>

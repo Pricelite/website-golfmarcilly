@@ -5,6 +5,7 @@ export const conditionItems = [
   { id: "pitch-and-putt", label: "Kaleka course aller", group: "courses", href: "/golf" },
   { id: "kaleke", label: "Kaleka course retour", group: "courses", href: "/golf" },
   { id: "practice", label: "Practice", group: "courses", href: "/golf" },
+  { id: "departs", label: "Type de départ", group: "courses", href: "/golf" },
   { id: "restaurant", label: "Restaurant La Bergerie", group: "services", href: "/restaurant" },
   { id: "voiturettes", label: "Voiturettes", group: "services", href: "/golf" },
   { id: "chariots", label: "Chariots", group: "services", href: "/golf" },
@@ -15,11 +16,16 @@ export type ConditionStatus = "open" | "closed" | "unknown";
 export type ConditionGroup = "courses" | "services";
 export type ConditionItem = { id: string; label: string; group: ConditionGroup; href: string; position: number };
 export type ConditionState = { id: string; label: string; status: ConditionStatus };
+export const departureStates: ConditionState[] = [
+  { id: "depart-hiver", label: "Départ d’hiver", status: "open" },
+  { id: "depart-ete", label: "Départ d’été", status: "open" },
+];
 export const defaultStates: ConditionState[] = [
   { id: "open", label: "Ouvert", status: "open" },
   { id: "closed", label: "Fermé", status: "closed" },
   { id: "unknown", label: "À confirmer", status: "unknown" },
   { id: "carotte", label: "Carotté", status: "open" },
+  ...departureStates,
 ];
 export type SiteCondition = ConditionItem & {
   status: ConditionStatus;
@@ -35,7 +41,7 @@ export function emptyConditions(): SiteCondition[] {
 export function previewConditions(): SiteCondition[] {
   return emptyConditions().map(condition => ({
     ...condition,
-    status: "open",
+    status: condition.id === "departs" ? "unknown" : "open",
     stateLabel: condition.id === "grand-parcours-aller" ? "Carotté" : null,
     reason: null,
   }));
