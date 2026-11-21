@@ -24,7 +24,7 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
         method: "PUT", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status: selectedStatus === "carotte" || departureStates.some(state => state.id === selectedStatus) ? "open" : selectedStatus,
           stateId: departureStates.some(state => state.id === selectedStatus) ? selectedStatus : undefined,
-          reason: selectedStatus === "carotte" ? "Carotté" : fields.get("reason") }),
+          reason: selectedStatus === "closed" ? "" : selectedStatus === "carotte" ? "Carotté" : fields.get("reason") }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Enregistrement impossible. Réessayez.");
@@ -55,7 +55,7 @@ export function SiteConditionsManager({ initialConditions, localMode }: { initia
                 <option value="closed">Fermé</option>
               </select>
             </label>
-            <label className="text-sm text-emerald-950 sm:col-span-2">Motif ou précision (facultatif, visible sur l’accueil)
+            <label className="text-sm text-emerald-950 sm:col-span-2">Précision facultative pour un état ouvert
               <input name="reason" className={selectClass} defaultValue={current?.reason ?? ""} maxLength={240} disabled={Boolean(busy)} placeholder="Ex. terrain détrempé, entretien, compétition…" />
             </label>
           </div>

@@ -24,7 +24,7 @@ export default function PricingPage() {
           <SectionTitle
             as="h1"
             eyebrow="Tarifs 2026"
-            title="Tarifs du golf : green-fees et abonnements"
+            title="Tarifs du golf : visiteurs et abonnements"
           />
           <CTAButton href="/contact#reservation" variant="secondary">Besoin d’un conseil ?</CTAButton>
         </div>

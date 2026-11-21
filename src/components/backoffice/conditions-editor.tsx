@@ -38,7 +38,7 @@ export function ConditionsEditor({ initialConditions, initialStates, localMode }
     const state = states.find(item => item.id === data.get("stateId"));
     if (!state) { setError("Choisissez un état."); return; }
     const reason = data.get("reason");
-    await submit({ id: condition.id, stateId: state.id, status: state.status, reason: state.id !== "carotte" && reason === "Carotté" ? "" : reason }, "PUT");
+    await submit({ id: condition.id, stateId: state.id, status: state.status, reason: state.status === "closed" || (state.id !== "carotte" && reason === "Carotté") ? "" : reason }, "PUT");
   }
 
   async function editItem(event: FormEvent<HTMLFormElement>, id: string) {
@@ -87,7 +87,7 @@ export function ConditionsEditor({ initialConditions, initialStates, localMode }
                 {availableStates.map(state => <option key={state.id} value={state.id}>{state.label}</option>)}
               </select>
             </label>
-            <label className="mt-3 block text-sm">Motif ou précision (facultatif, visible sur l’accueil)
+            <label className="mt-3 block text-sm">Précision facultative pour un état ouvert
               <input name="reason" defaultValue={condition.reason ?? ""} maxLength={240} className={field} disabled={busy} placeholder="Ex. terrain détrempé, entretien…" />
             </label>
             <button className="site-button mt-4" disabled={busy}>Enregistrer l’état</button>
