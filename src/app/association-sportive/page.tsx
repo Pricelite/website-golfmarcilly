@@ -7,7 +7,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { associationFaqs, associationGroups, associationLicences2027, associationLinks, associationMembership, associationPartner, associationRoles } from "@/data/association";
-import { associationChampionPortraits2026, associationGuepyRecord, associationPresidents, associationResults2026 } from "@/data/association-history";
+import { associationClubChampions, associationGuepyRecord, associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
 import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
 import { siteConfig } from "@/data/site";
@@ -182,18 +182,31 @@ export default async function AssociationPage() {
 
       <section id="champions-2026" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Palmarès 2026" title="Les champions du club" description="Un espace pour mettre à l’honneur les championnes et champions de Marcilly. Les noms et les portraits seront ajoutés après confirmation du palmarès." />
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {associationChampionPortraits2026.map((portrait) => (
-              <article key={portrait} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
-                <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 bg-[#e8f4ed] text-emerald-950/60">
-                  <span aria-hidden="true" className="font-serif text-6xl text-emerald-950/20">{portrait}</span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.16em]">Portrait à venir</span>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Palmarès du club · 2026</p>
-                  <h3 className="mt-3 font-serif text-2xl text-emerald-950">Palmarès à compléter</h3>
-                  <p className="mt-2 text-sm leading-6 text-emerald-950/70">Nom et photo à venir.</p>
+          <SectionTitle eyebrow="Palmarès du club" title="Les champions du club" description="Retrouvez les championnes et champions du Golf de Marcilly." />
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            {associationClubChampions.map((champions) => (
+              <article key={champions.year} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
+                {champions.photo ? (
+                  <figure className="relative aspect-[4/5] overflow-hidden bg-[#e8f4ed] sm:aspect-[5/4]">
+                    <Image src={champions.photo} alt={`${champions.men} et ${champions.women}, champions du club ${champions.year}, sur le parcours de Marcilly`} fill sizes="(max-width: 1023px) 100vw, 50vw" className="object-cover object-center" />
+                  </figure>
+                ) : (
+                  <div className="flex aspect-[4/5] items-center justify-center bg-[#e8f4ed] sm:aspect-[5/4]">
+                    <span className="font-serif text-[clamp(5rem,16vw,10rem)] leading-none text-emerald-950/15" aria-hidden="true">{champions.year}</span>
+                  </div>
+                )}
+                <div className="p-6 sm:p-8">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Champions du club · {champions.year}</p>
+                  <dl className="mt-5 grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <dt className="text-sm text-emerald-950/65">Championne</dt>
+                      <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.women}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-sm text-emerald-950/65">Champion</dt>
+                      <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.men}</dd>
+                    </div>
+                  </dl>
                 </div>
               </article>
             ))}
