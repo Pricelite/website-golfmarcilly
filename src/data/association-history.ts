@@ -87,8 +87,20 @@ export const associationResults2026 = [
   },
 ] as const;
 
-// Les noms et les portraits seront renseignés après confirmation du palmarès.
-export const associationChampionPortraits2026 = ["01", "02", "03"] as const;
+export const associationClubChampions = [
+  {
+    year: 2026,
+    women: "Louise Bourgeon",
+    men: "Enguerrand Guisset",
+    photo: "/images/association/champions-club-2026.jpg",
+  },
+  {
+    year: 2025,
+    women: "Lisa Lemaire",
+    men: "Enzo Fernandez-Mangas",
+    photo: null,
+  },
+] as const;
 
 export const associationGuepyRecord = {
   date: "16 mai 2004",

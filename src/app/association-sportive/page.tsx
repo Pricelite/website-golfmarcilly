@@ -7,7 +7,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { associationFaqs, associationGroups, associationLicences2027, associationLinks, associationMembership, associationPartner, associationRoles } from "@/data/association";
-import { associationChampionPortraits2026, associationGuepyRecord, associationPresidents, associationResults2026 } from "@/data/association-history";
+import { associationClubChampions, associationGuepyRecord, associationPresidents, associationResults2026 } from "@/data/association-history";
 import { associationNews } from "@/data/association-news";
 import { associationCommissions, associationExOfficioMembers, associationOffice, associationPermanentGuests } from "@/data/association-team";
 import { siteConfig } from "@/data/site";
@@ -182,21 +182,43 @@ export default async function AssociationPage() {
 
       <section id="champions-2026" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTitle eyebrow="Palmarès 2026" title="Les champions du club" description="Un espace pour mettre à l’honneur les championnes et champions de Marcilly. Les noms et les portraits seront ajoutés après confirmation du palmarès." />
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {associationChampionPortraits2026.map((portrait) => (
-              <article key={portrait} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
-                <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 bg-[#e8f4ed] text-emerald-950/60">
-                  <span aria-hidden="true" className="font-serif text-6xl text-emerald-950/20">{portrait}</span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.16em]">Portrait à venir</span>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Palmarès du club · 2026</p>
-                  <h3 className="mt-3 font-serif text-2xl text-emerald-950">Palmarès à compléter</h3>
-                  <p className="mt-2 text-sm leading-6 text-emerald-950/70">Nom et photo à venir.</p>
-                </div>
-              </article>
-            ))}
+          <SectionTitle eyebrow="Palmarès du club" title="Les champions du club" description="Retrouvez les championnes et champions du Golf de Marcilly." />
+          <div className="mt-8 grid items-start gap-6 lg:grid-cols-2">
+            <figure className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
+              <a href="/images/association/tableau-champions-club.jpeg" target="_blank" rel="noopener noreferrer" className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700" aria-label="Agrandir la photo du tableau historique des champions du club">
+                <span className="relative block aspect-[3/4] overflow-hidden bg-[#e8f4ed]">
+                  <Image src="/images/association/tableau-champions-club.jpeg" alt="Tableau d’honneur des championnes et champions du club, affiché au club-house" fill sizes="(max-width: 1023px) 100vw, 50vw" className="object-contain" />
+                </span>
+              </a>
+              <figcaption className="flex flex-wrap items-center justify-between gap-2 p-5 text-sm text-emerald-950/75 sm:p-6">
+                <span>Le tableau d’honneur du club-house, jusqu’en 2024.</span>
+                <span className="font-semibold text-emerald-800">Agrandir la photo ↗</span>
+              </figcaption>
+            </figure>
+            <div className="grid gap-6">
+              {associationClubChampions.map((champions) => (
+                <article key={champions.year} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
+                  {champions.photo ? (
+                    <figure className="relative aspect-[4/3] overflow-hidden bg-[#e8f4ed]">
+                      <Image src={champions.photo} alt={`${champions.men} et ${champions.women}, champions du club ${champions.year}, sur le parcours de Marcilly`} fill sizes="(max-width: 1023px) 100vw, 50vw" className="object-cover object-center" />
+                    </figure>
+                  ) : null}
+                  <div className="p-6 sm:p-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Champions du club · {champions.year}</p>
+                    <dl className="mt-5 grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <dt className="text-sm text-emerald-950/65">Championne</dt>
+                        <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.women}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-sm text-emerald-950/65">Champion</dt>
+                        <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.men}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
