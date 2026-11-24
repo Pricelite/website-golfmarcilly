@@ -28,7 +28,9 @@ export default async function AssociationPage() {
   const calendar = await publicAssociationEvents();
   const currentYear = Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Paris", year: "numeric" }).format(new Date()));
   const currentNews = associationNews.filter((article) => Number(article.year) === currentYear);
-  const featuredChampions = associationClubChampions.find((champions) => champions.photo);
+  const currentChampions = associationClubChampions.find((champions) => champions.year === currentYear);
+  const previousChampions = associationClubChampions.filter((champions) => champions.year < currentYear).sort((first, second) => first.year - second.year);
+  const historicalThroughYear = Math.max(...associationClubChampionsHistory.men.map(({ year }) => year), ...previousChampions.map(({ year }) => year));
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([
@@ -184,37 +186,33 @@ export default async function AssociationPage() {
       <section id="champions-2026" className="scroll-mt-28 bg-[#f7f4e9] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionTitle eyebrow="Palmarès du club" title="Les champions du club" description="Retrouvez les championnes et champions du Golf de Marcilly." />
-          <article className="mt-8 overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-            {featuredChampions?.photo ? (
+          {currentChampions ? (
+            <article className="mt-8 overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
               <figure className="relative aspect-[4/3] overflow-hidden bg-[#e8f4ed] lg:aspect-auto lg:min-h-80">
-                <Image src={featuredChampions.photo} alt={`${featuredChampions.men} et ${featuredChampions.women}, champions du club ${featuredChampions.year}, sur le parcours de Marcilly`} fill sizes="(max-width: 1023px) 100vw, 45vw" className="object-cover object-center" />
+                <Image src={currentChampions.photo} alt={`${currentChampions.men} et ${currentChampions.women}, champions du club ${currentChampions.year}, sur le parcours de Marcilly`} fill sizes="(max-width: 1023px) 100vw, 45vw" className="object-cover object-center" />
               </figure>
-            ) : null}
-            <div className="grid gap-6 p-6 sm:grid-cols-2 sm:gap-0 sm:p-8 lg:items-center">
-              {associationClubChampions.map((champions, index) => (
-                <section key={champions.year} className={index === 0 ? "sm:pr-6" : "border-t border-emerald-950/15 pt-6 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0"}>
-                  <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Champions du club · {champions.year}</h3>
-                  <dl className="mt-5 space-y-4">
-                    <div>
-                      <dt className="text-sm text-emerald-950/65">Championne</dt>
-                      <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.women}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm text-emerald-950/65">Champion</dt>
-                      <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.men}</dd>
-                    </div>
-                  </dl>
-                </section>
-              ))}
-            </div>
-          </article>
+              <div className="flex flex-col justify-center p-6 sm:p-8">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Champions du club · {currentChampions.year}</h3>
+                <dl className="mt-5 grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-sm text-emerald-950/65">Championne</dt>
+                    <dd className="mt-1 font-serif text-2xl text-emerald-950">{currentChampions.women}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm text-emerald-950/65">Champion</dt>
+                    <dd className="mt-1 font-serif text-2xl text-emerald-950">{currentChampions.men}</dd>
+                  </div>
+                </dl>
+              </div>
+            </article>
+          ) : null}
           <div className="mt-12">
             <h3 className="font-serif text-2xl text-emerald-950 sm:text-3xl">Le palmarès historique</h3>
-            <p className="mt-2 text-sm leading-6 text-emerald-950/70">Les championnes et champions inscrits au tableau d’honneur du club-house, jusqu’en 2024.</p>
+            <p className="mt-2 text-sm leading-6 text-emerald-950/70">Les championnes et champions des saisons précédentes, jusqu’en {historicalThroughYear}.</p>
             <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
               {([
-                { title: "Championnes", entries: associationClubChampionsHistory.women },
-                { title: "Champions", entries: associationClubChampionsHistory.men },
+                { title: "Championnes", entries: [...associationClubChampionsHistory.women, ...previousChampions.map(({ year, women }) => ({ year, name: women }))] },
+                { title: "Champions", entries: [...associationClubChampionsHistory.men, ...previousChampions.map(({ year, men }) => ({ year, name: men }))] },
               ] as const).map(({ title, entries }) => (
                 <section key={title} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
                   <h4 className="border-b border-emerald-950/10 bg-[#e8f4ed] px-5 py-5 font-serif text-2xl text-emerald-950 sm:px-6">{title}</h4>

@@ -94,15 +94,9 @@ export const associationClubChampions = [
     men: "Enguerrand Guisset",
     photo: "/images/association/champions-club-2026.jpg",
   },
-  {
-    year: 2025,
-    women: "Lisa Lemaire",
-    men: "Enzo Fernandez-Mangas",
-    photo: null,
-  },
 ] as const;
 
-// Transcription du tableau d'honneur du club-house, arrêté à 2024.
+// Transcription du tableau d'honneur du club-house, complétée par les résultats 2025.
 export const associationClubChampionsHistory = {
   women: [
     { year: 1993, name: "ALAZARD Sylvie" },
@@ -137,6 +131,7 @@ export const associationClubChampionsHistory = {
     { year: 2022, name: "LEMAIRE Lisa" },
     { year: 2023, name: "LEMAIRE Lisa" },
     { year: 2024, name: "LEMAIRE Lisa" },
+    { year: 2025, name: "LEMAIRE Lisa" },
   ],
   men: [
     { year: 1987, name: "ROUHAUD Nicolas" },
@@ -177,6 +172,7 @@ export const associationClubChampionsHistory = {
     { year: 2022, name: "COLOMBEL Thomas" },
     { year: 2023, name: "LOURENCO Diego" },
     { year: 2024, name: "DEMARLES Colin" },
+    { year: 2025, name: "FERNANDEZ-MANGAS Enzo" },
   ],
 } as const;
 
