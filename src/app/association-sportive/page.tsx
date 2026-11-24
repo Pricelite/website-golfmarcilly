@@ -28,6 +28,7 @@ export default async function AssociationPage() {
   const calendar = await publicAssociationEvents();
   const currentYear = Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Paris", year: "numeric" }).format(new Date()));
   const currentNews = associationNews.filter((article) => Number(article.year) === currentYear);
+  const featuredChampions = associationClubChampions.find((champions) => champions.photo);
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema([
@@ -195,17 +196,17 @@ export default async function AssociationPage() {
                 <span className="font-semibold text-emerald-800">Agrandir la photo ↗</span>
               </figcaption>
             </figure>
-            <div className="grid gap-6">
-              {associationClubChampions.map((champions) => (
-                <article key={champions.year} className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
-                  {champions.photo ? (
-                    <figure className="relative aspect-[4/3] overflow-hidden bg-[#e8f4ed]">
-                      <Image src={champions.photo} alt={`${champions.men} et ${champions.women}, champions du club ${champions.year}, sur le parcours de Marcilly`} fill sizes="(max-width: 1023px) 100vw, 50vw" className="object-cover object-center" />
-                    </figure>
-                  ) : null}
-                  <div className="p-6 sm:p-8">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Champions du club · {champions.year}</p>
-                    <dl className="mt-5 grid gap-5 sm:grid-cols-2">
+            <article className="overflow-hidden rounded-[24px] border border-emerald-950/15 bg-white shadow-sm shadow-emerald-950/5">
+              {featuredChampions?.photo ? (
+                <figure className="relative aspect-[4/3] overflow-hidden bg-[#e8f4ed]">
+                  <Image src={featuredChampions.photo} alt={`${featuredChampions.men} et ${featuredChampions.women}, champions du club ${featuredChampions.year}, sur le parcours de Marcilly`} fill sizes="(max-width: 1023px) 100vw, 50vw" className="object-cover object-center" />
+                </figure>
+              ) : null}
+              <div className="grid gap-6 p-6 sm:grid-cols-2 sm:gap-0 sm:p-8">
+                {associationClubChampions.map((champions, index) => (
+                  <section key={champions.year} className={index === 0 ? "sm:pr-6" : "border-t border-emerald-950/15 pt-6 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0"}>
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Champions du club · {champions.year}</h3>
+                    <dl className="mt-5 space-y-4">
                       <div>
                         <dt className="text-sm text-emerald-950/65">Championne</dt>
                         <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.women}</dd>
@@ -215,10 +216,10 @@ export default async function AssociationPage() {
                         <dd className="mt-1 font-serif text-2xl text-emerald-950">{champions.men}</dd>
                       </div>
                     </dl>
-                  </div>
-                </article>
-              ))}
-            </div>
+                  </section>
+                ))}
+              </div>
+            </article>
           </div>
         </div>
       </section>
