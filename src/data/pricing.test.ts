@@ -2,12 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { getPricingSections, getPricingYear } from "./pricing";
 
-test("the 2027 price list starts at midnight in Paris on 1 January", () => {
-  const before = new Date("2026-12-31T22:59:59.999Z");
-  const after = new Date("2026-12-31T23:00:00.000Z");
+test("the 2027 price list starts at midnight in Paris on 31 December", () => {
+  const before = new Date("2026-12-30T22:59:59.999Z");
+  const after = new Date("2026-12-30T23:00:00.000Z");
   assert.equal(getPricingYear(before), 2026);
   assert.equal(getPricingYear(after), 2027);
-  assert.equal(new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", dateStyle: "short", timeStyle: "short" }).format(after), "01/01/2027 00:00");
+  assert.equal(new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", dateStyle: "short", timeStyle: "short" }).format(after), "31/12/2026 00:00");
   assert.equal(getPricingSections(before).find(section => section.id === "abonnements")?.rows[0].values[1], "384 €*");
   assert.equal(getPricingSections(after).find(section => section.id === "abonnements")?.rows[0].values[0], "389 €*");
 });
