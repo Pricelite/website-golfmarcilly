@@ -4,15 +4,15 @@ import { nonbreakingEuro } from "@/lib/nonbreaking-euro";
 
 export function PricingTable({ section, id }: { section: PricingSection; id?: string }) {
   return (
-    <section id={id ?? section.id} className="flex h-full scroll-mt-28 flex-col overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5">
+    <section id={id ?? section.id} className={`flex h-full scroll-mt-28 flex-col overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white shadow-sm shadow-emerald-950/5 ${section.columns.length > 2 ? "xl:col-span-2" : ""}`}>
       <div className="border-b border-emerald-950/8 bg-stone-50/80 px-6 py-5">
         <h2 className="font-serif text-2xl text-emerald-950">{section.title}</h2>
         {section.description ? <p className="mt-2 text-sm text-emerald-950/70">{section.description}</p> : null}
       </div>
       {section.id === "decouverte" ? <div className="divide-y divide-emerald-950/15 px-5 sm:hidden">{section.rows.map(row => <article key={row.label} className="py-5"><h3 className="font-serif text-xl">{row.label}</h3><p className="mt-2 text-xl font-semibold">{nonbreakingEuro(row.values[1] ?? row.values[0])} <span className="text-sm font-normal">/ personne</span></p>{row.note ? <p className="mt-2 text-sm font-semibold text-emerald-800">{nonbreakingEuro(row.note)}</p> : null}<p className="my-3 text-sm leading-6">{nonbreakingEuro(row.values[0])}</p></article>)}</div> : null}
       <div className={section.id === "decouverte" ? "hidden overflow-x-auto sm:block" : "overflow-x-auto"}>
-        <table className="min-w-full text-left text-sm">
-          <caption className="sr-only">{section.title} — tarifs 2026</caption>
+        <table className={`${section.columns.length > 2 ? "min-w-[42rem]" : "min-w-full"} w-full text-left text-sm`}>
+          <caption className="sr-only">{section.title} — tarifs {section.year ?? 2026}</caption>
           <thead className="bg-emerald-950 text-stone-50">
             <tr>
               <th scope="col" className="px-3 py-4 font-medium sm:px-6">Offre</th>

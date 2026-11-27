@@ -5,7 +5,7 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { FAQAccordion } from "@/components/ui/faq-accordion";
 import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
-import { pricingSections } from "@/data/pricing";
+import { getPricingSections } from "@/data/pricing";
 import { siteConfig } from "@/data/site";
 import { initiationExperience } from "@/data/initiation-experience";
 import { buildMetadata } from "@/lib/metadata";
@@ -20,8 +20,10 @@ const beginnerFaqs = [
 ] as const;
 
 export const metadata = buildMetadata(publicPageSeo.beginners);
+export const dynamic = "force-dynamic";
 
 export default function BeginnerGolfPage() {
+  const pricingSections = getPricingSections();
   const discovery = pricingSections.find(section => section.id === "decouverte")!;
   const practice = pricingSections.find(section => section.title === "Practice")!;
   const buckets = practice.rows[0];

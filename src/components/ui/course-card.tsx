@@ -70,7 +70,7 @@ export function CourseCard({
         {pricing ? (
           <div className="rounded-2xl border border-emerald-900/10 bg-emerald-50/60 p-3 sm:p-4">
             <table className="w-full table-fixed text-left text-xs text-emerald-950 sm:text-sm">
-              <caption className="pb-3 text-left font-semibold text-emerald-900">Tarifs 2026 · {title}</caption>
+              <caption className="pb-3 text-left font-semibold text-emerald-900">Tarifs {pricing.year ?? 2026} · {title}</caption>
               <thead>
                 <tr className="border-b border-emerald-900/15">
                   <th scope="col" className="w-[44%] pb-2 pr-2 font-medium">Formule</th>
