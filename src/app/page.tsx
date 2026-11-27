@@ -11,7 +11,7 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { teachingPros } from "@/data/teaching";
 import { getActiveSiteOffers } from "@/data/offers";
-import { pricingSections } from "@/data/pricing";
+import { getPricingSections } from "@/data/pricing";
 import { siteConfig } from "@/data/site";
 import { buildMetadata } from "@/lib/metadata";
 import { buildWebsiteSchema } from "@/lib/schema";
@@ -29,7 +29,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const adsPromise = publicHomeAds();
   const activeOffers = getActiveSiteOffers();
-  const practiceBuckets = pricingSections.find(section => section.id === "practice")?.rows[0];
+  const practiceBuckets = getPricingSections().find(section => section.id === "practice")?.rows[0];
   let conditions = emptyConditions();
   let conditionsUnavailable = false;
   try { conditions = await listSiteConditions(); }
