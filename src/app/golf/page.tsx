@@ -9,15 +9,20 @@ import { JsonLd } from "@/components/ui/json-ld";
 import { SectionTitle } from "@/components/ui/section-title";
 import { courses } from "@/data/courses";
 import { golfPhotos } from "@/data/golf-photos";
-import { pricingSections, type PricingSection } from "@/data/pricing";
+import { getPricingSections, getPricingYear, type PricingSection } from "@/data/pricing";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
 export const metadata = buildMetadata(publicPageSeo.golf);
+export const dynamic = "force-dynamic";
 
 export default function GolfPage() {
+  const now = new Date();
+  const year = getPricingYear(now);
+  const pricingSections = getPricingSections(now);
   const practicePricing = pricingSections.find(section => section.title === "Practice");
-  const greenFees = pricingSections.find(section => section.title === "Green fees");
+  const greenFees = pricingSections.find(section => section.id === "green-fees");
+  const kalekaPrices = pricingSections.find(section => section.id === "kaleka");
   const grandParcoursPrices = pricingSections.find(section => section.id === "grand-parcours");
   const coursePrices = (labels: string[], displayLabel?: string): PricingSection | undefined => greenFees ? {
     ...greenFees,
@@ -26,14 +31,14 @@ export default function GolfPage() {
   const kalekaCombinedLabel = "18 trous Kaleka course aller et retour";
   const pricingByCourse: Record<string, PricingSection | undefined> = {
     practice: practicePricing,
-    "parcours-decouverte-9-trous": coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Découverte"),
-    footgolf: coursePrices(["9 trous Découverte ou Footgolf"], "9 trous Footgolf"),
-    "pitch-putt-kaleka-18-trous": greenFees ? {
+    "parcours-decouverte-9-trous": coursePrices([year === 2027 ? "Découverte 9 trous" : "9 trous Découverte ou Footgolf"], "9 trous Découverte"),
+    footgolf: coursePrices([year === 2027 ? "Footgolf 9 trous" : "9 trous Découverte ou Footgolf"], "9 trous Footgolf"),
+    "pitch-putt-kaleka-18-trous": year === 2027 ? kalekaPrices : greenFees ? {
       ...greenFees,
       rows: greenFees.rows.filter(row => ["9 trous Kaleka course aller", kalekaCombinedLabel].includes(row.label))
         .map(row => ({ ...row, label: row.label === kalekaCombinedLabel ? "18 trous" : "9 trous (aller ou retour)" })),
     } : undefined,
-    "parcours-competitions-18-trous": grandParcoursPrices,
+    "parcours-competitions-18-trous": year === 2027 ? undefined : grandParcoursPrices,
   };
   const orderedCourses = [
     courses.find((course) => course.slug === "practice"),
@@ -90,6 +95,8 @@ export default function GolfPage() {
                 id={course.slug}
                 headingLevel="h2"
                 pricing={pricingByCourse[course.slug]}
+                ctaLabel={course.slug === "parcours-competitions-18-trous" && year === 2027 ? "Voir les tarifs 2027" : undefined}
+                ctaHref={course.slug === "parcours-competitions-18-trous" && year === 2027 ? "/tarifs#grand-parcours" : undefined}
                 action={course.slug === "parcours-competitions-18-trous" ? <CourseFlyoverModal /> : undefined}
               />)}
         </div>
