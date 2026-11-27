@@ -171,8 +171,8 @@ export const pricingSections2026: PricingSection[] = [
   },
 ];
 
-// Minuit à Paris le 1er janvier 2027 (heure d'hiver : UTC+1).
-export const pricing2027StartsAt = "2026-12-31T23:00:00.000Z";
+// Minuit à Paris le 31 décembre 2026 (heure d'hiver : UTC+1).
+export const pricing2027StartsAt = "2026-12-30T23:00:00.000Z";
 
 export function getPricingYear(now: Date = new Date()): 2026 | 2027 {
   return now.getTime() >= Date.parse(pricing2027StartsAt) ? 2027 : 2026;
