@@ -31,6 +31,18 @@ export const restaurantFaqs = [
 
 export const restaurantGallery = [
   {
+    src: "/restaurant/gallery/assiette-salee-lumiere-douce.png",
+    alt: "Assiette salée avec plusieurs préparations, des jeunes pousses et des condiments",
+    title: "Une assiette salée",
+    description: "Plusieurs préparations et condiments réunis dans une assiette soignée.",
+  },
+  {
+    src: "/restaurant/gallery/dessert-raffine-lumiere-douce.png",
+    alt: "Dessert garni de crème, de fruits rouges et de noix, présenté sur une assiette",
+    title: "Un dessert raffiné",
+    description: "Crème, fruits rouges et noix composent ce dessert présenté à l’assiette.",
+  },
+  {
     src: "/restaurant/gallery/assiette-volaille-legumes.png",
     alt: "Cuisse de volaille en sauce, légumes et pommes de terre dressés sur une assiette blanche",
     title: "Une assiette savoureuse",
