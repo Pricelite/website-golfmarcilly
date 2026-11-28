@@ -1,10 +1,11 @@
 import { INITIATION_PRICE_PER_PERSON_CENTS } from "@/lib/initiation/constants";
 import { siteConfig } from "./site";
 import { initiationExperience, initiationInclusions } from "./initiation-experience";
+import { pricingSections2027 } from "./pricing-2027";
 
 export type PricingRow = {
   label: string;
-  values: [string] | [string, string];
+  values: string[];
   note?: string;
 };
 
@@ -12,13 +13,14 @@ export type PricingSection = {
   id?: string;
   cta?: { href: string; label: string };
   title: string;
+  year?: number;
   description?: string;
-  columns: [string] | [string, string];
+  columns: string[];
   rows: PricingRow[];
   footnotes?: string[];
 };
 
-export const pricingSections: PricingSection[] = [
+export const pricingSections2026: PricingSection[] = [
   {
     title: "Initiation",
     id: "decouverte",
@@ -168,3 +170,14 @@ export const pricingSections: PricingSection[] = [
     footnotes: ["* 8 % de remise si paiement comptant."],
   },
 ];
+
+// Minuit à Paris le 31 décembre 2026 (heure d'hiver : UTC+1).
+export const pricing2027StartsAt = "2026-12-30T23:00:00.000Z";
+
+export function getPricingYear(now: Date = new Date()): 2026 | 2027 {
+  return now.getTime() >= Date.parse(pricing2027StartsAt) ? 2027 : 2026;
+}
+
+export function getPricingSections(now: Date = new Date()): PricingSection[] {
+  return getPricingYear(now) === 2027 ? pricingSections2027 : pricingSections2026;
+}

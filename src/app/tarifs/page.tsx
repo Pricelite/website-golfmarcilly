@@ -4,13 +4,25 @@ import { CTAButton } from "@/components/ui/cta-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { PricingTable } from "@/components/ui/pricing-table";
 import { SectionTitle } from "@/components/ui/section-title";
-import { pricingSections } from "@/data/pricing";
+import { getPricingSections, getPricingYear } from "@/data/pricing";
 import { buildMetadata } from "@/lib/metadata";
 import { buildBreadcrumbSchema } from "@/lib/schema";
 
-export const metadata = buildMetadata(publicPageSeo.pricing);
+export const dynamic = "force-dynamic";
+
+export function generateMetadata() {
+  const year = getPricingYear();
+  return buildMetadata(year === 2027 ? {
+    ...publicPageSeo.pricing,
+    title: "Tarifs 2027 : visiteurs et abonnements",
+    description: "Consultez les tarifs 2027 du Golf de Marcilly : green fees, carnets, practice, locations et abonnements.",
+  } : publicPageSeo.pricing);
+}
 
 export default function PricingPage() {
+  const now = new Date();
+  const year = getPricingYear(now);
+  const pricingSections = getPricingSections(now);
   return (
     <>
       <JsonLd
@@ -23,7 +35,7 @@ export default function PricingPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionTitle
             as="h1"
-            eyebrow="Tarifs 2026"
+            eyebrow={`Tarifs ${year}`}
             title="Tarifs du golf : visiteurs et abonnements"
           />
           <CTAButton href="/contact#reservation" variant="secondary">Besoin d’un conseil ?</CTAButton>
@@ -32,7 +44,10 @@ export default function PricingPage() {
         <nav aria-label="Catégories de tarifs" className="mt-8">
           <p className="mb-3 text-sm font-medium text-emerald-950/75">Accès direct aux tarifs</p>
           <div className="flex flex-wrap gap-2">
-            {[["decouverte", "Initiation"], ["green-fees", "Découverte et Kaleka"], ["grand-parcours", "Grand Parcours"], ["practice", "Practice"], ["abonnements", "Abonnements"], ["location", "Location"]].map(([id, label]) => <a key={id} href={`#${id}`} className="site-button rounded-full px-4 py-3 text-sm font-semibold">{label}</a>)}
+            {(year === 2027
+              ? [["decouverte", "Initiation"], ["grand-parcours", "Green fees"], ["green-fees", "Découverte et Footgolf"], ["kaleka", "Kaleka"], ["carnets-green-fees", "Carnets"], ["practice", "Practice"], ["location", "Location"], ["abonnements", "Abonnements"]]
+              : [["decouverte", "Initiation"], ["green-fees", "Découverte et Kaleka"], ["grand-parcours", "Grand Parcours"], ["practice", "Practice"], ["abonnements", "Abonnements"], ["location", "Location"]]
+            ).map(([id, label]) => <a key={id} href={`#${id}`} className="site-button rounded-full px-4 py-3 text-sm font-semibold">{label}</a>)}
           </div>
         </nav>
         <div className="mt-10 grid gap-6 xl:grid-cols-2">
