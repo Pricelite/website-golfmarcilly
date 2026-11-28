@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 
 import { readJsonBody } from "@/lib/api/request-body";
 import { canAccessAdmin } from "@/lib/admin-access";
-import { deleteDailyMenu, getDailyMenu, saveDailyMenu } from "@/lib/restaurant/daily-menu-store";
+import { deleteDailyMenu, getDailyMenu, getLatestDailyMenu, saveDailyMenu } from "@/lib/restaurant/daily-menu-store";
+import { prepareDailyMenuEditor } from "@/lib/restaurant/daily-menu-editor";
 import { parseDailyMenu, validDailyMenuDate } from "@/lib/restaurant/daily-menu-validation";
 import { hasTrustedOrigin } from "@/lib/security/request-guards";
 
@@ -22,7 +23,12 @@ export async function GET(request: Request) {
   catch { return response({ error: "Vérification de l’accès momentanément indisponible." }, 503); }
   const date = new URL(request.url).searchParams.get("date");
   if (!validDailyMenuDate(date)) return response({ error: "Date invalide." }, 400);
-  try { return response({ menu: await getDailyMenu(date) }); }
+  try {
+    const menu = await getDailyMenu(date);
+    const latest = menu ? null : await getLatestDailyMenu(date);
+    const editor = prepareDailyMenuEditor(date, menu, latest);
+    return response({ menu, prefill: menu ? null : editor.menu, copiedFromDate: editor.copiedFromDate });
+  }
   catch { return response({ error: "Carte du jour momentanément indisponible." }, 503); }
 }
 

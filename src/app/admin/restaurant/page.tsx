@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { DailyMenuManager } from "@/components/admin/daily-menu-manager";
 import { parisDateKey } from "@/data/daily-menu";
 import { canAccessAdmin } from "@/lib/admin-access";
-import { getDailyMenu } from "@/lib/restaurant/daily-menu-store";
+import { prepareDailyMenuEditor } from "@/lib/restaurant/daily-menu-editor";
+import { getDailyMenu, getLatestDailyMenu } from "@/lib/restaurant/daily-menu-store";
 import { sharedContentSyncEnabled } from "@/lib/supabase/content";
 
 export const metadata: Metadata = { title: "Carte du jour — Administration", robots: { index: false, follow: false } };
@@ -15,9 +16,14 @@ export default async function AdminRestaurantPage() {
   if (!(await canAccessAdmin("restaurant"))) redirect("/admin/restaurant/connexion");
   const today = parisDateKey();
   let menu = null;
+  let latest = null;
   let unavailable = false;
-  try { menu = await getDailyMenu(today); }
+  try {
+    menu = await getDailyMenu(today);
+    if (!menu) latest = await getLatestDailyMenu(today);
+  }
   catch { unavailable = true; }
+  const editor = prepareDailyMenuEditor(today, menu, latest);
 
   return <div className="w-full">
     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -28,6 +34,6 @@ export default async function AdminRestaurantPage() {
     </nav>
     {sharedContentSyncEnabled() ? <p role="status" className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">Données partagées activées : la carte enregistrée ici est publiée sur le site public.</p> : null}
     <p className="mt-7 max-w-3xl text-sm leading-7 text-emerald-900/80">Publiez une carte uniquement lorsque les plats ou les prix changent. La dernière carte publiée reste automatiquement visible à toute heure jusqu’à la prochaine mise à jour. Le plat choisi pour l’ardoise n’apparaît que le jour de publication, du lundi au vendredi.</p>
-    <DailyMenuManager initialDate={today} initialMenu={menu} initialError={unavailable} />
+    <DailyMenuManager initialDate={today} initialMenu={editor.menu} initialPublished={editor.published} initialCopiedFromDate={editor.copiedFromDate} initialError={unavailable} />
   </div>;
 }
