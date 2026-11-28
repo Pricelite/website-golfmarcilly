@@ -18,10 +18,12 @@ const sortedChoices = (menu: Choices): Choices => ({
   desserts: sortDailyMenuChoices(menu.desserts),
 });
 
-export function DailyMenuManager({ initialDate, initialMenu, initialError }: { initialDate: string; initialMenu: DailyMenu | null; initialError: boolean }) {
+export function DailyMenuManager({ initialDate, initialMenu, initialPublished, initialCopiedFromDate, initialError }: { initialDate: string; initialMenu: DailyMenu | null; initialPublished: boolean; initialCopiedFromDate: string | null; initialError: boolean }) {
   const [date, setDate] = useState(initialDate);
   const [choices, setChoices] = useState<Choices>(() => sortedChoices(initialMenu ?? dailyMenuExample));
-  const [published, setPublished] = useState(Boolean(initialMenu));
+  const [published, setPublished] = useState(initialPublished);
+  const [copiedFromDate, setCopiedFromDate] = useState(initialCopiedFromDate);
+  const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [unavailable, setUnavailable] = useState(initialError);
   const [error, setError] = useState(initialError ? "La carte du jour est indisponible. Vérifiez Supabase et la migration, puis rechargez." : "");
@@ -38,10 +40,19 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Opération impossible. Réessayez.");
-    return data as { menu?: DailyMenu | null; deleted?: boolean };
+    return data as { menu?: DailyMenu | null; prefill?: DailyMenu | null; copiedFromDate?: string | null; deleted?: boolean };
+  }
+
+  function showLoadedMenu(data: { menu?: DailyMenu | null; prefill?: DailyMenu | null; copiedFromDate?: string | null }) {
+    setChoices(sortedChoices(data.menu ?? data.prefill ?? dailyMenuExample));
+    setPublished(Boolean(data.menu));
+    setCopiedFromDate(data.menu ? null : data.copiedFromDate ?? null);
+    setDirty(false);
   }
 
   async function chooseDate(nextDate: string) {
+    if (dirty && !window.confirm("Des modifications ne sont pas enregistrées. Changer de date sans les conserver ?")) return;
+    setDirty(false);
     setDate(nextDate);
     setError(""); setMessage(""); setConfirmDelete(false);
     const current = ++requestNumber.current;
@@ -50,8 +61,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     try {
       const data = await request("GET", undefined, nextDate);
       if (current !== requestNumber.current) return;
-      setChoices(sortedChoices(data.menu ?? dailyMenuExample));
-      setPublished(Boolean(data.menu));
+      showLoadedMenu(data);
       setUnavailable(false);
     } catch (cause) {
       if (current !== requestNumber.current) return;
@@ -63,6 +73,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
   }
 
   function updateChoice(group: keyof Choices, index: number, field: "name" | "price", value: string) {
+    setDirty(true);
     setChoices((current) => {
       const updated = [...current[group]];
       updated[index] = { ...current[group][index], [field]: value };
@@ -71,6 +82,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
   }
 
   function setDailySpecial(index: number) {
+    setDirty(true);
     setChoices((current) => {
       const alreadySelected = current.mains[index]?.dailySpecial === true;
       return { ...current, mains: current.mains.map((choice, choiceIndex) => ({
@@ -82,6 +94,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
   }
 
   function addChoice(group: keyof Choices) {
+    setDirty(true);
     setChoices((current) => current[group].length >= 12 ? current : {
       ...current,
       [group]: [...current[group], { name: "", price: "" } satisfies DailyMenuChoice],
@@ -89,6 +102,7 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
   }
 
   function removeChoice(group: keyof Choices, index: number) {
+    setDirty(true);
     setChoices((current) => current[group].length <= 1 ? current : {
       ...current,
       [group]: current[group].filter((_, choiceIndex) => choiceIndex !== index),
@@ -101,9 +115,12 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     setBusy(true); setError(""); setMessage("");
     try {
       const data = await request("PUT", { date, ...choices });
-      if (data.menu) setChoices(sortedChoices(data.menu));
+      if (!data.menu) throw new Error("L’enregistrement n’a pas été confirmé. Réessayez.");
+      setChoices(sortedChoices(data.menu));
       setPublished(true);
-      setMessage(`Carte du ${formatDailyMenuDate(date)} publiée. Elle devient la carte active et le reste jusqu’à la prochaine modification.`);
+      setCopiedFromDate(null);
+      setDirty(false);
+      setMessage(`Carte du ${formatDailyMenuDate(date)} enregistrée. Les plats et tarifs sont conservés pour cette date.`);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Enregistrement impossible. Réessayez."); }
     finally { setBusy(false); }
   }
@@ -114,9 +131,14 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
     try {
       await request("DELETE", { date });
       setPublished(false);
-      setChoices(dailyMenuExample);
+      setDirty(false);
       setConfirmDelete(false);
-      setMessage("Carte retirée. Aucun plat ni tarif du jour n’est affiché sur le site pour cette date.");
+      setMessage("Carte retirée. La carte précédente reste disponible si elle existe.");
+      try { showLoadedMenu(await request("GET", undefined, date)); }
+      catch {
+        setUnavailable(true);
+        setError("Carte retirée, mais le rechargement a échoué. Rechargez la page pour retrouver la carte précédente.");
+      }
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Suppression impossible. Réessayez."); }
     finally { setBusy(false); }
   }
@@ -128,7 +150,8 @@ export function DailyMenuManager({ initialDate, initialMenu, initialError }: { i
       <label className="block max-w-xs text-sm font-semibold">Date de la carte
         <input type="date" className={inputClass} value={date} min="1900-01-01" max="2199-12-31" disabled={busy} onChange={(event) => void chooseDate(event.target.value)} />
       </label>
-      <p className="mt-3 text-sm text-emerald-900/75">{published ? "Carte publiée pour cette date. Toute modification enregistrée remplace les choix précédents." : "Exemple prérempli. Modifiez les choix puis publiez pour cette date."}</p>
+      <p className="mt-3 text-sm text-emerald-900/75">{published ? "Carte publiée pour cette date. Toute modification enregistrée remplace les choix précédents." : copiedFromDate ? `Carte du ${formatDailyMenuDate(copiedFromDate)} reprise pour cette date. Modifiez seulement ce qui change, puis publiez la nouvelle carte.` : "Exemple prérempli. Modifiez les choix puis publiez pour cette date."}</p>
+      {dirty ? <p role="status" className="mt-2 text-sm font-semibold text-amber-800">Modifications non enregistrées. Cliquez sur « {published ? "Enregistrer la carte" : "Publier la carte"} » pour les conserver.</p> : null}
       <p className="mt-1 text-sm text-emerald-900/75">Les plats seront affichés par prix croissant. Les noms et tarifs sont harmonisés à l’enregistrement ; vérifiez les autres fautes signalées par le correcteur français.</p>
       <p className="mt-1 text-sm text-emerald-900/75">Cochez un plat pour l’ardoise. Il s’affichera uniquement le jour de cette carte, du lundi au vendredi. Publiez une nouvelle carte pour le plat du jour suivant.</p>
       <form onSubmit={save} className="mt-6">
